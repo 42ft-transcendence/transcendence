@@ -1,0 +1,28 @@
+FROM node:lts
+
+# Copy the packages files into the container at /app
+WORKDIR /app
+COPY package-lock.json .
+COPY package.json .
+
+# update npm environment
+RUN npm install -g npm@8.19.2
+# package.json update
+RUN npm install -g npm-check-updates
+RUN ncu -u
+
+# Install any needed packages specified in requirements.txt
+RUN npm install
+
+# Copy the rest of the code into the container at /app
+# * EXCEPT .src
+COPY .env .
+COPY .eslintrc.cjs .
+COPY index.html .
+COPY tsconfig.json .
+COPY tsconfig.node.json .
+COPY tsconfig.path.json .
+COPY vite.config.ts .
+
+# RUN npm run build
+ENTRYPOINT npm run dev
