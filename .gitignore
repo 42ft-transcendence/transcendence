@@ -1,5 +1,5 @@
 node_modules
-.husky
+# .husky
 img_files/*
 
 share/profiles/*
