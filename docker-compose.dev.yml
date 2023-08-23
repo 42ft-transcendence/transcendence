@@ -1,0 +1,87 @@
+version: "3.9"
+
+services:
+  srv-postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "6432:5432"
+    volumes:
+      - vol-postgres:/var/lib/postgresql/data
+    networks:
+      - net-transcendence
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  srv-backend:
+    container_name: backend
+    image: backend:dev
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    networks:
+      - net-transcendence
+    volumes:
+      - vol-profiles:/app/profiles
+      - ./backend/nestjs-app/src:/app/src
+    depends_on:
+      - srv-postgres
+    environment:
+      JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET}
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+      FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      FT_OAUTH_CLIENT_SECRET: ${FT_OAUTH_CLIENT_SECRET}
+      FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+
+  srv-frontend:
+    container_name: frontend
+    image: frontend:dev
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    networks:
+      - net-transcendence
+    volumes:
+      - ./frontend/react-app/src:/app/src
+    environment:
+      FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+
+  srv-nginx:
+    container_name: nginx
+    image: nginx:dev
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"
+    networks:
+      - net-transcendence
+    volumes:
+      - vol-profiles:/usr/share/nginx/profiles
+    depends_on:
+      - srv-backend
+      - srv-frontend
+
+networks:
+  net-transcendence:
+    name: dev-transcendence
+
+volumes:
+  vol-postgres:
+    name: dev-postgres
+
+  vol-profiles:
+    name: dev-profiles
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./share/profiles
