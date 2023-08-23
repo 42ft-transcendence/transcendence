@@ -1,0 +1,73 @@
+version: "3.9"
+
+services:
+  srv-postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "6432:5432"
+    volumes:
+      - vol-postgres:/var/lib/postgresql/data
+    networks:
+      - net-transcendence
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test
+
+  srv-backend:
+    container_name: backend
+    image: backend:dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    networks:
+      - net-transcendence
+    volumes:
+      - vol-profiles:/app/profiles
+      - ./backend/nestjs-app/src:/app/src
+    depends_on:
+      - srv-postgres
+
+  srv-frontend:
+    container_name: frontend
+    image: frontend:dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    networks:
+      - net-transcendence
+    volumes:
+      - ./frontend/react-app/src:/app/src
+
+  srv-nginx:
+    container_name: nginx
+    image: nginx:dev
+    build:
+      context: ./nginx
+      dockerfile: dev.Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - net-transcendence
+    volumes:
+      - vol-profiles:/usr/share/nginx/profiles
+    depends_on:
+      - srv-backend
+      - srv-frontend
+
+networks:
+  net-transcendence:
+    name: dev-transcendence
+
+volumes:
+  vol-postgres:
+    name: dev-postgres
+
+  vol-profiles:
+    name: dev-profiles
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./share/profiles
