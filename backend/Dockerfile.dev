@@ -16,7 +16,6 @@ RUN npm install
 
 # Copy the rest of the code into the container at /app
 # * EXCEPT .src
-COPY nestjs-app/.env .
 COPY nestjs-app/.eslintrc.js .
 COPY nestjs-app/.prettierrc .
 COPY nestjs-app/nest-cli.json .

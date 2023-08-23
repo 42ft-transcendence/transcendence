@@ -11,9 +11,9 @@ services:
     networks:
       - net-transcendence
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=test
+      - POSTGRES_USER: ${POSTGRES_USER}
+      - POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      - POSTGRES_DB: ${POSTGRES_DB}
 
   srv-backend:
     container_name: backend
@@ -28,6 +28,15 @@ services:
       - ./backend/nestjs-app/src:/app/src
     depends_on:
       - srv-postgres
+    environment:
+      - JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET}
+      - JWT_ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+      - ClIENT_42_ID: ${FT_OAUTH_CLIENT_ID}
+      - CLIENT_42_SECRET: ${FT_OAUTH_CLIENT_SECRET}
+      - 42_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      - GOOGLE_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
 
   srv-frontend:
     container_name: frontend
@@ -39,6 +48,11 @@ services:
       - net-transcendence
     volumes:
       - ./frontend/react-app/src:/app/src
+    environment:
+      - FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      - FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      - GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
 
   srv-nginx:
     container_name: nginx
