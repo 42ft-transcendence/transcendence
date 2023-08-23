@@ -2,8 +2,8 @@ FROM node:lts-alpine
 
 # Copy the packages files into the container at /app
 WORKDIR /app
-COPY package-lock.json .
-COPY package.json .
+COPY nestjs-app/package-lock.json .
+COPY nestjs-app/package.json .
 
 # update npm environment
 RUN npm install -g npm@8.19.2
@@ -16,12 +16,12 @@ RUN npm install
 
 # Copy the rest of the code into the container at /app
 # * EXCEPT .src
-COPY .env .
-COPY .eslintrc.js .
-COPY .prettierrc .
-COPY nest-cli.json .
-COPY tsconfig.build.json .
-COPY tsconfig.json .
+COPY nestjs-app/.env .
+COPY nestjs-app/.eslintrc.js .
+COPY nestjs-app/.prettierrc .
+COPY nestjs-app/nest-cli.json .
+COPY nestjs-app/tsconfig.build.json .
+COPY nestjs-app/tsconfig.json .
 
 # RUN npm run build
 ENTRYPOINT npm run start:dev

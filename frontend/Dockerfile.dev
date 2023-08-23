@@ -2,8 +2,8 @@ FROM node:lts
 
 # Copy the packages files into the container at /app
 WORKDIR /app
-COPY package-lock.json .
-COPY package.json .
+COPY react-app/package-lock.json .
+COPY react-app/package.json .
 
 # update npm environment
 RUN npm install -g npm@8.19.2
@@ -16,13 +16,12 @@ RUN npm install
 
 # Copy the rest of the code into the container at /app
 # * EXCEPT .src
-COPY .env .
-COPY .eslintrc.cjs .
-COPY index.html .
-COPY tsconfig.json .
-COPY tsconfig.node.json .
-COPY tsconfig.path.json .
-COPY vite.config.ts .
+COPY react-app/.env .
+COPY react-app/.eslintrc.cjs .
+COPY react-app/index.html .
+COPY react-app/tsconfig.json .
+COPY react-app/tsconfig.node.json .
+COPY react-app/vite.config.ts .
 
 # RUN npm run build
 ENTRYPOINT npm run dev
