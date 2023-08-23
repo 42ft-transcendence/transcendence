@@ -1,0 +1,8 @@
+node_modules
+.husky
+img_files/*
+
+share/profiles/*
+!share/profiles/profile[0-9].svg
+
+# .env
