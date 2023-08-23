@@ -1,8 +1,8 @@
-PROJECT_NAME := Transcendence
+PROJECT_NAME := transcendence
 COMPOSE_FILE := docker-compose.yml
 ENV_FILE := .env
 
-DEV_PROJECT_NAME := dev/$(PROJECT_NAME)
+DEV_PROJECT_NAME := dev-$(PROJECT_NAME)
 DEV_COMPOSE_FILE := docker-compose.dev.yml
 
 .PHONY: all publish develop clean fclean re
@@ -19,13 +19,13 @@ develop:
 
 clean:
 	@echo "\n\033[0;33m[clean all containers containers]\033[0m"
-	@docker container rm -f `docker-compose ps -aq`
+	@docker container rm -f `docker container ls -aq`
 
 fclean:
 	@echo "\n\033[0;33m[clean all containers containers]\033[0m"
-	@docker container rm -f `docker-compose ps -aq`
+	@docker container rm -f `docker container ls -aq`
 	@echo "\n\033[0;33m[clean all images]\033[0m"
-	@docker image rm -f `docker-compose images -aq`
+	@docker image rm -f `docker image ls -q`
 	@echo "\n\033[0;33m[clean all volumes]\033[0m"
 	@docker volume rm `docker volume ls -q`
 
