@@ -1,0 +1,13 @@
+{
+  "name": "transcendence",
+  "version": "1.0.0",
+  "description": "Soon, you will realize that you already know things that you thought you didn’t.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0"
+  }
+}
