@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+import Login from "@pages/login";
 
 const Router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const Router = createBrowserRouter([
   },
   {
     path: "/Login",
-    element: <div>Login</div>,
+    element: <Login />,
   },
   // {
   //   path: "/",
