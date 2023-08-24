@@ -14,6 +14,7 @@ import { DMModule } from './dm/dm.module';
 import { ParticipantsModule } from './participants/participants.module';
 import { RelationshipModule } from './relationship/relationship.module';
 import { GameModule } from './game/game.module';
+import { MatchHistoryModule } from './match_history/history.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { GameModule } from './game/game.module';
     ParticipantsModule,
     RelationshipModule,
     GameModule,
+    MatchHistoryModule,
   ],
   controllers: [],
   providers: [],

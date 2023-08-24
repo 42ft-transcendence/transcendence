@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MatchHistory } from './entities/match_historys.entity';
-import { MatchHistorysController } from './match_historys.controller';
-import { MatchHistorysService } from './match_historys.service';
-import { MatchHistoryRepository } from './match_history.repository';
-import { UserRepository } from '../users/user.repository';
+import { MatchHistory } from './entities/match_history.entity';
+import { MatchHistorysController } from './history.controller';
+import { MatchHistorysService } from './history.service';
+import { MatchHistoryRepository } from './repository/history.repository';
+import { UserRepository } from '../users/repository/user.repository';
 import { UsersService } from '../users/users.service';
-import { TypeOrmExModule } from 'nestjs-typeorm-paginate';
+import { TypeOrmExModule } from 'src/database/typeorm-ex-module';
 import { User } from '../users/entities/user.entity';
 
 @Module({

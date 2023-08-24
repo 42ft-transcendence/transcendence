@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { MatchHistorysService } from './match_historys.service';
+import { MatchHistorysService } from './history.service';
 import { HistoryDto } from './history.dto';
-import { MatchHistory } from './entities/match_historys.entity';
+import { MatchHistory } from './entities/match_history.entity';
 
 @Controller('MatchHistory')
 export class MatchHistorysController {
@@ -26,7 +26,6 @@ export class MatchHistorysController {
   async getHistoryByNickname(
     @Param('nickname') nickname,
   ): Promise<MatchHistory[]> {
-    console.log(nickname);
     return await this.matchHistoryService.getHistoryJoinUserByNickname(
       nickname,
     );
