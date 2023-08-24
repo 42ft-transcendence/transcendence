@@ -10,9 +10,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { TMP, UserStatusType } from 'src/util';
 import { UsersService } from 'src/users/users.service';
 import { MessageService } from 'src/message/message.service';
-import { RoomRepository } from './repository/room.repository';
+import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { ParticipantsService } from 'src/participants/participants.service';
-import { Room } from './entities/room.entity';
+import { ChatChannel } from './entities/chatchannel.entity';
 import { DMService } from 'src/dm/dm.service';
 import { DM } from 'src/dm/entities/dm.entity';
 import { ChattingService } from './chatting.service';
@@ -33,7 +33,7 @@ export class ChattingGateway
     private userService: UsersService,
     private authService: AuthService,
     private messageService: MessageService,
-    private roomRepository: RoomRepository,
+    private channelRepository: ChatChannelRepository,
     private participantsService: ParticipantsService,
     private dmService: DMService,
     private chattingService: ChattingService,
@@ -94,10 +94,10 @@ export class ChattingGateway
   async createRoom(
     client: Socket,
     data: { roomName: string; type: string; password: string },
-  ): Promise<Room> {
+  ): Promise<ChatChannel> {
     const ownerId = await this.getUserId(client);
     const owner = await this.userService.getUserById(ownerId);
-    const room = await this.roomRepository.createRoom(
+    const room = await this.channelRepository.createChatChannel(
       data.roomName,
       owner,
       data.type,
@@ -116,10 +116,10 @@ export class ChattingGateway
   async joinRoom(
     client: Socket,
     data: { roomId: string; password: string },
-  ): Promise<Room> {
+  ): Promise<ChatChannel> {
     const userId = await this.getUserId(client);
     const user = await this.userService.getUserById(userId);
-    const room = await this.roomRepository.getRoomById(data.roomId);
+    const room = await this.channelRepository.getChannelById(data.roomId);
     if (room.type !== 'PROTECTED' || room.password === data.password) {
       client.join(data.roomId);
       const participant = await this.participantsService.addParticipant(
@@ -128,7 +128,7 @@ export class ChattingGateway
         room,
         false,
       );
-      return await this.roomRepository.joinRoom(room, participant);
+      return await this.channelRepository.joinChatChannel(room, participant);
     } else {
       throw new Error('비밀번호가 틀렸습니다.');
     }
@@ -138,13 +138,13 @@ export class ChattingGateway
   async leaveRoom(client: Socket, roomId: string): Promise<void> {
     const userId = await this.getUserId(client);
     const user = await this.userService.getUserById(userId);
-    const room = await this.roomRepository.getRoomById(roomId);
+    const room = await this.channelRepository.getChannelById(roomId);
     if (room) {
       client.leave(roomId);
       await this.participantsService.deleteParticipant(user, room);
     }
     if (!room.participants) {
-      await this.roomRepository.deleteRoom(room);
+      await this.channelRepository.deleteChatChannel(room);
     }
   }
 
@@ -152,7 +152,7 @@ export class ChattingGateway
   async kickUser(client: Socket, data: { roomId: string; userId: string }) {
     const adminId = await this.getUserId(client);
     const admin = await this.userService.getUserById(adminId);
-    const room = await this.roomRepository.getRoomById(data.roomId);
+    const room = await this.channelRepository.getChannelById(data.roomId);
     const participants =
       await this.participantsService.getAllParticipants(room);
     const participant = participants.find(
@@ -170,7 +170,7 @@ export class ChattingGateway
       });
       await this.participantsService.deleteParticipant(participant.user, room);
       client.leave(data.roomId);
-      await this.roomRepository.leaveRoom(room, participant);
+      await this.channelRepository.leaveChatChannel(room, participant);
     }
   }
 
@@ -178,7 +178,7 @@ export class ChattingGateway
   async muteUser(client: Socket, data: { roomId: string; userId: string }) {
     const adminId = await this.getUserId(client);
     const admin = await this.userService.getUserById(adminId);
-    const room = await this.roomRepository.getRoomById(data.roomId);
+    const room = await this.channelRepository.getChannelById(data.roomId);
     const participants =
       await this.participantsService.getAllParticipants(room);
     const participant = participants.find(
@@ -203,7 +203,7 @@ export class ChattingGateway
   async unmuteUser(client: Socket, data: { roomId: string; userId: string }) {
     const adminId = await this.getUserId(client);
     const admin = await this.userService.getUserById(adminId);
-    const room = await this.roomRepository.getRoomById(data.roomId);
+    const room = await this.channelRepository.getChannelById(data.roomId);
     const participants =
       await this.participantsService.getAllParticipants(room);
     const participant = participants.find(

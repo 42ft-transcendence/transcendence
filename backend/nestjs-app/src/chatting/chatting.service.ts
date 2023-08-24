@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RoomRepository } from './repository/room.repository';
+import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
@@ -8,8 +8,8 @@ import { User } from 'src/users/entities/user.entity';
 @Injectable()
 export class ChattingService {
   constructor(
-    @InjectRepository(RoomRepository)
-    private readonly roomRepository: RoomRepository,
+    @InjectRepository(ChatChannelRepository)
+    private readonly roomRepository: ChatChannelRepository,
     private readonly participantsService: ParticipantsService,
   ) {}
 
@@ -32,6 +32,6 @@ export class ChattingService {
       room,
       true,
     );
-    await this.roomRepository.joinRoom(room, participant);
+    await this.roomRepository.joinChatChannel(room, participant);
   }
 }

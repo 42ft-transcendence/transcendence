@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Column, Entity } from 'typeorm';
-import { Room } from 'src/chatting/entities/room.entity';
+import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { User } from 'src/users/entities/user.entity';
 import * as moment from 'moment-timezone';
 
@@ -35,10 +35,10 @@ export class Participants extends BaseEntity {
   })
   user: User;
 
-  @ManyToOne(() => Room, (room) => room.id, {
+  @ManyToOne(() => ChatChannel, (room) => room.id, {
     onDelete: 'CASCADE',
   })
-  room: Room;
+  room: ChatChannel;
 
   //   channel: Channel;
   //   @AfterUpdate()

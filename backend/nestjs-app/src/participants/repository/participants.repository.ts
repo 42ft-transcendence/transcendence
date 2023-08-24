@@ -1,13 +1,18 @@
 import { HttpException } from '@nestjs/common';
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
-import { Room } from 'src/chatting/entities/room.entity';
+import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { Participants } from '../entities/participants.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @CustomRepository(Participants)
 export class ParticipantsRepository extends Repository<Participants> {
-  async addParticipant(admin: boolean, user: User, room: Room, owner: boolean) {
+  async addParticipant(
+    admin: boolean,
+    user: User,
+    room: ChatChannel,
+    owner: boolean,
+  ) {
     const exist = await this.getParticipant(user, room);
     if (!exist) {
       const participant = new Participants();
@@ -23,7 +28,7 @@ export class ParticipantsRepository extends Repository<Participants> {
     }
   }
 
-  async getParticipant(user2: User, room: Room) {
+  async getParticipant(user2: User, room: ChatChannel) {
     const getUser = await this.findOne({
       relations: ['user', 'room'],
       where: { user: { id: user2.id }, room: { id: room.id } },
@@ -31,7 +36,7 @@ export class ParticipantsRepository extends Repository<Participants> {
     return getUser;
   }
 
-  async getParticipantsByroom(room: Room): Promise<Participants[]> {
+  async getParticipantsByroom(room: ChatChannel): Promise<Participants[]> {
     const getUser = await this.find({
       relations: ['user', 'room'],
       where: { room: { id: room.id } },
@@ -63,8 +68,8 @@ export class ParticipantsRepository extends Repository<Participants> {
     return getCp;
   }
 
-  async getroomByUser(user: User): Promise<Room[]> {
-    const rooms: Room[] = [];
+  async getroomByUser(user: User): Promise<ChatChannel[]> {
+    const rooms: ChatChannel[] = [];
     const participants = await this.find({
       relations: ['user', 'room'],
       where: {
