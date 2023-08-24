@@ -5,14 +5,14 @@ import { Participants } from './entities/participants.entity';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { ParticipantsRepository } from './repository/participants.repository';
 import { ParticipantsController } from './participants.controller';
-import { RoomRepository } from 'src/chatting/repository/room.repository';
+import { ChatChannelRepository } from 'src/chatting/repository/chatchannel.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Participants]),
     TypeOrmExModule.forCustomRepository([
       ParticipantsRepository,
-      RoomRepository,
+      ChatChannelRepository,
     ]),
   ],
   controllers: [ParticipantsController],

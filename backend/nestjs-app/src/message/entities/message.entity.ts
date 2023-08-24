@@ -21,7 +21,7 @@ export class Message extends BaseEntity {
   content: string;
 
   @Column()
-  roomId: string;
+  channelId: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

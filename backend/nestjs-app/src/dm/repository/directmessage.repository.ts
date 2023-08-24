@@ -1,12 +1,12 @@
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
-import { DM } from '../entities/dm.entity';
+import { DirectMessage } from '../entities/directmessage.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 
-@CustomRepository(DM)
-export class DMRepository extends Repository<DM> {
-  async saveDM(from: User, to: User, message: string): Promise<DM> {
-    const dm = new DM();
+@CustomRepository(DirectMessage)
+export class DirectMessageRepository extends Repository<DirectMessage> {
+  async saveDM(from: User, to: User, message: string): Promise<DirectMessage> {
+    const dm = new DirectMessage();
     dm.message = message;
     dm.from = from;
     dm.to = to;
@@ -14,7 +14,7 @@ export class DMRepository extends Repository<DM> {
     return await this.save(dm);
   }
 
-  async getDM(user1: User, user2: User): Promise<DM[]> {
+  async getDM(user1: User, user2: User): Promise<DirectMessage[]> {
     const messages = await this.find({
       where: [
         { from: { id: user1.id }, to: { id: user2.id } },
