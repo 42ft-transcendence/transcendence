@@ -1,39 +1,45 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Room } from 'src/chatting/entities/room.entity';
+import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { ParticipantsRepository } from './repository/participants.repository';
 import { User } from 'src/users/entities/user.entity';
 import { Participants } from './entities/participants.entity';
-import { RoomRepository } from 'src/chatting/repository/room.repository';
+import { ChatChannelRepository } from 'src/chatting/repository/chatchannel.repository';
 
 @Injectable()
 export class ParticipantsService {
   constructor(
     @InjectRepository(ParticipantsRepository)
     private participantRepository: ParticipantsRepository,
-    private roomRepository: RoomRepository,
+    private channelRepository: ChatChannelRepository,
   ) {}
 
   async addParticipant(
     admin: boolean,
     user: User,
-    room: Room,
+    channel: ChatChannel,
     owner: boolean,
   ): Promise<Participants> {
-    const exist = await this.participantRepository.getParticipant(user, room);
+    const exist = await this.participantRepository.getParticipant(
+      user,
+      channel,
+    );
     if (!exist) {
       const participant = await this.participantRepository.addParticipant(
         admin,
         user,
-        room,
+        channel,
         owner,
       );
       return participant;
     }
   }
 
-  async getAdmin(user: User, room: Room) {
-    const getCp = await this.participantRepository.getParticipant(user, room);
+  async getAdmin(user: User, channel: ChatChannel) {
+    const getCp = await this.participantRepository.getParticipant(
+      user,
+      channel,
+    );
     if (getCp) {
       const tf = await this.participantRepository.getAdmin(getCp);
       return tf;
@@ -41,48 +47,53 @@ export class ParticipantsService {
     return false;
   }
 
-  async changeAdmin(user: User, room: Room) {
-    let getCp = await this.participantRepository.getParticipant(user, room);
+  async changeAdmin(user: User, channel: ChatChannel) {
+    let getCp = await this.participantRepository.getParticipant(user, channel);
     getCp = await this.participantRepository.changeAdmin(getCp);
     return getCp;
   }
 
-  async changeMuted(user: User, room: Room, value: boolean) {
-    let getCp = await this.participantRepository.getParticipant(user, room);
+  async changeMuted(user: User, channel: ChatChannel, value: boolean) {
+    let getCp = await this.participantRepository.getParticipant(user, channel);
     getCp = await this.participantRepository.changeMuted(getCp, value);
     return getCp;
   }
 
-  async getParticipant(user: User, room: Room) {
-    const getCp = await this.participantRepository.getParticipant(user, room);
+  async getParticipant(user: User, channel: ChatChannel) {
+    const getCp = await this.participantRepository.getParticipant(
+      user,
+      channel,
+    );
     return getCp;
   }
 
-  async getroomByUser(user: User): Promise<Room[]> {
-    const room_for_search =
-      await this.participantRepository.getroomByUser(user);
-    const room_for_return = [];
-    for (const i of room_for_search) {
-      const room = await this.roomRepository.getRoomById(i.id);
-      room_for_return.push(room);
+  async channel(user: User): Promise<ChatChannel[]> {
+    const channel = await this.participantRepository.getChannelByUser(user);
+    const channelReturn = [];
+    for (const i of channel) {
+      const channel = await this.channelRepository.getChannelById(i.id);
+      channelReturn.push(channel);
     }
-    return room_for_return;
+    return channelReturn;
   }
 
-  async getOwnerroom(user: User) {
-    return await this.participantRepository.getOwnerroom(user);
+  async getOwnerChannel(user: User) {
+    return await this.participantRepository.getOwnerChannel(user);
   }
 
-  async getAllParticipants(room: Room): Promise<Participants[]> {
-    return await this.participantRepository.getParticipantsByroom(room);
+  async getAllParticipants(channel: ChatChannel): Promise<Participants[]> {
+    return await this.participantRepository.getParticipantsByChannel(channel);
   }
 
-  async deleteParticipant(user: User, room: Room) {
-    const getCp = await this.participantRepository.getParticipant(user, room);
+  async deleteParticipant(user: User, channel: ChatChannel) {
+    const getCp = await this.participantRepository.getParticipant(
+      user,
+      channel,
+    );
     if (getCp) {
       await this.participantRepository.deleteParticipant(getCp);
     } else {
-      throw new HttpException('Invalid room participant ( Not Exist)', 455);
+      throw new HttpException('Invalid channel participant ( Not Exist)', 455);
     }
     return true;
   }

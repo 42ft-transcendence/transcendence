@@ -1,4 +1,4 @@
-import { Room } from 'src/chatting/entities/room.entity';
+import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { BaseEntity, OneToMany } from 'typeorm';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
@@ -40,6 +40,6 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   rating: number;
 
-  @OneToMany(() => Room, (room) => room.owner)
-  rooms: Room[];
+  @OneToMany(() => ChatChannel, (channel) => channel.owner)
+  channels: ChatChannel[];
 }
