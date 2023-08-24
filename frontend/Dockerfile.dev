@@ -16,7 +16,7 @@ RUN npm install
 
 # Copy the rest of the code into the container at /app
 # * EXCEPT .src
-COPY react-app/public .
+COPY react-app/public ./public
 COPY react-app/.eslintrc.cjs .
 COPY react-app/index.html .
 COPY react-app/tsconfig.json .
