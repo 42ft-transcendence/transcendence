@@ -13,8 +13,8 @@ export class MessageService {
   async saveMessage(
     userId: string,
     content: string,
-    roomId: string,
+    channelId: string,
   ): Promise<Message> {
-    return await this.messageRepository.saveMessage(userId, content, roomId);
+    return await this.messageRepository.saveMessage(userId, content, channelId);
   }
 }

@@ -1,19 +1,24 @@
 import { HttpException } from '@nestjs/common';
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
-import { Room } from 'src/chatting/entities/room.entity';
+import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { Participants } from '../entities/participants.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 
 @CustomRepository(Participants)
 export class ParticipantsRepository extends Repository<Participants> {
-  async addParticipant(admin: boolean, user: User, room: Room, owner: boolean) {
-    const exist = await this.getParticipant(user, room);
+  async addParticipant(
+    admin: boolean,
+    user: User,
+    channel: ChatChannel,
+    owner: boolean,
+  ) {
+    const exist = await this.getParticipant(user, channel);
     if (!exist) {
       const participant = new Participants();
       participant.admin = admin;
       participant.user = user;
-      participant.room = room;
+      participant.channel = channel;
       participant.owner = owner;
       participant.muted = false;
       const ret = await this.save(participant);
@@ -23,18 +28,20 @@ export class ParticipantsRepository extends Repository<Participants> {
     }
   }
 
-  async getParticipant(user2: User, room: Room) {
+  async getParticipant(user2: User, channel: ChatChannel) {
     const getUser = await this.findOne({
-      relations: ['user', 'room'],
-      where: { user: { id: user2.id }, room: { id: room.id } },
+      relations: ['user', 'channel'],
+      where: { user: { id: user2.id }, channel: { id: channel.id } },
     });
     return getUser;
   }
 
-  async getParticipantsByroom(room: Room): Promise<Participants[]> {
+  async getParticipantsByChannel(
+    channel: ChatChannel,
+  ): Promise<Participants[]> {
     const getUser = await this.find({
-      relations: ['user', 'room'],
-      where: { room: { id: room.id } },
+      relations: ['user', 'channel'],
+      where: { channel: { id: channel.id } },
     });
     return getUser;
   }
@@ -63,10 +70,10 @@ export class ParticipantsRepository extends Repository<Participants> {
     return getCp;
   }
 
-  async getroomByUser(user: User): Promise<Room[]> {
-    const rooms: Room[] = [];
+  async getChannelByUser(user: User): Promise<ChatChannel[]> {
+    const channel: ChatChannel[] = [];
     const participants = await this.find({
-      relations: ['user', 'room'],
+      relations: ['user', 'channel'],
       where: {
         user: {
           id: user.id,
@@ -74,14 +81,14 @@ export class ParticipantsRepository extends Repository<Participants> {
       },
     });
     participants.forEach((participant) => {
-      rooms.push(participant.room);
+      channel.push(participant.channel);
     });
-    return rooms;
+    return channel;
   }
-  async getOwnerroom(user: User): Promise<string[]> {
-    const rooms: string[] = [];
+  async getOwnerChannel(user: User): Promise<string[]> {
+    const channel: string[] = [];
     const participants = await this.find({
-      relations: ['user', 'room'],
+      relations: ['user', 'channel'],
       where: {
         owner: true,
         user: {
@@ -90,9 +97,9 @@ export class ParticipantsRepository extends Repository<Participants> {
       },
     });
     participants.forEach((participant) => {
-      rooms.push(participant.room.id);
+      channel.push(participant.channel.id);
     });
-    return rooms;
+    return channel;
   }
 
   async deleteParticipant(participant: Participants) {

@@ -12,11 +12,11 @@ import { MessageService } from 'src/message/message.service';
 import { MessageRepository } from 'src/message/repository/message.repository';
 import { Message } from 'src/message/entities/message.entity';
 import { ChattingController } from './chatting.controller';
-import { RoomRepository } from './repository/room.repository';
+import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { ParticipantsRepository } from 'src/participants/repository/participants.repository';
 import { ParticipantsService } from 'src/participants/participants.service';
-import { DMService } from 'src/dm/dm.service';
-import { DMRepository } from 'src/dm/repository/dm.repository';
+import { DirectMessageService } from 'src/dm/directmessage.service';
+import { DirectMessageRepository } from 'src/dm/repository/directmessage.repository';
 import { ChattingService } from './chatting.service';
 
 @Global()
@@ -26,9 +26,9 @@ import { ChattingService } from './chatting.service';
     TypeOrmExModule.forCustomRepository([
       UserRepository,
       MessageRepository,
-      RoomRepository,
+      ChatChannelRepository,
       ParticipantsRepository,
-      DMRepository,
+      DirectMessageRepository,
     ]),
     AuthModule,
     HttpModule,
@@ -39,7 +39,7 @@ import { ChattingService } from './chatting.service';
     ChattingGateway,
     MessageService,
     ParticipantsService,
-    DMService,
+    DirectMessageService,
     ChattingService,
   ],
   exports: [ChattingGateway],

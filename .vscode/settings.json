@@ -45,9 +45,9 @@
   "git.ignoreRebaseWarning": true, // 리베이스 경고 무시
 
   // ESLint 설정
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true // 저장 시 ESLint를 사용하여 모든 문제 해결
-  },
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": true // 저장 시 ESLint를 사용하여 모든 문제 해결
+  // },
   "eslint.validate": [
     // ESLint 검증에 사용할 언어 유형 지정
     "javascript",

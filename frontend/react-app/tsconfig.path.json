@@ -15,7 +15,8 @@
       "@router": ["router"],
       "@router/*": ["router/*"],
       "@recoil/*": ["recoil/*"],
-      "@types/*": ["types/*"],
+      "@type": ["types"],
+      "@type/*": ["types/*"],
       "@utils/*": ["utils/*"]
     }
   }
