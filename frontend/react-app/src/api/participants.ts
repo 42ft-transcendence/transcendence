@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
-import { base_url } from "./index";
+import { base_url } from "@api";
 import { ChannelType, ParticipantType } from "@type";
 
 /**

@@ -1,8 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
-import { base_url } from "./index";
-import { UserType } from "@type";
-import { CheckNicknameType } from "@type/SignUp";
+import { base_url } from "@api";
+import { UserType, CheckNicknameType } from "@type";
 
 /**
  *
