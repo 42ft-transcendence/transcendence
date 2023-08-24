@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@src": ["."],
+      "@src/*": ["./*"],
+      "@api": ["api"],
+      "@api/*": ["api/*"],
+      "@assets/*": ["assets/*"],
+      "@components/*": ["component/*"],
+      "@hooks/*": ["hooks/*"],
+      "@mocks/*": ["mocks/*"],
+      "@pages": ["pages"],
+      "@pages/*": ["pages/*"],
+      "@router": ["router"],
+      "@router/*": ["router/*"],
+      "@recoil/*": ["recoil/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
+    }
+  }
+}
