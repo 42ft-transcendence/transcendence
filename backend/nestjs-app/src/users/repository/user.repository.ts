@@ -54,7 +54,9 @@ export class UserRepository extends Repository<User> {
       user.lose = 0;
       user.admin = false;
       user.avatarPath =
-        'src/assets/profile' + Math.floor(Math.random() * 4) + '.svg';
+        'http://localhost/files/profiles/profile' +
+        Math.floor(Math.random() * 4) +
+        '.svg';
       user.rating = 1000;
       user.twoFactorAuthenticationSecret = '';
       user.isTwoFactorAuthenticationEnabled = false;

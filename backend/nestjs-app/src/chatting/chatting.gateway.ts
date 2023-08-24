@@ -19,9 +19,9 @@ import { ChattingService } from './chatting.service';
 import { HttpException } from '@nestjs/common';
 
 @WebSocketGateway({
-  cors: {
-    origin: 'http://localhost:3000',
-  },
+  // cors: {
+  //   origin: 'http://localhost:3000',
+  // },
   middlewares: [],
   namespace: '/ChatPage',
   credential: true,

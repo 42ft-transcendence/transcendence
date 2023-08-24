@@ -105,9 +105,14 @@ export class UsersService {
   async deleteAvatar(userid: string): Promise<boolean> {
     const user = await this.getUserById(userid);
     try {
-      if (user.avatarPath.indexOf('src/assets/profile') !== 0) {
-        const modifiedUrl = user.avatarPath.replace('src', '.');
-        await fs.unlink(modifiedUrl); // 파일 삭제
+      if (
+        user.avatarPath.indexOf('http://localhost/files/profiles/profile') !== 0
+      ) {
+        const modifiedUrl = user.avatarPath.replace(
+          'http://localhost/files/',
+          '.',
+        );
+        await fs.unlink(modifiedUrl);
         return true;
       } else {
         return false;
