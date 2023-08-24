@@ -15,14 +15,13 @@ RUN ncu -u
 RUN npm install
 
 # Copy the rest of the code into the container at /app
-# * EXCEPT .src
+COPY react-app/src ./src
 COPY react-app/public ./public
 COPY react-app/.eslintrc.cjs .
 COPY react-app/index.html .
 COPY react-app/tsconfig.json .
 COPY react-app/tsconfig.node.json .
-COPY react-app/tsconfig.path.json .
 COPY react-app/vite.config.ts .
 
 # RUN npm run build
-ENTRYPOINT npm run dev
+ENTRYPOINT npm run build
