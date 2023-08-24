@@ -10,17 +10,19 @@ import {
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
-  client_id: import.meta.env.VITE_FT_OAUTH_CLIENT_ID as string,
+  // client_id: import.meta.env.VITE_FT_OAUTH_CLIENT_ID as string,
+  client_id: process.env.VITE_FT_OAUTH_CLIENT_ID as string,
   redirect_uri: "http://localhost/auth/42",
 };
 
 const google_oauth = {
   base_url: "https://accounts.google.com/o/oauth2/v2/auth",
-  client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID as string,
+  // client_id: import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID as string,
+  client_id: process.env.VITE_GOOGLE_OAUTH_CLIENT_ID as string,
   redirect_uri: "http://localhost/auth/google",
 };
 
-const LoginButton = ({
+export const LoginButton = ({
   href,
   src,
   type,
