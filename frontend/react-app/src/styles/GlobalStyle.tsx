@@ -18,9 +18,9 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.5;
     height: 100%;
     font-family: Roboto sans-serif;
-    color: ${({ theme }) => theme.colors.freezePurple};
+    color: ${({ theme }) => theme.colors.heavyPurple};
     font-size: 16px;
-    background-color: #fff;
+    background-color: ${({ theme }) => theme.colors.freezePurple};
   }
 
   html,
