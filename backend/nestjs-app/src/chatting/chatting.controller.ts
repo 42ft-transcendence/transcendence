@@ -7,9 +7,9 @@ export class ChattingController {
   constructor(private messageRepository: MessageRepository) {}
 
   @Get('/messages')
-  async getMessages(@Query('roomId') roomId: string): Promise<Message[]> {
+  async getMessages(@Query('channelId') channelId: string): Promise<Message[]> {
     return await this.messageRepository.find({
-      where: { roomId },
+      where: { channelId: channelId },
     });
   }
 
@@ -26,7 +26,7 @@ export class ChattingController {
   async searchChannels(
     @Query('keyword') keyword: string,
   ): Promise<ChatChannel[]> {
-    const rooms = await ChatChannel.find();
-    return await rooms.filter((room) => room.name.includes(keyword));
+    const channels = await ChatChannel.find();
+    return await channels.filter((channel) => channel.name.includes(keyword));
   }
 }

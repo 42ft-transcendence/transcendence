@@ -9,29 +9,29 @@ import { User } from 'src/users/entities/user.entity';
 export class ChattingService {
   constructor(
     @InjectRepository(ChatChannelRepository)
-    private readonly roomRepository: ChatChannelRepository,
+    private readonly channelRepository: ChatChannelRepository,
     private readonly participantsService: ParticipantsService,
   ) {}
 
-  async ownerJoinRoom(
-    roomId: string,
+  async ownerJoinChannel(
+    channelId: string,
     password: string,
     client: Socket,
     user: User,
   ): Promise<void> {
-    const room = await this.roomRepository.findOne({
-      where: { id: roomId, password },
+    const channel = await this.channelRepository.findOne({
+      where: { id: channelId, password },
     });
-    if (!room) {
-      throw new Error('Room not found');
+    if (!channel) {
+      throw new Error('Channel not found');
     }
-    client.join(roomId);
+    client.join(channelId);
     const participant = await this.participantsService.addParticipant(
       true,
       user,
-      room,
+      channel,
       true,
     );
-    await this.roomRepository.joinChatChannel(room, participant);
+    await this.channelRepository.joinChatChannel(channel, participant);
   }
 }

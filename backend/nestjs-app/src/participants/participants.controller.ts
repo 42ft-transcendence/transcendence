@@ -9,18 +9,20 @@ import { ChatChannelRepository } from 'src/chatting/repository/chatchannel.repos
 export class ParticipantsController {
   constructor(
     private participantsService: ParticipantsService,
-    private roomRepository: ChatChannelRepository,
+    private channelRepository: ChatChannelRepository,
   ) {}
 
-  @Get('/rooms')
+  @Get('/channels')
   @UseGuards(JwtTwoFactorGuard)
-  async getRooms(@Request() req): Promise<ChatChannel[]> {
-    return await this.participantsService.getroomByUser(req.user);
+  async getChannels(@Request() req): Promise<ChatChannel[]> {
+    return await this.participantsService.channel(req.user);
   }
 
   @Get('/participants')
-  async getUsers(@Query('roomId') roomId: string): Promise<Participants[]> {
-    const room = await this.roomRepository.getChannelById(roomId);
-    return await this.participantsService.getAllParticipants(room);
+  async getUsers(
+    @Query('channelId') channelId: string,
+  ): Promise<Participants[]> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    return await this.participantsService.getAllParticipants(channel);
   }
 }

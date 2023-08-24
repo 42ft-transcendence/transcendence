@@ -35,36 +35,8 @@ export class Participants extends BaseEntity {
   })
   user: User;
 
-  @ManyToOne(() => ChatChannel, (room) => room.id, {
+  @ManyToOne(() => ChatChannel, (channel) => channel.id, {
     onDelete: 'CASCADE',
   })
-  room: ChatChannel;
-
-  //   channel: Channel;
-  //   @AfterUpdate()
-  //   mutedtimer() {
-  //     if (this.muted == true) {
-  //       setTimeout(() => {
-  //         this.muted = false;
-  //         this.save();
-  //       }, 10000);
-  //     }
-  //   }
+  channel: ChatChannel;
 }
-// @OneToMany((type) => Channel, (channels) => channels.owner)
-// channels: Channel[];
-
-// @OneToMany((type) => ChannelParticipant, (participant) => participant.user)
-// participants: ChannelParticipant[];
-
-// @OneToMany((type) => ChannelMessage, (cm) => cm.sender)
-// messages: ChannelMessage[];
-
-// @OneToMany((type) => DM, (dm) => dm.to)
-// to: DM[];
-
-// @OneToMany((type) => DM, (dm) => dm.from)
-// from: DM[];
-
-// @ManyToMany((type) => Channel, (channel) => channel.ban_users)
-// ban_channels: Channel[];

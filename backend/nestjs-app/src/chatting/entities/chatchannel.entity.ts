@@ -26,18 +26,18 @@ export class ChatChannel extends BaseEntity {
   @Column()
   password: string;
 
-  @OneToMany(() => Participants, (participant) => participant.room, {
+  @OneToMany(() => Participants, (participant) => participant.channel, {
     onDelete: 'CASCADE',
     nullable: true,
   })
   participants: Participants[];
 
-  @ManyToOne(() => User, (user) => user.rooms, {
+  @ManyToOne(() => User, (user) => user.channels, {
     onDelete: 'CASCADE',
   })
   owner: User;
 
-  @OneToMany(() => Message, (message) => message.roomId)
+  @OneToMany(() => Message, (message) => message.channelId)
   messages: Message[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

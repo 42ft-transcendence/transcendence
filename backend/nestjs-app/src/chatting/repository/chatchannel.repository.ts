@@ -12,7 +12,7 @@ export class ChatChannelRepository extends Repository<ChatChannel> {
       where: { id },
     });
     if (!channel) {
-      throw new Error(`Room with id ${id} not found`);
+      throw new Error(`Channel with id ${id} not found`);
     }
     return channel;
   }
@@ -37,12 +37,12 @@ export class ChatChannelRepository extends Repository<ChatChannel> {
     channel: ChatChannel,
     participant: Participants,
   ): Promise<ChatChannel> {
-    const room2 = await this.findOne({
+    const channel2 = await this.findOne({
       relations: ['participants'],
       where: { id: channel.id },
     });
-    room2.participants = [...(channel.participants || []), participant];
-    return await this.save(room2);
+    channel2.participants = [...(channel.participants || []), participant];
+    return await this.save(channel2);
   }
 
   async leaveChatChannel(

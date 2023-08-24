@@ -40,6 +40,6 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   rating: number;
 
-  @OneToMany(() => ChatChannel, (room) => room.owner)
-  rooms: ChatChannel[];
+  @OneToMany(() => ChatChannel, (channel) => channel.owner)
+  channels: ChatChannel[];
 }
