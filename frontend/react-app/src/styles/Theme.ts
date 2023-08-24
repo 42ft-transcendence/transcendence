@@ -25,6 +25,6 @@ const colors = {
 
 export type ColorsTypes = typeof colors;
 
-export const theme: DefaultTheme = {
+export const Theme: DefaultTheme = {
   colors,
 };
