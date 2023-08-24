@@ -7,3 +7,5 @@ export type {
 } from "./channel.type";
 
 export type { ParticipantType } from "./participant.type";
+
+export type { ChatType, MessageType, ProfileModalType } from "./chat.type";
