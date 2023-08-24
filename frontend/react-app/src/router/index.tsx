@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
+import AuthPage from "@pages/auth";
 
 const Router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const Router = createBrowserRouter([
   {
     path: "/Login",
     element: <div>Login</div>,
+  },
+  {
+    path: "/auth/:type",
+    element: <AuthPage />,
   },
   // {
   //   path: "/",
