@@ -14,7 +14,7 @@ import { UserRepository } from 'src/users/repository/user.repository';
   imports: [
     MulterModule.register({
       storage: diskStorage({
-        destination: './img_files',
+        destination: './profiles',
         filename: (req, file, cb) => {
           const uniqueFileName = uuidv4() + extname(file.originalname);
           cb(null, uniqueFileName);
