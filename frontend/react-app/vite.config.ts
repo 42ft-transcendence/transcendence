@@ -23,6 +23,7 @@ export default defineConfig({
       { find: "@type", replacement: resolve(__dirname, "src/types") },
       { find: "@utils", replacement: resolve(__dirname, "src/utils") },
       { find: "@test", replacement: resolve(__dirname, "src/__test__") },
+      { find: "@styles", replacement: resolve(__dirname, "src/styles") },
     ],
   },
 });
