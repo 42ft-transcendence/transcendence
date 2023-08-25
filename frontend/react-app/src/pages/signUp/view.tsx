@@ -16,6 +16,7 @@ import * as S from "./index.styled";
 
 import { LoginContainer } from "../login/index.styled";
 import InputBox from "@src/components/inputBox";
+import { IconButton, TextButton } from "@src/components/buttons";
 
 export interface SignUpPageViewProps {
   selectedImage: string;
@@ -28,18 +29,6 @@ export interface SignUpPageViewProps {
   onNicknameChange: (value: string) => void;
   fileInputRef: React.RefObject<HTMLInputElement>;
 }
-
-interface TextButtonProps {
-  title: string;
-  onClick?: () => void;
-  theme: "LIGHT" | "DARK";
-}
-
-const TextButton = ({ title, onClick, theme }: TextButtonProps) => (
-  <S.TextButton mode={theme} onClick={onClick}>
-    {title}
-  </S.TextButton>
-);
 
 const SignUpPageView = ({
   selectedImage,
@@ -54,6 +43,7 @@ const SignUpPageView = ({
 }: SignUpPageViewProps) => {
   return (
     <LoginContainer>
+      <S.SignUpTitle>회원가입</S.SignUpTitle>
       <ProfileImageContainer>
         <label htmlFor="imageInput">
           <ProfileImage src={selectedImage} alt="profile image" />
@@ -75,60 +65,14 @@ const SignUpPageView = ({
         onClick={onDefaultProfile}
       />
       <InputBox onChange={onNicknameChange} onKeyPress={onConfirm} />
-      {/*
-        <DuplicatedNicknameText $validated={validateNickname}>
-          {validateMessage}
-        </DuplicatedNicknameText>
-        <SignUpButtonContainer>
-          <IconButton title="취소" onClick={onCancel} theme="DARK" />
-          <IconButton title="확인" onClick={onConfirm} theme="DARK" />
-        </SignUpButtonContainer> */}
+      <DuplicatedNicknameText $validated={validateNickname}>
+        {validateMessage}
+      </DuplicatedNicknameText>
+      <S.SignUpButtonContainer>
+        <IconButton title="취소" onClick={onCancel} theme="LIGHT" />
+        <IconButton title="확인" onClick={onConfirm} theme="LIGHT" />
+      </S.SignUpButtonContainer>
     </LoginContainer>
-    // <div style={{ width: "100%", height: "100%", display: "flex" }}>
-    //   <NavBarContainer />
-    //   <SideBarContainer>
-    //     <h1
-    //       style={{
-    //         color: "#E5EAF5",
-    //         fontSize: "32px",
-    //         fontWeight: "Bold",
-    //         fontFamily: "roboto",
-    //       }}
-    //     >
-    //       회원가입
-    //     </h1>
-    //   </SideBarContainer>
-    //   <ContentContainer>
-    //     <ProfileImageContainer>
-    //       <label htmlFor="imageInput">
-    //         <ProfileImage src={selectedImage} alt="profile image" />
-    //         <PencilIcon />
-    //       </label>
-    //       <input
-    //         id="imageInput"
-    //         type="file"
-    //         name="file"
-    //         ref={fileInputRef}
-    //         style={{ display: "none" }}
-    //         onChange={onImageChange}
-    //         accept="image/*" // 이미지 파일만 선택 가능
-    //       />
-    //     </ProfileImageContainer>
-    //     <TextButton
-    //       title="기본 이미지"
-    //       theme="DARK"
-    //       onClick={onDefaultProfile}
-    //     />
-    //     <InputBox onChange={onNicknameChange} onKeyPress={onConfirm} />
-    //     <DuplicatedNicknameText $validated={validateNickname}>
-    //       {validateMessage}
-    //     </DuplicatedNicknameText>
-    //     <SignUpButtonContainer>
-    //       <IconButton title="취소" onClick={onCancel} theme="DARK" />
-    //       <IconButton title="확인" onClick={onConfirm} theme="DARK" />
-    //     </SignUpButtonContainer>
-    //   </ContentContainer>
-    // </div>
   );
 };
 
