@@ -4,11 +4,13 @@ import Chat from "@assets/icons/Chats.svg";
 import Game from "@assets/icons/GameController.svg";
 import Rank from "@assets/icons/Trophy.svg";
 import User from "@assets/icons/UserCircle.svg";
+import Users from "@assets/icons/Users.svg";
 import Gear from "@assets/icons/Gear.svg";
 import ChatBlue from "@assets/icons/ChatsBlue.svg";
 import GameBlue from "@assets/icons/GameControllerBlue.svg";
 import RankBlue from "@assets/icons/TrophyBlue.svg";
 import UserBlue from "@assets/icons/UserCircleBlue.svg";
+import UsersBlue from "@assets/icons/UsersBlue.svg";
 import GearBlue from "@assets/icons/GearBlue.svg";
 
 export interface NavBarPropsType {
@@ -33,6 +35,12 @@ const upperTabs = [
     icon: Rank,
     icon_selected: RankBlue,
     child_links: ["ranking"],
+  },
+  {
+    link: "/user-list",
+    icon: Users,
+    icon_selected: UsersBlue,
+    child_links: ["user-list"],
   },
 ];
 
