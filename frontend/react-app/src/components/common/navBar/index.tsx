@@ -44,22 +44,15 @@ const upperTabs = [
   },
 ];
 
-const lowerTabs = [
-  {
-    link: "/profile",
-    icon: User,
-    icon_selected: UserBlue,
-    child_links: ["profile"],
-  },
-  {
-    link: "/setting",
-    icon: Gear,
-    icon_selected: GearBlue,
-    child_links: ["setting"],
-  },
-];
-
 const NavBar = () => {
+  const handleProfileClick = () => {
+    console.log("profile clicked");
+  };
+
+  const handleSettingClick = () => {
+    console.log("setting clicked");
+  };
+
   return (
     <S.Container>
       <S.TabList>
@@ -78,19 +71,16 @@ const NavBar = () => {
         ))}
       </S.TabList>
       <S.TabList>
-        {lowerTabs.map((tab) => (
-          <li key={tab.link}>
-            <Link to={tab.link}>
-              {tab.child_links.includes(
-                window.location.pathname.split("/")[1],
-              ) ? (
-                <S.ItemIcon src={tab.icon_selected} />
-              ) : (
-                <S.ItemIcon src={tab.icon} />
-              )}
-            </Link>
-          </li>
-        ))}
+        <li>
+          <button onClick={handleProfileClick}>
+            <S.ItemIcon src={User} />
+          </button>
+        </li>
+        <li>
+          <button onClick={handleSettingClick}>
+            <S.ItemIcon src={Gear} />
+          </button>
+        </li>
       </S.TabList>
     </S.Container>
   );
