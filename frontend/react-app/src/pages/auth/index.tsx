@@ -1,6 +1,6 @@
 import Loading from "@assets/images/loading.gif";
 import { login } from "@src/api";
-import { UserStatus } from "@src/types";
+import { LoginResponseDataType, UserStatus } from "@src/types";
 import { useEffect } from "react";
 import {
   useParams,
@@ -9,11 +9,14 @@ import {
   Navigate,
 } from "react-router-dom";
 import * as S from "./index.styled";
+import { useRecoilState } from "recoil";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const AuthPage = () => {
   const type = useParams().type;
   const code = useSearchParams()[0].get("code");
   const navigate = useNavigate();
+  const [userData, setUserData] = useRecoilState(userDataState);
 
   useEffect(() => {
     // clear recoil data
@@ -21,6 +24,10 @@ const AuthPage = () => {
     login(type as string, code as string)
       .then((response) => {
         // save user recoil data
+        const responseData = response.data as LoginResponseDataType;
+        console.log("Data", responseData);
+        setUserData(response.data);
+
         if (response.data.isTwoFactorAuthenticationEnabled) {
           // open 2fa modal
         } else if (response.data.status === UserStatus.SIGNUP) {
