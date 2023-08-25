@@ -7,7 +7,7 @@
       "@api": ["api"],
       "@api/*": ["api/*"],
       "@assets/*": ["assets/*"],
-      "@components/*": ["component/*"],
+      "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@mocks/*": ["mocks/*"],
       "@pages": ["pages"],

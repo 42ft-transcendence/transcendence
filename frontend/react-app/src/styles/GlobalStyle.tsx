@@ -13,15 +13,19 @@ const GlobalStyle = createGlobalStyle`
     overflow-y: scroll;
   }
 
-  body, html, #root {
+  html, body, #root {
+    position: fixed; // 화면에 고정
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    display: flex;
+    overflow: hidden;
   }
 
   body {
     margin: 0;
     line-height: 1.5;
-    height: 100%;
     font-family: Roboto sans-serif;
     color: ${({ theme }) => theme.colors.heavyPurple};
     font-size: 16px;
