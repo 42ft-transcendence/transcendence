@@ -9,9 +9,7 @@ import Gear from "@assets/icons/Gear.svg";
 import ChatBlue from "@assets/icons/ChatsBlue.svg";
 import GameBlue from "@assets/icons/GameControllerBlue.svg";
 import RankBlue from "@assets/icons/TrophyBlue.svg";
-import UserBlue from "@assets/icons/UserCircleBlue.svg";
 import UsersBlue from "@assets/icons/UsersBlue.svg";
-import GearBlue from "@assets/icons/GearBlue.svg";
 
 export interface NavBarPropsType {
   currentPath: string;
