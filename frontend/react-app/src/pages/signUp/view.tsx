@@ -15,6 +15,7 @@ import * as S from "./index.styled";
 // import InputBox from "../../component/InputBox";
 
 import { LoginContainer } from "../login/index.styled";
+import InputBox from "@src/components/inputBox";
 
 export interface SignUpPageViewProps {
   selectedImage: string;
@@ -73,8 +74,8 @@ const SignUpPageView = ({
         theme="LIGHT"
         onClick={onDefaultProfile}
       />
+      <InputBox onChange={onNicknameChange} onKeyPress={onConfirm} />
       {/*
-        <InputBox onChange={onNicknameChange} onKeyPress={onConfirm} />
         <DuplicatedNicknameText $validated={validateNickname}>
           {validateMessage}
         </DuplicatedNicknameText>
