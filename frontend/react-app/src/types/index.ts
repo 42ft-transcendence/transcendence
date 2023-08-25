@@ -1,4 +1,5 @@
-export type { UserType, UserStatus } from "./user.type";
+export { UserStatus } from "./user.type";
+export type { UserType } from "./user.type";
 
 export type {
   ChannelTypeType,

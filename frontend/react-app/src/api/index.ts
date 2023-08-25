@@ -1,6 +1,6 @@
 // import axios from "axios";
 // axios.defaults.withCredentials = true;
-export const base_url = import.meta.env.VITE_API_URL as string;
+export const base_url = "/api";
 
 export { uploadAvatar } from "./file";
 export type { UploadAvatarResponse } from "./file";
