@@ -8,6 +8,7 @@ import {
   useNavigate,
   Navigate,
 } from "react-router-dom";
+import * as S from "./index.styled";
 
 const AuthPage = () => {
   const type = useParams().type;
@@ -34,6 +35,8 @@ const AuthPage = () => {
           alert("잘못된 로그인 정보입니다.");
         } else if (error.response.status === 409) {
           alert("이미 로그인된 유저입니다.");
+        } else {
+          alert("unknown error");
         }
         navigate("/login");
       });
@@ -43,9 +46,9 @@ const AuthPage = () => {
     return <Navigate to="/login" />;
   else
     return (
-      <>
-        <img src={Loading} alt="loading" />
-      </>
+      <S.PageContainer>
+        <S.LoadingImage src={Loading} alt="loading" />
+      </S.PageContainer>
     );
 };
 
