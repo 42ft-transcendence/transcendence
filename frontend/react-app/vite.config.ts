@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
+import EnvironmentPlugin from "vite-plugin-environment";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), EnvironmentPlugin("all", { prefix: "VITE_" })],
   resolve: {
     alias: [
       { find: "@src", replacement: resolve(__dirname, "src") },
@@ -18,6 +19,7 @@ export default defineConfig({
       { find: "@recoil", replacement: resolve(__dirname, "src/recoil") },
       { find: "@type", replacement: resolve(__dirname, "src/types") },
       { find: "@utils", replacement: resolve(__dirname, "src/utils") },
+      { find: "@test", replacement: resolve(__dirname, "src/__test__") },
     ],
   },
 });
