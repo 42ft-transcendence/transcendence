@@ -17,54 +17,52 @@ services:
 
   srv-backend:
     container_name: backend
-    image: backend:dev
+    image: backend:1.0
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     networks:
       - net-transcendence
     volumes:
       - vol-profiles:/app/profiles
-      - ./backend/nestjs-app/src:/app/src
     depends_on:
       - srv-postgres
     environment:
       JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET}
       JWT_ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
-      ClIENT_42_ID: ${FT_OAUTH_CLIENT_ID}
-      CLIENT_42_SECRET: ${FT_OAUTH_CLIENT_SECRET}
-      42_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
-      GOOGLE_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
-      GOOGLE_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET}
-      GOOGLE_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+      FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      FT_OAUTH_CLIENT_SECRET: ${FT_OAUTH_CLIENT_SECRET}
+      FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
 
   srv-frontend:
     container_name: frontend
-    image: frontend:dev
+    image: frontend:1.0
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
-    networks:
-      - net-transcendence
+      dockerfile: Dockerfile
     volumes:
-      - ./frontend/react-app/src:/app/src
+      - vol-react_app:/app/dist
     environment:
-      VITE_FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
-      VITE_FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
-      VITE_GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
-      VITE_GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+      FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
 
   srv-nginx:
     container_name: nginx
-    image: nginx:dev
+    image: nginx:1.0
     build:
       context: ./nginx
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     networks:
       - net-transcendence
     volumes:
+      - vol-react_app:/usr/share/nginx/html
       - vol-profiles:/usr/share/nginx/profiles
     depends_on:
       - srv-backend
@@ -72,14 +70,17 @@ services:
 
 networks:
   net-transcendence:
-    name: dev-transcendence
+    name: transcendence
 
 volumes:
   vol-postgres:
-    name: dev-postgres
+    name: postgres
+
+  vol-react_app:
+    name: react_app
 
   vol-profiles:
-    name: dev-profiles
+    name: profiles
     driver: local
     driver_opts:
       type: none

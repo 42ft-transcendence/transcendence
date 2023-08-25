@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class DM extends BaseEntity {
+export class DirectMessage extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

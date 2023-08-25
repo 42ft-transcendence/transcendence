@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RoomRepository } from './repository/room.repository';
+import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Socket } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
@@ -8,30 +8,30 @@ import { User } from 'src/users/entities/user.entity';
 @Injectable()
 export class ChattingService {
   constructor(
-    @InjectRepository(RoomRepository)
-    private readonly roomRepository: RoomRepository,
+    @InjectRepository(ChatChannelRepository)
+    private readonly channelRepository: ChatChannelRepository,
     private readonly participantsService: ParticipantsService,
   ) {}
 
-  async ownerJoinRoom(
-    roomId: string,
+  async ownerJoinChannel(
+    channelId: string,
     password: string,
     client: Socket,
     user: User,
   ): Promise<void> {
-    const room = await this.roomRepository.findOne({
-      where: { id: roomId, password },
+    const channel = await this.channelRepository.findOne({
+      where: { id: channelId, password },
     });
-    if (!room) {
-      throw new Error('Room not found');
+    if (!channel) {
+      throw new Error('Channel not found');
     }
-    client.join(roomId);
+    client.join(channelId);
     const participant = await this.participantsService.addParticipant(
       true,
       user,
-      room,
+      channel,
       true,
     );
-    await this.roomRepository.joinRoom(room, participant);
+    await this.channelRepository.joinChatChannel(channel, participant);
   }
 }
