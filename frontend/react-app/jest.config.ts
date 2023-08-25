@@ -8,7 +8,7 @@ module.exports = {
     "^@src/(.*)$": resolve(__dirname, "./src/$1"),
     "^@api/(.*)$": resolve(__dirname, "./src/api/$1"),
     "^@assets/(.*)$": resolve(__dirname, "./src/assets/$1"),
-    "^@components/(.*)$": resolve(__dirname, "./src/component/$1"),
+    "^@components/(.*)$": resolve(__dirname, "./src/components/$1"),
     "^@hooks/(.*)$": resolve(__dirname, "./src/hooks/$1"),
     "^@mocks/(.*)$": resolve(__dirname, "./src/mocks/$1"),
     "^@pages/(.*)$": resolve(__dirname, "./src/pages/$1"),
@@ -21,4 +21,8 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "./tsconfig.json" }],
   },
+  watchPlugins: [
+    "jest-watch-typeahead/filename",
+    "jest-watch-typeahead/testname",
+  ],
 };
