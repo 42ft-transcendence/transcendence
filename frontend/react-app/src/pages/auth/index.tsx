@@ -1,6 +1,6 @@
 import Loading from "@assets/images/loading.gif";
-import { login, verify2Fa } from "@src/api";
 import { UserStatus } from "@src/types";
+import { login, verify2Fa } from "@src/api";
 import { useEffect, useRef, useState } from "react";
 import {
   useParams,
@@ -9,6 +9,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import * as S from "./index.styled";
+import { useRecoilState } from "recoil";
+import { userDataState } from "@src/recoil/atoms/common";
 import * as cookies from "react-cookies";
 import Logo from "@assets/logos/ccpp_logo.png";
 
@@ -19,6 +21,7 @@ const AuthPage = () => {
     "Loading" | "TwoFactor" | "TwoFactorLoading"
   >("Loading");
   const navigate = useNavigate();
+  const [userData, setUserData] = useRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
 
@@ -57,6 +60,8 @@ const AuthPage = () => {
       login(type as string, code as string)
         .then((response) => {
           // save user recoil data
+          setUserData(response.data);
+
           if (response.data.isTwoFactorAuthenticationEnabled) {
             setStatus("TwoFactor");
           } else if (response.data.status === UserStatus.SIGNUP) {
@@ -77,8 +82,9 @@ const AuthPage = () => {
         });
     } else if (status === "TwoFactorLoading") {
       verify2Fa(twoFactorCode)
-        .then(() => {
+        .then((response) => {
           // save user recoil data
+          setUserData(response.data);
           navigate("/");
         })
         .catch((error) => {

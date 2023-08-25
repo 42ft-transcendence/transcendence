@@ -1,5 +1,5 @@
 export { UserStatus } from "./user.type";
-export type { UserType } from "./user.type";
+export type { UserType, LoginResponseDataType } from "./user.type";
 
 export type {
   ChannelTypeType,

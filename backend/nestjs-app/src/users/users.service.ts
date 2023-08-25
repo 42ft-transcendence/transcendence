@@ -109,7 +109,7 @@ export class UsersService {
         user.avatarPath.indexOf('http://localhost/files/profiles/profile') !== 0
       ) {
         const modifiedUrl = user.avatarPath.replace(
-          'http://localhost/files/',
+          'http://localhost/files',
           '.',
         );
         await fs.unlink(modifiedUrl);

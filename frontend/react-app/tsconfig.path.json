@@ -17,7 +17,9 @@
       "@recoil/*": ["recoil/*"],
       "@type": ["types"],
       "@type/*": ["types/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@test/*": ["__tests__/*"],
+      "@styles/*": ["styles/*"]
     }
   }
 }

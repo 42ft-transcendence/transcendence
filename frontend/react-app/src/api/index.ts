@@ -2,7 +2,7 @@
 // axios.defaults.withCredentials = true;
 export const base_url = "/api";
 
-export { uploadAvatar } from "./file";
+export { uploadAvatar, deleteAvatar } from "./file";
 export type { UploadAvatarResponse } from "./file";
 
 export { getMessagesByRoomId } from "./chatting";

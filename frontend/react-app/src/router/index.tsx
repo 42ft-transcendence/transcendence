@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import AuthPage from "@pages/auth";
 import Login from "@pages/login";
+import SignUp from "@src/pages/signUp";
 
 const Router = createBrowserRouter([
   {
@@ -20,6 +21,14 @@ const Router = createBrowserRouter([
     path: "/auth/:type",
     element: <AuthPage />,
   },
+  {
+    path: "/signup",
+    element: (
+      <PrivateRoute>
+        <SignUp />
+      </PrivateRoute>
+    ),
+  },
   // {
   //   path: "/",
   //   element: <ChatPage />,
@@ -27,10 +36,6 @@ const Router = createBrowserRouter([
   // {
   //   path: "/auth/:type",
   //   element: <Auth />,
-  // },
-  // {
-  //   path: "/SignUp",
-  //   element: <SignUp />,
   // },
   // {
   //   path: "/channel-list",
