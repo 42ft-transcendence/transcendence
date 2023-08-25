@@ -13,6 +13,11 @@ const GlobalStyle = createGlobalStyle`
     overflow-y: scroll;
   }
 
+  body, html, #root {
+    width: 100%;
+    height: 100%;
+  }
+
   body {
     margin: 0;
     line-height: 1.5;
