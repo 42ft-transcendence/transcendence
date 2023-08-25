@@ -33,7 +33,7 @@ describe("<Login />", () => {
     const { getAllByRole } = render(<Login />);
 
     const images = getAllByRole("img");
-    const logoImage = images[0];
+    const logoImage = images[0]; // 0번째 이미지가 로고 이미지
 
     expect(logoImage).toHaveAttribute("src", "src/assets/logos/ccpp_logo.png");
   });
@@ -46,5 +46,24 @@ describe("<Login />", () => {
 
     expect(logoImage).toHaveStyleRule("width", "300px");
     expect(logoImage).toHaveStyleRule("height", "300px");
+  });
+
+  it("버튼을 클릭하면 외부 링크로 이동하는지 확인", () => {
+    const { getAllByRole } = render(<Login />);
+
+    const links = getAllByRole("link");
+    const link42 = links[0];
+    const linkGoogle = links[1];
+
+    // TODO: 외부 링크로 이동하는지 확인하는 테스트 코드 작성
+    // 기대값이 링크에 포함되어있는지 확인
+    expect(link42).toHaveAttribute(
+      "href",
+      expect.stringContaining("https://api.intra.42.fr/oauth/authorize"),
+    );
+    expect(linkGoogle).toHaveAttribute(
+      "href",
+      expect.stringContaining("https://accounts.google.com/o/oauth2/v2/auth"),
+    );
   });
 });
