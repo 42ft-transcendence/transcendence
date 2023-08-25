@@ -1,4 +1,4 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import SignUpPageView from "./view";
 import React, { useState, useRef, useEffect } from "react";
@@ -14,7 +14,6 @@ import * as cookies from "react-cookies";
 import { userDataState } from "@recoil/atoms/common";
 import { UserType } from "@src/types";
 import { AxiosResponse } from "axios";
-// import { connectSocket, disconnectSocket } from "@src/hooks/sockets/chatSocket";
 
 const SignUpPageContainer = () => {
   const [userData, setUserData] = useRecoilState<UserType>(userDataState);
@@ -24,26 +23,8 @@ const SignUpPageContainer = () => {
   const [validateMessage, setValidateMessage] = useState(""); // 닉네임 중복 여부 메시지
   const [validateNickname, setValidateNickname] = useState("true"); // 닉네임 중복 여부
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   let unhandledClose = true;
-  console.log("userData: ", userData);
-
-  // if (userData.id.toString() !== "0") {
-  //   setUserData({
-  //     id: "0",
-  //     nickname: "guest",
-  //     win: 0,
-  //     lose: 0,
-  //     ladder_win: 0,
-  //     ladder_lose: 0,
-  //     admin: false,
-  //     avatarPath: "http://localhost/files/profiles/profile0.svg",
-  //     status: 0,
-  //     twoFactorAuthenticationSecret: "",
-  //     isTwoFactorAuthenticationEnabled: false,
-  //     rating: 1000,
-  //   }); // 초기화
-  // }
 
   const deleteImage = async () => {
     try {
@@ -98,10 +79,12 @@ const SignUpPageContainer = () => {
     setSelectedImage(randomPath);
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    console.log("회원 가입 취소");
+    await deleteImage();
     cookies.remove("jwt", { path: "/" });
     // disconnectSocket();
-    return <Navigate to="/" />;
+    navigate("/");
   };
 
   const uploadNickName = async () => {
@@ -115,7 +98,7 @@ const SignUpPageContainer = () => {
     try {
       const checkNicknameResponse = await checkNickname(userData.nickname);
       if (checkNicknameResponse.data.status === 400) {
-        throw checkNicknameResponse;
+        return checkNicknameResponse;
       }
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       const response = await setNickname(nickname);
@@ -134,14 +117,17 @@ const SignUpPageContainer = () => {
 
   const handleConfirm = () => {
     uploadNickName()
-      .then(() => {
+      .then((response) => {
+        if (response?.data.status === 400) {
+          throw response;
+        }
         unhandledClose = false;
         console.log("회원 가입 완료");
-        // navigate("/");
-        return <Navigate to="/" />;
+        navigate("/");
       })
       .catch((error) => {
         setValidateNickname("false");
+        setValidateMessage(error.data.message);
         console.error("error: ", error);
       });
   };
@@ -192,12 +178,6 @@ const SignUpPageContainer = () => {
       // disconnectSocket();
     }
   };
-
-  // useEffect(() => {
-  //   if (userData.id !== "") {
-  //     connectSocket();
-  //   }
-  // }, [userData]);
 
   return (
     <SignUpPageView
