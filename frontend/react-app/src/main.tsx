@@ -4,10 +4,14 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Theme } from "./styles/Theme";
 import GlobalStyle from "./styles/GlobalStyle";
+import { RecoilRoot } from "recoil";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ThemeProvider theme={Theme}>
-    <GlobalStyle />
-    <RouterProvider router={Router} />
-  </ThemeProvider>,
+  <RecoilRoot>
+    <ThemeProvider theme={Theme}>
+      <GlobalStyle />
+      <RouterProvider router={Router} />
+    </ThemeProvider>
+    ,
+  </RecoilRoot>,
 );
