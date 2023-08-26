@@ -1,8 +1,10 @@
 import Modal from "react-modal";
 import {
-  Divider,
-  PeoPleIconModalButton,
-  PeopleIconModalContentWrapper,
+  SettingOptionModalButton,
+  SettingOptionModalContent,
+  SettingOptionModalContentWrapper,
+  SettingOptionModalDivider,
+  SettingOptionModalOverlay,
 } from "./index.styled";
 import { useRecoilState } from "recoil";
 import { settingOptionModalState } from "@src/recoil/atoms/modal";
@@ -42,39 +44,27 @@ export const SettingOptionModal = () => {
       isOpen={settingOptionModalOpen}
       onRequestClose={() => setSettingOptionModalOpen(false)}
       style={{
-        content: {
-          backgroundColor: "#E5EAF5",
-          width: "100px",
-          height: "100px",
-          left: "50px",
-          top: "auto",
-          bottom: "50px",
-        },
-        overlay: {
-          background: "transparent",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        },
+        content: { ...SettingOptionModalContent },
+        overlay: { ...SettingOptionModalOverlay },
       }}
     >
-      <PeopleIconModalContentWrapper>
-        <PeoPleIconModalButton
+      <SettingOptionModalContentWrapper>
+        <SettingOptionModalButton
           title="로그아웃"
           onClick={() => buttonHandler({ todo: logout, navigate: navigate })}
         >
           로그아웃
-        </PeoPleIconModalButton>
-        <Divider />
-        <PeoPleIconModalButton
+        </SettingOptionModalButton>
+        <SettingOptionModalDivider />
+        <SettingOptionModalButton
           title="회원탈퇴"
           onClick={() =>
             buttonHandler({ todo: resignUser, navigate: navigate })
           }
         >
           회원탈퇴
-        </PeoPleIconModalButton>
-      </PeopleIconModalContentWrapper>
+        </SettingOptionModalButton>
+      </SettingOptionModalContentWrapper>
     </Modal>
   );
 };

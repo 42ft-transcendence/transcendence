@@ -28,14 +28,14 @@ export const ItemIcon = styled.img`
   height: 32px;
 `;
 
-export const PeopleIconModalContentWrapper = styled.div`
+export const SettingOptionModalContentWrapper = styled.div`
   display: flex;
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  min-height: 30px;
   flex-direction: column;
 `;
 
-export const PeoPleIconModalButton = styled.span`
+export const SettingOptionModalButton = styled.span`
   fond-size: 30px;
   font-weight: bold;
   font-family: inter;
@@ -46,8 +46,27 @@ export const PeoPleIconModalButton = styled.span`
   color: black;
 `;
 
-export const Divider = styled.div`
+export const SettingOptionModalDivider = styled.div`
   border-top: 1px solid #ccc;
   margin: 10px 0px;
-  width: 50%;
+  width: 100px;
 `;
+
+export const SettingOptionModalContent = {
+  backgroundColor: Theme.colors.darkFreezePurple,
+  width: "150px",
+  minHeight: "30px",
+  left: "50px",
+  top: "auto",
+  bottom: "50px",
+  overflow: "hidden",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+export const SettingOptionModalOverlay = {
+  background: "transparent",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
