@@ -1,4 +1,4 @@
-import { DefaultSideBar } from "./defaultSideBar";
+import chattingSideBar from "./chattingSideBar";
 
 type SidebarComponentType = React.ComponentType<any>;
 
@@ -11,5 +11,5 @@ export const sidebarConfig: SidebarConfigType = {
   // '/game-list': <GameSidebar />,
   // '/ranking': <RankingSidebar />,
   // ...
-  "/": DefaultSideBar,
+  "/": chattingSideBar,
 };
