@@ -8,7 +8,7 @@ export interface CheckNicknameType {
   status: number;
 }
 
-export interface buttonHandlerProps {
+export interface ButtonHanderProps {
   todo: () => Promise<AxiosResponse<void>>;
   navigate: NavigateFunction;
 }

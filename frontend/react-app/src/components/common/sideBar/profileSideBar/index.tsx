@@ -1,7 +1,7 @@
 import {
   IconButtonList,
   IconButtonProps,
-  buttonHandler,
+  ButtonHander,
 } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
@@ -45,7 +45,7 @@ const ProfileSideBar = () => {
       title: "로그아웃",
       iconSrc: "",
       onClick: () => {
-        buttonHandler({ todo: logout, navigate: navigate });
+        ButtonHander({ todo: logout, navigate: navigate });
       },
       theme: "LIGHT",
     },
@@ -53,7 +53,7 @@ const ProfileSideBar = () => {
       title: "회원탈퇴",
       iconSrc: "",
       onClick: () => {
-        buttonHandler({ todo: resignUser, navigate: navigate });
+        ButtonHander({ todo: resignUser, navigate: navigate });
       },
       theme: "LIGHT",
     },

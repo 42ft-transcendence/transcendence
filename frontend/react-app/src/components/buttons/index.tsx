@@ -1,4 +1,4 @@
-import { buttonHandlerProps } from "@src/types";
+import { ButtonHanderProps } from "@src/types";
 import * as S from "./index.styled";
 import * as cookies from "react-cookies";
 
@@ -53,7 +53,7 @@ export const TextButton = ({ title, onClick, theme }: TextButtonProps) => (
   </S.TextButton>
 );
 
-export const buttonHandler = ({ todo, navigate }: buttonHandlerProps) => {
+export const ButtonHander = ({ todo, navigate }: ButtonHanderProps) => {
   todo()
     .then((response) => {
       console.log(response);

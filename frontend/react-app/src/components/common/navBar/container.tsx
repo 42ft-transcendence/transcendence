@@ -10,7 +10,7 @@ import { useRecoilState } from "recoil";
 import { settingOptionModalState } from "@src/recoil/atoms/modal";
 import { logout, resignUser } from "@src/api";
 import { useNavigate } from "react-router-dom";
-import { buttonHandler } from "@src/components/buttons";
+import { ButtonHander } from "@src/components/buttons";
 
 Modal.setAppElement("#root");
 export const SettingOptionModal = () => {
@@ -30,16 +30,14 @@ export const SettingOptionModal = () => {
       <SettingOptionModalContentWrapper>
         <SettingOptionModalButton
           title="로그아웃"
-          onClick={() => buttonHandler({ todo: logout, navigate: navigate })}
+          onClick={() => ButtonHander({ todo: logout, navigate: navigate })}
         >
           로그아웃
         </SettingOptionModalButton>
         <SettingOptionModalDivider />
         <SettingOptionModalButton
           title="회원탈퇴"
-          onClick={() =>
-            buttonHandler({ todo: resignUser, navigate: navigate })
-          }
+          onClick={() => ButtonHander({ todo: resignUser, navigate: navigate })}
         >
           회원탈퇴
         </SettingOptionModalButton>
