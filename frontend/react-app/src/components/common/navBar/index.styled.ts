@@ -44,6 +44,7 @@ export const SettingOptionModalButton = styled.span`
   margin: 0px;
   cursor: pointer;
   color: black;
+  minwidth: 100px;
 `;
 
 export const SettingOptionModalDivider = styled.div`

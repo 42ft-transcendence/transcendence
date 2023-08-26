@@ -8,10 +8,17 @@ import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { logout, resignUser } from "@src/api";
+import {
+  ProfileImage,
+  ProfileImageContainer,
+} from "@src/pages/signUp/index.styled";
+import { useState } from "react";
+import { ChangeProfileImageModal } from "./container";
 
 const ProfileSideBar = () => {
   const [userData] = useRecoilState(userDataState);
   console.log("userData", userData);
+  const [changeImage, setChangeImage] = useState<boolean>(false);
 
   const currentRoute = window.location.pathname;
   console.log("currentRoute", currentRoute);
@@ -28,6 +35,8 @@ const ProfileSideBar = () => {
       iconSrc: "",
       onClick: () => {
         console.log("프로필 변경");
+        setChangeImage(true);
+        // ChangeProfileImageModal({ changeImage, setChangeImage });
       },
       theme: "LIGHT",
     },
@@ -120,7 +129,27 @@ const ProfileSideBar = () => {
 
   return (
     <S.Container>
+      <ProfileImageContainer>
+        {/* <label htmlFor="imageInput"> */}
+        <ProfileImage src={userData.avatarPath} alt="profile image" />
+        {/* </label>
+        <input
+          id="imageInput"
+          type="file"
+          name="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={onImageChange}
+          accept="image/*" // 이미지 파일만 선택 가능
+        /> */}
+      </ProfileImageContainer>
       <IconButtonList iconButtons={finalButtons} />
+      {changeImage && (
+        <ChangeProfileImageModal
+          changeImage={changeImage}
+          setChangeImage={setChangeImage}
+        />
+      )}
     </S.Container>
   );
 };
