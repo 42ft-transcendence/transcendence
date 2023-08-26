@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "jest --verbose",
+    "test": "jest --verbose --no-silent",
     "test:lint-staged": "jest --passWithNoTests --findRelatedTests"
   },
   "dependencies": {
