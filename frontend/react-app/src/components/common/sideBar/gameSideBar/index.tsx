@@ -1,5 +1,5 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
-import * as S from "../index.styled";
+import * as DS from "../index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
@@ -34,11 +34,12 @@ const GameSideBar = () => {
   ];
 
   return (
-    <S.Container>
+    <DS.Container>
       <ButtonList buttons={iconButtons} />
       <br />
+      <DS.TitleBox>내 전적</DS.TitleBox>
       <RateDoughnutChart userData={userData} />
-    </S.Container>
+    </DS.Container>
   );
 };
 

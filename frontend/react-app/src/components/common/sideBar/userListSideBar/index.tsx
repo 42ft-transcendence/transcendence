@@ -1,6 +1,5 @@
 import { DoubleTextButtonProps, ButtonList } from "@src/components/buttons";
 import * as DS from "../index.styled";
-import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 
@@ -56,9 +55,9 @@ const UserListSideBar = () => {
 
   return (
     <DS.Container style={{ gap: "20px" }}>
-      <S.TextBox>사용자 둘러보기</S.TextBox>
+      <DS.TitleBox>사용자 둘러보기</DS.TitleBox>
       <ButtonList style={{ gap: "20px" }} buttons={userButtonList} />
-      <S.TextBox>접속 현황</S.TextBox>
+      <DS.TitleBox>접속 현황</DS.TitleBox>
       <ButtonList style={{ gap: "20px" }} buttons={userStatusButtonList} />
     </DS.Container>
   );

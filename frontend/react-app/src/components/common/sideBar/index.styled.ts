@@ -10,3 +10,14 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const TitleBox = styled.div`
+  display: flex;
+  width: 80%;
+  height: 30px;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
