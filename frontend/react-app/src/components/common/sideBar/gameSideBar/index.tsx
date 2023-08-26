@@ -1,29 +1,33 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
+import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
+import { useRecoilState } from "recoil";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const GameSideBar = () => {
+  const [userData] = useRecoilState(userDataState);
   const iconButtons: IconButtonProps[] = [
     {
-      title: "채널 생성",
+      title: "방 만들기",
       iconSrc: "",
       onClick: () => {
-        console.log("채널 생성");
+        console.log("방 만들기");
       },
       theme: "LIGHT",
     },
     {
-      title: "채널 탈퇴",
+      title: "랭킹전 참가",
       iconSrc: "",
       onClick: () => {
-        console.log("채널 탈퇴");
+        console.log("랭킹전 참가");
       },
       theme: "LIGHT",
     },
     {
-      title: "채널 탐색",
+      title: "둘러보기",
       iconSrc: "",
       onClick: () => {
-        console.log("채널 탐색");
+        console.log("둘러보기");
       },
       theme: "LIGHT",
     },
@@ -32,6 +36,8 @@ const GameSideBar = () => {
   return (
     <S.Container>
       <ButtonList buttons={iconButtons} />
+      <br />
+      <RateDoughnutChart userData={userData} />
     </S.Container>
   );
 };
