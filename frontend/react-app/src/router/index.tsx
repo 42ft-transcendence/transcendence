@@ -47,10 +47,14 @@ const Router = createBrowserRouter([
       </PrivateRoute>
     ),
   },
-  // {
-  //   path: "/",
-  //   element: <ChatPage />,
-  // },
+  {
+    path: "/user-list",
+    element: (
+      <PrivateRoute>
+        <TempHome />
+      </PrivateRoute>
+    ),
+  },
   // {
   //   path: "/auth/:type",
   //   element: <Auth />,
