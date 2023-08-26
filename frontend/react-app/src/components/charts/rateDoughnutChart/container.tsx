@@ -51,7 +51,6 @@ export const ProfileWinRateDoughnut: React.FC<ProfileWinRateDoughnutProps> = ({
 }) => {
   const totalGames = wins + losses;
   const winRate = totalGames === 0 ? 50 : (wins / totalGames) * 100;
-  console.log(wins, losses, totalGames, winRate);
   const data = {
     labels: ["Wins", "Losses"],
     datasets: [

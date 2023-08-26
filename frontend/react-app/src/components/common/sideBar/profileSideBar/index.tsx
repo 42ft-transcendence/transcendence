@@ -25,13 +25,10 @@ const ProfileSideBar = () => {
   const [changeImage, setChangeImage] = useState<boolean>(false);
   const [currentProfile, setCurrentProfile] = useState<UserType>(userData);
 
+  // 현재 라우트의 경로를 가져옵니다. /profile/:userId
   const currentRoute = window.location.pathname;
-  console.log("currentRoute", currentRoute);
-  // currentRoute의 마지막 / 뒤에 있는 문자열을 가져옵니다.
+  // currentRoute의 마지막 / 뒤에 있는 문자열을 가져옵니다. -> userId
   const userId = currentRoute.split("/").pop();
-  console.log("userId", userId);
-  console.log(userData.id === userId);
-
   const navigate = useNavigate();
 
   const myProfileButtons: IconButtonProps[] = [
@@ -41,7 +38,6 @@ const ProfileSideBar = () => {
       onClick: () => {
         console.log("프로필 변경");
         setChangeImage(true);
-        // ChangeProfileImageModal({ changeImage, setChangeImage });
       },
       theme: "LIGHT",
     },
@@ -89,40 +85,6 @@ const ProfileSideBar = () => {
       theme: "LIGHT",
     },
   ];
-  const isFriend = false; // 친구인지 여부를 판별하는 로직 필요
-  const isBlocked = false; // 차단했는지 여부를 판별하는 로직 필요
-
-  if (isFriend) {
-    othersProfileButtons.push({
-      title: "친구 삭제",
-      iconSrc: "",
-      onClick: () => {
-        console.log("친구 삭제");
-      },
-      theme: "LIGHT",
-    });
-  } else {
-    othersProfileButtons.push({
-      title: "친구신청",
-      iconSrc: "",
-      onClick: () => {
-        console.log("친구신청");
-      },
-      theme: "LIGHT",
-    });
-  }
-
-  if (isBlocked) {
-    const blockButtonIndex = othersProfileButtons.findIndex(
-      (button) => button.title === "차단하기",
-    );
-    if (blockButtonIndex !== -1) {
-      othersProfileButtons[blockButtonIndex].title = "차단 해제";
-      othersProfileButtons[blockButtonIndex].onClick = () => {
-        console.log("차단 해제");
-      };
-    }
-  }
 
   let finalButtons: IconButtonProps[];
 
@@ -140,6 +102,40 @@ const ProfileSideBar = () => {
     const currentProfile = allUserList.find((user) => user.id === userId);
     if (!currentProfile) return null;
     setCurrentProfile(currentProfile);
+    const isFriend = false; // 친구인지 여부를 판별하는 로직 필요
+    const isBlocked = false; // 차단했는지 여부를 판별하는 로직 필요
+
+    if (isFriend) {
+      othersProfileButtons.push({
+        title: "친구 삭제",
+        iconSrc: "",
+        onClick: () => {
+          console.log("친구 삭제");
+        },
+        theme: "LIGHT",
+      });
+    } else {
+      othersProfileButtons.push({
+        title: "친구신청",
+        iconSrc: "",
+        onClick: () => {
+          console.log("친구신청");
+        },
+        theme: "LIGHT",
+      });
+    }
+
+    if (isBlocked) {
+      const blockButtonIndex = othersProfileButtons.findIndex(
+        (button) => button.title === "차단하기",
+      );
+      if (blockButtonIndex !== -1) {
+        othersProfileButtons[blockButtonIndex].title = "차단 해제";
+        othersProfileButtons[blockButtonIndex].onClick = () => {
+          console.log("차단 해제");
+        };
+      }
+    }
   }
 
   return (

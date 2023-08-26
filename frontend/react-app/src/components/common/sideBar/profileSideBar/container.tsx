@@ -56,7 +56,6 @@ export const ChangeProfileImageModal = (
           id="imageInput"
           type="file"
           name="file"
-          // ref={fileInputRef}
           onChange={(e) =>
             handleImageChange(e).then(() => props.setChangeImage(false))
           }
