@@ -1,5 +1,5 @@
 import * as S from "./index.styled";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Chat from "@assets/icons/Chats.svg";
 import Game from "@assets/icons/GameController.svg";
 import Rank from "@assets/icons/Trophy.svg";
@@ -13,6 +13,7 @@ import UsersBlue from "@assets/icons/UsersBlue.svg";
 import { useRecoilState } from "recoil";
 import { settingOptionModalState } from "@recoil/atoms/modal";
 import { SettingOptionModal } from "./container";
+import { userDataState } from "@src/recoil/atoms/common";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -47,8 +48,11 @@ const upperTabs = [
 
 const NavBar = () => {
   const [, setSettingOptionModalOpen] = useRecoilState(settingOptionModalState);
+  const [userData] = useRecoilState(userDataState);
+  const navigate = useNavigate();
 
   const handleProfileClick = () => {
+    navigate(`/profile/${userData.id}`);
     console.log("profile clicked");
   };
 
