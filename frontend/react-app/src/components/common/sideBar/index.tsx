@@ -1,14 +1,15 @@
 import { SidebarComponentType, SidebarConfigType } from "@src/types";
-import chattingSideBar from "./chattingSideBar";
+import ChattingSideBar from "./chattingSideBar";
 import ProfileSideBar from "./profileSideBar";
+import UserListSideBar from "./userListSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
   // '/game-list': <GameSidebar />,
   // '/ranking': <RankingSidebar />,
   // ...
-  "/": { component: chattingSideBar },
-  "/channel-list": { component: chattingSideBar },
-  "/user-list": { component: chattingSideBar },
+  "/": { component: ChattingSideBar },
+  "/channel-list": { component: ChattingSideBar },
+  "/user-list": { component: UserListSideBar },
   "/profile/": {
     component: ProfileSideBar,
     matcher: /^\/profile\/(42-|G-)\d+$/, // '42-' 혹은 'G-'로 시작하고 그 뒤에 숫자로만 이루어진 문자열이 나오는 경우만 매치합니다.
