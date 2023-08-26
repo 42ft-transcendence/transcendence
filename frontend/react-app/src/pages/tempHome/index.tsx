@@ -5,12 +5,13 @@ const TempHome = () => {
   const currentRoute = window.location.pathname;
 
   console.log("currentRoute", currentRoute);
-  const CurrentSidebar = sidebarConfig[currentRoute];
+  const CurrentSideBar = sidebarConfig[currentRoute];
+  const CurrentSideBarComponent = CurrentSideBar.component;
 
   return (
     <>
       <NavBar />
-      <CurrentSidebar />
+      <CurrentSideBarComponent />
     </>
   );
 };
