@@ -1,6 +1,6 @@
 import { SidebarConfigType } from "@src/types";
 import chattingSideBar from "./chattingSideBar";
-import profileSideBar from "./profileSideBar";
+import ProfileSideBar from "./profileSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
   // '/channel-list': <ChannelSidebar />,
@@ -9,7 +9,7 @@ export const sidebarConfig: SidebarConfigType = {
   // ...
   "/": { component: chattingSideBar },
   "/profile/": {
-    component: profileSideBar,
+    component: ProfileSideBar,
     matcher: /^\/profile\/.+$/, // 이 정규식은 /profile/ 다음에 어떤 문자열이든 매치합니다.
   },
 };
