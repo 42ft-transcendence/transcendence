@@ -18,4 +18,4 @@ export type {
 
 export type { OfferGameType } from "./game.type";
 
-export type { CheckNicknameType } from "./response.type";
+export type { CheckNicknameType, buttonHandlerProps } from "./response.type";

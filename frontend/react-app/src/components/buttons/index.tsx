@@ -1,4 +1,6 @@
+import { buttonHandlerProps } from "@src/types";
 import * as S from "./index.styled";
+import * as cookies from "react-cookies";
 
 export interface IconButtonProps {
   title: string;
@@ -50,3 +52,18 @@ export const TextButton = ({ title, onClick, theme }: TextButtonProps) => (
     {title}
   </S.TextButton>
 );
+
+export const buttonHandler = ({ todo, navigate }: buttonHandlerProps) => {
+  todo()
+    .then((response) => {
+      console.log(response);
+      if (response.status === 200 || response.status === 201) {
+        cookies.remove("jwt", { path: "/" });
+        // setIsFirstLogin(true);
+        navigate("/login");
+      }
+    })
+    .catch((error) => {
+      console.log("error", error);
+    });
+};
