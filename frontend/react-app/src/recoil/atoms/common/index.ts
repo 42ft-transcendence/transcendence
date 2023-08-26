@@ -40,6 +40,11 @@ export const showProfileState = atom<ProfileModalType>({
   },
 });
 
+export const otherUserDataState = atom<UserType>({
+  key: "otherUserDataState",
+  default: initialUserData,
+});
+
 export const showProfileSlideState = atom<number>({
   key: "showProfileSlideState",
   default: 1,

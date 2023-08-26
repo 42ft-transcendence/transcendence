@@ -6,20 +6,24 @@ import {
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
+import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { logout, resignUser } from "@src/api";
 import {
   ProfileImage,
   ProfileImageContainer,
 } from "@src/pages/signUp/index.styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChangeProfileImageModal } from "./container";
+import { UserType } from "@src/types";
+import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 
 const ProfileSideBar = () => {
   const [userData, setUserData] = useRecoilState(userDataState);
   console.log("userData", userData);
+  const [allUserList] = useRecoilState(allUserListState);
   const [changeImage, setChangeImage] = useState<boolean>(false);
+  const [currentProfile, setCurrentProfile] = useState<UserType>(userData);
 
   const currentRoute = window.location.pathname;
   console.log("currentRoute", currentRoute);
@@ -122,24 +126,35 @@ const ProfileSideBar = () => {
 
   let finalButtons: IconButtonProps[];
 
+  useEffect(() => {
+    if (userData.id === userId) {
+      setCurrentProfile(userData);
+    }
+  }, [userData, userId]);
+
   if (userData.id === userId) {
     finalButtons = myProfileButtons;
   } else {
     finalButtons = othersProfileButtons;
+    console.log(allUserList);
+    const currentProfile = allUserList.find((user) => user.id === userId);
+    if (!currentProfile) return null;
+    setCurrentProfile(currentProfile);
   }
 
   return (
     <DS.Container>
       <ProfileImageContainer>
-        <ProfileImage src={userData.avatarPath} alt="profile image" />
+        <ProfileImage src={currentProfile.avatarPath} alt="profile image" />
       </ProfileImageContainer>
       <S.NicknameContainer>
-        <S.NicknameText>{userData.nickname}</S.NicknameText>
+        <S.NicknameText>{currentProfile.nickname}</S.NicknameText>
         <S.PencilIcon
           src={`../src/assets/icons/pencil_freezePurple.svg`}
           alt="level"
         />
       </S.NicknameContainer>
+      <RateDoughnutChart userData={currentProfile} />
       <IconButtonList iconButtons={finalButtons} />
       {changeImage && (
         <ChangeProfileImageModal
