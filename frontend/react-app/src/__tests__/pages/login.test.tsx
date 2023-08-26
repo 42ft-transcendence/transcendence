@@ -2,6 +2,7 @@ import { render } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import "jest-styled-components";
 import Login, { LoginButton } from "@pages/login";
+import { RecoilRoot } from "recoil";
 
 describe("<LoginButton />", () => {
   it("props가 제대로 전달되는지 확인", () => {
@@ -20,7 +21,11 @@ describe("<LoginButton />", () => {
 
 describe("<Login />", () => {
   it("로그인 버튼이 두개 렌더링 되는지 확인", () => {
-    const { getAllByRole } = render(<Login />);
+    const { getAllByRole } = render(
+      <RecoilRoot>
+        <Login />
+      </RecoilRoot>,
+    );
 
     const links = getAllByRole("link");
 
@@ -30,7 +35,11 @@ describe("<Login />", () => {
   });
 
   it("로고 이미지가 렌더링 되는지 확인", () => {
-    const { getAllByRole } = render(<Login />);
+    const { getAllByRole } = render(
+      <RecoilRoot>
+        <Login />
+      </RecoilRoot>,
+    );
 
     const images = getAllByRole("img");
     const logoImage = images[0]; // 0번째 이미지가 로고 이미지
@@ -39,7 +48,11 @@ describe("<Login />", () => {
   });
 
   it("로고 이미지 크기 확인", () => {
-    const { getAllByRole } = render(<Login />);
+    const { getAllByRole } = render(
+      <RecoilRoot>
+        <Login />
+      </RecoilRoot>,
+    );
 
     const images = getAllByRole("img");
     const logoImage = images[0];
@@ -49,7 +62,11 @@ describe("<Login />", () => {
   });
 
   it("버튼을 클릭하면 외부 링크로 이동하는지 확인", () => {
-    const { getAllByRole } = render(<Login />);
+    const { getAllByRole } = render(
+      <RecoilRoot>
+        <Login />
+      </RecoilRoot>,
+    );
 
     const links = getAllByRole("link");
     const link42 = links[0];
