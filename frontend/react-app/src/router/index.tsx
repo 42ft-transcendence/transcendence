@@ -4,6 +4,7 @@ import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
 import TempHome from "@src/pages/tempHome";
+import Profile from "@src/pages/profile";
 
 const Router = createBrowserRouter([
   {
@@ -27,6 +28,14 @@ const Router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <SignUp />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/profile/:userId",
+    element: (
+      <PrivateRoute>
+        <Profile />
       </PrivateRoute>
     ),
   },
