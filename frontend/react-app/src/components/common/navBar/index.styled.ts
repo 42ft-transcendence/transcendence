@@ -53,7 +53,7 @@ export const SettingOptionModalDivider = styled.div`
 `;
 
 export const SettingOptionModalContent = {
-  backgroundColor: Theme.colors.darkFreezePurple,
+  backgroundColor: Theme.colors.freezePurple,
   width: "150px",
   minHeight: "30px",
   left: "50px",
