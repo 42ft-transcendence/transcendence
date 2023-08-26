@@ -3,13 +3,14 @@ import PrivateRoute from "./PrivateRoute";
 import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
+import TempHome from "@src/pages/tempHome";
 
 const Router = createBrowserRouter([
   {
     path: "/",
     element: (
       <PrivateRoute>
-        <div>Home</div>
+        <TempHome />
       </PrivateRoute>
     ),
   },
