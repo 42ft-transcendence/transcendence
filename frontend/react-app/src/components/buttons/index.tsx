@@ -7,6 +7,10 @@ export interface IconButtonProps {
   theme: "LIGHT" | "DARK";
 }
 
+export interface IconButtonListProps {
+  iconButtons: IconButtonProps[];
+}
+
 export const IconButton = ({
   title,
   iconSrc,
@@ -14,10 +18,26 @@ export const IconButton = ({
   theme,
 }: IconButtonProps) => (
   <S.IconButton mode={theme} onClick={onClick}>
-    <span>{title}</span>
+    <>{title}</>
     {iconSrc && <img src={iconSrc} alt={title} />}
   </S.IconButton>
 );
+
+export const IconButtonList = ({ iconButtons }: IconButtonListProps) => {
+  return (
+    <S.IconButtonList>
+      {iconButtons.map((iconButton) => (
+        <IconButton
+          key={iconButton.title}
+          title={iconButton.title}
+          iconSrc={iconButton.iconSrc}
+          onClick={iconButton.onClick}
+          theme={iconButton.theme}
+        />
+      ))}
+    </S.IconButtonList>
+  );
+};
 
 export interface TextButtonProps {
   title: string;

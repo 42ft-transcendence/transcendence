@@ -27,6 +27,13 @@ export const IconButton = styled.button<{ mode: "LIGHT" | "DARK" }>`
   }
 `;
 
+export const IconButtonList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
 export const TextButton = styled.button<{ mode: "LIGHT" | "DARK" }>`
   width: max-content;
   height: min-content;
