@@ -146,4 +146,11 @@ export class UsersService {
       isTwoFactorAuthenticationEnabled: false,
     });
   }
+  async updateLadderGameRecord(user: User): Promise<User> {
+    return await this.userRepository.updateLadderGameRecord(user);
+  }
+
+  async updateNormalGameRecord(user: User): Promise<User> {
+    return await this.userRepository.updateNormalGameRecord(user);
+  }
 }
