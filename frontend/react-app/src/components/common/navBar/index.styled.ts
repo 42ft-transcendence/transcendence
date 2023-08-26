@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import { Theme } from "@styles/Theme";
 
 export const Container = styled.div`
   display: flex;
@@ -8,8 +9,8 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   align-items: center;
-  background-color: ${(props) => props.theme.colors.heavyPurple};
-  border-right: 1px solid ${(props) => props.theme.colors.darkFreezePurple};
+  background-color: ${Theme.colors.heavyPurple};
+  border-right: 1px solid ${Theme.colors.darkFreezePurple};
 `;
 
 export const TabList = styled.ul`
@@ -38,7 +39,7 @@ export const PeoPleIconModalButton = styled.span`
   fond-size: 30px;
   font-weight: bold;
   font-family: inter;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${Theme.colors.freezePurple};
   padding: 0px;
   margin: 0px;
   cursor: pointer;

@@ -11,7 +11,7 @@ import GameBlue from "@assets/icons/GameControllerBlue.svg";
 import RankBlue from "@assets/icons/TrophyBlue.svg";
 import UsersBlue from "@assets/icons/UsersBlue.svg";
 import { useRecoilState } from "recoil";
-import { settingOptionModalState } from "@src/recoil/atoms/modal";
+import { settingOptionModalState } from "@recoil/atoms/modal";
 import { SettingOptionModal } from "./container";
 
 export interface NavBarPropsType {
