@@ -1,3 +1,4 @@
+import { chatSocketDisconnect } from "@hooks/sockets/chatSocket";
 import {
   LoginButtonContainer,
   LoginButtonImage,
@@ -56,6 +57,7 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
+  chatSocketDisconnect();
 
   return (
     <PageContainer>

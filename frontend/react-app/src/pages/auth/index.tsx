@@ -13,6 +13,7 @@ import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import * as cookies from "react-cookies";
 import Logo from "@assets/logos/ccpp_logo.png";
+import { chatSocketDisconnect } from "@hooks/sockets/chatSocket";
 
 const AuthPage = () => {
   const type = useParams().type;
@@ -24,6 +25,7 @@ const AuthPage = () => {
   const [userData, setUserData] = useRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
+  chatSocketDisconnect();
 
   const handleTwoFactorCodeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
