@@ -16,7 +16,7 @@ import { useState } from "react";
 import { ChangeProfileImageModal } from "./container";
 
 const ProfileSideBar = () => {
-  const [userData] = useRecoilState(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   console.log("userData", userData);
   const [changeImage, setChangeImage] = useState<boolean>(false);
 
@@ -148,6 +148,7 @@ const ProfileSideBar = () => {
         <ChangeProfileImageModal
           changeImage={changeImage}
           setChangeImage={setChangeImage}
+          setUserData={setUserData}
         />
       )}
     </S.Container>
