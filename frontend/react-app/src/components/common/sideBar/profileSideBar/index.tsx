@@ -130,18 +130,7 @@ const ProfileSideBar = () => {
   return (
     <S.Container>
       <ProfileImageContainer>
-        {/* <label htmlFor="imageInput"> */}
         <ProfileImage src={userData.avatarPath} alt="profile image" />
-        {/* </label>
-        <input
-          id="imageInput"
-          type="file"
-          name="file"
-          ref={fileInputRef}
-          style={{ display: "none" }}
-          onChange={onImageChange}
-          accept="image/*" // 이미지 파일만 선택 가능
-        /> */}
       </ProfileImageContainer>
       <IconButtonList iconButtons={finalButtons} />
       {changeImage && (
