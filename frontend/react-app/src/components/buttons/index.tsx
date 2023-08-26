@@ -9,8 +9,9 @@ export interface IconButtonProps {
   theme: "LIGHT" | "DARK";
 }
 
-export interface IconButtonListProps {
-  iconButtons: IconButtonProps[];
+export interface ButtonListProps {
+  buttons: (IconButtonProps | DoubleTextButtonProps)[];
+  style?: React.CSSProperties;
 }
 
 export const IconButton = ({
@@ -25,19 +26,54 @@ export const IconButton = ({
   </S.IconButton>
 );
 
-export const IconButtonList = ({ iconButtons }: IconButtonListProps) => {
+export interface DoubleTextButtonProps {
+  text1: string;
+  text2: string;
+  onClick?: () => void;
+  theme: "LIGHT" | "DARK";
+}
+
+export const DoubleTextButton = ({
+  text1,
+  text2,
+  onClick,
+  theme,
+}: DoubleTextButtonProps) => (
+  <S.DoubleTextButton mode={theme} onClick={onClick}>
+    <div>{text1}</div>
+    <div>{text2}</div>
+  </S.DoubleTextButton>
+);
+
+export const ButtonList = ({ buttons, style }: ButtonListProps) => {
   return (
-    <S.IconButtonList>
-      {iconButtons.map((iconButton) => (
-        <IconButton
-          key={iconButton.title}
-          title={iconButton.title}
-          iconSrc={iconButton.iconSrc}
-          onClick={iconButton.onClick}
-          theme={iconButton.theme}
-        />
-      ))}
-    </S.IconButtonList>
+    <S.ButtonList style={style}>
+      {buttons.map((buttonProps, index) => {
+        if ("text1" in buttonProps && "text2" in buttonProps) {
+          // 이것은 DoubleTextButton입니다.
+          return (
+            <DoubleTextButton
+              key={index}
+              text1={buttonProps.text1}
+              text2={buttonProps.text2}
+              onClick={buttonProps.onClick}
+              theme={buttonProps.theme}
+            />
+          );
+        } else {
+          // 이것은 IconButton입니다.
+          return (
+            <IconButton
+              key={index}
+              title={buttonProps.title}
+              iconSrc={buttonProps.iconSrc}
+              onClick={buttonProps.onClick}
+              theme={buttonProps.theme}
+            />
+          );
+        }
+      })}
+    </S.ButtonList>
   );
 };
 
