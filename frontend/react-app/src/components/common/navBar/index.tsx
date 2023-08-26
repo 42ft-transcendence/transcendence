@@ -24,7 +24,7 @@ const upperTabs = [
     link: "/channel-list",
     icon: Chat,
     icon_selected: ChatBlue,
-    child_links: ["channel", "channel-list", "directmessage"],
+    child_links: ["", "channel", "channel-list", "directmessage"],
   },
   {
     link: "/game-list",

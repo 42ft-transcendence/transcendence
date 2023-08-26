@@ -3,11 +3,11 @@ import chattingSideBar from "./chattingSideBar";
 import ProfileSideBar from "./profileSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
-  // '/channel-list': <ChannelSidebar />,
   // '/game-list': <GameSidebar />,
   // '/ranking': <RankingSidebar />,
   // ...
   "/": { component: chattingSideBar },
+  "/channel-list": { component: chattingSideBar },
   "/profile/": {
     component: ProfileSideBar,
     matcher: /^\/profile\/(42-|G-)\d+$/, // '42-' 혹은 'G-'로 시작하고 그 뒤에 숫자로만 이루어진 문자열이 나오는 경우만 매치합니다.

@@ -16,6 +16,14 @@ const Router = createBrowserRouter([
     ),
   },
   {
+    path: "/channel-list",
+    element: (
+      <PrivateRoute>
+        <TempHome />
+      </PrivateRoute>
+    ),
+  },
+  {
     path: "/Login",
     element: <Login />,
   },
