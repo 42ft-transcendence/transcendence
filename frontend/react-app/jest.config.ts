@@ -17,6 +17,7 @@ module.exports = {
     "^@type/(.*)$": resolve(__dirname, "./src/types/$1"),
     "^@utils/(.*)$": resolve(__dirname, "./src/utils/$1"),
     "^@test/(.*)$": resolve(__dirname, "./src/__test__/$1"),
+    "^@styles/(.*)$": resolve(__dirname, "./src/styles/$1"),
   },
   transform: {
     "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "./tsconfig.json" }],
