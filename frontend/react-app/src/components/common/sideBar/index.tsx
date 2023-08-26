@@ -2,13 +2,14 @@ import { SidebarComponentType, SidebarConfigType } from "@src/types";
 import ChattingSideBar from "./chattingSideBar";
 import ProfileSideBar from "./profileSideBar";
 import UserListSideBar from "./userListSideBar";
+import GameSideBar from "./gameSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
-  // '/game-list': <GameSidebar />,
   // '/ranking': <RankingSidebar />,
   // ...
   "/": { component: ChattingSideBar },
   "/channel-list": { component: ChattingSideBar },
+  "/game-list": { component: GameSideBar },
   "/user-list": { component: UserListSideBar },
   "/profile/": {
     component: ProfileSideBar,
