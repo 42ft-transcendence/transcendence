@@ -1,5 +1,5 @@
 import {
-  IconButtonList,
+  ButtonList,
   IconButtonProps,
   ButtonHander,
 } from "@src/components/buttons";
@@ -139,7 +139,7 @@ const ProfileSideBar = () => {
   }
 
   return (
-    <DS.Container>
+    <DS.Container style={{ gap: "20px" }}>
       <ProfileImageContainer>
         <ProfileImage src={currentProfile.avatarPath} alt="profile image" />
       </ProfileImageContainer>
@@ -151,7 +151,7 @@ const ProfileSideBar = () => {
         />
       </S.NicknameContainer>
       <RateDoughnutChart userData={currentProfile} />
-      <IconButtonList iconButtons={finalButtons} />
+      <ButtonList buttons={finalButtons} />
       {changeImage && (
         <ChangeProfileImageModal
           changeImage={changeImage}

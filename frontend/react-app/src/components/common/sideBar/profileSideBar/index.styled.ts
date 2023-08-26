@@ -23,11 +23,11 @@ export const ModalOverlay = {
 export const NicknameContainer = styled.div`
   width: 90%;
   height: 30px;
-  margin-top: 10px;
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: -20px;
+  margin-bottom: -20px;
 `;
 
 export const NicknameText = styled.div`

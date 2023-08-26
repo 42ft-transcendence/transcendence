@@ -1,4 +1,4 @@
-import { IconButtonList, IconButtonProps } from "@src/components/buttons";
+import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
 
 const ChattingSideBar = () => {
@@ -31,7 +31,7 @@ const ChattingSideBar = () => {
 
   return (
     <S.Container>
-      <IconButtonList iconButtons={iconButtons} />
+      <ButtonList buttons={iconButtons} />
     </S.Container>
   );
 };
