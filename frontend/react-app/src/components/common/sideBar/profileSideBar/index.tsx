@@ -3,7 +3,8 @@ import {
   IconButtonProps,
   buttonHandler,
 } from "@src/components/buttons";
-import * as S from "../index.styled";
+import * as DS from "../index.styled";
+import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
@@ -128,10 +129,17 @@ const ProfileSideBar = () => {
   }
 
   return (
-    <S.Container>
+    <DS.Container>
       <ProfileImageContainer>
         <ProfileImage src={userData.avatarPath} alt="profile image" />
       </ProfileImageContainer>
+      <S.NicknameContainer>
+        <S.NicknameText>{userData.nickname}</S.NicknameText>
+        <S.PencilIcon
+          src={`../src/assets/icons/pencil_freezePurple.svg`}
+          alt="level"
+        />
+      </S.NicknameContainer>
       <IconButtonList iconButtons={finalButtons} />
       {changeImage && (
         <ChangeProfileImageModal
@@ -140,7 +148,7 @@ const ProfileSideBar = () => {
           setUserData={setUserData}
         />
       )}
-    </S.Container>
+    </DS.Container>
   );
 };
 

@@ -20,14 +20,30 @@ export const ModalOverlay = {
   alignItems: "center",
 };
 
-export const HandleImageChangeButton = styled.input`
-  fond-size: 30px;
+export const NicknameContainer = styled.div`
+  width: 90%;
+  height: 30px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NicknameText = styled.div`
+  minwidth: 10px;
+  height: 30px;
+  font-size: 20px;
   font-weight: bold;
   font-family: inter;
   color: ${Theme.colors.freezePurple};
-  padding: 0px;
-  margin: 0px;
-  cursor: pointer;
-  color: black;
-  minwidth: 100px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+`;
+
+export const PencilIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
 `;
