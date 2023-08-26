@@ -14,6 +14,10 @@ import * as cookies from "react-cookies";
 import { userDataState } from "@recoil/atoms/common";
 import { UserType } from "@src/types";
 import { AxiosResponse } from "axios";
+import {
+  chatSocketConnect,
+  chatSocketDisconnect,
+} from "@hooks/sockets/chatSocket";
 
 const SignUpPageContainer = () => {
   const [userData, setUserData] = useRecoilState<UserType>(userDataState);
@@ -25,6 +29,7 @@ const SignUpPageContainer = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   let unhandledClose = true;
+  chatSocketConnect();
 
   const deleteImage = async () => {
     try {
@@ -175,7 +180,7 @@ const SignUpPageContainer = () => {
     e.preventDefault();
     if (unhandledClose) {
       cookies.remove("jwt", { path: "/" });
-      // disconnectSocket();
+      chatSocketDisconnect();
     }
   };
 
