@@ -7,6 +7,7 @@ import TempHome from "@src/pages/tempHome";
 import Profile from "@src/pages/profile";
 import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
+import Ranking from "@src/pages/ranking";
 
 const Router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const Router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <UserList />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/ranking",
+    element: (
+      <PrivateRoute>
+        <Ranking />
       </PrivateRoute>
     ),
   },

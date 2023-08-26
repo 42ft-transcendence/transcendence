@@ -3,13 +3,14 @@ import ChattingSideBar from "./chattingSideBar";
 import ProfileSideBar from "./profileSideBar";
 import UserListSideBar from "./userListSideBar";
 import GameSideBar from "./gameSideBar";
+import RankingSideBar from "./rankingSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
-  // '/ranking': <RankingSidebar />,
   // ...
   "/": { component: ChattingSideBar },
   "/channel-list": { component: ChattingSideBar },
   "/game-list": { component: GameSideBar },
+  "/ranking": { component: RankingSideBar },
   "/user-list": { component: UserListSideBar },
   "/profile/": {
     component: ProfileSideBar,
