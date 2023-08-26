@@ -26,3 +26,27 @@ export const ItemIcon = styled.img`
   width: 32px;
   height: 32px;
 `;
+
+export const PeopleIconModalContentWrapper = styled.div`
+  display: flex;
+  width: 200px;
+  height: 200px;
+  flex-direction: column;
+`;
+
+export const PeoPleIconModalButton = styled.span`
+  fond-size: 30px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.freezePurple};
+  padding: 0px;
+  margin: 0px;
+  cursor: pointer;
+  color: black;
+`;
+
+export const Divider = styled.div`
+  border-top: 1px solid #ccc;
+  margin: 10px 0px;
+  width: 50%;
+`;
