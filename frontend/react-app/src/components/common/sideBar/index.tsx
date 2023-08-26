@@ -1,15 +1,15 @@
+import { SidebarConfigType } from "@src/types";
 import chattingSideBar from "./chattingSideBar";
-
-type SidebarComponentType = React.ComponentType<any>;
-
-type SidebarConfigType = {
-  [key: string]: SidebarComponentType;
-};
+import profileSideBar from "./profileSideBar";
 
 export const sidebarConfig: SidebarConfigType = {
   // '/channel-list': <ChannelSidebar />,
   // '/game-list': <GameSidebar />,
   // '/ranking': <RankingSidebar />,
   // ...
-  "/": chattingSideBar,
+  "/": { component: chattingSideBar },
+  "/profile/": {
+    component: profileSideBar,
+    matcher: /^\/profile\/.+$/, // 이 정규식은 /profile/ 다음에 어떤 문자열이든 매치합니다.
+  },
 };
