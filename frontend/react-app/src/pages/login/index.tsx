@@ -9,8 +9,12 @@ import {
   PageContainer,
 } from "./index.styled";
 import { useRecoilState } from "recoil";
-import { initialUserData, userDataState } from "@src/recoil/atoms/common";
+import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { useEffect } from "react";
+import {
+  createDummyUsers,
+  initialUserData,
+} from "@src/recoil/atoms/common/data";
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
@@ -63,10 +67,19 @@ export default function Login() {
   chatSocketDisconnect();
   const [userData, setUserData] = useRecoilState(userDataState);
 
+  // 임시 더미 데이터 생성 작업
+  const [userList, setUserList] = useRecoilState(allUserListState);
+
   useEffect(() => {
     if (userData.id !== "0") {
       // localStorage 초기화
       setUserData(initialUserData);
+    }
+
+    // 임시 더미 데이터 생성 작업
+    if (userList.length === 0) {
+      const dummyData = createDummyUsers(50);
+      setUserList(dummyData);
     }
   }, [userData, setUserData]);
 
