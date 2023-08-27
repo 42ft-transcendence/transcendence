@@ -19,3 +19,9 @@ export enum UserStatus {
   OFFLINE = 2,
   SIGNUP = 3,
 }
+
+export interface LoginResponseDataType {
+  id: string;
+  nickname: string;
+  avatarPath: string;
+}

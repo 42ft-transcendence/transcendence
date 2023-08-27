@@ -1,4 +1,5 @@
-export type { UserType, UserStatus } from "./user.type";
+export { UserStatus } from "./user.type";
+export type { UserType, LoginResponseDataType } from "./user.type";
 
 export type {
   ChannelTypeType,
@@ -17,4 +18,6 @@ export type {
 
 export type { OfferGameType } from "./game.type";
 
-export type { CheckNicknameType } from "./response.type";
+export type { CheckNicknameType, ButtonHanderProps } from "./response.type";
+
+export type { SidebarComponentType, SidebarConfigType } from "./rendering.type";
