@@ -26,6 +26,13 @@ const Ranking = () => {
           <div>toolBar area</div>
           <S.SearchContainer>SearchContainer</S.SearchContainer>
         </S.ToolBarContainer>
+        <S.HeaderCard>
+          <S.Rank style={{ marginLeft: "30px" }}>#</S.Rank>
+          <S.ProfileImage style={{ opacity: 0 }} />
+          <S.Nickname>닉네임</S.Nickname>
+          <S.Tier>점수</S.Tier>
+          <S.Record>승패</S.Record>
+        </S.HeaderCard>
         <S.RankingContainer>
           {sortedUserList.map((user, index) => (
             <S.UserCard key={user.id}>

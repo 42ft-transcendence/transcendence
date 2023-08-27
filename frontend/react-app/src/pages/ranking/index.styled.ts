@@ -26,12 +26,18 @@ export const RankingContainer = styled.div`
   width: 100%;
   height: calc(100% - 120px); // height 대신 min-height를 사용
   display: flex;
-  margin-top: 30px;
-  background-color: ${(props) => props.theme.colors.lose};
   flex-direction: column;
   align-items: center;
   padding: 20px;
   overflow-y: scroll;
+`;
+
+export const HeaderCard = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  border-bottom: 2px solid #e1e1e1; // 두께를 좀 더 두꺼워서 구분을 뚜렷하게 함
 `;
 
 export const UserCard = styled.div`
