@@ -1,4 +1,3 @@
-import { chatSocketDisconnect } from "@hooks/sockets/chatSocket";
 import {
   LoginButtonContainer,
   LoginButtonImage,
@@ -64,7 +63,6 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
-  chatSocketDisconnect();
   const [userData, setUserData] = useRecoilState(userDataState);
 
   // 임시 더미 데이터 생성 작업
