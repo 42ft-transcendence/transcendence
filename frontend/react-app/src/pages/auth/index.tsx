@@ -25,7 +25,7 @@ const AuthPage = () => {
   const [userData, setUserData] = useRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
-  chatSocketDisconnect();
+  // chatSocketDisconnect();
 
   const handleTwoFactorCodeChange = (
     event: React.ChangeEvent<HTMLInputElement>,

@@ -14,11 +14,8 @@ import * as cookies from "react-cookies";
 import { userDataState } from "@recoil/atoms/common";
 import { UserType } from "@src/types";
 import { AxiosResponse } from "axios";
-import {
-  chatSocketConnect,
-  chatSocketDisconnect,
-} from "@hooks/sockets/chatSocket";
 import { useProfileActions } from "@src/hooks/useProfileActions";
+import { chatSocket } from "@src/router/socket/chatSocket";
 
 const SignUpPageContainer = () => {
   const [userData, setUserData] = useRecoilState<UserType>(userDataState);
@@ -29,13 +26,11 @@ const SignUpPageContainer = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   let unhandledClose = true;
-  chatSocketConnect();
 
   const handleCancel = async () => {
     console.log("회원 가입 취소");
     await deleteImage();
     cookies.remove("jwt", { path: "/" });
-    // disconnectSocket();
     navigate("/");
   };
 
@@ -127,7 +122,7 @@ const SignUpPageContainer = () => {
     e.preventDefault();
     if (unhandledClose) {
       cookies.remove("jwt", { path: "/" });
-      chatSocketDisconnect();
+      chatSocket.disconnect();
     }
   };
 
