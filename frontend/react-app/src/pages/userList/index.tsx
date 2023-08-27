@@ -20,9 +20,10 @@ const UserList = () => {
   const [filteredUserList, setFilteredUserList] = useRecoilState<UserType[]>(
     filteredUserListState,
   );
-  const [showProfile, setShowProfile] = useRecoilState(showProfileState);
-  const [preSearchFilteredList, setPreSearchFilteredList] =
-    useState<UserType[]>(filteredUserList);
+  const [, setShowProfile] = useRecoilState(showProfileState);
+  const [preSearchFilteredList, setPreSearchFilteredList] = useState<
+    UserType[]
+  >([...filteredUserList].sort((a, b) => a.nickname.localeCompare(b.nickname)));
   const [userStatusCounts, setUserStatusCounts] = useState<UserStatusCounts>({
     friendCount: 0,
     onlineCount: 0,
@@ -30,6 +31,7 @@ const UserList = () => {
     offlineCount: 0,
   });
   const [currentClick, setCurrentClick] = useState<string>("allUsers");
+  const [sortState, setSortState] = useState<string>("닉네임 순");
 
   const currentRoute = window.location.pathname;
   const CurrentSideBar = sidebarConfig[currentRoute];
@@ -76,18 +78,38 @@ const UserList = () => {
     setFilteredUserList(updatedList);
   }, [search, preSearchFilteredList]);
 
+  useEffect(() => {
+    if (sortState === "닉네임 순") {
+      setFilteredUserList(
+        [...filteredUserList].sort((a, b) =>
+          a.nickname.localeCompare(b.nickname),
+        ),
+      );
+    } else if (sortState === "랭크 점수 순") {
+      setFilteredUserList(
+        [...filteredUserList].sort((a, b) => b.rating - a.rating),
+      );
+    }
+  }, [sortState]);
+
   const handleOnAllUsersClick = () => {
     setFilteredUserList(userList);
-    setPreSearchFilteredList(userList);
+    setPreSearchFilteredList(
+      [...userList].sort((a, b) => a.nickname.localeCompare(b.nickname)),
+    );
     setCurrentClick("allUsers");
+    setSortState("닉네임 순");
   };
 
   const handleOnFriendsClick = async () => {
     const response = await getFriendList();
     const friendList = response.data;
     setFilteredUserList(friendList);
-    setPreSearchFilteredList(friendList);
+    setPreSearchFilteredList(
+      [...friendList].sort((a, b) => a.nickname.localeCompare(b.nickname)),
+    );
     setCurrentClick("friends");
+    setSortState("닉네임 순");
   };
 
   const handleOnStatusClick =
@@ -96,9 +118,12 @@ const UserList = () => {
         userList.filter((user) => user.status === userStatus),
       );
       setPreSearchFilteredList(
-        userList.filter((user) => user.status === userStatus),
+        [...userList.filter((user) => user.status === userStatus)].sort(
+          (a, b) => a.nickname.localeCompare(b.nickname),
+        ),
       );
       setCurrentClick(current);
+      setSortState("닉네임 순");
     };
 
   return (
@@ -114,7 +139,12 @@ const UserList = () => {
         currentClick={currentClick}
       />
       <DS.ContentArea>
-        <SearchComponent search={search} setSearch={setSearch} />
+        <SearchComponent
+          search={search}
+          setSearch={setSearch}
+          sortState={sortState}
+          setSortState={setSortState}
+        />
         <S.UserCardContainer>
           {filteredUserList.map((user) => (
             <UserCardComponent

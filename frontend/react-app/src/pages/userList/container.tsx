@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
 import RankingIcon from "@assets/icons/ranking.svg";
@@ -6,6 +6,8 @@ import RankingIcon from "@assets/icons/ranking.svg";
 type SearchComponentProps = {
   search: string;
   setSearch: (value: string) => void;
+  sortState: string;
+  setSortState: (value: string) => void;
 };
 
 type UserCardComponentProps = {
@@ -19,7 +21,16 @@ type UserCardComponentProps = {
 export const SearchComponent: React.FC<SearchComponentProps> = ({
   search,
   setSearch,
+  sortState,
+  setSortState,
 }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const handleSortSelection = (selectedSort: string) => {
+    setSortState(selectedSort);
+    setShowDropdown(false);
+  };
+
   return (
     <S.SearchBarContainer>
       <S.SearchBar>
@@ -33,6 +44,20 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
         />
         <S.SearchBarImg src={SearchIcon} />
       </S.SearchBar>
+      <S.SortContainer onClick={() => setShowDropdown(!showDropdown)}>
+        <S.SortArrowIcon />
+        {sortState}
+        {showDropdown && (
+          <S.SortDropdown>
+            <S.SortOption onClick={() => handleSortSelection("닉네임 순")}>
+              닉네임 순
+            </S.SortOption>
+            <S.SortOption onClick={() => handleSortSelection("랭크 점수 순")}>
+              랭크 점수 순
+            </S.SortOption>
+          </S.SortDropdown>
+        )}
+      </S.SortContainer>
     </S.SearchBarContainer>
   );
 };

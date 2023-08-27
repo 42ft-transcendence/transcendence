@@ -8,7 +8,7 @@ export const SearchBarContainer = styled.div`
 `;
 
 export const SearchBar = styled.div`
-  width: 560px;
+  width: 490px;
   height: 60px;
   background-color: ${(props) => props.theme.colors.floating};
   border-radius: 30px;
@@ -19,7 +19,7 @@ export const SearchBar = styled.div`
   align-items: center;
 
   @media (max-width: 1000px) {
-    width: 80%; // 예: 1000px 미만일 때 80%의 너비로 변경. 실제 값을 원하는대로 조정하십시오.
+    width: 70%; // 예: 1000px 미만일 때 80%의 너비로 변경. 실제 값을 원하는대로 조정하십시오.
   }
 `;
 
@@ -38,6 +38,56 @@ export const SearchBarImg = styled.img`
   width: 32px;
   height: 32px;
   margin-right: 20px;
+`;
+
+export const SortContainer = styled.div`
+  position: relative; /* 추가 */
+  width: 100px;
+  height: 60px;
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+  color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const SortArrowIcon = styled.span`
+  transform: translate(-50%, -50%) rotate(90deg);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 8px solid ${(props) => props.theme.colors.heavyPurple}; /* Adjust the size of the triangle */
+  transition: transform 0.3s ease;
+  margin-top: 7px;
+  margin-right: 5px;
+`;
+
+export const SortDropdown = styled.div`
+  position: absolute;
+  top: 70px; /* SortContainer의 높이 + 약간의 간격 */
+  left: 0;
+  width: 180px; /* 필요한 경우 크기 조절 */
+  background-color: ${(props) => props.theme.colors.floating};
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 10; /* 다른 요소 위에 올라오도록 함 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const SortOption = styled.button`
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  color: ${(props) => props.theme.colors.heavyPurple};
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 마우스 오버 효과 */
+  }
 `;
 
 export const UserCardContainer = styled.div`
