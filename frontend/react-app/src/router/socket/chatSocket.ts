@@ -1,5 +1,4 @@
 import * as ioClient from "socket.io-client";
-import * as cookies from "react-cookies";
 
 export const chatSocket = ioClient.io("http://localhost/ChatPage", {
   autoConnect: false,
@@ -9,9 +8,8 @@ export const chatSocket = ioClient.io("http://localhost/ChatPage", {
   reconnectionDelayMax: 5000,
 });
 
-export const chatSocketConnect = () => {
-  const jwt = cookies.load("jwt");
-  if (jwt) {
+export const chatSocketConnect = (jwt: string) => {
+  if (chatSocket.disconnected) {
     chatSocket.io.opts.extraHeaders = {
       Authorization: `Bearer ${jwt}`,
     };

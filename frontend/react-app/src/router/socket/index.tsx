@@ -1,5 +1,5 @@
 import { ChatType, UserType } from "@type";
-import { chatSocket } from "./chatSocket";
+import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
@@ -22,10 +22,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     // chatSocket.off("get_dm");
     // chatSocket.on("get_dm", () => {});
 
-    chatSocket.io.opts.extraHeaders = {
-      Authorization: `Bearer ${jwt}`,
-    };
-    chatSocket.connect();
+    chatSocketConnect(jwt);
   }
 
   return children;
