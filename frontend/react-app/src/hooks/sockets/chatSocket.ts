@@ -1,7 +1,7 @@
 import * as ioClient from "socket.io-client";
 import * as cookies from "react-cookies";
 
-const socket = ioClient.io("http://localhost/ChatSocket", {
+const socket = ioClient.io("http://localhost/ChatPage", {
   autoConnect: false,
   reconnection: true,
   reconnectionDelay: 100,
