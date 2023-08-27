@@ -62,8 +62,8 @@ export const SortArrowIcon = styled.span`
 
 export const SortDropdown = styled.div`
   position: absolute;
-  top: 70px; /* SortContainer의 높이 + 약간의 간격 */
-  left: 0;
+  top: 10px; /* SortContainer의 높이 + 약간의 간격 */
+  left: -10px;
   width: 180px; /* 필요한 경우 크기 조절 */
   background-color: ${(props) => props.theme.colors.floating};
   border-radius: 8px;
