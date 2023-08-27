@@ -10,7 +10,6 @@ export const HeaderCard = () => (
     <S.ProfileImage style={{ opacity: 0 }} />
     <S.Nickname style={{ fontWeight: "bold" }}>닉네임</S.Nickname>
     <S.Tier style={{ fontSize: "18px" }}>점수</S.Tier>
-    {/* <S.Record>승패</S.Record> */}
     <S.WinRate
       style={{
         width: "200px",

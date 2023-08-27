@@ -34,4 +34,5 @@ export const TopRankerRating = styled.span<{ $ranking: number }>`
       ? props.theme.colors.silver
       : props.theme.colors.bronze;
   }};
+  cursor: default;
 `;

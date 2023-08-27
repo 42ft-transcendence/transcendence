@@ -58,6 +58,7 @@ export const SortArrowIcon = styled.span`
   transition: transform 0.3s ease;
   margin-top: 7px;
   margin-right: 5px;
+  cursor: pointer;
 `;
 
 export const SortDropdown = styled.div`
@@ -72,6 +73,7 @@ export const SortDropdown = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  cursor: pointer;
 `;
 
 export const SortOption = styled.button`
@@ -108,6 +110,7 @@ export const UserCard = styled.div`
   display: flex;
   margin-left: 30px;
   margin-bottom: 30px; /* 다음 줄로 넘어갈 때의 여백 */
+  cursor: pointer;
 `;
 
 export const UserCardImg = styled.img`
@@ -138,6 +141,7 @@ export const UserCardNickname = styled.div`
   font-weight: bold;
   color: ${(props) => props.theme.colors.freezePurple};
   margin-left: 30px;
+  cursor: pointer;
 `;
 
 export const UserCardRankContainer = styled.div`
@@ -150,6 +154,7 @@ export const UserCardRankContainer = styled.div`
 export const UserCardRankImg = styled.img`
   width: 30px;
   height: 30px;
+  cursor: pointer;
 `;
 
 export const UserCardRank = styled.div`
@@ -158,4 +163,5 @@ export const UserCardRank = styled.div`
   font-family: inter;
   color: ${(props) => props.theme.colors.gold};
   margin-left: 30px;
+  cursor: pointer;
 `;

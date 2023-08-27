@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
 import RankingIcon from "@assets/icons/ranking.svg";
@@ -25,6 +25,20 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   setSortState,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSortSelection = (selectedSort: string) => {
     setSortState(selectedSort);
@@ -46,9 +60,9 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
       </S.SearchBar>
       <S.SortContainer onClick={() => setShowDropdown(!showDropdown)}>
         <S.SortArrowIcon />
-        {sortState}
+        <span style={{ cursor: "pointer" }}>{sortState}</span>
         {showDropdown && (
-          <S.SortDropdown>
+          <S.SortDropdown ref={dropdownRef}>
             <S.SortOption onClick={() => handleSortSelection("닉네임 순")}>
               닉네임 순
             </S.SortOption>

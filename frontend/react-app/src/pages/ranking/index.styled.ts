@@ -53,6 +53,7 @@ export const Rank = styled.span`
   font-size: 18px;
   font-weight: bold;
   margin-left: 10px;
+  cursor: default;
 `;
 
 export const ProfileImage = styled.img`
@@ -65,17 +66,14 @@ export const ProfileImage = styled.img`
 export const Nickname = styled.span`
   flex: 1;
   font-size: 18px;
+  cursor: default;
 `;
 
 export const Tier = styled.span`
   width: 150px;
   font-size: 16px;
   font-weight: bold;
-`;
-
-export const Record = styled.span`
-  width: 100px;
-  font-size: 16px;
+  cursor: default;
 `;
 
 export const WinRateContainer = styled.div`
@@ -90,12 +88,14 @@ export const WinRate = styled.span`
   width: 100px; // 조절 가능
   font-size: 16px;
   font-weight: bold;
+  cursor: default;
 `;
 
 export const WinRateChart = styled.div`
   width: 150px;
   height: 20px;
   position: relative;
+  cursor: default;
 `;
 
 export const WinBar = styled.div`

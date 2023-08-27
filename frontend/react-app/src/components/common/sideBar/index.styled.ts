@@ -20,4 +20,5 @@ export const TitleBox = styled.div`
   font-weight: bold;
   font-family: inter;
   color: ${(props) => props.theme.colors.freezePurple};
+  cursor: default;
 `;
