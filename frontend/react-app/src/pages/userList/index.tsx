@@ -5,11 +5,7 @@ import * as S from "./index.styled";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { UserStatus, UserType } from "@src/types";
-import {
-  allUserListState,
-  filteredUserListState,
-  showProfileState,
-} from "@src/recoil/atoms/common";
+import { allUserListState, showProfileState } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
 import { SearchComponent, UserCardComponent } from "./container";
@@ -17,9 +13,8 @@ import { SearchComponent, UserCardComponent } from "./container";
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
   const [userList] = useRecoilState<UserType[]>(allUserListState);
-  const [filteredUserList, setFilteredUserList] = useRecoilState<UserType[]>(
-    filteredUserListState,
-  );
+  const [filteredUserList, setFilteredUserList] =
+    useState<UserType[]>(userList);
   const [, setShowProfile] = useRecoilState(showProfileState);
   const [preSearchFilteredList, setPreSearchFilteredList] = useState<
     UserType[]
@@ -65,8 +60,6 @@ const UserList = () => {
   }, [userList]);
 
   useEffect(() => {
-    console.log("search", search);
-
     if (search === "") {
       setFilteredUserList([...preSearchFilteredList]);
       return;
