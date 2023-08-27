@@ -8,6 +8,7 @@ import { UserStatus, UserType } from "@src/types";
 import {
   allUserListState,
   filteredUserListState,
+  showProfileState,
 } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
@@ -19,6 +20,7 @@ const UserList = () => {
   const [filteredUserList, setFilteredUserList] = useRecoilState<UserType[]>(
     filteredUserListState,
   );
+  const [showProfile, setShowProfile] = useRecoilState(showProfileState);
   const [preSearchFilteredList, setPreSearchFilteredList] =
     useState<UserType[]>(filteredUserList);
   const [userStatusCounts, setUserStatusCounts] = useState<UserStatusCounts>({
@@ -121,6 +123,12 @@ const UserList = () => {
               status={user.status}
               nickname={user.nickname}
               rating={user.rating}
+              onClick={() => {
+                setShowProfile({
+                  showProfile: true,
+                  user: user,
+                });
+              }}
             />
           ))}
         </S.UserCardContainer>

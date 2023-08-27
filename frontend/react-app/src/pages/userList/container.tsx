@@ -13,6 +13,7 @@ type UserCardComponentProps = {
   status: number;
   nickname: string;
   rating: number;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 };
 
 export const SearchComponent: React.FC<SearchComponentProps> = ({
@@ -41,9 +42,10 @@ export const UserCardComponent: React.FC<UserCardComponentProps> = ({
   status,
   nickname,
   rating,
+  onClick,
 }) => {
   return (
-    <S.UserCard>
+    <S.UserCard onClick={onClick}>
       <S.UserCardImg src={avatarPath} />
       <S.UserCardStatus $status={status} />
       <S.UserCardNickname>{nickname}</S.UserCardNickname>
