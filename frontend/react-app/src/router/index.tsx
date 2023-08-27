@@ -4,6 +4,7 @@ import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
 import TempHome from "@src/pages/tempHome";
+import ChannelList from "@src/pages/channelList";
 
 const Router = createBrowserRouter([
   {
@@ -27,6 +28,14 @@ const Router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <SignUp />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/channel-list",
+    element: (
+      <PrivateRoute>
+        <ChannelList />
       </PrivateRoute>
     ),
   },
