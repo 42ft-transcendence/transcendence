@@ -19,6 +19,8 @@ const UserList = () => {
   const [filteredUserList, setFilteredUserList] = useRecoilState<UserType[]>(
     filteredUserListState,
   );
+  const [preSearchFilteredList, setPreSearchFilteredList] =
+    useState<UserType[]>(filteredUserList);
   const [userStatusCounts, setUserStatusCounts] = useState<UserStatusCounts>({
     friendCount: 0,
     onlineCount: 0,
@@ -57,24 +59,38 @@ const UserList = () => {
     fetchData();
   }, [userList]);
 
+  useEffect(() => {
+    console.log("search", search);
+
+    if (search === "") {
+      setFilteredUserList([...preSearchFilteredList]);
+      return;
+    }
+
+    const updatedList = preSearchFilteredList.filter((user) =>
+      user.nickname.includes(search),
+    );
+    setFilteredUserList(updatedList);
+  }, [search, preSearchFilteredList]);
+
   const handleOnAllUsersClick = () => {
     setFilteredUserList(userList);
+    setPreSearchFilteredList(userList);
   };
 
   const handleOnFriendsClick = async () => {
     const response = await getFriendList();
     const friendList = response.data;
     setFilteredUserList(friendList);
+    setPreSearchFilteredList(friendList);
   };
 
   const handleOnStatusClick = (userStatus: UserStatus) => () => {
     setFilteredUserList(userList.filter((user) => user.status === userStatus));
+    setPreSearchFilteredList(
+      userList.filter((user) => user.status === userStatus),
+    );
   };
-
-  useEffect(() => {
-    console.log("search", search);
-    console.log("filteredUserList", filteredUserList);
-  }, [search]);
 
   return (
     <>
