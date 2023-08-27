@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import { theme } from "../../style/theme";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -89,56 +88,6 @@ export const ProfileRatingEachTextContainer = styled.div<{ color: string }>`
   display: flex;
   // color는 props로 받아옴
   color: ${(props) => props.color};
-`;
-
-export const ProfileDoughnutContainer = styled.div`
-  position: relative;
-  width: 150px;
-  height: 150px;
-  margin: 0 auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-`;
-
-export const ProfileDoughnutText = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* 화면의 정확한 중앙에 배치 */
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: inter;
-`;
-
-export const ProfileDoughnutSlideCircleContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ProfileDoughnutSlideCircle = styled.div.attrs<{
-  $status: number;
-  $select: number;
-}>(({ $status, $select }) => ({
-  style: {
-    backgroundColor:
-      $status === $select
-        ? theme.colors.freezePurple
-        : theme.colors.darkFreezePurple,
-  },
-}))<{ status: number; select: number }>`
-  width: 8px;
-  height: 8px;
-  border: none;
-  border-radius: 50%; // 원 모양을 만들기 위해
-  cursor: pointer;
-  outline: none; // 선택 시 테두리 제거
-  margin: 0 4px;
 `;
 
 export const ProfileButtonContainer = styled.div`
