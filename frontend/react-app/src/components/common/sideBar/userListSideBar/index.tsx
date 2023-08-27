@@ -11,6 +11,7 @@ interface UserListSideBarProps {
   onGamingClick: () => void;
   onOfflineClick: () => void;
   userStatusCounts: UserStatusCounts;
+  currentClick: string;
 }
 
 const UserListSideBar: React.FC<UserListSideBarProps> = ({
@@ -20,6 +21,7 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
   onGamingClick,
   onOfflineClick,
   userStatusCounts,
+  currentClick,
 }) => {
   const [allUserList] = useRecoilState(allUserListState);
 
@@ -29,13 +31,13 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
       text1: "전체",
       text2: `${allUserList.length.toString()}`,
       onClick: onAllUsersClick,
-      theme: "LIGHT",
+      theme: currentClick === "allUsers" ? "DARK" : "LIGHT",
     },
     {
       text1: "친구",
       text2: `${userStatusCounts.friendCount.toString()}`,
       onClick: onFriendsClick,
-      theme: "LIGHT",
+      theme: currentClick === "friends" ? "DARK" : "LIGHT",
     },
   ];
 
@@ -44,19 +46,19 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
       text1: "온라인",
       text2: `${userStatusCounts.onlineCount.toString()}`,
       onClick: onOnlineClick,
-      theme: "LIGHT",
+      theme: currentClick === "online" ? "DARK" : "LIGHT",
     },
     {
       text1: "게임중",
       text2: `${userStatusCounts.gamingCount.toString()}`,
       onClick: onGamingClick,
-      theme: "LIGHT",
+      theme: currentClick === "gaming" ? "DARK" : "LIGHT",
     },
     {
       text1: "오프라인",
       text2: `${userStatusCounts.offlineCount.toString()}`,
       onClick: onOfflineClick,
-      theme: "LIGHT",
+      theme: currentClick === "offline" ? "DARK" : "LIGHT",
     },
   ];
 

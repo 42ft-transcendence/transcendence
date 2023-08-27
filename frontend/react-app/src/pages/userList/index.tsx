@@ -27,6 +27,7 @@ const UserList = () => {
     gamingCount: 0,
     offlineCount: 0,
   });
+  const [currentClick, setCurrentClick] = useState<string>("allUsers");
 
   const currentRoute = window.location.pathname;
   const CurrentSideBar = sidebarConfig[currentRoute];
@@ -76,6 +77,7 @@ const UserList = () => {
   const handleOnAllUsersClick = () => {
     setFilteredUserList(userList);
     setPreSearchFilteredList(userList);
+    setCurrentClick("allUsers");
   };
 
   const handleOnFriendsClick = async () => {
@@ -83,14 +85,19 @@ const UserList = () => {
     const friendList = response.data;
     setFilteredUserList(friendList);
     setPreSearchFilteredList(friendList);
+    setCurrentClick("friends");
   };
 
-  const handleOnStatusClick = (userStatus: UserStatus) => () => {
-    setFilteredUserList(userList.filter((user) => user.status === userStatus));
-    setPreSearchFilteredList(
-      userList.filter((user) => user.status === userStatus),
-    );
-  };
+  const handleOnStatusClick =
+    (userStatus: UserStatus, current: string) => () => {
+      setFilteredUserList(
+        userList.filter((user) => user.status === userStatus),
+      );
+      setPreSearchFilteredList(
+        userList.filter((user) => user.status === userStatus),
+      );
+      setCurrentClick(current);
+    };
 
   return (
     <>
@@ -98,10 +105,11 @@ const UserList = () => {
       <CurrentSideBarComponent
         onAllUsersClick={handleOnAllUsersClick}
         onFriendsClick={handleOnFriendsClick}
-        onOnlineClick={handleOnStatusClick(UserStatus.ONLINE)}
-        onGamingClick={handleOnStatusClick(UserStatus.GAMING)}
-        onOfflineClick={handleOnStatusClick(UserStatus.OFFLINE)}
+        onOnlineClick={handleOnStatusClick(UserStatus.ONLINE, "online")}
+        onGamingClick={handleOnStatusClick(UserStatus.GAMING, "gaming")}
+        onOfflineClick={handleOnStatusClick(UserStatus.OFFLINE, "offline")}
         userStatusCounts={userStatusCounts}
+        currentClick={currentClick}
       />
       <DS.ContentArea>
         <SearchComponent search={search} setSearch={setSearch} />
