@@ -1,3 +1,4 @@
+import { chatSocketDisconnect } from "@hooks/sockets/chatSocket";
 import {
   LoginButtonContainer,
   LoginButtonImage,
@@ -7,6 +8,8 @@ import {
   LoginLogoImage,
   PageContainer,
 } from "./index.styled";
+import { useRecoilState } from "recoil";
+import { initialUserData, userDataState } from "@src/recoil/atoms/common";
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
@@ -56,6 +59,13 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
+  chatSocketDisconnect();
+  const [userData, setUserData] = useRecoilState(userDataState);
+
+  if (userData.id !== "0") {
+    // localStorage 초기화
+    setUserData(initialUserData);
+  }
 
   return (
     <PageContainer>

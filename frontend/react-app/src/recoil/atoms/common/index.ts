@@ -5,22 +5,24 @@ import { ProfileModalType } from "@type/index";
 
 const { persistAtom } = recoilPersist();
 
+export const initialUserData = {
+  id: "0",
+  nickname: "guest",
+  win: 0,
+  lose: 0,
+  ladder_win: 0,
+  ladder_lose: 0,
+  admin: false,
+  avatarPath: "",
+  status: 0,
+  twoFactorAuthenticationSecret: "",
+  isTwoFactorAuthenticationEnabled: false,
+  rating: 1000,
+};
+
 export const userDataState = atom<UserType>({
   key: "userDataState",
-  default: {
-    id: "0",
-    nickname: "guest",
-    win: 0,
-    lose: 0,
-    ladder_win: 0,
-    ladder_lose: 0,
-    admin: false,
-    avatarPath: "src/img_files",
-    status: 0,
-    twoFactorAuthenticationSecret: "",
-    isTwoFactorAuthenticationEnabled: false,
-    rating: 1000,
-  },
+  default: initialUserData,
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -36,6 +38,11 @@ export const showProfileState = atom<ProfileModalType>({
     showProfile: false,
     user: {} as UserType,
   },
+});
+
+export const otherUserDataState = atom<UserType>({
+  key: "otherUserDataState",
+  default: initialUserData,
 });
 
 export const showProfileSlideState = atom<number>({
