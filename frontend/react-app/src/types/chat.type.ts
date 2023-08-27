@@ -1,7 +1,6 @@
 import { UserType } from "./user.type";
 
 export type RoleType = "self" | "owner" | "admin" | "attendee";
-
 export interface ChatType {
   user: UserType;
   message: MessageType;
