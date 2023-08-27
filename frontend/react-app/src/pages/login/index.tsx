@@ -68,7 +68,7 @@ export default function Login() {
   const [userData, setUserData] = useRecoilState(userDataState);
 
   // 임시 더미 데이터 생성 작업
-  const [userList, setUserList] = useRecoilState(allUserListState);
+  const [, setUserList] = useRecoilState(allUserListState);
 
   useEffect(() => {
     if (userData.id !== "0") {
@@ -77,11 +77,9 @@ export default function Login() {
     }
 
     // 임시 더미 데이터 생성 작업
-    if (userList.length === 0) {
-      const dummyData = createDummyUsers(50); // 50명의 더미 데이터 생성
-      setUserList(dummyData);
-    }
-  }, [userData, setUserData]);
+    const dummyData = createDummyUsers(50); // 50명의 더미 데이터 생성
+    setUserList(dummyData);
+  }, [userData]);
 
   return (
     <PageContainer>
