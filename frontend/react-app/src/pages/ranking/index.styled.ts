@@ -28,7 +28,6 @@ export const RankingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
   overflow-y: scroll;
 `;
 
@@ -52,6 +51,7 @@ export const Rank = styled.span`
   width: 30px;
   font-size: 18px;
   font-weight: bold;
+  margin-left: 10px;
 `;
 
 export const ProfileImage = styled.img`
@@ -75,4 +75,50 @@ export const Tier = styled.span`
 export const Record = styled.span`
   width: 100px;
   font-size: 16px;
+`;
+
+export const WinRateContainer = styled.div`
+  width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  right: 0;
+`;
+
+export const WinRate = styled.span`
+  width: 100px; // 조절 가능
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+export const WinRateChart = styled.div`
+  width: 150px;
+  height: 20px;
+  position: relative;
+`;
+
+export const WinBar = styled.div`
+  position: absolute;
+  height: 100%;
+  left: 0;
+  background-color: ${(props) => props.theme.colors.win}};
+`;
+
+export const LoseBar = styled.div`
+  position: absolute;
+  height: 100%;
+  right: 0;
+  background-color: ${(props) => props.theme.colors.lose}}};
+`;
+
+export const WinText = styled.span`
+  position: absolute;
+  left: 5px;
+  color: ${(props) => props.theme.colors.freezePurple}};
+`;
+
+export const LoseText = styled.span`
+  position: absolute;
+  right: 5px;
+  color: ${(props) => props.theme.colors.freezePurple}};
 `;
