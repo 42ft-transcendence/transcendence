@@ -15,7 +15,6 @@ import { userDataState } from "@recoil/atoms/common";
 import { UserType } from "@src/types";
 import { AxiosResponse } from "axios";
 import { useProfileActions } from "@src/hooks/useProfileActions";
-import { chatSocket } from "@src/router/socket/chatSocket";
 
 const SignUpPageContainer = () => {
   const [userData, setUserData] = useRecoilState<UserType>(userDataState);
@@ -122,7 +121,6 @@ const SignUpPageContainer = () => {
     e.preventDefault();
     if (unhandledClose) {
       cookies.remove("jwt", { path: "/" });
-      chatSocket.disconnect();
     }
   };
 
