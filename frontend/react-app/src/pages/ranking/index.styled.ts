@@ -24,7 +24,8 @@ export const SearchContainer = styled.div`
 
 export const RankingContainer = styled.div`
   width: 100%;
-  height: calc(100% - 120px); // height 대신 min-height를 사용
+  // height: calc(100% - 120px); // height 대신 min-height를 사용
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
