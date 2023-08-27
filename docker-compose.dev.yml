@@ -65,6 +65,7 @@ services:
     networks:
       - net-transcendence
     volumes:
+      - vol-images:/usr/share/nginx/images
       - vol-profiles:/usr/share/nginx/profiles
     depends_on:
       - srv-backend
@@ -77,6 +78,14 @@ networks:
 volumes:
   vol-postgres:
     name: dev-postgres
+
+  vol-images:
+    name: dev-images
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./share/images
 
   vol-profiles:
     name: dev-profiles
