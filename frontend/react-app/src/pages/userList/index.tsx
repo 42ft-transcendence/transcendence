@@ -2,7 +2,6 @@ import NavBar from "@src/components/common/navBar";
 import { sidebarConfig } from "@src/components/common/sideBar";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { UserStatus, UserType } from "@src/types";
@@ -12,6 +11,7 @@ import {
 } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
+import { SearchComponent, UserCardComponent } from "./container";
 
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
@@ -25,6 +25,7 @@ const UserList = () => {
     gamingCount: 0,
     offlineCount: 0,
   });
+
   const currentRoute = window.location.pathname;
   const CurrentSideBar = sidebarConfig[currentRoute];
   const CurrentSideBarComponent = CurrentSideBar.component;
@@ -54,7 +55,7 @@ const UserList = () => {
     };
 
     fetchData();
-  }, [userList, setFilteredUserList]);
+  }, [userList]);
 
   const handleOnAllUsersClick = () => {
     setFilteredUserList(userList);
@@ -66,12 +67,13 @@ const UserList = () => {
     setFilteredUserList(friendList);
   };
 
-  const handleOnStatusClick = (userStatus: UserStatus) => {
+  const handleOnStatusClick = (userStatus: UserStatus) => () => {
     setFilteredUserList(userList.filter((user) => user.status === userStatus));
   };
 
   useEffect(() => {
     console.log("search", search);
+    console.log("filteredUserList", filteredUserList);
   }, [search]);
 
   return (
@@ -86,21 +88,17 @@ const UserList = () => {
         userStatusCounts={userStatusCounts}
       />
       <DS.ContentArea>
-        <S.SearchBarContainer>
-          <S.SearchBar>
-            <S.SearchBarInput
-              type="text"
-              placeholder="유저 닉네임 검색"
-              maxLength={10}
-              id="nickname"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <S.SearchBarImg src={SearchIcon} />
-          </S.SearchBar>
-        </S.SearchBarContainer>
+        <SearchComponent search={search} setSearch={setSearch} />
         <S.UserCardContainer>
-          <S.UserCard></S.UserCard>
+          {filteredUserList.map((user) => (
+            <UserCardComponent
+              key={user.id}
+              avatarPath={user.avatarPath}
+              status={user.status}
+              nickname={user.nickname}
+              rating={user.rating}
+            />
+          ))}
         </S.UserCardContainer>
       </DS.ContentArea>
     </>

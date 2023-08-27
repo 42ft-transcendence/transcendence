@@ -39,3 +39,73 @@ export const SearchBarImg = styled.img`
   height: 32px;
   margin-right: 20px;
 `;
+
+export const UserCardContainer = styled.div`
+  width: 100%;
+  height: calc(100% - 120px);
+  display: flex;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+`;
+
+export const UserCard = styled.div`
+  width: 360px;
+  height: 100px;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  border-radius: 20px;
+  align-items: center;
+  display: flex;
+  margin-left: 30px;
+  margin-bottom: 30px; /* 다음 줄로 넘어갈 때의 여백 */
+`;
+
+export const UserCardImg = styled.img`
+  width: 70px;
+  height: 70px;
+  border-radius: 35px;
+  margin-left: 30px;
+  background-color: ${(props) => props.theme.colors.floating};
+`;
+
+export const UserCardStatus = styled.div<{ $status: number }>`
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  margin-left: -15px;
+  margin-top: 50px;
+  background-color: ${(props) => {
+    return props.$status === 0
+      ? props.theme.colors.online
+      : props.$status === 1
+      ? props.theme.colors.gaming
+      : props.theme.colors.offline;
+  }};
+`;
+
+export const UserCardNickname = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  color: ${(props) => props.theme.colors.freezePurple};
+  margin-left: 30px;
+`;
+
+export const UserCardRankContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 30px;
+  gap: 10px;
+`;
+
+export const UserCardRankImg = styled.img`
+  width: 30px;
+  height: 30px;
+`;
+
+export const UserCardRank = styled.div`
+  font-size: 20px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.gold};
+  margin-left: 30px;
+`;
