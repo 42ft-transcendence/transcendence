@@ -61,6 +61,7 @@ const UserList = () => {
 
   useEffect(() => {
     if (search === "") {
+      setSortState("닉네임 순");
       setFilteredUserList([...preSearchFilteredList]);
       return;
     }
