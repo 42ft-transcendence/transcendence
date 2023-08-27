@@ -25,3 +25,10 @@ export interface LoginResponseDataType {
   nickname: string;
   avatarPath: string;
 }
+
+export interface UserStatusCounts {
+  friendCount: number;
+  onlineCount: number;
+  gamingCount: number;
+  offlineCount: number;
+}

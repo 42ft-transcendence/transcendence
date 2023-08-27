@@ -18,6 +18,12 @@ export const allUserListState = atom<UserType[]>({
   effects_UNSTABLE: [persistAtom],
 });
 
+export const filteredUserListState = atom<UserType[]>({
+  key: "filteredUserListState",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
 export const showProfileState = atom<ProfileModalType>({
   key: "showProfileState",
   default: {
