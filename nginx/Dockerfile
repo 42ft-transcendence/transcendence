@@ -4,6 +4,5 @@ FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
 # Copy the configuration into the container at /etc/nginx
 COPY nginx.conf /etc/nginx/conf.d/
-COPY favicon.ico /usr/share/nginx/
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
