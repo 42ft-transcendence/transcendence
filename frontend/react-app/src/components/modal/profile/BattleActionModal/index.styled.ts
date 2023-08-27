@@ -12,7 +12,7 @@ export const ModalWrapper = styled.div`
   left: 50%; /* 화면의 중앙에 위치시킴 */
   transform: translate(-50%, -50%); /* 화면의 정확한 중앙에 배치 */
 
-  z-index: 1000; /* 다른 요소 위에 오도록 z-index를 높게 설정 */
+  z-index: 301; /* 다른 요소 위에 오도록 z-index를 높게 설정 */
   background-color: rgba(0, 0, 0, 0); /* 반투명한 배경 */
   width: 100vw; /* 화면의 너비 전체 */
   height: 100vh; /* 화면의 높이 전체 */

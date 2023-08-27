@@ -13,7 +13,8 @@ import UsersBlue from "@assets/icons/UsersBlue.svg";
 import { useRecoilState } from "recoil";
 import { settingOptionModalState } from "@recoil/atoms/modal";
 import { SettingOptionModal } from "./container";
-import { userDataState } from "@src/recoil/atoms/common";
+import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import ProfileModal from "@src/components/modal/profile";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -49,6 +50,7 @@ const upperTabs = [
 const NavBar = () => {
   const [, setSettingOptionModalOpen] = useRecoilState(settingOptionModalState);
   const [userData] = useRecoilState(userDataState);
+  const [showProfile] = useRecoilState(showProfileState);
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
@@ -90,7 +92,9 @@ const NavBar = () => {
           </button>
         </li>
       </S.TabList>
+      {/* 아래는 모달 적용 영역입니다 */}
       <SettingOptionModal />
+      {showProfile && <ProfileModal />}
     </S.Container>
   );
 };

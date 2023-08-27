@@ -1,28 +1,7 @@
-import {
-  Chart,
-  ArcElement,
-  DoughnutController,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
-import { IconButton } from "../Buttons";
-import {
-  ProfileButtonContainer,
-  ProfileDoughnutContainer,
-  ProfileDoughnutText,
-  ProfileRatingContainer,
-  ProfileRatingEachImgContainer,
-  ProfileRatingEachTextContainer,
-  ProfileRatingTextContainer,
-} from "./index.styled";
-import { Doughnut } from "react-chartjs-2";
-import { theme } from "../../style/theme";
-import { RoleType } from "../../types";
+import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
 import { useRecoilState } from "recoil";
-import { showProfileState, userDataState } from "../../recoil/atoms/common";
+import { useNavigate } from "react-router-dom";
 import {
   addBlock,
   addFriend,
@@ -31,32 +10,18 @@ import {
   getBlockList,
   getFriendList,
   offerBattle,
-} from "@src/Api";
+} from "@src/api";
 import { useEffect, useState } from "react";
-
-Chart.register(ArcElement, DoughnutController, Title, Tooltip, Legend, Filler);
+import { RoleType, UserType } from "@src/types";
+import { IconButton } from "@src/components/buttons";
+import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 
 interface ProfileButtonActionsProps {
-  role: RoleType; // "default" | "owner" | "admin"
+  role: RoleType; // "self" | "attendee" | "owner" | "admin"
 }
 
 interface ProfileButtonProps {
   buttons: { label: string; action: () => void; src: string }[];
-}
-
-type isRankingType = 1 | 2;
-
-interface ProfileWinRateDoughnutProps {
-  wins: number;
-  losses: number;
-  rating: number;
-  isRanking: isRankingType;
-}
-
-interface ProfileRatingEachProps {
-  src: string;
-  text: string;
-  color: string;
 }
 
 const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
@@ -78,9 +43,10 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
 export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [myData] = useRecoilState(userDataState);
   // 상대 프로필 유저
-  const [user] = useRecoilState(showProfileState);
+  const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // 친구 상태인지 확인
   const checkFriend = async (): Promise<void> => {
@@ -158,62 +124,68 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "대전 신청",
       action: handleBattleOffer,
-      src: "src/assets/battle.svg",
+      src: "src/assets/icons/battle.svg",
     },
     {
       label: "친구 추가",
       action: handleAddFriend,
-      src: "src/assets/addFriend.svg",
+      src: "src/assets/icons/addFriend.svg",
     },
     {
       label: "친구 삭제",
       action: handleDeleteFriend,
-      src: "src/assets/deleteFriend.svg",
+      src: "src/assets/iconsdeleteFriend.svg",
     },
     {
       label: "차단 하기",
       action: handleAddBlock,
-      src: "src/assets/block.svg",
+      src: "src/assets/icons/block.svg",
     },
     {
       label: "차단 해제",
       action: handleDeleteBlock,
-      src: "src/assets/unblock.svg",
+      src: "src/assets/icons/unblock.svg",
     },
     {
       label: "DM 보내기",
       action: () => console.log("handleActionSendMessage"),
-      src: "src/assets/sendMessage.svg",
+      src: "src/assets/icons/sendMessage.svg",
     },
     {
       label: "전적 보기",
-      action: () => console.log("handleActionShowRecord"),
-      src: "src/assets/showRecord.svg",
+      action: () => {
+        navigate(`/profile/${user.user.id}`);
+        setShowProfile({
+          showProfile: false,
+          user: {} as UserType,
+        });
+      },
+      src: "src/assets/icons/showRecord.svg",
     },
     {
       label: "채팅 금지",
       action: () => console.log("handleActionBanChat"),
-      src: "src/assets/banChat.svg",
+      src: "src/assets/icons/banChat.svg",
     },
     {
       label: "채팅 금지 해제",
       action: () => console.log("handleActionUnbanChat"),
-      src: "src/assets/unbanChat.svg",
+      src: "src/assets/icons/unbanChat.svg",
     },
     {
       label: "강제 퇴장",
       action: () => console.log("handleActionKick"),
-      src: "src/assets/kick.svg",
+      src: "src/assets/icons/kick.svg",
     },
     {
       label: "관리자 설정",
       action: () => console.log("handleActionSetAdmin"),
-      src: "src/assets/setAdmin.svg",
+      src: "src/assets/icons/setAdmin.svg",
     },
     {
       label: "관리자 해제",
       action: () => console.log("handleActionUnsetAdmin"),
-      src: "src/assets/unsetAdmin.svg",
+      src: "src/assets/icons/unsetAdmin.svg",
     },
   ];
 
@@ -262,99 +234,4 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   }
 
   return <ProfileButtons buttons={filteredButtons} />;
-};
-
-const ProfileWinRateImgTextBox: React.FC<ProfileRatingEachProps> = ({
-  src,
-  text,
-  color,
-}) => {
-  return (
-    <>
-      <ProfileRatingEachImgContainer src={src} />
-      <ProfileRatingEachTextContainer color={color}>
-        {text}
-      </ProfileRatingEachTextContainer>
-    </>
-  );
-};
-
-export const ProfileWinRateDoughnut: React.FC<ProfileWinRateDoughnutProps> = ({
-  wins,
-  losses,
-  rating,
-  isRanking,
-}) => {
-  const totalGames = wins + losses;
-  const winRate = totalGames === 0 ? 50 : (wins / totalGames) * 100;
-  console.log(wins, losses, totalGames, winRate);
-  const data = {
-    labels: ["Wins", "Losses"],
-    datasets: [
-      {
-        data: [wins === 0 ? 50 : wins, losses === 0 ? 50 : losses],
-        backgroundColor: [theme.colors.win, theme.colors.lose],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const options = {
-    cutoutPercentage: 70,
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-        position: "bottom",
-      },
-    },
-    tooltips: {
-      enabled: false,
-    },
-    animation: {
-      animateScale: true,
-      animateRotate: true,
-    },
-  };
-
-  const winRateTextBoxData = [
-    {
-      src: "src/assets/ranking.svg",
-      text: `${isRanking === 1 ? rating : "일반전"}`,
-      color: theme.colors.gold,
-    },
-    {
-      src: "src/assets/win.svg",
-      text: `${wins} 승`,
-      color: theme.colors.win,
-    },
-    {
-      src: "src/assets/lose.svg",
-      text: `${losses} 패`,
-      color: theme.colors.lose,
-    },
-  ];
-
-  return (
-    <ProfileRatingContainer>
-      <ProfileRatingTextContainer>
-        {winRateTextBoxData.map((data, index) => (
-          <ProfileWinRateImgTextBox
-            key={index}
-            src={data.src}
-            text={data.text}
-            color={data.color}
-          />
-        ))}
-      </ProfileRatingTextContainer>
-      <ProfileDoughnutContainer>
-        <Doughnut data={data} options={options} />
-        <ProfileDoughnutText>
-          <>승률</>
-          <br />
-          <>{winRate.toFixed(1)}%</>
-        </ProfileDoughnutText>
-      </ProfileDoughnutContainer>
-    </ProfileRatingContainer>
-  );
 };
