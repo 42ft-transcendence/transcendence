@@ -2,6 +2,7 @@ import { UserType } from "@src/types";
 import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
+import { ProfileModalOnClickHandler } from "@src/utils";
 
 export const HeaderCard = () => (
   <S.HeaderCard>
@@ -65,12 +66,7 @@ export const UserCard = ({
       <S.Nickname>
         <span
           style={{ cursor: "pointer" }}
-          onClick={() => {
-            setShowProfile({
-              showProfile: true,
-              user: user,
-            });
-          }}
+          onClick={ProfileModalOnClickHandler(setShowProfile, true, user)}
         >
           {user.nickname}
         </span>

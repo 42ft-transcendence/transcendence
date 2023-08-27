@@ -36,7 +36,11 @@ export const TopRankers = () => {
                   <>
                     <S.TopRankerImg src={top3MedalIconList[index]} />
                     <S.TopRankerNickname
-                      onClick={ProfileModalOnClickHandler(setShowProfile, user)}
+                      onClick={ProfileModalOnClickHandler(
+                        setShowProfile,
+                        true,
+                        user,
+                      )}
                     >
                       {user.nickname}
                     </S.TopRankerNickname>

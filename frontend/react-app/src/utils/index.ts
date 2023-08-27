@@ -7,10 +7,14 @@ type ShowProfilePayload = {
 };
 
 export const ProfileModalOnClickHandler =
-  (setShowProfile: SetterOrUpdater<ShowProfilePayload>, user: UserType) =>
+  (
+    setShowProfile: SetterOrUpdater<ShowProfilePayload>,
+    showProfile: boolean,
+    user: UserType,
+  ) =>
   () => {
     setShowProfile({
-      showProfile: true,
+      showProfile: showProfile,
       user,
     });
   };

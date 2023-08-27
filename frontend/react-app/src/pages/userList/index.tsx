@@ -9,6 +9,7 @@ import { allUserListState, showProfileState } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
 import { SearchComponent, UserCardComponent } from "./container";
+import { ProfileModalOnClickHandler } from "@src/utils";
 
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
@@ -147,12 +148,7 @@ const UserList = () => {
               status={user.status}
               nickname={user.nickname}
               rating={user.rating}
-              onClick={() => {
-                setShowProfile({
-                  showProfile: true,
-                  user: user,
-                });
-              }}
+              onClick={ProfileModalOnClickHandler(setShowProfile, true, user)}
             />
           ))}
         </S.UserCardContainer>

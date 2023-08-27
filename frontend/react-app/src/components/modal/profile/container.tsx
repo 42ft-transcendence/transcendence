@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { RoleType, UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import { ProfileModalOnClickHandler } from "@src/utils";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -155,10 +156,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       label: "전적 보기",
       action: () => {
         navigate(`/profile/${user.user.id}`);
-        setShowProfile({
-          showProfile: false,
-          user: {} as UserType,
-        });
+        ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
       },
       src: "src/assets/icons/showRecord.svg",
     },

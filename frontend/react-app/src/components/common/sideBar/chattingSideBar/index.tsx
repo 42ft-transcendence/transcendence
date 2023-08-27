@@ -2,6 +2,7 @@ import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
 import { useRecoilState } from "recoil";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import { ProfileModalOnClickHandler } from "@src/utils";
 
 const ChattingSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -35,12 +36,7 @@ const ChattingSideBar = () => {
     {
       title: "프로필 모달 테스트",
       iconSrc: "",
-      onClick: () => {
-        setShowProfile({
-          showProfile: true,
-          user: userData,
-        });
-      },
+      onClick: ProfileModalOnClickHandler(setShowProfile, true, userData),
       theme: "LIGHT",
     },
   ];
