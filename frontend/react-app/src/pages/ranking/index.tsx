@@ -22,7 +22,8 @@ const Ranking = () => {
       <NavBar />
       <CurrentSideBarComponent />
       <DS.ContentArea>
-        {/* <S.ToolBarContainer>
+        {/* // TODO: ToolBarContainer
+        <S.ToolBarContainer>
           <S.TierContainer>TierContainer</S.TierContainer>
           <div>toolBar area</div>
           <S.SearchContainer>SearchContainer</S.SearchContainer>

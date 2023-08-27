@@ -1,5 +1,7 @@
 import { UserType } from "@src/types";
 import * as S from "./index.styled";
+import { useRecoilState } from "recoil";
+import { showProfileState } from "@src/recoil/atoms/common";
 
 export const HeaderCard = () => (
   <S.HeaderCard>
@@ -53,17 +55,33 @@ export const UserCard = ({
 }: {
   user: UserType;
   index: number;
-}) => (
-  <S.UserCard key={user.id}>
-    <S.Rank>{index + 1}</S.Rank>
-    <S.ProfileImage src={user.avatarPath} alt={user.nickname} />
-    <S.Nickname>{user.nickname}</S.Nickname>
-    <S.Tier>{user.rating} LP</S.Tier>
-    <S.WinRateContainer>
-      <WinRateChart win={user.ladder_win} lose={user.ladder_lose} />
-      <S.WinRate>
-        {calculateWinRate(user.ladder_win, user.ladder_lose)}%
-      </S.WinRate>
-    </S.WinRateContainer>
-  </S.UserCard>
-);
+}) => {
+  const [, setShowProfile] = useRecoilState(showProfileState);
+
+  return (
+    <S.UserCard key={user.id}>
+      <S.Rank>{index + 1}</S.Rank>
+      <S.ProfileImage src={user.avatarPath} alt={user.nickname} />
+      <S.Nickname>
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setShowProfile({
+              showProfile: true,
+              user: user,
+            });
+          }}
+        >
+          {user.nickname}
+        </span>
+      </S.Nickname>
+      <S.Tier>{user.rating} LP</S.Tier>
+      <S.WinRateContainer>
+        <WinRateChart win={user.ladder_win} lose={user.ladder_lose} />
+        <S.WinRate>
+          {calculateWinRate(user.ladder_win, user.ladder_lose)}%
+        </S.WinRate>
+      </S.WinRateContainer>
+    </S.UserCard>
+  );
+};
