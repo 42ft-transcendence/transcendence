@@ -1,6 +1,7 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 import {
   addBlock,
   addFriend,
@@ -11,7 +12,7 @@ import {
   offerBattle,
 } from "@src/api";
 import { useEffect, useState } from "react";
-import { RoleType } from "@src/types";
+import { RoleType, UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 
@@ -42,9 +43,10 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
 export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [myData] = useRecoilState(userDataState);
   // 상대 프로필 유저
-  const [user] = useRecoilState(showProfileState);
+  const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // 친구 상태인지 확인
   const checkFriend = async (): Promise<void> => {
@@ -151,7 +153,13 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     },
     {
       label: "전적 보기",
-      action: () => console.log("handleActionShowRecord"),
+      action: () => {
+        navigate(`/profile/${user.user.id}`);
+        setShowProfile({
+          showProfile: false,
+          user: {} as UserType,
+        });
+      },
       src: "src/assets/icons/showRecord.svg",
     },
     {
