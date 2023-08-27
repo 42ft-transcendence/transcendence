@@ -1,7 +1,7 @@
 import NavBar from "@src/components/common/navBar";
 import { sidebarConfig } from "@src/components/common/sideBar";
 
-const TempHome = () => {
+const UserList = () => {
   const currentRoute = window.location.pathname;
 
   console.log("currentRoute", currentRoute);
@@ -16,4 +16,4 @@ const TempHome = () => {
   );
 };
 
-export default TempHome;
+export default UserList;

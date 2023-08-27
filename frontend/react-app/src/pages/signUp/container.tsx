@@ -18,71 +18,18 @@ import {
   chatSocketConnect,
   chatSocketDisconnect,
 } from "@hooks/sockets/chatSocket";
+import { useProfileActions } from "@src/hooks/useProfileActions";
 
 const SignUpPageContainer = () => {
   const [userData, setUserData] = useRecoilState<UserType>(userDataState);
-  const [selectedImage, setSelectedImage] = useState<string>(
-    userData.avatarPath,
-  );
   const [validateMessage, setValidateMessage] = useState(""); // 닉네임 중복 여부 메시지
   const [validateNickname, setValidateNickname] = useState("true"); // 닉네임 중복 여부
+  const { deleteImage, handleDefaultProfile, handleImageChange } =
+    useProfileActions(setUserData);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   let unhandledClose = true;
   chatSocketConnect();
-
-  const deleteImage = async () => {
-    try {
-      const deleteResponse = await deleteAvatar();
-      if (deleteResponse.status === 200) {
-        console.log("deleteResponse: ", deleteResponse);
-        console.log("기존 이미지 삭제 성공");
-      }
-    } catch (deleteError) {
-      console.log("기존 이미지 삭제 실패");
-    }
-  };
-
-  const saveAvatarPath = async (imageURL: string) => {
-    await setAvatarPath(imageURL).then(() => {
-      // 업로드한 이미지 경로 저장
-      setUserData((data: UserType) => ({
-        // 유저 데이터 업데이트
-        ...data,
-        avatarPath: imageURL,
-      }));
-    });
-  };
-
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = e.target.files?.[0];
-      if (file) {
-        const formData = new FormData(); // FormData 생성
-        formData.append("file", file); // file이라는 이름으로 파일 추가
-        // 현재 업로드한 이미지 삭제 (백엔드에서 기본 이미지는 삭제하지 않음)
-        await deleteImage();
-        setSelectedImage(URL.createObjectURL(file)); // 선택한 이미지 미리보기
-        const response: AxiosResponse<UploadAvatarResponse> =
-          await uploadAvatar(formData); // 이미지 업로드
-        if (response.status === 201) {
-          // 업로드 성공
-          await saveAvatarPath(response.data.imageURL); // 업로드한 이미지 경로 저장
-        } else throw response; // 업로드 실패
-      }
-    } catch (error) {
-      console.log("handleImageChange error: ", error);
-    }
-  };
-
-  const handleDefaultProfile = async () => {
-    const randomPath = `http://localhost/files/profiles/profile${Math.floor(
-      Math.random() * 4,
-    )}.svg`;
-    await deleteImage();
-    await saveAvatarPath(randomPath);
-    setSelectedImage(randomPath);
-  };
 
   const handleCancel = async () => {
     console.log("회원 가입 취소");
@@ -186,7 +133,7 @@ const SignUpPageContainer = () => {
 
   return (
     <SignUpPageView
-      selectedImage={selectedImage}
+      selectedImage={userData.avatarPath}
       validateNickname={validateNickname}
       validateMessage={validateMessage}
       onImageChange={(e) => {

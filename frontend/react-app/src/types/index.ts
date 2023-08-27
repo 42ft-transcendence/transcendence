@@ -18,4 +18,6 @@ export type {
 
 export type { OfferGameType } from "./game.type";
 
-export type { CheckNicknameType } from "./response.type";
+export type { CheckNicknameType, ButtonHanderProps } from "./response.type";
+
+export type { SidebarComponentType, SidebarConfigType } from "./rendering.type";
