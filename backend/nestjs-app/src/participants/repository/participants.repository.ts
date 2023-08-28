@@ -28,10 +28,10 @@ export class ParticipantsRepository extends Repository<Participants> {
     }
   }
 
-  async getParticipant(user2: User, channel: ChatChannel) {
+  async getParticipant(user: User, channel: ChatChannel) {
     const getUser = await this.findOne({
       relations: ['user', 'channel'],
-      where: { user: { id: user2.id }, channel: { id: channel.id } },
+      where: { user: { id: user.id }, channel: { id: channel.id } },
     });
     return getUser;
   }

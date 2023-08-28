@@ -50,9 +50,11 @@ export class ChattingGateway
       if (user.status === UserStatusType.OFFLINE) {
         await this.userService.updateStatus(user, UserStatusType.ONLINE);
       }
-      // 해당 유저가 참여한 모든 룸 join하기
+      const channels = await this.participantsService.channel(user);
+      channels.forEach((channel) => {
+        client.join(channel.id);
+      });
       this.refreshUsersList();
-      client.join('lobby');
     } catch (e) {}
   }
 
@@ -60,7 +62,6 @@ export class ChattingGateway
     try {
       const userid = await this.getUserId(client);
       const user = await this.userService.getUserById(userid);
-      client.leave('lobby');
       console.log('client disconnected: ', client.id);
       if (user.status === UserStatusType.SIGNUP) {
         await this.userService.deleteUserById(user.id);
@@ -257,6 +258,26 @@ export class ChattingGateway
         false,
       );
     }
+  }
+
+  @SubscribeMessage('enter_channel')
+  async enterChannel(client: Socket, content: { channelId: string }) {
+    const userId = await this.getUserId(client);
+    const user = await this.userService.getUserById(userId);
+    const channel = await this.channelRepository.getChannelById(
+      content.channelId,
+    );
+    const participant = await this.participantsService.getParticipant(
+      user,
+      channel,
+    );
+    if (!participant) {
+      throw new Error('채널에 참가하지 않았습니다.');
+    }
+    const participants =
+      await this.participantsService.getAllParticipants(channel);
+    const messages = await this.messageService.getMessages(content.channelId);
+    return { channel, messages, participants };
   }
 
   @SubscribeMessage('send_dm')
