@@ -51,8 +51,8 @@ const calculateRating = (
 
 export const createDummyUsers = (num: number): DummyUser[] => {
   return Array.from({ length: num }, (_, index): DummyUser => {
-    const id = `42-${(index + 1).toString().padStart(6, '0')}`;
-    const nickname = `user${index + 1}`;
+    const id = `DUMMY-${(index + 1).toString().padStart(6, '0')}`;
+    const nickname = `dummy${index + 1}` + `${index < 3 ? ' (admin)' : ''}`;
     const win = Math.floor(Math.random() * 201);
     const lose = Math.floor(Math.random() * 201);
     const ladder_win = Math.floor(Math.random() * 201);
@@ -67,7 +67,7 @@ export const createDummyUsers = (num: number): DummyUser[] => {
       lose,
       ladder_win,
       ladder_lose,
-      admin: false,
+      admin: index < 3 ? true : false,
       avatarPath: `http://localhost/files/profiles/profile${
         (index + 1) % 4
       }.svg`,
