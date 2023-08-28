@@ -22,10 +22,6 @@ const ChannelListPageContainer = () => {
       });
   };
 
-  const handleChannelClick = (channel: ChannelType) => {
-    console.log(channel);
-  };
-
   useEffect(() => {
     getAllChannels()
       .then((response) => {
@@ -40,7 +36,6 @@ const ChannelListPageContainer = () => {
     <>
       <ChannelListPageView
         onChannelSearch={handleChannelSearch}
-        onChannelClick={handleChannelClick}
         channels={channels}
       />
     </>

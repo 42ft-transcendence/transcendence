@@ -9,6 +9,8 @@ import DirectMessageListItem from "@components/directMessage/directMessageListIt
 import { useRecoilState } from "recoil";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
+import ChannelJoinModal from "@components/modal/channel/channelJoinModal";
+import ChannelCreateModal from "@components/modal/channel/channelCreateModal";
 
 const ChattingSideBar = () => {
   const joinedChannelList = useRecoilValue(joinedChannelListState);
@@ -51,33 +53,31 @@ const ChattingSideBar = () => {
   ];
 
   return (
-    <S.Container>
-      <ButtonList buttons={iconButtons} />
-      <SideBarList title="참여한 채널">
-        {joinedChannelList.map((channel) => (
-          <ChannelListItem
-            key={channel.id}
-            channel={channel}
-            onClick={(channel) => {
-              console.log("채널 클릭", channel);
-            }}
-            hasNewMessage={channel.hasNewMessages}
-          />
-        ))}
-      </SideBarList>
-      <SideBarList title="다이렉트 메세지">
-        {joinedDirectMessageList.map((dm) => (
-          <DirectMessageListItem
-            key={dm.id}
-            user={dm}
-            onClick={(user) => {
-              console.log("DM 클릭", user);
-            }}
-            hasNewMessage={dm.hasNewMessages}
-          />
-        ))}
-      </SideBarList>
-    </S.Container>
+    <>
+      <ChannelJoinModal />
+      <ChannelCreateModal />
+      <S.Container>
+        <ButtonList buttons={iconButtons} />
+        <SideBarList title="참여한 채널">
+          {joinedChannelList.map((channel) => (
+            <ChannelListItem
+              key={channel.id}
+              channel={channel}
+              hasNewMessage={channel.hasNewMessages}
+            />
+          ))}
+        </SideBarList>
+        <SideBarList title="다이렉트 메세지">
+          {joinedDirectMessageList.map((dm) => (
+            <DirectMessageListItem
+              key={dm.id}
+              user={dm}
+              hasNewMessage={dm.hasNewMessages}
+            />
+          ))}
+        </SideBarList>
+      </S.Container>
+    </>
   );
 };
 
