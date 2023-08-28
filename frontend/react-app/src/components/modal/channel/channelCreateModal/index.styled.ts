@@ -17,7 +17,7 @@ export const ModalOverlay = styled.div`
   top: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
+  z-index: 210;
 `;
 
 export const Container = styled.div`
@@ -29,11 +29,11 @@ export const Container = styled.div`
   flex-direction: column;
   width: 500px;
   height: 500px;
-  background-color: ${(props) => props.theme.colors.heavyPurple};
-  border: 1px solid ${(props) => props.theme.colors.freezePurple};
+  background-color: ${({ theme }) => theme.colors.heavyPurple};
+  border: 1px solid ${({ theme }) => theme.colors.freezePurple};
   border-radius: 30px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
-  z-index: 2;
+  z-index: 211;
 `;
 
 export const Form = styled.form`
@@ -50,9 +50,9 @@ export const NameInput = styled.input`
   height: 40px;
   background: none;
   border: none;
-  border-bottom: 1px solid ${(props) => props.theme.colors.freezePurple};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.freezePurple};
   outline: none;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${({ theme }) => theme.colors.freezePurple};
   font-size: 32px;
   font-weight: Bold;
   line-height: 40px;
@@ -69,7 +69,7 @@ export const OptionLabel = styled.h5`
   width: 100px;
   height: 40px;
   margin: 0;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${({ theme }) => theme.colors.freezePurple};
   font-size: 20px;
   font-weight: Bold;
   line-height: 40px;
@@ -86,18 +86,24 @@ export const OptionContent = styled.div`
 export const TypeButton = styled.button<{ type: ChannelTypeType }>`
   height: 24px;
   background: none;
-  background-image: url(${(props) => channelTypeIcon[props.type]});
-  background-size: 24px;
-  background-repeat: no-repeat;
-  padding-left: 24px;
   border: none;
   outline: none;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${({ theme }) => theme.colors.freezePurple};
   font-size: 20px;
   font-weight: Bold;
   line-height: 24px;
   text-align: center;
   cursor: pointer;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 24px;
+    background-image: url(${({ type }) => channelTypeIcon[type]});
+    background-size: 24px;
+    background-repeat: no-repeat;
+  }
 `;
 
 export const PasswordInput = styled.input`
@@ -110,9 +116,9 @@ export const PasswordInput = styled.input`
   background-position: right;
   padding-right: 24px;
   border: none;
-  border-bottom: 1px solid ${(props) => props.theme.colors.freezePurple};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.freezePurple};
   outline: none;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${({ theme }) => theme.colors.freezePurple};
   font-size: 20px;
   font-weight: Bold;
   line-height: 40px;
