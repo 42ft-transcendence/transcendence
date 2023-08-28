@@ -1,9 +1,12 @@
 import { ChatType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
+import { useRecoilState } from "recoil";
+import { allUserListState } from "@src/recoil/atoms/common";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
+  const [, setAllUserList] = useRecoilState(allUserListState);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -12,6 +15,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     chatSocket.off("refresh_list");
     chatSocket.on("refresh_list", (userList: UserType[]) => {
       console.log("refresh_list", userList);
+      setAllUserList(userList);
     });
 
     chatSocket.off("get_message");
