@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import Lock from "/src/assets/LockKey.svg";
+import Lock from "@assets/icons/LockKey.svg";
 
 export const ModalWrapper = styled.div`
   display: flex;
