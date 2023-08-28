@@ -12,7 +12,11 @@ export class DirectMessageService {
   ) {}
 
   async saveDM(from: User, to: User, message: string): Promise<DirectMessage> {
-    return await this.dmRepository.saveDM(from, to, message);
+    const message2 = await this.dmRepository.saveDM(from, to, message);
+    if (!message2) {
+      throw new Error('Message not saved');
+    }
+    return message2;
   }
 
   async getDM(user1: User, user2: User): Promise<DirectMessage[]> {
