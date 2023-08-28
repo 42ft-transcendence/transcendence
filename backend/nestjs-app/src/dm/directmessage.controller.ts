@@ -11,14 +11,11 @@ export class DirectMessageController {
     private userService: UsersService,
   ) {}
 
+  //나와 관련된 모든 DM을 가져옴
   @Get('dm')
   @UseGuards(JwtTwoFactorGuard)
-  async getDM(
-    @Request() req,
-    @Query('id') user_id: string,
-  ): Promise<DirectMessage[]> {
+  async getAllDM(@Request() req): Promise<DirectMessage[]> {
     const user = await this.userService.getUserById(req.user.id);
-    const user2 = await this.userService.getUserById(user_id);
-    return await this.dmService.getDM(user, user2);
+    return await this.dmService.getAllDM(user);
   }
 }

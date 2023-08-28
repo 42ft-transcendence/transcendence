@@ -5,6 +5,14 @@ import { User } from 'src/users/entities/user.entity';
 
 @CustomRepository(DirectMessage)
 export class DirectMessageRepository extends Repository<DirectMessage> {
+  async getAllDM(user: User): Promise<DirectMessage[]> {
+    const messages = await this.find({
+      relations: ['from', 'to'],
+      where: [{ from: { id: user.id } }, { to: { id: user.id } }],
+    });
+    return messages;
+  }
+
   async saveDM(from: User, to: User, message: string): Promise<DirectMessage> {
     const dm = new DirectMessage();
     dm.message = message;
