@@ -55,6 +55,11 @@ export class ParticipantsService {
 
   async changeMuted(user: User, channel: ChatChannel, value: boolean) {
     let getCp = await this.participantRepository.getParticipant(user, channel);
+    if (!getCp) {
+      throw new HttpException('Invalid channel participant', 455);
+    } else if (getCp.admin) {
+      throw new HttpException('Admin cannot be muted', 455);
+    }
     getCp = await this.participantRepository.changeMuted(getCp, value);
     return getCp;
   }
@@ -92,6 +97,17 @@ export class ParticipantsService {
     );
     if (getCp) {
       await this.participantRepository.deleteParticipant(getCp);
+    } else {
+      throw new HttpException('Invalid channel participant ( Not Exist)', 455);
+    }
+    return true;
+  }
+
+  async deleteAllParticipant(channel: ChatChannel) {
+    const getCp =
+      await this.participantRepository.getParticipantsByChannel(channel);
+    if (getCp) {
+      await this.participantRepository.deleteAllParticipant(getCp);
     } else {
       throw new HttpException('Invalid channel participant ( Not Exist)', 455);
     }

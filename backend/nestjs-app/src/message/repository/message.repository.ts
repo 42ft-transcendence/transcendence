@@ -13,7 +13,6 @@ export class MessageRepository extends Repository<Message> {
     message.userId = userId;
     message.content = content;
     message.channelId = channelId;
-    console.log(message);
     return await this.save(message);
   }
 

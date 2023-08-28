@@ -105,4 +105,8 @@ export class ParticipantsRepository extends Repository<Participants> {
   async deleteParticipant(participant: Participants) {
     await this.delete(participant.id);
   }
+
+  async deleteAllParticipant(participants: Participants[]) {
+    await this.remove(participants);
+  }
 }

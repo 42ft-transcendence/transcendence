@@ -15,7 +15,13 @@ export class MessageService {
     content: string,
     channelId: string,
   ): Promise<Message> {
-    return await this.messageRepository.saveMessage(userId, content, channelId);
+    const message = await this.messageRepository.saveMessage(
+      userId,
+      content,
+      channelId,
+    );
+    if (!message) throw new Error('Message save failed');
+    return message;
   }
 
   async getMessages(channelId: string): Promise<Message[]> {
