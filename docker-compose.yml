@@ -63,6 +63,7 @@ services:
       - net-transcendence
     volumes:
       - vol-react_app:/usr/share/nginx/html
+      - vol-images:/usr/share/nginx/images
       - vol-profiles:/usr/share/nginx/profiles
     depends_on:
       - srv-backend
@@ -78,6 +79,14 @@ volumes:
 
   vol-react_app:
     name: react_app
+
+  vol-images:
+    name: images
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./share/images
 
   vol-profiles:
     name: profiles

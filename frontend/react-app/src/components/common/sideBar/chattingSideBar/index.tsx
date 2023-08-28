@@ -6,10 +6,16 @@ import { JoinedDirectMessageListState } from "@recoil/atoms/directMessage";
 import SideBarList from "../../sidaBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
+import { useRecoilState } from "recoil";
+import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import { ProfileModalOnClickHandler } from "@src/utils";
 
 const ChattingSideBar = () => {
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const joinedDirectMessageList = useRecoilValue(JoinedDirectMessageListState);
+
+  const [userData] = useRecoilState(userDataState);
+  const [, setShowProfile] = useRecoilState(showProfileState);
 
   const iconButtons: IconButtonProps[] = [
     {
@@ -34,6 +40,12 @@ const ChattingSideBar = () => {
       onClick: () => {
         console.log("채널 탐색");
       },
+      theme: "LIGHT",
+    },
+    {
+      title: "프로필 모달 테스트",
+      iconSrc: "",
+      onClick: ProfileModalOnClickHandler(setShowProfile, true, userData),
       theme: "LIGHT",
     },
   ];

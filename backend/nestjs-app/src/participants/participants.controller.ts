@@ -19,7 +19,7 @@ export class ParticipantsController {
   }
 
   @Get('/participants')
-  async getUsers(
+  async getParticipantsByChannelId(
     @Query('channelId') channelId: string,
   ): Promise<Participants[]> {
     const channel = await this.channelRepository.getChannelById(channelId);

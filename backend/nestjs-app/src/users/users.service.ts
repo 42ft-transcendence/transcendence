@@ -14,9 +14,7 @@ export class UsersService {
 
   async updateStatus(user: User, type: UserStatusType): Promise<User> {
     const tmp = await this.userRepository.updateStatus(user, type);
-    console.log(
-      `change status user: ${tmp.nickname} set status = ${tmp.status}`,
-    );
+    if (!tmp) throw new HttpException(`User not found with ID ${user.id}`, 404);
     return tmp;
   }
 
@@ -26,7 +24,7 @@ export class UsersService {
         id: id,
       },
     });
-    if (!user) throw 'Token Expired Error'; // 어떤식으로 할지 추 후에 수정
+    if (!user) throw {};
     console.log(`success getUserById: ${user.nickname}`);
     return user;
   }

@@ -1,4 +1,3 @@
-import { chatSocketDisconnect } from "@hooks/sockets/chatSocket";
 import {
   LoginButtonContainer,
   LoginButtonImage,
@@ -9,7 +8,12 @@ import {
   PageContainer,
 } from "./index.styled";
 import { useRecoilState } from "recoil";
-import { initialUserData, userDataState } from "@src/recoil/atoms/common";
+import { allUserListState, userDataState } from "@src/recoil/atoms/common";
+import { useEffect } from "react";
+import {
+  createDummyUsers,
+  initialUserData,
+} from "@src/recoil/atoms/common/data";
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
@@ -59,13 +63,21 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
-  chatSocketDisconnect();
   const [userData, setUserData] = useRecoilState(userDataState);
 
-  if (userData.id !== "0") {
-    // localStorage 초기화
-    setUserData(initialUserData);
-  }
+  // 임시 더미 데이터 생성 작업
+  const [, setUserList] = useRecoilState(allUserListState);
+
+  useEffect(() => {
+    if (userData.id !== "0") {
+      // localStorage 초기화
+      setUserData(initialUserData);
+    }
+
+    // 임시 더미 데이터 생성 작업
+    const dummyData = createDummyUsers(50); // 50명의 더미 데이터 생성
+    setUserList(dummyData);
+  }, [userData]);
 
   return (
     <PageContainer>

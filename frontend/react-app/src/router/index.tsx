@@ -9,14 +9,17 @@ import Profile from "@src/pages/profile";
 import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
 import Ranking from "@src/pages/ranking";
+import Socket from "./socket";
 
 const Router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <PrivateRoute>
-        <TempHome />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <TempHome />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
@@ -30,59 +33,63 @@ const Router = createBrowserRouter([
   {
     path: "/game-list",
     element: (
-      <PrivateRoute>
-        <GameList />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <GameList />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
     path: "/signup",
     element: (
-      <PrivateRoute>
-        <SignUp />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <SignUp />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
     path: "/channel-list",
     element: (
-      <PrivateRoute>
-        <ChannelListPage />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <ChannelListPage />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
     path: "/profile/:userId",
     element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <Profile />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
     path: "/user-list",
     element: (
-      <PrivateRoute>
-        <UserList />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <UserList />
+        </PrivateRoute>
+      </Socket>
     ),
   },
   {
     path: "/ranking",
     element: (
-      <PrivateRoute>
-        <Ranking />
-      </PrivateRoute>
+      <Socket>
+        <PrivateRoute>
+          <Ranking />
+        </PrivateRoute>
+      </Socket>
     ),
   },
-  // {
-  //   path: "/auth/:type",
-  //   element: <Auth />,
-  // },
-  // {
-  //   path: "/channel-list",
-  //   element: <ChannelListPage />,
-  // },
   // {
   //   path: "/channel/:channelId",
   //   element: <ChannelPage />,
