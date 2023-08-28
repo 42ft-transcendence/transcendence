@@ -1,6 +1,6 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { joinedChannelListState } from "@recoil/atoms/channel";
 import { JoinedDirectMessageListState } from "@recoil/atoms/directMessage";
 import SideBarList from "../../sidaBarList";
@@ -11,20 +11,25 @@ import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import ChannelJoinModal from "@components/modal/channel/channelJoinModal";
 import ChannelCreateModal from "@components/modal/channel/channelCreateModal";
+import { channelCreateModalState } from "@src/recoil/atoms/modal";
+import { useNavigate } from "react-router-dom";
 
 const ChattingSideBar = () => {
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const joinedDirectMessageList = useRecoilValue(JoinedDirectMessageListState);
+  const setChannelCreateModal = useSetRecoilState(channelCreateModalState);
 
   const [userData] = useRecoilState(userDataState);
   const [, setShowProfile] = useRecoilState(showProfileState);
+
+  const navigate = useNavigate();
 
   const iconButtons: IconButtonProps[] = [
     {
       title: "채널 생성",
       iconSrc: "",
       onClick: () => {
-        console.log("채널 생성");
+        setChannelCreateModal(true);
       },
       theme: "LIGHT",
     },
@@ -40,7 +45,7 @@ const ChattingSideBar = () => {
       title: "채널 탐색",
       iconSrc: "",
       onClick: () => {
-        console.log("채널 탐색");
+        navigate("/channel-list");
       },
       theme: "LIGHT",
     },
