@@ -40,7 +40,7 @@ export const DoubleTextButton = styled.button<{ mode: "LIGHT" | "DARK" }>`
   background-color: ${(props) =>
     props.mode === "LIGHT"
       ? props.theme.colors.freezePurple
-      : props.theme.colors.heavyPurple};
+      : props.theme.colors.iceCold};
   border-radius: 10px;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
   outline: none;
@@ -48,13 +48,14 @@ export const DoubleTextButton = styled.button<{ mode: "LIGHT" | "DARK" }>`
   justify-content: space-between; // center를 space-between으로 변경
   align-items: center;
   padding: 0 8px; // 양쪽 끝에 있는 텍스트와 버튼 사이의 간격을 주기 위한 패딩
-  color: ${(props) =>
-    props.mode === "LIGHT"
-      ? props.theme.colors.heavyPurple
-      : props.theme.colors.freezePurple};
+  color: ${(props) => props.theme.colors.heavyPurple};
   font-weight: Bold;
   text-decoration: none;
 `;
+// color: ${(props) =>
+//   props.mode === "LIGHT"
+//     ? props.theme.colors.heavyPurple
+//     : props.theme.colors.freezePurple};
 
 export const TextButton = styled.button<{ mode: "LIGHT" | "DARK" }>`
   width: max-content;

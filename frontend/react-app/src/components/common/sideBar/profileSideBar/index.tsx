@@ -141,7 +141,11 @@ const ProfileSideBar = () => {
   return (
     <DS.Container style={{ gap: "20px" }}>
       <ProfileImageContainer>
-        <ProfileImage src={currentProfile.avatarPath} alt="profile image" />
+        <ProfileImage
+          src={currentProfile.avatarPath}
+          alt="profile image"
+          style={{ cursor: "default" }}
+        />
       </ProfileImageContainer>
       <S.NicknameContainer>
         <S.NicknameText>{currentProfile.nickname}</S.NicknameText>

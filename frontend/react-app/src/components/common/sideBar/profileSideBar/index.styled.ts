@@ -40,6 +40,7 @@ export const NicknameText = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
+  cursor: default;
 `;
 
 export const PencilIcon = styled.img`
