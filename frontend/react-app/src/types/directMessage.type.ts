@@ -1,4 +1,4 @@
-import { UserType } from "./user.type";
+import { UserType } from "@type";
 
 export interface DirectMessageType {
   id: number;
@@ -8,6 +8,6 @@ export interface DirectMessageType {
   read: boolean;
 }
 
-export interface JoinedDirectMessageType extends DirectMessageType {
+export interface JoinedDirectMessageType extends UserType {
   hasNewMessages: boolean;
 }
