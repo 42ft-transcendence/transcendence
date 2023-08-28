@@ -5,7 +5,11 @@ export const base_url = "/api";
 export { uploadAvatar, deleteAvatar } from "./file";
 export type { UploadAvatarResponse } from "./file";
 
-export { getMessagesByChannelId } from "./chatting";
+export {
+  getMessagesByChannelId,
+  getAllChannels,
+  getSearchedChannels,
+} from "./chatting";
 
 export {
   getUser,
