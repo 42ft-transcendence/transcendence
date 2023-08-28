@@ -3,7 +3,7 @@ import * as S from "../index.styled";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { joinedChannelListState } from "@recoil/atoms/channel";
 import { JoinedDirectMessageListState } from "@recoil/atoms/directMessage";
-import SideBarList from "../../sidaBarList";
+import SideBarList from "../../sideBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
 import { useRecoilState } from "recoil";
