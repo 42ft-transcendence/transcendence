@@ -4,6 +4,7 @@ import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
 import TempHome from "@src/pages/tempHome";
+import ChannelListPage from "@src/pages/channelList";
 import Profile from "@src/pages/profile";
 import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
@@ -12,14 +13,6 @@ import Ranking from "@src/pages/ranking";
 const Router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <PrivateRoute>
-        <TempHome />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/channel-list",
     element: (
       <PrivateRoute>
         <TempHome />
@@ -47,6 +40,14 @@ const Router = createBrowserRouter([
     element: (
       <PrivateRoute>
         <SignUp />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/channel-list",
+    element: (
+      <PrivateRoute>
+        <ChannelListPage />
       </PrivateRoute>
     ),
   },
