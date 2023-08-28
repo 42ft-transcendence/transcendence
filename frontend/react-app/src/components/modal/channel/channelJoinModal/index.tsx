@@ -32,8 +32,8 @@ const ChannelJoinModal = () => {
 
   const handleJoin = () => {
     chatSocket.emit(
-      "join_room",
-      { roomId: channel?.id, password: password },
+      "join_channel",
+      { channelId: channel?.id, password: password },
       (joined_channel: ChannelType) => {
         setJoinedChannelList((prev) => [
           ...prev,

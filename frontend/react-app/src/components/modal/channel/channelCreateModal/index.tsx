@@ -27,8 +27,8 @@ const ChannelCreateModal = () => {
   const onSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     chatSocket.emit(
-      "create_room",
-      { roomName: name, type, password },
+      "create_channel",
+      { channelName: name, type, password },
       (channel_joined: ChannelType) => {
         setJoinedChannelList((prev) => [
           ...prev,
