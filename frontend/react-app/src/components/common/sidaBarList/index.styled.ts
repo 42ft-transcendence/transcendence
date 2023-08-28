@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import CaretDown from "@assets/icons/CaretDown.svg";
 
 export const Container = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ export const Header = styled.div<{ isFolded: boolean }>`
     content: "";
     width: 28px;
     height: 28px;
-    background-image: url(http://localhost/assets/icons/CaretDown.svg);
+    background-image: url(${CaretDown});
     background-size: 24px;
     background-repeat: no-repeat;
     background-position: center;
