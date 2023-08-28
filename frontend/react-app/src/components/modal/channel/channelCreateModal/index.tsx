@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 import { IconButton } from "@components/buttons";
 import { ChannelTypeType, ChannelType } from "@src/types/channel.type";
@@ -8,26 +8,21 @@ import { joinedChannelListState } from "@recoil/atoms/channel";
 import { chatSocket } from "@router/socket/chatSocket";
 
 import * as S from "./index.styled";
+import { channelCreateModalState } from "@src/recoil/atoms/modal";
 
 const channelTypeText = {
   PUBLIC: "공개",
   PROTECTED: "비밀",
   PRIVATE: "비공개",
 };
-export interface ChannelCreateModalPropsType {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
-const ChannelCreateModal = ({
-  isOpen,
-  onClose,
-}: ChannelCreateModalPropsType) => {
+const ChannelCreateModal = () => {
   const [name, setName] = useState<string>("");
   const [type, setType] = useState<ChannelTypeType>("PUBLIC");
   const [password, setPassword] = useState<string>("");
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const navigate = useNavigate();
+  const [isOpened, setIsOpened] = useRecoilState(channelCreateModalState);
 
   const onSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -42,9 +37,20 @@ const ChannelCreateModal = ({
             hasNewMessages: false,
           },
         ]);
+        handleClose();
         navigate(`/channel/${channel_joined.id}`);
       },
     );
+  };
+
+  const handleClose = () => {
+    setIsOpened(false);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      handleClose();
+    }
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +72,12 @@ const ChannelCreateModal = ({
     setPassword(event.target.value);
   };
 
-  if (isOpen === false) {
+  if (isOpened === false) {
     return null;
   }
   return (
     <>
-      <S.ModalOverlay onClick={onClose} />
+      <S.ModalOverlay onClick={handleClose} onKeyDown={handleKeyDown} />
       <S.Container>
         <S.Form>
           <S.NameInput
@@ -102,7 +108,7 @@ const ChannelCreateModal = ({
           </S.Option>
 
           <S.ButtonContainer>
-            <IconButton title="취소" onClick={onClose} theme="LIGHT" />
+            <IconButton title="취소" onClick={handleClose} theme="LIGHT" />
             <IconButton title="생성" onClick={onSubmit} theme="LIGHT" />
           </S.ButtonContainer>
         </S.Form>
