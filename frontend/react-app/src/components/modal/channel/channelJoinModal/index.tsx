@@ -24,11 +24,11 @@ const ChannelJoinModal = () => {
     setChannel(null);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       handleClose();
     }
-  };
+  });
 
   const handleJoin = () => {
     chatSocket.emit(
@@ -53,7 +53,7 @@ const ChannelJoinModal = () => {
   }
   return (
     <>
-      <S.Overlay onClick={handleClose} onKeyDown={handleKeyDown} />
+      <S.Overlay onClick={handleClose} />
       <S.Container>
         <S.Title>{channel.name}에 참여하시겠습니까?</S.Title>
         {channel.type === "PROTECTED" && (

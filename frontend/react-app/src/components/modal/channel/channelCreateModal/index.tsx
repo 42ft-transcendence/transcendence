@@ -47,11 +47,11 @@ const ChannelCreateModal = () => {
     setIsOpened(false);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       handleClose();
     }
-  };
+  });
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -77,7 +77,7 @@ const ChannelCreateModal = () => {
   }
   return (
     <>
-      <S.ModalOverlay onClick={handleClose} onKeyDown={handleKeyDown} />
+      <S.ModalOverlay onClick={handleClose} />
       <S.Container>
         <S.Form>
           <S.NameInput
