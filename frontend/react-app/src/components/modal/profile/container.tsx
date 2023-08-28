@@ -135,7 +135,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "친구 삭제",
       action: handleDeleteFriend,
-      src: "src/assets/iconsdeleteFriend.svg",
+      src: "src/assets/icons/deleteFriend.svg",
     },
     {
       label: "차단 하기",
