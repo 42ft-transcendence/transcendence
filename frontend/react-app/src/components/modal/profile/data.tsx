@@ -1,7 +1,8 @@
-import { RoleType } from "../../types";
+import { RoleType } from "@src/types";
 
 export const profileRoleButtonMapping: Record<RoleType, string[]> = {
-  default: [
+  self: ["DM 보내기", "전적 보기"],
+  attendee: [
     "대전 신청",
     "친구 추가",
     "친구 삭제",

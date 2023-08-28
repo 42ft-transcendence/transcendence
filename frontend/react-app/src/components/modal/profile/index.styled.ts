@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import { theme } from "../../style/theme";
 
 export const ProfileWrapper = styled.div`
   display: flex;
@@ -12,7 +11,7 @@ export const ProfileWrapper = styled.div`
   left: 50%; /* 화면의 중앙에 위치시킴 */
   transform: translate(-50%, -50%); /* 화면의 정확한 중앙에 배치 */
 
-  z-index: 1000; /* 다른 요소 위에 오도록 z-index를 높게 설정 */
+  z-index: 300; /* 다른 요소 위에 오도록 z-index를 높게 설정, navBar는 300부터 */
   background-color: rgba(0, 0, 0, 0); /* 반투명한 배경 */
   width: 100vw; /* 화면의 너비 전체 */
   height: 100vh; /* 화면의 높이 전체 */
@@ -89,56 +88,6 @@ export const ProfileRatingEachTextContainer = styled.div<{ color: string }>`
   display: flex;
   // color는 props로 받아옴
   color: ${(props) => props.color};
-`;
-
-export const ProfileDoughnutContainer = styled.div`
-  position: relative;
-  width: 150px;
-  height: 150px;
-  margin: 0 auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  overflow: hidden;
-`;
-
-export const ProfileDoughnutText = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* 화면의 정확한 중앙에 배치 */
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  font-family: inter;
-`;
-
-export const ProfileDoughnutSlideCircleContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ProfileDoughnutSlideCircle = styled.div.attrs<{
-  $status: number;
-  $select: number;
-}>(({ $status, $select }) => ({
-  style: {
-    backgroundColor:
-      $status === $select
-        ? theme.colors.freezePurple
-        : theme.colors.darkFreezePurple,
-  },
-}))<{ status: number; select: number }>`
-  width: 8px;
-  height: 8px;
-  border: none;
-  border-radius: 50%; // 원 모양을 만들기 위해
-  cursor: pointer;
-  outline: none; // 선택 시 테두리 제거
-  margin: 0 4px;
 `;
 
 export const ProfileButtonContainer = styled.div`
