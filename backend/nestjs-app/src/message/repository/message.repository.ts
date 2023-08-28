@@ -17,7 +17,15 @@ export class MessageRepository extends Repository<Message> {
     return await this.save(message);
   }
 
-  async getMessages(): Promise<Message[]> {
-    return this.find();
+  async getMessages(channelId: string): Promise<Message[]> {
+    // 해당 채널의 모든 메세지들을 가져온다
+    return await this.find({
+      where: {
+        channelId: channelId,
+      },
+      order: {
+        createdAt: 'ASC',
+      },
+    });
   }
 }

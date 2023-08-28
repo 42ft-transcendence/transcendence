@@ -17,4 +17,8 @@ export class MessageService {
   ): Promise<Message> {
     return await this.messageRepository.saveMessage(userId, content, channelId);
   }
+
+  async getMessages(channelId: string): Promise<Message[]> {
+    return await this.messageRepository.getMessages(channelId);
+  }
 }
