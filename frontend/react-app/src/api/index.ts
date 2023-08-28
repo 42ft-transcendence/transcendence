@@ -17,6 +17,7 @@ export {
   getUserInfo,
   getAllUserList,
   checkNickname,
+  createDummy,
 } from "./user";
 
 export { verify2Fa, generate2FaLink, turnOn2Fa, turnOff2Fa } from "./auth";
