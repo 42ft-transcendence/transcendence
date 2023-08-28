@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-import Lock from "@assets/LockKey.svg";
+import Lock from "@assets/icons/LockKey.svg";
 
 export const Overlay = styled.div`
   position: absolute;

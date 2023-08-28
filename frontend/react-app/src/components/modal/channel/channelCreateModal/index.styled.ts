@@ -1,8 +1,8 @@
 import { styled } from "styled-components";
 
-import Hash from "@assets/Hash.svg";
-import Detective from "@assets/Detective.svg";
-import Lock from "@assets/LockKey.svg";
+import Hash from "@assets/icons/Hash.svg";
+import Detective from "@assets/icons/Detective.svg";
+import Lock from "@assets/icons/LockKey.svg";
 import { ChannelTypeType } from "@src/types";
 
 const channelTypeIcon = {
