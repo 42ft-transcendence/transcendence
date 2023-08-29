@@ -17,11 +17,9 @@ import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
 import * as bcrypt from 'bcrypt';
+import { RelationshipService } from 'src/relationship/relationship.service';
 
 @WebSocketGateway({
-  // cors: {
-  //   origin: 'http://localhost:3000',
-  // },
   middlewares: [],
   namespace: '/ChatPage',
   credential: true,
@@ -37,6 +35,7 @@ export class ChattingGateway
     private participantsService: ParticipantsService,
     private dmService: DirectMessageService,
     private chattingService: ChattingService,
+    private relationshipService: RelationshipService,
   ) {}
 
   @WebSocketServer()
@@ -50,7 +49,7 @@ export class ChattingGateway
       if (user.status === UserStatusType.OFFLINE) {
         await this.userService.updateStatus(user, UserStatusType.ONLINE);
       }
-      const channels = await this.participantsService.channel(user);
+      const channels = await this.participantsService.getJoinedChannel(user);
       channels.forEach((channel) => {
         client.join(channel.id);
       });
@@ -425,6 +424,9 @@ export class ChattingGateway
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
       const toUser = await this.userService.getUserById(content.userId);
+      if (await this.relationshipService.checkBlock(user, toUser)) {
+        throw new Error('차단된 사용자입니다.');
+      }
       await this.dmService.saveDM(user, toUser, content.message);
       const dm = await this.dmService.getDM(user, toUser);
       client.to(content.userId).emit('get_dm', {
@@ -456,7 +458,7 @@ export class ChattingGateway
 
   private findSocketByUserId(userId: string): Socket | undefined {
     for (const socket of this.server.sockets.sockets.values()) {
-      const socketUserId = socket.handshake.query.userId; // 혹은 다른 속성에 userId 정보가 있을 수 있음
+      const socketUserId = socket.handshake.query.userId;
       if (socketUserId === userId) {
         return socket;
       }
