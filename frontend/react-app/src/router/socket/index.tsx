@@ -34,13 +34,12 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
 
     gameSocket.off("offerGame");
     gameSocket.on("offerGame", (data: OfferGameType) => {
-      // console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
+      console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
       console.log("user.id", user.id);
-      // setBattleActionModal({
-      //   battleActionModal: user.id === data.user_id,
-      //   nickname: data.nickname,
-      // });
-      // setBattleActionModal(user.id === data.user_id);
+      setBattleActionModal({
+        battleActionModal: user.id === data.user_id,
+        nickname: data.nickname,
+      });
     });
 
     chatSocketConnect(jwt);
