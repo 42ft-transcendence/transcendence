@@ -6,13 +6,6 @@ export interface ChatBubblePropsType {
 }
 
 const ChatBubble = ({ message, isMine }: ChatBubblePropsType) => {
-  if (isMine) {
-    return (
-      <S.Container isMine={isMine}>
-        <S.Message isMine={isMine}>{message}</S.Message>
-      </S.Container>
-    );
-  }
   return (
     <S.Container isMine={isMine}>
       <S.Message isMine={isMine}>{message}</S.Message>
