@@ -12,7 +12,7 @@ export interface MessageType {
   content: string;
   userId: string;
   channelId: string;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface ProfileModalType {
