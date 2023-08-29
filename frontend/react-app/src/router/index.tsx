@@ -4,6 +4,7 @@ import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
 import TempHome from "@src/pages/tempHome";
+import ChannelListPage from "@src/pages/channelList";
 import Profile from "@src/pages/profile";
 import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
@@ -13,16 +14,6 @@ import Socket from "./socket";
 const Router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Socket>
-        <PrivateRoute>
-          <TempHome />
-        </PrivateRoute>
-      </Socket>
-    ),
-  },
-  {
-    path: "/channel-list",
     element: (
       <Socket>
         <PrivateRoute>
@@ -60,6 +51,16 @@ const Router = createBrowserRouter([
     ),
   },
   {
+    path: "/channel-list",
+    element: (
+      <Socket>
+        <PrivateRoute>
+          <ChannelListPage />
+        </PrivateRoute>
+      </Socket>
+    ),
+  },
+  {
     path: "/profile/:userId",
     element: (
       <Socket>
@@ -89,14 +90,6 @@ const Router = createBrowserRouter([
       </Socket>
     ),
   },
-  // {
-  //   path: "/auth/:type",
-  //   element: <Auth />,
-  // },
-  // {
-  //   path: "/channel-list",
-  //   element: <ChannelListPage />,
-  // },
   // {
   //   path: "/channel/:channelId",
   //   element: <ChannelPage />,
