@@ -2,14 +2,16 @@ import { ChatType, OfferGameType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
 import { gameSocket, gameSocketConnect } from "./gameSocket";
-import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
+import { useRecoilState } from "recoil";
+import { allUserListState } from "@src/recoil/atoms/common";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
   const [user] = useRecoilState(userDataState);
   const [, setBattleActionModal] = useRecoilState(battleActionModalState);
+  const [, setAllUserList] = useRecoilState(allUserListState);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -19,6 +21,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     chatSocket.off("refresh_list");
     chatSocket.on("refresh_list", (userList: UserType[]) => {
       console.log("refresh_list", userList);
+      setAllUserList(userList);
     });
 
     chatSocket.off("get_message");

@@ -17,6 +17,7 @@ import { AuthService } from 'src/auth/auth.service';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { User } from './entities/user.entity';
+import { createDummyUsers } from './createDummyUsers';
 
 @Controller('users')
 export class UsersController {
@@ -155,5 +156,47 @@ export class UsersController {
     @Query('nickname') nickname: string,
   ): Promise<ValidNicknameType> {
     return await this.usersService.checkValidNickname(nickname);
+  }
+
+  // 더미 유저 생성
+  @Post('/createDummy')
+  async createDummyUser(@Body('count') count: number) {
+    const dummyUsers = createDummyUsers(count);
+
+    for (const user of dummyUsers) {
+      const {
+        id,
+        nickname,
+        win,
+        lose,
+        ladder_win,
+        ladder_lose,
+        admin,
+        avatarPath,
+        status,
+        twoFactorAuthenticationSecret,
+        isTwoFactorAuthenticationEnabled,
+        rating,
+      } = user;
+
+      const userEntity = new User();
+      userEntity.id = id;
+      userEntity.nickname = nickname;
+      userEntity.win = win;
+      userEntity.lose = lose;
+      userEntity.ladder_win = ladder_win;
+      userEntity.ladder_lose = ladder_lose;
+      userEntity.admin = admin;
+      userEntity.avatarPath = avatarPath;
+      userEntity.status = status as UserStatusType;
+      userEntity.twoFactorAuthenticationSecret = twoFactorAuthenticationSecret;
+      userEntity.isTwoFactorAuthenticationEnabled =
+        isTwoFactorAuthenticationEnabled;
+      userEntity.rating = rating;
+
+      await this.usersService.createDummyUser(userEntity);
+    }
+
+    return { message: 'Dummy users created successfully!' };
   }
 }

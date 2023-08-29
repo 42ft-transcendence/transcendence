@@ -3,6 +3,7 @@ import * as DS from "../index.styled";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { UserStatusCounts } from "@src/types/user.type";
+import { createDummy } from "@src/api";
 
 interface UserListSideBarProps {
   onAllUsersClick: () => void;
@@ -62,12 +63,25 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
     },
   ];
 
+  const dummyUserButtonList: DoubleTextButtonProps[] = [
+    {
+      text1: "더미 유저 생성",
+      text2: "50",
+      onClick: async () => {
+        await createDummy(50);
+      },
+      theme: "DARK",
+    },
+  ];
+
   return (
     <DS.Container style={{ gap: "20px" }}>
       <DS.TitleBox>사용자 둘러보기</DS.TitleBox>
       <ButtonList style={{ gap: "20px" }} buttons={userButtonList} />
       <DS.TitleBox>접속 현황</DS.TitleBox>
       <ButtonList style={{ gap: "20px" }} buttons={userStatusButtonList} />
+      <DS.TitleBox>더미 유저 생성</DS.TitleBox>
+      <ButtonList style={{ gap: "20px" }} buttons={dummyUserButtonList} />
     </DS.Container>
   );
 };
