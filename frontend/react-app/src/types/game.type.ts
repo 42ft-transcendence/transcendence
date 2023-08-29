@@ -14,3 +14,8 @@ export interface MatchHistoryType {
   player2: UserType;
   gameMode: string;
 }
+
+export interface battleActionData {
+  battleActionModal: boolean;
+  nickname: string;
+}

@@ -115,7 +115,9 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
 
   const handleBattleOffer = async (): Promise<void> => {
     try {
-      await offerBattle(user.user.id, myData.nickname);
+      await offerBattle(user.user.id, myData.nickname).then((response) => {
+        console.log(response);
+      });
     } catch (error) {
       console.log(error);
     }

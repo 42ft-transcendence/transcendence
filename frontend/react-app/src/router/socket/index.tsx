@@ -1,15 +1,21 @@
-import { ChatType, UserType } from "@type";
+import { ChatType, OfferGameType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
+import { gameSocket, gameSocketConnect } from "./gameSocket";
+import { userDataState } from "@src/recoil/atoms/common";
+import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
+  const [user] = useRecoilState(userDataState);
+  const [, setBattleActionModal] = useRecoilState(battleActionModalState);
   const [, setAllUserList] = useRecoilState(allUserListState);
 
   if (!jwt) {
     chatSocket.disconnect();
+    gameSocket.disconnect();
   } else {
     // Init chat socket events
     chatSocket.off("refresh_list");
@@ -26,7 +32,18 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     // chatSocket.off("get_dm");
     // chatSocket.on("get_dm", () => {});
 
+    gameSocket.off("offerGame");
+    gameSocket.on("offerGame", (data: OfferGameType) => {
+      console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
+      console.log("user.id", user.id);
+      setBattleActionModal({
+        battleActionModal: user.id === data.user_id,
+        nickname: data.nickname,
+      });
+    });
+
     chatSocketConnect(jwt);
+    gameSocketConnect(jwt);
   }
 
   return children;
