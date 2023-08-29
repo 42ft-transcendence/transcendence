@@ -3,13 +3,13 @@ import { useState } from "react";
 
 export interface ChatInputPropsType {
   onSendMessage?: (message: string) => void;
-  onGameClick?: () => void;
+  onInvite: () => void;
   isChannel: boolean;
 }
 
 const ChatInput = ({
   onSendMessage,
-  onGameClick,
+  onInvite,
   isChannel,
 }: ChatInputPropsType) => {
   const [value, setValue] = useState<string>("");
@@ -33,11 +33,7 @@ const ChatInput = ({
   const handleGameClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     // TODO: send game message
-    if (onGameClick) {
-      onGameClick();
-    } else {
-      alert("Let's game together!");
-    }
+    onInvite();
   };
   return (
     <S.Container>

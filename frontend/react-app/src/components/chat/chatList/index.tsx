@@ -2,17 +2,19 @@ import { useEffect, useRef } from "react";
 import ChatInput from "@components/chat/chatInput";
 import * as S from "./index.styled";
 
-export interface ContentChatListProps {
+export interface ChatListProps {
   children?: React.ReactNode;
   onSendMessage: (message: string) => void;
+  onInvite: () => void;
   isChannel: boolean;
 }
 
-const ContentChatList = ({
+const ChatList = ({
   children,
   onSendMessage,
+  onInvite,
   isChannel,
-}: ContentChatListProps) => {
+}: ChatListProps) => {
   const messageEndRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
@@ -25,9 +27,13 @@ const ContentChatList = ({
         {children}
         <li ref={messageEndRef} />
       </S.ChatList>
-      <ChatInput onSendMessage={onSendMessage} isChannel={isChannel} />
+      <ChatInput
+        onSendMessage={onSendMessage}
+        onInvite={onInvite}
+        isChannel={isChannel}
+      />
     </>
   );
 };
 
-export default ContentChatList;
+export default ChatList;
