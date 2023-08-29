@@ -383,10 +383,6 @@ export class ChattingGateway
     this.server.emit('refresh_list', users);
   }
 
-  async offerGame(func_name: string, content: object): Promise<void> {
-    this.server.emit(func_name, content);
-  }
-
   private async getUserId(client: Socket) {
     try {
       let jwt = String(client.handshake.headers.authorization);
