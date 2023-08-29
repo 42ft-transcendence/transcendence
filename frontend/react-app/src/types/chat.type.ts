@@ -19,3 +19,8 @@ export interface ProfileModalType {
   showProfile: boolean;
   user: UserType;
 }
+
+export interface SendMessageReturnType {
+  user: UserType;
+  message: MessageType;
+}
