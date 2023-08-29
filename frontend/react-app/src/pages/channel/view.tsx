@@ -32,7 +32,7 @@ const ChannelPageView = ({
           <ChatListItem
             key={chat.message.id}
             chat={chat}
-            isMine={chat.user.id === userData.id}
+            isMine={(chat.user.id as string) === (userData.id as string)}
           />
         ))}
       </ChatList>

@@ -3,9 +3,6 @@ import ChannelPageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
 import {
   ChatType,
-  MessageType,
-  ParticipantType,
-  ChannelType,
   EnterChannelReturnType,
   SendMessageReturnType,
 } from "@src/types";
@@ -45,7 +42,9 @@ const ChannelPageContainer = () => {
   useEffect(() => {
     setChatList(() => {
       const rawChatList = messageList.map((message) => {
-        const from = participantList.find((user) => user.id === message.userId);
+        const from = participantList.find(
+          (user) => user.user?.id === message.userId,
+        );
         if (!from || !from.user) return undefined;
         else if (from.owner) return { message, user: from.user, role: "owner" };
         else if (from.admin) return { message, user: from.user, role: "admin" };
