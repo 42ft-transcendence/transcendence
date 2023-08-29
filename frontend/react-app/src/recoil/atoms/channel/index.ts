@@ -18,17 +18,14 @@ export const joinedChannelListState = atom<JoinedChannelType[]>({
 export const channelState = atom<ChannelType | null>({
   key: "channelState",
   default: null,
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const messageListState = atom<MessageType[]>({
   key: "messageListState",
   default: [],
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const participantListState = atom<ParticipantType[]>({
   key: "participantListState",
   default: [],
-  effects_UNSTABLE: [persistAtom],
 });
