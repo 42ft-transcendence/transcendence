@@ -16,6 +16,7 @@ export class DirectMessageRepository extends Repository<DirectMessage> {
 
   async getDM(user1: User, user2: User): Promise<DirectMessage[]> {
     const messages = await this.find({
+      relations: ['from', 'to'],
       where: [
         { from: { id: user1.id }, to: { id: user2.id } },
         { from: { id: user2.id }, to: { id: user1.id } },
