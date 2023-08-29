@@ -238,4 +238,7 @@ export class GameGateway {
       this.server,
     );
   }
+  async offerGame(func_name: string, content: object): Promise<void> {
+    this.server.emit(func_name, content);
+  }
 }

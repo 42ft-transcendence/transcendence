@@ -12,12 +12,14 @@ import {
 import { Server, Socket } from 'socket.io';
 import { HistoryDto } from 'src/match_history/history.dto';
 import { User } from 'src/users/entities/user.entity';
-
+import { GameGateway } from './game.gateway';
+import { MatchHistorysService } from 'src/match_history/history.service';
 @Injectable()
 export class GameService {
   constructor(
     private usersService: UsersService,
-    private rootGateway: ChattingGateway,
+    private gameGateway: GameGateway,
+    private matchHistorysService: MatchHistorysService,
   ) {}
 
   async offerGame(user_id: string, nickname: string): Promise<boolean> {
@@ -29,7 +31,7 @@ export class GameService {
         user_id: user_id,
         nickname: nickname,
       };
-      this.rootGateway.offerGame('offerGame', content);
+      this.gameGateway.offerGame('offerGame', content);
       return true;
     }
   }
@@ -91,16 +93,13 @@ export class GameService {
       player2: '',
       gameMode: gameModeselector,
     };
-    //   /**삭제처리 */
-    //   await this.deleteProcess(
-    //     client,
-    //     roomNum,
-    //     userLeft,
-    //     userright,
-    //     connectedNickName,
-    //     // gameData
-    //   );
-    // }
+    this.matchHistorysService.putHistory(
+      historyDtoTmp,
+      getUser.get(roomNumber)[0],
+      getUser.get(roomNumber)[1],
+    );
+    // await this.channelService.deleteChannelByChannelName("game" + roomNumber);
+    console.log('add history');
   }
 
   async gameResultProcess(gameData: GameData, room: number) {
