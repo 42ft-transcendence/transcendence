@@ -11,7 +11,7 @@ export interface MessageType {
   id: string;
   content: string;
   userId: string;
-  roomId: string;
+  channelId: string;
   createdAt: Date;
 }
 
