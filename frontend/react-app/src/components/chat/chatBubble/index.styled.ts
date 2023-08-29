@@ -20,24 +20,25 @@ export const Container = styled.div<{ isMine: boolean }>`
       background-image: url(${TailMine});
       background-repeat: no-repeat;
       display: inline-block;
-      vertical-align: top;
+      vertical-align: baseline;
     }
   `
       : `
-   &:before {
-    content: "";
-    width: 20px;
-    height: 25px;
-    background-image: url(${TailOther});
-    background-repeat: no-repeat;
-    background-size: contain;
-    display: inline-block;
-    vertical-align: top;
-   }
+    &:before {
+      content: "";
+      width: 20px;
+      height: 25px;
+      background-image: url(${TailOther});
+      background-repeat: no-repeat;
+      background-size: contain;
+      display: inline-block;
+      vertical-align: baseline;
+    }
   `}
 `;
 
 export const Message = styled.span<{ isMine: boolean }>`
+  display: flex;
   background-color: ${({ isMine, theme }) =>
     isMine ? theme.colors.myChat : theme.colors.floating};
   border-radius: 5px;
