@@ -27,7 +27,7 @@ const ChannelPageContainer = () => {
   const handleSendMessage = (content: string) => {
     chatSocket.emit(
       "send_message",
-      { message: content },
+      { message: content, channelId: params.channelId },
       ({ message }: SendMessageReturnType) => {
         setMessageList((prev) => [...prev, message]);
       },
