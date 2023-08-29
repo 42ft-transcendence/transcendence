@@ -8,8 +8,8 @@ export interface DirectMessageType {
   read: boolean;
 }
 
-export type DmPartnerType = UserType;
+export type DmOtherType = UserType;
 
-export interface JoinedDmPartnerType extends DmPartnerType {
+export interface JoinedDmOtherType extends DmOtherType {
   hasNewMessages: boolean;
 }

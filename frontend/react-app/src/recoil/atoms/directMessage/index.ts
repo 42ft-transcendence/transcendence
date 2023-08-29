@@ -1,17 +1,17 @@
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
-import { DirectMessageType, DmPartnerType, JoinedDmPartnerType } from "@type";
+import { DirectMessageType, DmOtherType, JoinedDmOtherType } from "@type";
 
 const { persistAtom } = recoilPersist();
 
-export const joinedDmPartnerListState = atom<JoinedDmPartnerType[]>({
-  key: "joinedDmPartnerListState",
+export const joinedDmOtherListState = atom<JoinedDmOtherType[]>({
+  key: "joinedDmOtherListState",
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
 
-export const dmPartnerState = atom<DmPartnerType | null>({
-  key: "dmPartnerState",
+export const dmOtherState = atom<DmOtherType | null>({
+  key: "dmOtherState",
   default: null,
 });
 

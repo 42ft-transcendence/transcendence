@@ -2,7 +2,7 @@ import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { joinedChannelListState } from "@recoil/atoms/channel";
-import { joinedDmPartnerListState } from "@recoil/atoms/directMessage";
+import { joinedDmOtherListState } from "@recoil/atoms/directMessage";
 import SideBarList from "../../sideBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const ChattingSideBar = () => {
   const joinedChannelList = useRecoilValue(joinedChannelListState);
-  const joinedDmPartnerList = useRecoilValue(joinedDmPartnerListState);
+  const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
   const setChannelCreateModal = useSetRecoilState(channelCreateModalState);
 
   const [userData] = useRecoilState(userDataState);
@@ -73,11 +73,11 @@ const ChattingSideBar = () => {
           ))}
         </SideBarList>
         <SideBarList title="다이렉트 메세지">
-          {joinedDmPartnerList.map((dmPartner) => (
+          {joinedDmOtherList.map((dmOther) => (
             <DirectMessageListItem
-              key={dmPartner.id}
-              user={dmPartner}
-              hasNewMessage={dmPartner.hasNewMessages}
+              key={dmOther.id}
+              user={dmOther}
+              hasNewMessage={dmOther.hasNewMessages}
             />
           ))}
         </SideBarList>

@@ -26,6 +26,6 @@ export type { SidebarComponentType, SidebarConfigType } from "./rendering.type";
 
 export type {
   DirectMessageType,
-  DmPartnerType,
-  JoinedDmPartnerType,
+  DmOtherType,
+  JoinedDmOtherType,
 } from "./directMessage.type";
