@@ -4,6 +4,7 @@ import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { UserStatusCounts } from "@src/types/user.type";
 import { createDummy } from "@src/api";
+import { createDummyHistory } from "@src/recoil/atoms/game/createDummyHistory";
 
 interface UserListSideBarProps {
   onAllUsersClick: () => void;
@@ -70,7 +71,13 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
       onClick: async () => {
         await createDummy(50);
       },
-      theme: "DARK",
+      theme: "LIGHT",
+    },
+    {
+      text1: "더미 전적 생성",
+      text2: "500",
+      onClick: () => createDummyHistory(allUserList, 500),
+      theme: "LIGHT",
     },
   ];
 
