@@ -1,19 +1,24 @@
 import { UserType } from "@src/types";
 import * as S from "./index.styled";
+import { useNavigate } from "react-router-dom";
 
 export interface DirectMessageListItemPropsType {
   user: UserType;
-  onClick: (user: UserType) => void;
   hasNewMessage?: boolean;
 }
 
 const DirectMessageListItem = ({
   user,
-  onClick,
   hasNewMessage,
 }: DirectMessageListItemPropsType) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/dm/${user.id}`);
+  };
+
   return (
-    <S.Container onClick={() => onClick(user)}>
+    <S.Container onClick={handleClick}>
       <S.Profile src={user.avatarPath} alt={user.nickname} />
       <S.Status status={user.status} />
       <S.Title>{user.nickname}</S.Title>

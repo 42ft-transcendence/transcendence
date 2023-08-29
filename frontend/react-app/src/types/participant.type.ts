@@ -10,6 +10,6 @@ export interface ParticipantType {
 
   user?: UserType;
   userId?: string;
-  room?: ChannelType;
-  roomId?: string;
+  channel?: ChannelType;
+  channelId?: string;
 }

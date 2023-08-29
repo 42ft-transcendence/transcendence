@@ -5,14 +5,14 @@ import { ChannelType, ParticipantType } from "@type";
 
 /**
  * 내가 참여한 채팅방 리스트 요청
- * @url /participants/rooms
+ * @url /participants/channels
  * @method GET
  * @returns 내가 참여한 채팅방 리스트 반환
  */
 export const getMyChannels = async (): Promise<
   AxiosResponse<ChannelType[]>
 > => {
-  const response = await axios.get(`${base_url}/participants/rooms`, {
+  const response = await axios.get(`${base_url}/participants/channels`, {
     headers: {
       Authorization: `Bearer ${cookies.load("jwt") as string}`,
     },
@@ -22,16 +22,16 @@ export const getMyChannels = async (): Promise<
 
 /**
  * 채팅방 참가자 리스트 요청
- * @url /participants/participants?roomId=roomId
+ * @url /participants/participants?channelId=channelId
  * @method GET
- * @param roomId 채팅방 아이디
+ * @param channelId 채팅방 아이디
  * @returns 채팅방 참가자 리스트 반환
  */
-export const getParticipantsByRoomId = async (
-  roomId: string,
+export const getParticipantsByChannelId = async (
+  channelId: string,
 ): Promise<AxiosResponse<ParticipantType[]>> => {
   const response = await axios.get(
-    `${base_url}/participants/participants?roomId=${roomId}`,
+    `${base_url}/participants/participants?channelId=${channelId}`,
     {
       headers: {
         Authorization: `Bearer ${cookies.load("jwt") as string}`,

@@ -6,13 +6,11 @@ import { ChannelType } from "@type";
 
 export interface ChannelListPageViewPropsType {
   onChannelSearch: (keyword: string) => void;
-  onChannelClick: (channel: ChannelType) => void;
   channels: ChannelType[];
 }
 
 const ChannelListPageView = ({
   onChannelSearch,
-  onChannelClick,
   channels,
 }: ChannelListPageViewPropsType) => {
   return (
@@ -21,11 +19,7 @@ const ChannelListPageView = ({
       <ChattingSideBar />
       <SearchList onSearch={onChannelSearch}>
         {channels.map((channel) => (
-          <ChannelSearchItem
-            key={channel.id}
-            channel={channel}
-            onClick={onChannelClick}
-          />
+          <ChannelSearchItem key={channel.id} channel={channel} />
         ))}
       </SearchList>
     </>
