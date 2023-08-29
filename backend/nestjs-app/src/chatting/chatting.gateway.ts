@@ -361,13 +361,13 @@ export class ChattingGateway
   async sendDM(
     client: Socket,
     content: { userId: string; message: string },
-  ): Promise<DirectMessage[]> {
+  ): Promise<DirectMessage> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
       const toUser = await this.userService.getUserById(content.userId);
-      await this.dmService.saveDM(user, toUser, content.message);
-      const dm = await this.dmService.getDM(user, toUser);
+      const dm = await this.dmService.saveDM(user, toUser, content.message);
+      // const dm = await this.dmService.getDM(user, toUser);
       client.to(content.userId).emit('get_dm', {
         user: user,
         message: dm,
