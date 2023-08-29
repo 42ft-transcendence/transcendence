@@ -11,14 +11,14 @@ import { TMP, UserStatusType } from 'src/util';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
-import { HistoryDto } from 'src/match_history/history.dto';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
+import { GameService } from './game.service';
 
-const rankRoom = 0;
-const normalRoom = 1;
-const finishScore = 5;
+export const rankRoom = 0;
+export const normalRoom = 1;
+export const finishScore = 5;
 
 export class GameData {
   left_user: number;
@@ -51,19 +51,14 @@ interface RoomData {
   participation: boolean;
 }
 
-const roomManager = new Map<number, GameData>();
-
-const roomList = new Map<number, RoomData>();
-
-const getPlayerWithRoomnum = new Map<number, [string, string]>();
-
-const getRoomNumWithID = new Map<string, number>();
-
-const getUser = new Map<number, [User, User]>();
-const getUserList = new Map<number, User[]>();
-
-const checkReady = new Map<number, [boolean, boolean]>();
-const checkStart = new Map<number, [boolean, boolean]>();
+export const roomManager = new Map<number, GameData>();
+export const roomList = new Map<number, RoomData>();
+export const getPlayerWithRoomnum = new Map<number, [string, string]>();
+export const getRoomNumWithID = new Map<string, number>();
+export const getUser = new Map<number, [User, User]>();
+export const getUserList = new Map<number, User[]>();
+export const checkReady = new Map<number, [boolean, boolean]>();
+export const checkStart = new Map<number, [boolean, boolean]>();
 
 @WebSocketGateway({
   // cors: {
@@ -78,28 +73,13 @@ export class GameGateway {
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
     private chatGateway: ChattingGateway,
+    private gameService: GameService,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
-  async checkUserSet(roomNum: number): Promise<[boolean, boolean]> {
-    const tmp = getPlayerWithRoomnum.get(roomNum);
-    const result: [boolean, boolean] = [false, false];
-    if (tmp[0] != '') {
-      result[0] = true;
-    } else {
-      result[0] = false;
-    }
-    if (tmp[1] != '') {
-      result[1] = true;
-    } else {
-      result[1] = false;
-    }
-
-    return result;
-  }
-
+  // 삭제 처리
   async deleteProcess(
     @ConnectedSocket() client,
     roomNum: number,
@@ -107,13 +87,17 @@ export class GameGateway {
     userright: string,
     connectedNickName: string,
   ) {
+    // 소켓 클라인트가 누군지 특정
     const user_id = await this.getUserId(client);
     // let user = await this.userService.getUserById(user_id);
 
+    // 해당 방의 유저 정보 삭제
+    // 참가 할 수 있는 여부를 true로 바꾼다.
     if (roomList.has(roomNum)) {
       roomList.get(roomNum).person--;
       roomList.get(roomNum).participation = true;
     }
+    //
     if (connectedNickName == userLeft) {
       getPlayerWithRoomnum.get(roomNum)[0] = '';
       if (roomNum % 2) {
@@ -142,7 +126,7 @@ export class GameGateway {
 
     this.server
       .to(roomNum.toString())
-      .emit('allUserSet', await this.checkUserSet(roomNum));
+      .emit('allUserSet', await this.gameService.checkUserSet(roomNum));
 
     client.leave(roomNum.toString());
 
@@ -172,121 +156,7 @@ export class GameGateway {
     this.server.emit('roomList', JSON.stringify(Array.from(roomList)));
   }
 
-  async pushHistory(roomNumber: number, mode: number) {
-    let gameModeselector: string;
-
-    if (mode == 0) {
-      gameModeselector = '랭크';
-    } else if (mode == 1) {
-      gameModeselector = '일반';
-    } else if (mode == 2) {
-      gameModeselector = '일반-포탈';
-    } else {
-      gameModeselector = 'unknown';
-    }
-    const historyDtoTmp: HistoryDto = {
-      player1score: roomManager.get(roomNumber).score[0],
-      player2score: roomManager.get(roomNumber).score[1],
-      player1: '',
-      player2: '',
-      gameMode: gameModeselector,
-    };
-
-    this.matchHistorysService.putHistory(
-      historyDtoTmp,
-      getUser.get(roomNumber)[0],
-      getUser.get(roomNumber)[1],
-    );
-    // await this.channelService.deleteChannelByChannelName("game" + roomNumber);
-    console.log('add history');
-  }
-
-  async updateGameInfo(user: User, WinLose: number, isRank: number) {
-    user = await this.userService.getUserById(user.id);
-    if (isRank == 0) {
-      if (WinLose > 0) {
-        user.rating += 15;
-        user.ladder_win++;
-      } else {
-        user.rating -= 10;
-        user.ladder_lose++;
-      }
-      await this.userService.updateLadderGameRecord(user);
-    } else {
-      if (WinLose > 0) {
-        user.win++;
-      } else {
-        user.lose++;
-      }
-      await this.userService.updateNormalGameRecord(user);
-    }
-    console.log('updat user info');
-  }
-
-  async gameResultProcess(gameData: GameData, room: number) {
-    const winLose = gameData.score[0] - gameData.score[1];
-    const isRank = room % 2;
-    const user = getUser.get(room);
-
-    await this.updateGameInfo(user[0], winLose, isRank);
-    await this.updateGameInfo(user[1], winLose * -1, isRank);
-  }
-
-  /**몰수 처리 */
-  async ConfiscationProcess(
-    roomNum: number,
-    userLeft: string,
-    userright: string,
-    connectedNickName: string,
-  ) {
-    const gameData = roomManager.get(roomNum);
-
-    /**게임중 일 때 => DB에 결과 반영까지 해야됨*/
-    if (gameData.onGame) {
-      gameData.onGame = false;
-      if (connectedNickName == userLeft) {
-        gameData.score = [0, finishScore + 1];
-      } else if (connectedNickName == userright) {
-        gameData.score = [finishScore + 1, 0];
-      }
-      this.server.to(roomNum.toString()).emit('finished', gameData.score);
-      await this.pushHistory(roomNum, gameData.mode);
-      await this.gameResultProcess(gameData, roomNum);
-      gameData.score = [0, 0];
-      gameData.reset();
-      if (roomNum % 2) {
-        checkReady.get(roomNum)[0] = false;
-        checkReady.get(roomNum)[1] = false;
-      }
-    }
-  }
-
-  // disconnect시 처리
-  async disconnectProcess(
-    @ConnectedSocket() client,
-    roomNum: number,
-    userLeft: string,
-    userright: string,
-    connectedNickName: string,
-  ) {
-    /**몰수처리 */
-    await this.ConfiscationProcess(
-      roomNum,
-      userLeft,
-      userright,
-      connectedNickName,
-    );
-
-    await this.deleteProcess(
-      client,
-      roomNum,
-      userLeft,
-      userright,
-      connectedNickName,
-      // gameData
-    );
-  }
-
+  /**유저의 Id 값을 get */
   private async getUserId(client: Socket) {
     try {
       let jwt = String(client.handshake.headers.authorization);
@@ -299,12 +169,14 @@ export class GameGateway {
     }
   }
 
+  /**유저가 소켓에 연결 됐을 때 */
   async handleConnection(@ConnectedSocket() client) {
     const user_id = await this.getUserId(client);
     const user = await this.userService.getUserById(user_id);
     console.log('connect game : ' + user.nickname);
   }
 
+  /**유저가 소켓과 연결을 끊었을 때 */
   async handleDisconnect(@ConnectedSocket() client) {
     const user_id = await this.getUserId(client);
     const user = await this.userService.getUserById(user_id);
@@ -346,5 +218,24 @@ export class GameGateway {
         );
       }
     }
+  }
+
+  // disconnect시 처리
+  // 몰수처리와 삭제 처리를 한다.
+  async disconnectProcess(
+    @ConnectedSocket() client,
+    roomNum: number,
+    userLeft: string,
+    userright: string,
+    connectedNickName: string,
+  ) {
+    /**몰수처리 */
+    await this.gameService.ConfiscationProcess(
+      roomNum,
+      userLeft,
+      userright,
+      connectedNickName,
+      this.server,
+    );
   }
 }
