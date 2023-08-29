@@ -22,7 +22,7 @@ const ChatList = ({
   }, [children]);
 
   return (
-    <>
+    <S.Container>
       <S.ChatList>
         {children}
         <li ref={messageEndRef} />
@@ -32,7 +32,7 @@ const ChatList = ({
         onInvite={onInvite}
         isChannel={isChannel}
       />
-    </>
+    </S.Container>
   );
 };
 
