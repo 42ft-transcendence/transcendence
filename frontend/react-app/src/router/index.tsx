@@ -10,6 +10,7 @@ import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
 import Ranking from "@src/pages/ranking";
 import Socket from "./socket";
+import ChannelPage from "@src/pages/channel";
 
 const Router = createBrowserRouter([
   {
@@ -90,10 +91,16 @@ const Router = createBrowserRouter([
       </Socket>
     ),
   },
-  // {
-  //   path: "/channel/:channelId",
-  //   element: <ChannelPage />,
-  // },
+  {
+    path: "/channel/:channelId",
+    element: (
+      <Socket>
+        <PrivateRoute>
+          <ChannelPage />
+        </PrivateRoute>
+      </Socket>
+    ),
+  },
 ]);
 
 export default Router;
