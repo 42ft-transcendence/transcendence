@@ -8,18 +8,4 @@ export class GameService {
     private usersService: UsersService,
     private rootGateway: ChattingGateway,
   ) {}
-
-  async offerGame(user_id: string, nickname: string): Promise<boolean> {
-    const user = await this.usersService.getUserById(user_id);
-    if (!user) {
-      throw new Error('User not found');
-    } else {
-      const content = {
-        user_id: user_id,
-        nickname: nickname,
-      };
-      this.rootGateway.offerGame('offerGame', content);
-      return true;
-    }
-  }
 }

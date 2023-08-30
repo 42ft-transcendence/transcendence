@@ -77,11 +77,24 @@ export class GameGateway {
     private authService: AuthService,
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
-    private chatGateway: ChattingGateway,
   ) {}
 
   @WebSocketServer()
   server: Server;
+
+  async offerGame(user_id: string, nickname: string): Promise<boolean> {
+    const user = await this.userService.getUserById(user_id);
+    if (!user) {
+      throw new Error('User not found');
+    } else {
+      const content = {
+        user_id: user_id,
+        nickname: nickname,
+      };
+      this.server.emit('offerGame', content);
+      return true;
+    }
+  }
 
   async checkUserSet(roomNum: number): Promise<[boolean, boolean]> {
     const tmp = getPlayerWithRoomnum.get(roomNum);
