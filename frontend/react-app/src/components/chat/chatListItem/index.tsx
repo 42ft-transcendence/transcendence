@@ -10,27 +10,23 @@ export interface ChatListItemPropsType {
 const ChatListItem = ({ isMine, chat }: ChatListItemPropsType) => {
   if (isMine) {
     return (
-      <li>
-        <S.Container $isMine={isMine}>
-          <ChatBubble message={chat.message.content} isMine={isMine} />
-        </S.Container>
-      </li>
+      <S.Container $isMine={isMine}>
+        <ChatBubble message={chat.message.content} isMine={isMine} />
+      </S.Container>
     );
   } else {
     return (
-      <li>
-        <S.Container $isMine={isMine}>
-          <S.ProfileImage
-            src={chat.user.avatarPath}
-            $role={chat.role}
-            alt={chat.user.nickname}
-          />
-          <S.ContentContainer>
-            <S.Nickname>{chat.user.nickname}</S.Nickname>
-            <ChatBubble message={chat.message.content} isMine={isMine} />
-          </S.ContentContainer>
-        </S.Container>
-      </li>
+      <S.Container $isMine={isMine}>
+        <S.ProfileImage
+          src={chat.user.avatarPath}
+          $role={chat.role}
+          alt={chat.user.nickname}
+        />
+        <S.ContentContainer>
+          <S.Nickname>{chat.user.nickname}</S.Nickname>
+          <ChatBubble message={chat.message.content} isMine={isMine} />
+        </S.ContentContainer>
+      </S.Container>
     );
   }
 };
