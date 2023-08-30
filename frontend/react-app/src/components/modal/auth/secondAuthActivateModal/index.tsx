@@ -18,8 +18,15 @@ const SecondAuthActivateModal = () => {
   const [isOpened, setIsOpened] = useRecoilState(secondAuthActivateModalState);
 
   const handleClose = useCallback(() => {
+    getUser()
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     setIsOpened(false);
-  }, [setIsOpened]);
+  }, [setIsOpened, setUserData]);
 
   window.onkeydown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {

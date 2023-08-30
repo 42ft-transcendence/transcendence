@@ -1,15 +1,24 @@
 import { IconButton } from "@components/buttons";
 import { secondAuthDeactivateModalState } from "@src/recoil/atoms/modal";
-import { turnOff2Fa } from "@src/api";
-import { useRecoilState } from "recoil";
+import { getUser, turnOff2Fa } from "@src/api";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import * as S from "./index.styled";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const SecondAuthDeactivateModal = () => {
   const [isOpened, setIsOpened] = useRecoilState(
     secondAuthDeactivateModalState,
   );
+  const setUserData = useSetRecoilState(userDataState);
 
   const handleClose = () => {
+    getUser()
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     setIsOpened(false);
   };
 
