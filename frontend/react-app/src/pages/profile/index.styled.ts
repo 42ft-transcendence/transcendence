@@ -15,7 +15,7 @@ export const MatchContainer = styled.div`
   height: calc(100% - 120px);
   flex-direction: column;
   align-items: center;
-  background-color: ${(props) => props.theme.colors.gold};
+  overflow-y: scroll;
 `;
 
 export const MatchCard = styled.div<{ mode: string }>`
@@ -29,7 +29,11 @@ export const MatchCard = styled.div<{ mode: string }>`
         ? props.theme.colors.deepWin
         : props.theme.colors.deepLose};
   background-color: ${(props) =>
-    props.mode === "승리" ? props.theme.colors.win : props.theme.colors.lose};
+    props.mode === "승리"
+      ? props.theme.colors.win
+      : props.mode === "패배"
+      ? props.theme.colors.lose
+      : props.theme.colors.floating};
 `;
 
 export const MatchCardMatchInfo = styled.div`
@@ -48,7 +52,8 @@ export const MatchCardMatchInfoGameType = styled.div<{ mode: string }>`
   font-weight: bold;
   font-family: inter;
   margin-left: 7px;
-  color: ${(props) => (props.mode === "승리" ? "blue" : "red")};
+  color: ${(props) =>
+    props.mode === "승리" ? "blue" : props.mode === "패배" ? "red" : "gray"};
 `;
 
 export const MatchCardMatchInfoDate = styled.div`

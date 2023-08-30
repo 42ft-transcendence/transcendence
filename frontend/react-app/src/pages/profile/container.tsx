@@ -1,5 +1,8 @@
 import { MatchHistoryType } from "@src/types/game.type";
 import * as S from "./index.styled";
+import { ProfileModalOnClickHandler } from "@src/utils";
+import { useRecoilState } from "recoil";
+import { showProfileState } from "@src/recoil/atoms/common";
 
 interface MatchCardProps {
   history: MatchHistoryType;
@@ -26,6 +29,7 @@ const createTimeAgo = (dateString: string): string => {
 };
 
 export const MatchCard = ({ history }: MatchCardProps) => {
+  const [, setShowProfile] = useRecoilState(showProfileState);
   const currentRoute = window.location.pathname;
   const userId = currentRoute.split("/").pop();
 
@@ -36,11 +40,10 @@ export const MatchCard = ({ history }: MatchCardProps) => {
       ? history.player2
       : null;
 
+  let enemy = history.player1;
   if (!player) return <></>;
   if (player.id === history.player1.id) {
-    const enemy = history.player2;
-  } else {
-    const enemy = history.player1;
+    enemy = history.player2;
   }
 
   let winLose = "";
@@ -75,12 +78,18 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         </S.MatchCardProfileNickname>
       </S.MatchCardProfile>
       <S.MatchCardScore />
-      <S.MatchCardEnemyProfile>
-        <S.MatchCardProfileNickname>
-          {player.nickname}
+      <S.MatchCardProfile>
+        <S.MatchCardProfileNickname
+          style={{ marginLeft: "20px" }}
+          onClick={ProfileModalOnClickHandler(setShowProfile, true, enemy)}
+        >
+          {enemy.nickname}
         </S.MatchCardProfileNickname>
-        <S.MatchCardProfileImage src={player.avatarPath} />
-      </S.MatchCardEnemyProfile>
+        <S.MatchCardProfileImage
+          src={enemy.avatarPath}
+          style={{ marginRight: "20px" }}
+        />
+      </S.MatchCardProfile>
       <S.MatchCardEnemyButtonContainer />
     </S.MatchCard>
   );
