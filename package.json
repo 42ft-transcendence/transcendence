@@ -4,9 +4,14 @@
   "description": "Soon, you will realize that you already know things that you thought you didn’t.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test:frontend": "cd frontend/react-app && npm test",
+    "test:frontend:lint-staged": "cd frontend/react-app && npm run test:lint-staged",
     "prepare": "husky install"
   },
   "lint-staged": {
+    "frontend/**/*.{ts,tsx}": [
+      "npm run test:frontend:lint-staged"
+    ],
     "**/*": "prettier --write --ignore-unknown",
     "*.{ts,tsx}": [
       "eslint --fix",

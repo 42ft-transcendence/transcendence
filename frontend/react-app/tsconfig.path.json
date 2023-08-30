@@ -7,7 +7,7 @@
       "@api": ["api"],
       "@api/*": ["api/*"],
       "@assets/*": ["assets/*"],
-      "@components/*": ["component/*"],
+      "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@mocks/*": ["mocks/*"],
       "@pages": ["pages"],
@@ -15,8 +15,11 @@
       "@router": ["router"],
       "@router/*": ["router/*"],
       "@recoil/*": ["recoil/*"],
-      "@types/*": ["types/*"],
-      "@utils/*": ["utils/*"]
+      "@type": ["types"],
+      "@type/*": ["types/*"],
+      "@utils/*": ["utils/*"],
+      "@test/*": ["__tests__/*"],
+      "@styles/*": ["styles/*"]
     }
   }
 }

@@ -13,8 +13,18 @@ export class MessageService {
   async saveMessage(
     userId: string,
     content: string,
-    roomId: string,
+    channelId: string,
   ): Promise<Message> {
-    return await this.messageRepository.saveMessage(userId, content, roomId);
+    const message = await this.messageRepository.saveMessage(
+      userId,
+      content,
+      channelId,
+    );
+    if (!message) throw new Error('Message save failed');
+    return message;
+  }
+
+  async getMessages(channelId: string): Promise<Message[]> {
+    return await this.messageRepository.getMessages(channelId);
   }
 }

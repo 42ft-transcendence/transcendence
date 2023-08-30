@@ -49,10 +49,10 @@ services:
     volumes:
       - ./frontend/react-app/src:/app/src
     environment:
-      FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
-      FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
-      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
-      GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
+      VITE_FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
+      VITE_FT_OAUTH_REDIRECT_URI: ${FT_OAUTH_REDIRECT_URI}
+      VITE_GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID}
+      VITE_GOOGLE_OAUTH_REDIRECT_URI: ${GOOGLE_OAUTH_REDIRECT_URI}
 
   srv-nginx:
     container_name: nginx
@@ -65,6 +65,7 @@ services:
     networks:
       - net-transcendence
     volumes:
+      - vol-images:/usr/share/nginx/images
       - vol-profiles:/usr/share/nginx/profiles
     depends_on:
       - srv-backend
@@ -77,6 +78,14 @@ networks:
 volumes:
   vol-postgres:
     name: dev-postgres
+
+  vol-images:
+    name: dev-images
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./share/images
 
   vol-profiles:
     name: dev-profiles

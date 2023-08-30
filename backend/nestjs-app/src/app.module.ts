@@ -10,7 +10,7 @@ import { ChattingModule } from './chatting/chatting.module';
 import { FileModule } from './file/file.module';
 import { MessageModule } from './message/message.module';
 import { MessageRepository } from './message/repository/message.repository';
-import { DMModule } from './dm/dm.module';
+import { DMModule } from './dm/directmessage.module';
 import { ParticipantsModule } from './participants/participants.module';
 import { RelationshipModule } from './relationship/relationship.module';
 import { GameModule } from './game/game.module';
