@@ -1,3 +1,4 @@
+// import { ParticipantType } from "./participant.type";
 import { UserType } from "./user.type";
 
 export interface OfferGameType {
@@ -20,4 +21,21 @@ export interface MatchHistoryType {
 export interface battleActionData {
   battleActionModal: boolean;
   nickname: string;
+}
+
+export type gameTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE";
+
+export interface gameType {
+  id: string;
+  name: string;
+  type: gameTypeType;
+  password: string;
+  createdAt: Date;
+  ownerId: string;
+
+  // participants?: ParticipantType[];
+}
+
+export interface JoinedgameType extends gameType {
+  hasNewMessages: boolean;
 }

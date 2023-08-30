@@ -1,6 +1,17 @@
 import { Theme } from "@src/styles/Theme";
 import styled from "styled-components";
 
+import Hash from "@assets/icons/Hash.svg";
+import Detective from "@assets/icons/Detective.svg";
+import Lock from "@assets/icons/LockKey.svg";
+import { gameTypeType } from "@src/types/game.type";
+
+const gameTypeIcon = {
+  PUBLIC: Hash,
+  PROTECTED: Lock,
+  PRIVATE: Detective,
+};
+
 export const ModalOverlay = {
   background: "transparent",
   justifyContent: "center",
@@ -25,20 +36,6 @@ export const ModalContent = {
   // overflow: "auto",
 };
 
-// export const gameCreateModalContent = styled.div`
-//   justifycontent: center;
-//   alignitems: center;
-//   width: 160px;
-//   min-height: 30px;
-//   left: 235px;
-//   top: auto;
-//   bottom: 425px;
-//   overflow: hidden;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
 export const gameCreateModalTitle = styled.h2`
   font-size: 10px;
   font-weight: bold;
@@ -48,9 +45,11 @@ export const gameCreateModalTitle = styled.h2`
 `;
 
 export const gameCreateModalLabel = styled.label`
-  font-size: 10px;
-  margin-top: 10px;
-  color: white;
+  font-size: 24px;
+  margin-right: 150px;
+  margin-top: 30px;
+  color: ${Theme.colors.freezePurple};
+  font-weight: bold;
 `;
 
 export const gameCreateModalInput = styled.input`
@@ -82,4 +81,101 @@ export const InputBoxWrapper = styled.input`
   border-bottom: 2px solid ${Theme.colors.freezePurple};
   color: ${Theme.colors.freezePurple};
   margin-top: 20px;
+`;
+
+export const GameSpeedButtons = styled.div`
+  display: flex;
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const gameCreateOption = styled.div`
+  display: flex;
+  width: 80%;
+  justify-content: start;
+`;
+
+export const TypeButton = styled.button<{ type: gameTypeType }>`
+  height: 20px;
+  background: none;
+  border: none;
+  outline: none;
+  color: ${({ theme }) => theme.colors.freezePurple};
+  font-size: 20px;
+  font-weight: Bold;
+  line-height: 24px;
+  text-align: center;
+  cursor: pointer;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 24px;
+    background-image: url(${({ type }) => gameTypeIcon[type]});
+    background-size: 24px;
+    background-repeat: no-repeat;
+  }
+`;
+
+export const OptionContent = styled.div`
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+`;
+
+export const GameSpeedButton = styled.button<{ $selected: string }>`
+  flex: 1;
+  width: 100px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid ${Theme.colors.iceCold};
+  border-radius: 4px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  margin: 0 0.25rem;
+  background-color: ${({ $selected }) =>
+    $selected ? `${Theme.colors.iceCold}` : "transparent"};
+  color: ${({ $selected }) =>
+    $selected ? `${Theme.colors.heavyPurple}` : `${Theme.colors.freezePurple}`};
+`;
+
+export const PasswordInput = styled.input`
+  width: 150px;
+  height: 24px;
+  background: none;
+  background-image: url(${Lock});
+  background-size: 24px;
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 24px;
+  border: none;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.freezePurple};
+  outline: none;
+  color: ${({ theme }) => theme.colors.freezePurple};
+  font-size: 20px;
+  font-weight: Bold;
+  line-height: 40px;
+  text-align: center;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+  height: 40px;
+`;
+
+export const mapbox = styled.div`
+  width: 250px;
+  height: 125px;
+  background: white;
 `;
