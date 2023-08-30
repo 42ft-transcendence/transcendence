@@ -72,7 +72,7 @@ const DirectMessagePageContainer = () => {
       });
       return rawChatList.filter((chat) => chat !== undefined) as ChatType[];
     });
-  }, [setChatList, dmList, dmOther, userData]);
+  }, [dmList, dmOther, setChatList]);
 
   // Get channel info at enter
   useEffect(() => {
@@ -99,7 +99,7 @@ const DirectMessagePageContainer = () => {
       setDmOther(null);
       setDmList([]);
     };
-  }, [params, joinedDmOtherList, setDmOther, setDmList]);
+  }, [params, setDmOther, setDmList, setJoinedDmOtherList]);
 
   return (
     <DirectMessagePageView
