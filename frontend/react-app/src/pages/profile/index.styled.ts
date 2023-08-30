@@ -156,7 +156,38 @@ export const HeaderMapContainer = styled.div`
   width: 150px;
   height: 100%;
   flex-direction: column;
-  background-color: ${(props) => props.theme.colors.bronze};
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+`;
+
+export const HeaderMapTitle = styled.div`
+  width: 100%;
+  height: 20px;
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: inter;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const HeaderMapStats = styled.div`
+  width: 100%;
+  height: 20px;
+  display: flex;
+  font-size: 14px;
+  font-family: inter;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => props.theme.colors.floating};
+`;
+
+export const HeaderMapStatsWinRate = styled.p<{ win: number; lose: number }>`
+  margin-left: 10px;
+  color: ${(props) =>
+    props.win > props.lose ? "red" : props.theme.colors.floating};
 `;
 
 export const Header10gamesContainer = styled.div`

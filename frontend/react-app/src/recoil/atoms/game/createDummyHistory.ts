@@ -10,6 +10,7 @@ export const createDummyHistory = (
   for (let i = 0; i < num; i++) {
     let availableUsers = [...userList]; // userList를 복사하여 원본을 수정하지 않게 합니다.
 
+    const maps = ["normal", "jungle", "desert"];
     const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // 과거 한 달을 밀리초로
     const randomTimeAgo = Math.random() * oneMonthInMs; // 랜덤한 밀리초 값 (0부터 과거 한 달 사이)
     const randomPastTime = new Date().getTime() - randomTimeAgo; // 랜덤한 과거 시간
@@ -49,6 +50,7 @@ export const createDummyHistory = (
       player1ScoreChange,
       player2ScoreChange,
       gameMode: Math.random() < 0.5 ? "rank" : "normal", // 수정된 게임 모드 랜덤 선택 로직
+      map: maps[Math.floor(Math.random() * maps.length)],
     });
   }
 

@@ -117,7 +117,13 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         </S.MatchCardProfileNickname>
       </S.MatchCardProfile>
       <S.MatchCardScoreContainer>
-        <S.MatchCardScoreMap>맵 추가</S.MatchCardScoreMap>
+        <S.MatchCardScoreMap>
+          {history.map === "normal"
+            ? "일반"
+            : history.map === "desert"
+            ? "사막"
+            : "정글"}
+        </S.MatchCardScoreMap>
         <S.MatchCardScoreTextContainer>
           <div style={{ color: "blue" }}>{playerScore}</div>
           <div>:</div>
@@ -148,6 +154,15 @@ export const MatchCard = ({ history }: MatchCardProps) => {
   );
 };
 
+type MapStatsType = {
+  wins: number;
+  losses: number;
+  totalScore: number;
+  totalLoseScore: number;
+};
+
+type MapType = "normal" | "desert" | "jungle";
+
 export const MatchHeader = ({
   userId,
   historyList,
@@ -158,6 +173,53 @@ export const MatchHeader = ({
 }: MatchHeaderProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+  const maps: MapType[] = ["normal", "desert", "jungle"];
+  const mapStats: Record<MapType, MapStatsType> = {
+    normal: {
+      wins: 0,
+      losses: 0,
+      totalScore: 0,
+      totalLoseScore: 0,
+    },
+    desert: {
+      wins: 0,
+      losses: 0,
+      totalScore: 0,
+      totalLoseScore: 0,
+    },
+    jungle: {
+      wins: 0,
+      losses: 0,
+      totalScore: 0,
+      totalLoseScore: 0,
+    },
+  };
+
+  // historyList를 순회하며 각 맵별 승패와 득점, 실점 정보를 구함
+  historyList.forEach((history) => {
+    // 승리 여부 판단
+    const isWin =
+      (history.player1.id === userId && history.player1Score === 5) ||
+      (history.player2.id === userId && history.player2Score === 5);
+
+    const score: number =
+      history.player1.id === userId
+        ? history.player1Score
+        : history.player2Score;
+    const loseScore: number =
+      history.player1.id === userId
+        ? history.player2Score
+        : history.player1Score;
+
+    // 해당 맵의 통계 정보 업데이트
+    if (isWin) {
+      mapStats[history.map as MapType].wins += 1;
+    } else {
+      mapStats[history.map as MapType].losses += 1;
+    }
+    mapStats[history.map as MapType].totalScore += score;
+    mapStats[history.map as MapType].totalLoseScore += loseScore;
+  });
 
   const winCount = historyList.filter(
     (history) =>
@@ -252,7 +314,34 @@ export const MatchHeader = ({
             {(totalScore / totalLoseScore).toFixed(2)}:1
           </S.HeaderAvgScore>
         </S.HeaderAvgContainer>
-        <S.HeaderMapContainer />
+        <S.HeaderMapContainer>
+          <S.HeaderMapTitle>맵 통계</S.HeaderMapTitle>
+          {maps.map((mapType) => (
+            <S.HeaderMapStats key={mapType}>
+              <div>
+                {mapType === "normal"
+                  ? "일반"
+                  : mapType === "desert"
+                  ? "사막"
+                  : "정글"}
+              </div>
+              <S.HeaderMapStatsWinRate
+                win={mapStats[mapType].wins}
+                lose={mapStats[mapType].losses}
+              >
+                {(
+                  (mapStats[mapType].wins /
+                    (mapStats[mapType].wins + mapStats[mapType].losses)) *
+                  100
+                ).toFixed(0)}
+                {"%"}
+              </S.HeaderMapStatsWinRate>
+              <div style={{ marginLeft: "4px" }}>
+                {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
+              </div>
+            </S.HeaderMapStats>
+          ))}
+        </S.HeaderMapContainer>
         <S.Header10gamesContainer />
       </S.HeaderStatistcs>
     </S.Header>
