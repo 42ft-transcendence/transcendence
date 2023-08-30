@@ -25,12 +25,14 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   setSortState,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
+        setIsOpenDropdown(false);
       }
     };
 
@@ -43,6 +45,9 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   const handleSortSelection = (selectedSort: string) => {
     setSortState(selectedSort);
     setShowDropdown(false);
+    setTimeout(() => {
+      setIsOpenDropdown(false);
+    }, 0); // 0ms 지연으로 다음 리렌더링 사이클에서 호출되도록 설정
   };
 
   return (
@@ -58,9 +63,12 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
         />
         <S.SearchBarImg src={SearchIcon} />
       </S.SearchBar>
-      <S.SortContainer onClick={() => setShowDropdown(!showDropdown)}>
-        <S.SortArrowIcon />
-        <span style={{ cursor: "pointer" }}>{sortState}</span>
+      <S.SortContainer
+        onClick={() => {
+          setShowDropdown(!showDropdown);
+          setIsOpenDropdown(true);
+        }}
+      >
         {showDropdown && (
           <S.SortDropdown ref={dropdownRef}>
             <S.SortOption onClick={() => handleSortSelection("닉네임 순")}>
@@ -71,6 +79,8 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
             </S.SortOption>
           </S.SortDropdown>
         )}
+        <span style={{ cursor: "pointer" }}>{sortState}</span>
+        <S.SortArrowIcon $isOpen={isOpenDropdown} />
       </S.SortContainer>
     </S.SearchBarContainer>
   );

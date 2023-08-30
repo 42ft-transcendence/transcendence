@@ -42,7 +42,7 @@ export const SearchBarImg = styled.img`
 
 export const SortContainer = styled.div`
   position: relative; /* 추가 */
-  width: 100px;
+  width: 120px;
   height: 60px;
   margin-left: 30px;
   display: flex;
@@ -50,21 +50,21 @@ export const SortContainer = styled.div`
   color: ${(props) => props.theme.colors.heavyPurple};
 `;
 
-export const SortArrowIcon = styled.span`
-  transform: translate(-50%, -50%) rotate(90deg);
+export const SortArrowIcon = styled.span<{ $isOpen: boolean }>`
+  transform: translate(-50%, -50%)
+    rotate(${(props) => (props.$isOpen ? "-90deg" : "90deg")});
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
   border-left: 8px solid ${(props) => props.theme.colors.heavyPurple}; /* Adjust the size of the triangle */
-  transition: transform 0.3s ease;
-  margin-top: 7px;
-  margin-right: 5px;
+  margin-top: 10px;
+  margin-left: 15px;
   cursor: pointer;
 `;
 
 export const SortDropdown = styled.div`
   position: absolute;
-  top: 10px; /* SortContainer의 높이 + 약간의 간격 */
-  left: -10px;
+  top: 50px; /* SortContainer의 높이 + 약간의 간격 */
+  left: -12px;
   width: 180px; /* 필요한 경우 크기 조절 */
   background-color: ${(props) => props.theme.colors.floating};
   border-radius: 8px;
