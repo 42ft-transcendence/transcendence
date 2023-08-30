@@ -3,35 +3,27 @@ import { userDataState } from "@src/recoil/atoms/common";
 import axios from "axios";
 import { QRCodeCanvas } from "qrcode.react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 import Loading from "@assets/images/loading.gif";
+import { secondAuthActivateModalState } from "@src/recoil/atoms/modal";
 
-export interface SecondAuthActivateModalPropsType {
-  onClose: () => void;
-}
-
-const SecondAuthActivateModal = ({
-  onClose,
-}: SecondAuthActivateModalPropsType) => {
+const SecondAuthActivateModal = () => {
   const [code, setCode] = useState("");
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
   const setUserData = useSetRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [isOpened, setIsOpened] = useRecoilState(secondAuthActivateModalState);
 
   const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  const handleCancel = () => {
-    handleClose();
-  };
+    setIsOpened(false);
+  }, [setIsOpened]);
 
   window.onkeydown = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
-      handleCancel();
+      handleClose();
     }
   };
 
@@ -95,8 +87,9 @@ const SecondAuthActivateModal = ({
     inputRef.current?.focus();
   }, [loading]);
 
+  if (!isOpened) return null;
   return (
-    <S.ModalBlind onClick={handleCancel}>
+    <S.ModalBlind onClick={handleClose}>
       <S.ModalContainer onSubmit={handleSubmit}>
         <S.Title>2차인증 활성화</S.Title>
         {loading ? (
@@ -110,7 +103,7 @@ const SecondAuthActivateModal = ({
           onChange={handleCodeChange}
           disabled={loading}
         />
-        <IconButton title="취소" theme="LIGHT" onClick={handleCancel} />
+        <IconButton title="취소" theme="LIGHT" onClick={handleClose} />
       </S.ModalContainer>
     </S.ModalBlind>
   );
