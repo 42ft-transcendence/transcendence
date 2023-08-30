@@ -8,14 +8,12 @@ import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
+  const SidebarComponent = profileRouteMatch(currentRoute);
   const userId = currentRoute.split("/").pop();
   const [matchHistory] = useRecoilState(matchHistoryListState);
-
-  console.log("currentRoute", currentRoute);
-  const SidebarComponent = profileRouteMatch(currentRoute);
-
-  console.log("matchHistory", matchHistory);
-  console.log("matchHistory[0]", matchHistory[0]);
+  const sortMatchHistory = [...matchHistory].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  }); // 최신순으로 정렬
 
   if (!matchHistory) return <></>; // TODO: 로딩 컴포넌트 추가
 
@@ -26,7 +24,7 @@ const Profile = () => {
       <DS.ContentArea>
         <S.Header>Header</S.Header>
         <S.MatchContainer>
-          {matchHistory.map((match) => {
+          {sortMatchHistory.map((match) => {
             if (match.player1.id === userId || match.player2.id === userId) {
               return <MatchCard history={match} key={match.id}></MatchCard>;
             }
