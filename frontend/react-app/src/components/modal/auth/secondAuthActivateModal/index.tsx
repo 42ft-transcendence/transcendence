@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
-import Loading from "@assets/images/loading.gif";
+// import Loading from "@assets/images/loading.gif";
 import { secondAuthActivateModalState } from "@src/recoil/atoms/modal";
 
 const SecondAuthActivateModal = () => {
@@ -93,7 +93,10 @@ const SecondAuthActivateModal = () => {
       <S.ModalContainer onSubmit={handleSubmit}>
         <S.Title>2차인증 활성화</S.Title>
         {loading ? (
-          <img src={Loading} alt="loading" />
+          <img
+            src="http://localhost/src/assets/images/loading.gif"
+            alt="loading"
+          />
         ) : (
           <QRCodeCanvas value={link} size={150} bgColor={"#494D5F"} />
         )}

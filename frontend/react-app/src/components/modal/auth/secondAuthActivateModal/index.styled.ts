@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import InputBG from "/src/assets/backgrounds/6digit-input-bg.svg";
+import InputBG from "@assets/backgrounds/6digit-input-bg.svg";
 
 export const ModalBlind = styled.div`
   position: absolute;

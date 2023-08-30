@@ -5,7 +5,7 @@ import {
 } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { logout, resignUser } from "@src/api";
@@ -17,6 +17,12 @@ import { useEffect, useState } from "react";
 import { ChangeProfileImageModal } from "./container";
 import { UserType } from "@src/types";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
+import {
+  secondAuthActivateModalState,
+  secondAuthDeactivateModalState,
+} from "@src/recoil/atoms/modal";
+import SecondAuthActivateModal from "@src/components/modal/auth/secondAuthActivateModal";
+import SecondAuthDeactivateModal from "@src/components/modal/auth/secondAuthDeactivateModal";
 
 const ProfileSideBar = () => {
   const [userData, setUserData] = useRecoilState(userDataState);
@@ -24,6 +30,12 @@ const ProfileSideBar = () => {
   const [allUserList] = useRecoilState(allUserListState);
   const [changeImage, setChangeImage] = useState<boolean>(false);
   const [currentProfile, setCurrentProfile] = useState<UserType>(userData);
+  const setSecondAuthActivateModal = useSetRecoilState(
+    secondAuthActivateModalState,
+  );
+  const setSecondAuthDeactivateModal = useSetRecoilState(
+    secondAuthDeactivateModalState,
+  );
 
   // 현재 라우트의 경로를 가져옵니다. /profile/:userId
   const currentRoute = window.location.pathname;
@@ -96,6 +108,25 @@ const ProfileSideBar = () => {
 
   if (userData.id === userId) {
     finalButtons = myProfileButtons;
+    if (userData.isTwoFactorAuthenticationEnabled) {
+      myProfileButtons.push({
+        title: "2차인증 해제",
+        iconSrc: "",
+        onClick: () => {
+          setSecondAuthDeactivateModal(true);
+        },
+        theme: "LIGHT",
+      });
+    } else {
+      myProfileButtons.push({
+        title: "2차인증 활성화",
+        iconSrc: "",
+        onClick: () => {
+          setSecondAuthActivateModal(true);
+        },
+        theme: "LIGHT",
+      });
+    }
   } else {
     finalButtons = othersProfileButtons;
     console.log(allUserList);
@@ -139,31 +170,35 @@ const ProfileSideBar = () => {
   }
 
   return (
-    <DS.Container style={{ gap: "20px" }}>
-      <ProfileImageContainer>
-        <ProfileImage
-          src={currentProfile.avatarPath}
-          alt="profile image"
-          style={{ cursor: "default" }}
-        />
-      </ProfileImageContainer>
-      <S.NicknameContainer>
-        <S.NicknameText>{currentProfile.nickname}</S.NicknameText>
-        <S.PencilIcon
-          src={`../src/assets/icons/pencil_freezePurple.svg`}
-          alt="level"
-        />
-      </S.NicknameContainer>
-      <RateDoughnutChart userData={currentProfile} />
-      <ButtonList buttons={finalButtons} />
-      {changeImage && (
-        <ChangeProfileImageModal
-          changeImage={changeImage}
-          setChangeImage={setChangeImage}
-          setUserData={setUserData}
-        />
-      )}
-    </DS.Container>
+    <>
+      <SecondAuthActivateModal />
+      <SecondAuthDeactivateModal />
+      <DS.Container style={{ gap: "20px" }}>
+        <ProfileImageContainer>
+          <ProfileImage
+            src={currentProfile.avatarPath}
+            alt="profile image"
+            style={{ cursor: "default" }}
+          />
+        </ProfileImageContainer>
+        <S.NicknameContainer>
+          <S.NicknameText>{currentProfile.nickname}</S.NicknameText>
+          <S.PencilIcon
+            src={`../src/assets/icons/pencil_freezePurple.svg`}
+            alt="level"
+          />
+        </S.NicknameContainer>
+        <RateDoughnutChart userData={currentProfile} />
+        <ButtonList buttons={finalButtons} />
+        {changeImage && (
+          <ChangeProfileImageModal
+            changeImage={changeImage}
+            setChangeImage={setChangeImage}
+            setUserData={setUserData}
+          />
+        )}
+      </DS.Container>
+    </>
   );
 };
 
