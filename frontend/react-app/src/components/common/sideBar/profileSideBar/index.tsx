@@ -109,7 +109,7 @@ const ProfileSideBar = () => {
   if (userData.id === userId) {
     finalButtons = myProfileButtons;
     if (userData.isTwoFactorAuthenticationEnabled) {
-      myProfileButtons.push({
+      finalButtons.push({
         title: "2차인증 해제",
         iconSrc: "",
         onClick: () => {
@@ -118,7 +118,7 @@ const ProfileSideBar = () => {
         theme: "LIGHT",
       });
     } else {
-      myProfileButtons.push({
+      finalButtons.push({
         title: "2차인증 활성화",
         iconSrc: "",
         onClick: () => {
@@ -137,7 +137,7 @@ const ProfileSideBar = () => {
     const isBlocked = false; // 차단했는지 여부를 판별하는 로직 필요
 
     if (isFriend) {
-      othersProfileButtons.push({
+      finalButtons.push({
         title: "친구 삭제",
         iconSrc: "",
         onClick: () => {
@@ -146,7 +146,7 @@ const ProfileSideBar = () => {
         theme: "LIGHT",
       });
     } else {
-      othersProfileButtons.push({
+      finalButtons.push({
         title: "친구신청",
         iconSrc: "",
         onClick: () => {
@@ -157,12 +157,12 @@ const ProfileSideBar = () => {
     }
 
     if (isBlocked) {
-      const blockButtonIndex = othersProfileButtons.findIndex(
+      const blockButtonIndex = finalButtons.findIndex(
         (button) => button.title === "차단하기",
       );
       if (blockButtonIndex !== -1) {
-        othersProfileButtons[blockButtonIndex].title = "차단 해제";
-        othersProfileButtons[blockButtonIndex].onClick = () => {
+        finalButtons[blockButtonIndex].title = "차단 해제";
+        finalButtons[blockButtonIndex].onClick = () => {
           console.log("차단 해제");
         };
       }
