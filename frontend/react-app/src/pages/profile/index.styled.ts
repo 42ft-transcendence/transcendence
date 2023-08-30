@@ -81,8 +81,23 @@ export const MatchCardProfile = styled.div`
   width: 28%;
   height: 100%;
   align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.theme.colors.bronze};
+  justify-content: space-between;
+`;
+
+export const MatchCardProfileImage = styled.img`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin-left: 20px;
+  background-color: ${(props) => props.theme.colors.floating};
+`;
+
+export const MatchCardProfileNickname = styled.span`
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inter;
+  margin-right: 20px;
+  color: ${(props) => props.theme.colors.heavyPurple};
 `;
 
 export const MatchCardScore = styled.div`
@@ -99,7 +114,7 @@ export const MatchCardEnemyProfile = styled.div`
   width: 28%;
   height: 100%;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background-color: ${(props) => props.theme.colors.bronze};
 `;
 

@@ -36,6 +36,13 @@ export const MatchCard = ({ history }: MatchCardProps) => {
       ? history.player2
       : null;
 
+  if (!player) return <></>;
+  if (player.id === history.player1.id) {
+    const enemy = history.player2;
+  } else {
+    const enemy = history.player1;
+  }
+
   let winLose = "";
   if (player) {
     if (history.player1Score > history.player2Score) {
@@ -49,8 +56,6 @@ export const MatchCard = ({ history }: MatchCardProps) => {
     }
   }
 
-  console.log("player", player);
-
   return (
     <S.MatchCard mode={winLose}>
       <S.MatchCardMatchInfo>
@@ -63,9 +68,19 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         <S.MatchCardMatchInfoDivider />
         <S.MatchCardMatchInfoWinLose>{winLose}</S.MatchCardMatchInfoWinLose>
       </S.MatchCardMatchInfo>
-      <S.MatchCardProfile />
+      <S.MatchCardProfile>
+        <S.MatchCardProfileImage src={player.avatarPath} />
+        <S.MatchCardProfileNickname>
+          {player.nickname}
+        </S.MatchCardProfileNickname>
+      </S.MatchCardProfile>
       <S.MatchCardScore />
-      <S.MatchCardEnemyProfile />
+      <S.MatchCardEnemyProfile>
+        <S.MatchCardProfileNickname>
+          {player.nickname}
+        </S.MatchCardProfileNickname>
+        <S.MatchCardProfileImage src={player.avatarPath} />
+      </S.MatchCardEnemyProfile>
       <S.MatchCardEnemyButtonContainer />
     </S.MatchCard>
   );
