@@ -3,6 +3,7 @@ import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
+import { Theme } from "@src/styles/Theme";
 
 interface MatchCardProps {
   history: MatchHistoryType;
@@ -59,6 +60,15 @@ export const MatchCard = ({ history }: MatchCardProps) => {
     }
   }
 
+  let playerScore = history.player1Score;
+  let playerScoreChange = history.player1ScoreChange;
+  let enemyScore = history.player2Score;
+  if (player.id !== history.player1.id) {
+    playerScore = history.player2Score;
+    enemyScore = history.player1Score;
+    playerScoreChange = history.player2ScoreChange;
+  }
+
   return (
     <S.MatchCard mode={winLose}>
       <S.MatchCardMatchInfo>
@@ -82,7 +92,14 @@ export const MatchCard = ({ history }: MatchCardProps) => {
           {player.nickname}
         </S.MatchCardProfileNickname>
       </S.MatchCardProfile>
-      <S.MatchCardScore />
+      <S.MatchCardScoreContainer>
+        <S.MatchCardScoreMap>맵 추가</S.MatchCardScoreMap>
+        <S.MatchCardScoreTextContainer>
+          <div style={{ color: "blue" }}>{playerScore}</div>
+          <div>:</div>
+          <div style={{ color: "red" }}>{enemyScore}</div>
+        </S.MatchCardScoreTextContainer>
+      </S.MatchCardScoreContainer>
       <S.MatchCardProfile>
         <S.MatchCardProfileNickname
           style={{ marginLeft: "20px" }}
@@ -96,7 +113,10 @@ export const MatchCard = ({ history }: MatchCardProps) => {
           onClick={ProfileModalOnClickHandler(setShowProfile, true, enemy)}
         />
       </S.MatchCardProfile>
-      <S.MatchCardEnemyButtonContainer />
+      <S.MatchCardScoreChangeContainer mode={winLose}>
+        {winLose === "승리" ? "+" : "-"}
+        {playerScoreChange}
+      </S.MatchCardScoreChangeContainer>
     </S.MatchCard>
   );
 };

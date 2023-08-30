@@ -108,29 +108,44 @@ export const MatchCardProfileNickname = styled.span`
   cursor: pointer;
 `;
 
-export const MatchCardScore = styled.div`
+export const MatchCardScoreContainer = styled.div`
   display: flex;
   width: 20%;
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.silver};
+  flex-direction: column;
 `;
 
-export const MatchCardEnemyProfile = styled.div`
+export const MatchCardScoreMap = styled.div`
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const MatchCardScoreTextContainer = styled.div`
   display: flex;
-  width: 28%;
-  height: 100%;
+  width: 100%;
+  height: 50%;
+  font-size: 32px;
+  font-weight: bold;
+  font-family: inter;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  background-color: ${(props) => props.theme.colors.bronze};
+  justify-content: center;
+  gap: 7px;
 `;
 
-export const MatchCardEnemyButtonContainer = styled.div`
+export const MatchCardScoreChangeContainer = styled.div<{ mode: string }>`
   display: flex;
   width: 12%;
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.silver};
+  font-size: 18px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) =>
+    props.mode === "승리" ? "blue" : props.mode === "패배" ? "red" : "gray"};
 `;
