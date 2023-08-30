@@ -13,7 +13,7 @@ import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SortDropdownComponent } from "@src/components/dropdown";
 import SearchIcon from "@src/assets/icons/MagnifyingGlass.svg";
 import { Theme } from "@src/styles/Theme";
@@ -194,6 +194,28 @@ export const MatchHeader = ({
       totalLoseScore: 0,
     },
   };
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [maxItems, setMaxItems] = useState(20);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (windowWidth <= 1600) {
+      setMaxItems(10);
+    } else {
+      setMaxItems(20);
+    }
+  }, [windowWidth]);
 
   // historyList를 순회하며 각 맵별 승패와 득점, 실점 정보를 구함
   historyList.forEach((history) => {
@@ -354,7 +376,29 @@ export const MatchHeader = ({
             </S.HeaderMapStats>
           ))}
         </S.HeaderMapContainer>
-        <S.Header10gamesContainer />
+        <S.Header20gamesContainer>
+          <S.Header20gamesTitle>최근 게임 ({sortState})</S.Header20gamesTitle>
+          <S.Header20gamesList maxItem={maxItems}>
+            {historyList.slice(0, maxItems).map((history) => (
+              <S.Header20games
+                key={history.id}
+                $winLose={
+                  history.player1.id === userId
+                    ? history.player1Score > history.player2Score
+                    : history.player2Score > history.player1Score
+                }
+              >
+                {history.player1.id === userId
+                  ? history.player1Score > history.player2Score
+                    ? "W"
+                    : "L"
+                  : history.player2Score > history.player1Score
+                  ? "W"
+                  : "L"}
+              </S.Header20games>
+            ))}
+          </S.Header20gamesList>
+        </S.Header20gamesContainer>
       </S.HeaderStatistcs>
     </S.Header>
   );

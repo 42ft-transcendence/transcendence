@@ -84,7 +84,7 @@ export const HeaderStatistcs = styled.div`
 
 export const HeaderDoughnutContainer = styled.div`
   display: flex;
-  width: 150px;
+  width: 20%;
   height: 100%;
   flex-direction: column;
 `;
@@ -122,7 +122,7 @@ export const DoughnutText = styled.div`
 
 export const HeaderAvgContainer = styled.div`
   display: flex;
-  width: 100px;
+  width: 20%;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -153,7 +153,7 @@ export const HeaderAvgScore = styled.div`
 
 export const HeaderMapContainer = styled.div`
   display: flex;
-  width: 200px;
+  width: 25%;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -165,7 +165,7 @@ export const HeaderMapTitle = styled.div`
   width: 100%;
   height: 20px;
   display: flex;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   font-family: inter;
   align-items: center;
@@ -196,13 +196,51 @@ export const HeaderMapStatsAvgScore = styled.div<{ score: number }>`
     props.score > 1 ? props.theme.colors.deepWin : props.theme.colors.deepLose};
 `;
 
-export const Header10gamesContainer = styled.div`
+export const Header20gamesContainer = styled.div`
   display: flex;
-  width: calc(100% - 450px);
+  width: 45%;
   height: 100%;
   flex-direction: column;
+`;
+
+export const Header20gamesTitle = styled.div`
+  width: 100%;
+  height: 20px;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
+  align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.gold};
+  margin-top: 10px;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const Header20gamesList = styled.div<{ maxItem: number }>`
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: calc(100% - 40px);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: ${(props) => (props.maxItem === 20 ? "490px" : "250px")};
+  margin: 0 auto;
+`;
+
+export const Header20games = styled.div<{ $winLose: boolean }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) =>
+    props.$winLose ? props.theme.colors.deepWin : props.theme.colors.deepLose};
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => (props.$winLose ? "blue" : "red")};
 `;
 
 export const MatchContainer = styled.div`
