@@ -1,7 +1,7 @@
-import { ChatType, DirectMessageType, UserType } from "@type";
+import { ChatType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   channelState,
   joinedChannelListState,
@@ -21,9 +21,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const setMessageList = useSetRecoilState(messageListState);
   const channel = useRecoilValue(channelState);
-  const [joinedDmOtherList, setJoinedDmOtherList] = useRecoilState(
-    joinedDmOtherListState,
-  );
+  const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
 
@@ -56,17 +54,11 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       console.log("dm", message, user);
       if (dmOther?.id === user.id) {
         setDmList((prev) => [...prev, message]);
-      } else if (joinedDmOtherList.find((other) => other.id === user.id)) {
-        setJoinedDmOtherList((prev) =>
-          prev.map((other) =>
-            other.id === user.id ? { ...other, hasNewMessages: true } : other,
-          ),
-        );
       } else {
-        setJoinedDmOtherList((prev) => [
-          ...prev,
-          { ...user, hasNewMessages: true },
-        ]);
+        setJoinedDmOtherList((prev) => {
+          const filtered = prev.filter((other) => other.id !== user.id);
+          return [{ ...user, hasNewMessages: true }, ...filtered];
+        });
       }
     });
 
