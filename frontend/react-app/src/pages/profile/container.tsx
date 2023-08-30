@@ -3,8 +3,9 @@ import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { SortDropdownComponent } from "@src/components/dropdown";
+import SearchIcon from "@src/assets/icons/MagnifyingGlass.svg";
 
 interface MatchCardProps {
   history: MatchHistoryType;
@@ -14,6 +15,8 @@ interface MatchHeaderProps {
   historyList: MatchHistoryType[];
   sortState: string;
   setSortState: (value: string) => void;
+  search: string;
+  setSearch: (value: string) => void;
 }
 
 const createTimeAgo = (dateString: string): string => {
@@ -135,6 +138,8 @@ export const MatchHeader = ({
   historyList,
   sortState,
   setSortState,
+  search,
+  setSearch,
 }: MatchHeaderProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -154,7 +159,19 @@ export const MatchHeader = ({
           options={["모드 전체", "랭크", "일반"]}
           isOpenDropdown={isOpenDropdown}
           mode="DARK"
+          style={{ marginLeft: "20px" }}
         />
+        <S.SearchBar>
+          <S.SearchBarImg src={SearchIcon} />
+          <S.SearchBarInput
+            type="text"
+            placeholder="유저 검색"
+            maxLength={10}
+            id="nickname"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </S.SearchBar>
       </S.HeaderToolBar>
       <S.HeaderStatistcs></S.HeaderStatistcs>
     </S.Header>

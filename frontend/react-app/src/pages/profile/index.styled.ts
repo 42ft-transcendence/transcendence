@@ -8,58 +8,6 @@ export const Header = styled.div`
   align-items: center;
 `;
 
-export const SortContainer = styled.div`
-  position: relative; /* 추가 */
-  width: 120px;
-  height: 60px;
-  margin-left: 30px;
-  display: flex;
-  align-items: center;
-  color: ${(props) => props.theme.colors.freezePurple};
-`;
-
-export const SortArrowIcon = styled.span<{ $isOpen: boolean }>`
-  transform: translate(-50%, -50%)
-    rotate(${(props) => (props.$isOpen ? "-90deg" : "90deg")});
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 8px solid ${(props) => props.theme.colors.freezePurple}; /* Adjust the size of the triangle */
-  margin-top: 10px;
-  margin-left: 15px;
-  cursor: pointer;
-`;
-
-export const SortDropdown = styled.div`
-  position: absolute;
-  top: 50px; /* SortContainer의 높이 + 약간의 간격 */
-  left: -12px;
-  width: 180px; /* 필요한 경우 크기 조절 */
-  background-color: ${(props) => props.theme.colors.heavyPurple};
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  z-index: 10; /* 다른 요소 위에 올라오도록 함 */
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  cursor: pointer;
-`;
-
-export const SortOption = styled.button`
-  width: 100%;
-  padding: 12px;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 16px;
-  color: ${(props) => props.theme.colors.floating};
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* 마우스 오버 효과 */
-  }
-`;
-
 export const HeaderToolBar = styled.div`
   display: flex;
   width: 98%;
@@ -70,6 +18,58 @@ export const HeaderToolBar = styled.div`
   border-radius: 7px 7px 0 0;
   border-bottom: 1px solid ${(props) => props.theme.colors.freezePurple};
   background-color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const SearchBar = styled.div`
+  width: 274px;
+  height: 35px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 7px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 1000px) {
+    width: 40%; // 예: 1000px 미만일 때 80%의 너비로 변경. 실제 값을 원하는대로 조정하십시오.
+  }
+`;
+
+export const SearchBarInput = styled.input`
+  width: 80%;
+  height: 52px;
+  outline: none;
+  font-size: 20px;
+  background: none;
+  font-weight: bold;
+  border: none;
+  margin-left: 25px;
+  margin-top: 5px;
+  color: ${(props) => props.theme.colors.freezePurple};
+
+  &::placeholder {
+    /* placeholder 색상 변경 */
+    color: ${(props) => props.theme.colors.heavyPurple};
+  }
+
+  /* 자동 완성 배경색 및 폰트 스타일 제어 */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: ${(props) =>
+      props.theme.colors.freezePurple}; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+    font-family: inter; /* 폰트 종류 */
+    font-weight: bold; /* 폰트 두께 */
+  }
+`;
+
+export const SearchBarImg = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
 `;
 
 export const HeaderStatistcs = styled.div`

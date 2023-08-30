@@ -19,6 +19,7 @@ const Profile = () => {
   }); // 최신순으로 정렬
   const [filteredHistoryList, setFilteredHistoryList] =
     useState<MatchHistoryType[]>(sortMatchHistory);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     if (sortState === "랭크") {
@@ -34,6 +35,21 @@ const Profile = () => {
     }
   }, [sortState]);
 
+  useEffect(() => {
+    console.log("search", search);
+    if (search === "") {
+      setFilteredHistoryList(sortMatchHistory);
+    } else {
+      setFilteredHistoryList((prev) =>
+        [...prev].filter(
+          (history) =>
+            history.player2.nickname.includes(search) ||
+            history.player1.nickname.includes(search),
+        ),
+      );
+    }
+  }, [search]);
+
   if (!matchHistory) return <></>; // TODO: 로딩 컴포넌트 추가
 
   return (
@@ -48,6 +64,8 @@ const Profile = () => {
           )}
           sortState={sortState}
           setSortState={setSortState}
+          search={search}
+          setSearch={setSearch}
         />
         <S.MatchContainer>
           {filteredHistoryList.map((match) => {
