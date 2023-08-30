@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import DirectMessagePageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import { ChatType, DirectMessageType, MessageType } from "@src/types";
+import {
+  ChatType,
+  DirectMessageType,
+  EnterDmReturnType,
+  MessageType,
+} from "@src/types";
 import { useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   dmListState,
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { allUserListState, userDataState } from "@src/recoil/atoms/common";
-import { getDM } from "@src/api/dm";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const DirectMessagePageContainer = () => {
   const [dmOther, setDmOther] = useRecoilState(dmOtherState);
@@ -19,18 +23,11 @@ const DirectMessagePageContainer = () => {
     joinedDmOtherListState,
   );
   const userData = useRecoilValue(userDataState);
-  const allUserList = useRecoilValue(allUserListState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
 
   const handleSendMessage = (content: string) => {
     const userId = params.userId as string;
-    if (dmOther && !joinedDmOtherList.find((other) => other.id === userId)) {
-      setJoinedDmOtherList((prev) => [
-        ...prev,
-        { ...dmOther, hasNewMessages: false },
-      ]);
-    }
     chatSocket.emit(
       "send_dm",
       { message: content, userId },
@@ -72,28 +69,27 @@ const DirectMessagePageContainer = () => {
       });
       return rawChatList.filter((chat) => chat !== undefined) as ChatType[];
     });
+    // userData의 변화는 무시함
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dmList, dmOther, setChatList]);
 
   // Get channel info at enter
   useEffect(() => {
     const userId = params.userId as string;
 
-    const other = allUserList.find((user) => user.id === userId);
-
-    setDmOther(other ? other : null);
-    // getDM(userId)
-    //   .then((response) => {
-    //     setDmList(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-
-    // setJoinedDmOtherList((prev) =>
-    //   prev.map((other) =>
-    //     other.id === userId ? { ...other, hasNewMessages: false } : other,
-    //   ),
-    // );
+    chatSocket.emit(
+      "enter_dm",
+      { userId },
+      ({ toUser, dm }: EnterDmReturnType) => {
+        setDmOther(toUser);
+        setDmList(dm);
+        setJoinedDmOtherList((prev) => {
+          console.error("prev", prev);
+          const filtered = prev.filter((other) => other.id !== userId);
+          return [{ ...toUser, hasNewMessages: false }, ...filtered];
+        });
+      },
+    );
 
     return () => {
       setDmOther(null);

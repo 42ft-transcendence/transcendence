@@ -28,4 +28,5 @@ export type {
   DirectMessageType,
   DmOtherType,
   JoinedDmOtherType,
+  EnterDmReturnType,
 } from "./directMessage.type";
