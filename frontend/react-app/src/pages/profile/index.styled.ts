@@ -25,18 +25,89 @@ export const MatchCard = styled.div<{ mode: string }>`
   border-radius: 7px;
   border-left: 7px solid
     ${(props) =>
-      props.mode === "win"
+      props.mode === "승리"
         ? props.theme.colors.deepWin
         : props.theme.colors.deepLose};
   background-color: ${(props) =>
-    props.mode === "win" ? props.theme.colors.win : props.theme.colors.lose};
+    props.mode === "승리" ? props.theme.colors.win : props.theme.colors.lose};
 `;
 
 export const MatchCardMatchInfo = styled.div`
   display: flex;
-  width: 15%;
-  height: 100%;
+  width: 12%;
+  height: 100px;
+  gap: 7px;
   flex-direction: column;
+  justify-content: center;
+`;
+
+export const MatchCardMatchInfoGameType = styled.div<{ mode: string }>`
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: inter;
+  margin-left: 7px;
+  color: ${(props) => (props.mode === "승리" ? "blue" : "red")};
+`;
+
+export const MatchCardMatchInfoDate = styled.div`
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  font-family: inter;
+  margin-left: 7px;
+  color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const MatchCardMatchInfoDivider = styled.div`
+  width: 40%;
+  height: 0.5px;
+  margin-left: 7px;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const MatchCardMatchInfoWinLose = styled.div`
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  font-family: inter;
+  margin-left: 7px;
+  color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const MatchCardProfile = styled.div`
+  display: flex;
+  width: 28%;
+  height: 100%;
   align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.bronze};
+`;
+
+export const MatchCardScore = styled.div`
+  display: flex;
+  width: 20%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.silver};
+`;
+
+export const MatchCardEnemyProfile = styled.div`
+  display: flex;
+  width: 28%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.bronze};
+`;
+
+export const MatchCardEnemyButtonContainer = styled.div`
+  display: flex;
+  width: 12%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   background-color: ${(props) => props.theme.colors.silver};
 `;
