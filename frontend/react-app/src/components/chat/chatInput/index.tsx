@@ -37,7 +37,7 @@ const ChatInput = ({
   };
   return (
     <S.Container>
-      <S.InviteButton onClick={handleGameClick} isChannel={isChannel} />
+      <S.InviteButton onClick={handleGameClick} $isChannel={isChannel} />
       <S.Form onSubmit={sendMessage}>
         <S.Input value={value} onChange={handleInputChange} />
         <S.SendButton type="submit" />

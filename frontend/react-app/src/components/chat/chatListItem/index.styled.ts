@@ -3,14 +3,14 @@ import { styled } from "styled-components";
 import Owner from "@assets/icons/role_owner.svg";
 import Admin from "@assets/icons/role_admin.svg";
 
-export const Container = styled.li<{ isMine: boolean }>`
+export const Container = styled.li<{ $isMine: boolean }>`
   display: flex;
   width: 100%;
   min-height: 60px;
-  justify-content: ${(props) => (props.isMine ? "flex-end" : "flex-start")};
+  justify-content: ${({ $isMine }) => ($isMine ? "flex-end" : "flex-start")};
 `;
 
-export const ProfileImage = styled.img<{ role: RoleType }>`
+export const ProfileImage = styled.img<{ $role: RoleType }>`
   width: 50px;
   height: 50px;
   top: 5px;
@@ -30,7 +30,7 @@ export const ProfileImage = styled.img<{ role: RoleType }>`
     vertical-align: top;
 
     ${(props) => {
-      switch (props.role) {
+      switch (props.$role) {
         case "owner":
           return `background-image: url(${Owner});`;
         case "admin":

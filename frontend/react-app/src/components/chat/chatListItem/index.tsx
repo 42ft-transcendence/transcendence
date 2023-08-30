@@ -11,7 +11,7 @@ const ChatListItem = ({ isMine, chat }: ChatListItemPropsType) => {
   if (isMine) {
     return (
       <li>
-        <S.Container isMine={isMine}>
+        <S.Container $isMine={isMine}>
           <ChatBubble message={chat.message.content} isMine={isMine} />
         </S.Container>
       </li>
@@ -19,10 +19,10 @@ const ChatListItem = ({ isMine, chat }: ChatListItemPropsType) => {
   } else {
     return (
       <li>
-        <S.Container isMine={isMine}>
+        <S.Container $isMine={isMine}>
           <S.ProfileImage
             src={chat.user.avatarPath}
-            role={chat.role}
+            $role={chat.role}
             alt={chat.user.nickname}
           />
           <S.ContentContainer>

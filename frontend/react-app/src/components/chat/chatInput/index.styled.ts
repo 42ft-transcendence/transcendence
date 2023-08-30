@@ -10,7 +10,7 @@ export const Container = styled.div`
   margin-bottom: 50px;
 `;
 
-export const InviteButton = styled.button<{ isChannel: boolean }>`
+export const InviteButton = styled.button<{ $isChannel: boolean }>`
   display: flex;
   width: 60px;
   height: 60px;
@@ -23,7 +23,7 @@ export const InviteButton = styled.button<{ isChannel: boolean }>`
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
 
   background-color: ${(props) => props.theme.colors.floating};
-  background-image: url(${({ isChannel }) => (isChannel ? User : Game)});
+  background-image: url(${({ $isChannel }) => ($isChannel ? User : Game)});
   background-repeat: no-repeat;
   background-position: center;
   background-size: 32px;

@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import TailMine from "@assets/images/chat-bubble-tail-mine.svg";
 import TailOther from "@assets/images/chat-bubble-tail-other.svg";
 
-export const Container = styled.div<{ isMine: boolean }>`
+export const Container = styled.div<{ $isMine: boolean }>`
   display: flex;
   width: max-content;
   height: min-content;
@@ -10,8 +10,8 @@ export const Container = styled.div<{ isMine: boolean }>`
   margin-block: 5px;
   filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.25));
 
-  ${({ isMine }) =>
-    isMine
+  ${({ $isMine }) =>
+    $isMine
       ? `
     &:after {
       content: "";
@@ -37,10 +37,10 @@ export const Container = styled.div<{ isMine: boolean }>`
   `}
 `;
 
-export const Message = styled.span<{ isMine: boolean }>`
+export const Message = styled.span<{ $isMine: boolean }>`
   display: flex;
-  background-color: ${({ isMine, theme }) =>
-    isMine ? theme.colors.myChat : theme.colors.floating};
+  background-color: ${({ $isMine, theme }) =>
+    $isMine ? theme.colors.myChat : theme.colors.floating};
   border-radius: 5px;
   padding: 5px 10px;
   color: black;

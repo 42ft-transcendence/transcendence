@@ -8,7 +8,7 @@ export const Container = styled.div`
   margin-top: 10px;
 `;
 
-export const Header = styled.div<{ isFolded: boolean }>`
+export const Header = styled.div<{ $isFolded: boolean }>`
   display: flex;
   width: 100%;
   height: 28px;
@@ -28,7 +28,7 @@ export const Header = styled.div<{ isFolded: boolean }>`
     background-size: 24px;
     background-repeat: no-repeat;
     background-position: center;
-    transform: rotate(${(props) => (props.isFolded ? "-90deg" : "0")});
+    transform: rotate(${(props) => (props.$isFolded ? "-90deg" : "0")});
     transition: 0.3s ease-in-out;
     z-index: 99;
   }

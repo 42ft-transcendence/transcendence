@@ -7,8 +7,8 @@ export interface ChatBubblePropsType {
 
 const ChatBubble = ({ message, isMine }: ChatBubblePropsType) => {
   return (
-    <S.Container isMine={isMine}>
-      <S.Message isMine={isMine}>{message}</S.Message>
+    <S.Container $isMine={isMine}>
+      <S.Message $isMine={isMine}>{message}</S.Message>
     </S.Container>
   );
 };
