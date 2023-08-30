@@ -4,6 +4,14 @@ import { useRecoilState } from "recoil";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { IconButton } from "@components/buttons";
 import React, { useState } from "react";
+import sha256 from "crypto-js/sha256";
+import { userDataState } from "@src/recoil/atoms/common";
+import { useNavigate } from "react-router-dom";
+
+const hashTitle = (title: string): string => {
+  const hash = sha256(title);
+  return hash.toString(); // 해시 값을 문자열로 반환
+};
 
 const gameRoomType = {
   PUBLIC: "공개",
@@ -16,31 +24,42 @@ const GameCreateModal = () => {
     createGameRoomModalState,
   );
 
+  const [user] = useRecoilState(userDataState);
   const [roomTitle, setRoomTitle] = useState("");
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<gameRoomType>("PUBLIC");
   const [password, setPassword] = useState<string>("");
   const [isOpened, setIsOpened] = useRecoilState(createGameRoomModalState);
+  const navigate = useNavigate();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomTitle(event.target.value);
   };
+  // console.log(roomTitle);
+  // const hashedTitle = hashTitle(gameTitle);
+  // const gameTitle = "My Awesome Game Room";
+  // console.log(hashedTitle);
 
   const onSubmit = () => {
+    const currentTime: Date = new Date();
+    const roomURL = currentTime + roomTitle + user.id;
+    const hashedTitle = hashTitle(roomURL);
     console.log("gameRoomSubmit");
+    console.log(hashedTitle);
     handleClose();
+    navigate(`/game/${hashedTitle}`);
   };
+
   // const onSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
   //   event?.preventDefault();
   //   gamesocket.emit(
-  //     "game_channel",
-  //     { channelName: name, type, password },
-  //     (channel_joined: ChannelType) => {
-  //       setJoinedChannelList((prev) => [
+  //     "game_create",
+  //     { gameName: name, type, password },
+  //     (game_joined:  gameType) => {
+  //       setJoinedgameList((prev) => [
   //         ...prev,
   //         {
-  //           ...channel_joined,
-  //           hasNewMessages: false,
+  //           ...game_joined,
   //         },
   //       ]);
   //       handleClose();
@@ -48,6 +67,7 @@ const GameCreateModal = () => {
   //     },
   //   );
   // };
+
   const handleClose = () => {
     setIsOpened(false);
   };
