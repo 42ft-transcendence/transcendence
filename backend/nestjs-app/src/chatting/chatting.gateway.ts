@@ -49,7 +49,7 @@ export class ChattingGateway
       if (user.status === UserStatusType.OFFLINE) {
         await this.userService.updateStatus(user, UserStatusType.ONLINE);
       }
-      const channels = await this.participantsService.channel(user);
+      const channels = await this.participantsService.getJoinedChannel(user);
       channels.forEach((channel) => {
         client.join(channel.id);
       });
