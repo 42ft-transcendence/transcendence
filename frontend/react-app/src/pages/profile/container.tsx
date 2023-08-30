@@ -3,6 +3,7 @@ import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
+import { useEffect, useRef, useState } from "react";
 
 interface MatchCardProps {
   history: MatchHistoryType;
@@ -10,6 +11,8 @@ interface MatchCardProps {
 
 interface MatchHeaderProps {
   historyList: MatchHistoryType[];
+  sortState: string;
+  setSortState: (value: string) => void;
 }
 
 const createTimeAgo = (dateString: string): string => {
@@ -118,7 +121,7 @@ export const MatchCard = ({ history }: MatchCardProps) => {
       </S.MatchCardProfile>
       <S.MatchCardScoreChangeContainer
         mode={history.gameMode}
-        winLose={winLose}
+        $winLose={winLose}
       >
         {history.gameMode === "rank" ? (winLose === "승리" ? "+" : "") : ""}
         {history.gameMode === "rank" ? playerScoreChange : "-"}
@@ -127,11 +130,81 @@ export const MatchCard = ({ history }: MatchCardProps) => {
   );
 };
 
-export const MatchHeader = ({ historyList }: MatchHeaderProps) => {
+export const MatchHeader = ({
+  historyList,
+  sortState,
+  setSortState,
+}: MatchHeaderProps) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  console.log("historyList", historyList);
+
+  // const [, setFilteredHistoryList] = useState<MatchHistoryType[]>(historyList);
+  // useEffect(() => {
+  //   if (sortState === "랭크") {
+  //     setFilteredHistoryList(
+  //       historyList.filter((history) => history.gameMode === "rank"),
+  //     );
+  //   } else if (sortState === "일반") {
+  //     setFilteredHistoryList(
+  //       historyList.filter((history) => history.gameMode === "normal"),
+  //     );
+  //   } else {
+  //     setFilteredHistoryList(historyList);
+  //   }
+  // }, [sortState]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+        setIsOpenDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleSortSelection = (selectedSort: string) => {
+    setSortState(selectedSort);
+    setShowDropdown(false);
+    setTimeout(() => {
+      setIsOpenDropdown(false);
+    }, 0); // 0ms 지연으로 다음 리렌더링 사이클에서 호출되도록 설정
+  };
+
   console.log("historyList", historyList);
   return (
     <S.Header>
-      <S.HeaderToolBar></S.HeaderToolBar>
+      <S.HeaderToolBar>
+        <S.SortContainer
+          onClick={() => {
+            setShowDropdown(!showDropdown);
+            setIsOpenDropdown(true);
+          }}
+        >
+          {showDropdown && (
+            <S.SortDropdown ref={dropdownRef}>
+              <S.SortOption onClick={() => handleSortSelection("모드 전체")}>
+                모드 전체
+              </S.SortOption>
+              <S.SortOption onClick={() => handleSortSelection("랭크")}>
+                랭크
+              </S.SortOption>
+              <S.SortOption onClick={() => handleSortSelection("일반")}>
+                일반
+              </S.SortOption>
+            </S.SortDropdown>
+          )}
+          <span style={{ cursor: "pointer" }}>{sortState}</span>
+          <S.SortArrowIcon $isOpen={isOpenDropdown} />
+        </S.SortContainer>
+      </S.HeaderToolBar>
       <S.HeaderStatistcs></S.HeaderStatistcs>
     </S.Header>
   );

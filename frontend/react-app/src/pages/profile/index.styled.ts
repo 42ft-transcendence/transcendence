@@ -8,6 +8,58 @@ export const Header = styled.div`
   align-items: center;
 `;
 
+export const SortContainer = styled.div`
+  position: relative; /* 추가 */
+  width: 120px;
+  height: 60px;
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const SortArrowIcon = styled.span<{ $isOpen: boolean }>`
+  transform: translate(-50%, -50%)
+    rotate(${(props) => (props.$isOpen ? "-90deg" : "90deg")});
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 8px solid ${(props) => props.theme.colors.freezePurple}; /* Adjust the size of the triangle */
+  margin-top: 10px;
+  margin-left: 15px;
+  cursor: pointer;
+`;
+
+export const SortDropdown = styled.div`
+  position: absolute;
+  top: 50px; /* SortContainer의 높이 + 약간의 간격 */
+  left: -12px;
+  width: 180px; /* 필요한 경우 크기 조절 */
+  background-color: ${(props) => props.theme.colors.floating};
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 10; /* 다른 요소 위에 올라오도록 함 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+`;
+
+export const SortOption = styled.button`
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  color: ${(props) => props.theme.colors.heavyPurple};
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* 마우스 오버 효과 */
+  }
+`;
+
 export const HeaderToolBar = styled.div`
   display: flex;
   width: 98%;
@@ -162,7 +214,7 @@ export const MatchCardScoreTextContainer = styled.div`
 
 export const MatchCardScoreChangeContainer = styled.div<{
   mode: string;
-  winLose: string;
+  $winLose: string;
 }>`
   display: flex;
   width: 12%;
@@ -173,9 +225,9 @@ export const MatchCardScoreChangeContainer = styled.div<{
   font-weight: bold;
   font-family: inter;
   color: ${(props) =>
-    props.mode === "rank" && props.winLose === "승리"
+    props.mode === "rank" && props.$winLose === "승리"
       ? "blue"
-      : props.mode === "rank" && props.winLose === "패배"
+      : props.mode === "rank" && props.$winLose === "패배"
       ? "red"
       : props.theme.colors.heavyPurple};
 `;
