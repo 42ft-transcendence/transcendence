@@ -26,6 +26,16 @@ export const createDummyHistory = (
       player1Score = 5;
     }
 
+    let player1ScoreChange = 0;
+    let player2ScoreChange = 0;
+    if (player1Score < player2Score) {
+      player1ScoreChange = Math.floor(Math.random() * 30) * -1;
+      player2ScoreChange = Math.floor(Math.random() * 30);
+    } else {
+      player1ScoreChange = Math.floor(Math.random() * 30);
+      player2ScoreChange = Math.floor(Math.random() * 30) * -1;
+    }
+
     historyList.push({
       id: i + 1,
       player1Score: player1Score,
@@ -33,6 +43,8 @@ export const createDummyHistory = (
       createdAt: new Date(currentTime + i),
       player1,
       player2,
+      player1ScoreChange,
+      player2ScoreChange,
       gameMode: "ladder",
     });
   }

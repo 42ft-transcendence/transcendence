@@ -12,6 +12,8 @@ export interface MatchHistoryType {
   createdAt: Date;
   player1: UserType;
   player2: UserType;
+  player1ScoreChange: number;
+  player2ScoreChange: number;
   gameMode: string;
 }
 
