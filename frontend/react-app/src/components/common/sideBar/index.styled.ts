@@ -7,8 +7,9 @@ export const Container = styled.div`
   border: 0 1px 0 0 ${(props) => props.theme.colors.heavyPurple};
   background-color: ${(props) => props.theme.colors.heavyPurple};
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
+  padding-top: 20px;
   flex-shrink: 250px;
 `;
 
