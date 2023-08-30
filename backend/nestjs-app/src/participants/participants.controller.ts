@@ -15,7 +15,7 @@ export class ParticipantsController {
   @Get('/channels')
   @UseGuards(JwtTwoFactorGuard)
   async getChannels(@Request() req): Promise<ChatChannel[]> {
-    return await this.participantsService.channel(req.user);
+    return await this.participantsService.getJoinedChannel(req.user);
   }
 
   @Get('/participants')

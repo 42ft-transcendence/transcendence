@@ -28,6 +28,12 @@ export class RelationshipService {
     );
   }
 
+  async checkBlock(from: User, to: User): Promise<boolean> {
+    const relation = await this.relationshipRepository.getRelation(from, to);
+    if (relation && relation.type === UserRelationType.BLOCK) return true;
+    return false;
+  }
+
   async deleteRelation(from: User, to: User): Promise<void> {
     await this.relationshipRepository.deleteRelation(from, to);
   }

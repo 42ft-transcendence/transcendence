@@ -12,6 +12,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <GlobalStyle />
       <RouterProvider router={Router} />
     </ThemeProvider>
-    ,
   </RecoilRoot>,
 );

@@ -34,7 +34,7 @@ const ChannelSearchItem = ({ channel }: ChannelSearchItemPropsType) => {
     <S.Container onClick={handleClick}>
       <S.Title>{channel.name}</S.Title>
       <S.Status>
-        <S.ChannelType type={channel.type}>
+        <S.ChannelType $type={channel.type}>
           {ChannelDescription[channel.type]}
         </S.ChannelType>
         <S.Participants>{channel.participants?.length}</S.Participants>

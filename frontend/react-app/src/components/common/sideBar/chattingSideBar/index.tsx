@@ -1,61 +1,89 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { joinedChannelListState } from "@recoil/atoms/channel";
-import { JoinedDirectMessageListState } from "@recoil/atoms/directMessage";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { channelState, joinedChannelListState } from "@recoil/atoms/channel";
+import {
+  dmOtherState,
+  joinedDmOtherListState,
+} from "@recoil/atoms/directMessage";
 import SideBarList from "../../sideBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
-import { useRecoilState } from "recoil";
-import { showProfileState, userDataState } from "@src/recoil/atoms/common";
-import { ProfileModalOnClickHandler } from "@src/utils";
 import ChannelJoinModal from "@components/modal/channel/channelJoinModal";
 import ChannelCreateModal from "@components/modal/channel/channelCreateModal";
 import { channelCreateModalState } from "@src/recoil/atoms/modal";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { chatSocket } from "@router/socket/chatSocket";
 
 const ChattingSideBar = () => {
-  const joinedChannelList = useRecoilValue(joinedChannelListState);
-  const joinedDirectMessageList = useRecoilValue(JoinedDirectMessageListState);
+  const [joinedChannelList, setJoinedChannelList] = useRecoilState(
+    joinedChannelListState,
+  );
+  const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
   const setChannelCreateModal = useSetRecoilState(channelCreateModalState);
-
-  const [userData] = useRecoilState(userDataState);
-  const [, setShowProfile] = useRecoilState(showProfileState);
+  const [iconButtons, setIconButtons] = useState<IconButtonProps[]>([]);
+  const channel = useRecoilValue(channelState);
+  const dmOther = useRecoilValue(dmOtherState);
 
   const navigate = useNavigate();
 
-  const iconButtons: IconButtonProps[] = [
-    {
-      title: "채널 생성",
-      iconSrc: "",
-      onClick: () => {
-        setChannelCreateModal(true);
-      },
-      theme: "LIGHT",
-    },
-    {
-      title: "채널 탈퇴",
-      iconSrc: "",
-      onClick: () => {
-        console.log("채널 탈퇴");
-      },
-      theme: "LIGHT",
-    },
-    {
-      title: "채널 탐색",
-      iconSrc: "",
-      onClick: () => {
-        navigate("/channel-list");
-      },
-      theme: "LIGHT",
-    },
-    {
-      title: "프로필 모달 테스트",
-      iconSrc: "",
-      onClick: ProfileModalOnClickHandler(setShowProfile, true, userData),
-      theme: "LIGHT",
-    },
-  ];
+  useEffect(() => {
+    if (channel !== null) {
+      setIconButtons([
+        {
+          title: "채널 탈퇴",
+          iconSrc: "",
+          onClick: () => {
+            chatSocket.emit("leave_channel", { channelId: channel.id }, () => {
+              setJoinedChannelList((prev) =>
+                prev.filter((joinedChannel) => joinedChannel.id !== channel.id),
+              );
+              navigate("/channel-list");
+            });
+          },
+          theme: "LIGHT",
+        },
+        {
+          title: "채널 탐색",
+          iconSrc: "",
+          onClick: () => {
+            navigate("/channel-list");
+          },
+          theme: "LIGHT",
+        },
+      ]);
+    } else if (dmOther) {
+      setIconButtons([
+        {
+          title: "채널 탐색",
+          iconSrc: "",
+          onClick: () => {
+            navigate("/channel-list");
+          },
+          theme: "LIGHT",
+        },
+      ]);
+    } else {
+      setIconButtons([
+        {
+          title: "채널 생성",
+          iconSrc: "",
+          onClick: () => {
+            setChannelCreateModal(true);
+          },
+          theme: "LIGHT",
+        },
+      ]);
+    }
+  }, [
+    channel,
+    dmOther,
+    setIconButtons,
+    navigate,
+    setChannelCreateModal,
+    setJoinedChannelList,
+  ]);
 
   return (
     <>
@@ -73,11 +101,11 @@ const ChattingSideBar = () => {
           ))}
         </SideBarList>
         <SideBarList title="다이렉트 메세지">
-          {joinedDirectMessageList.map((dm) => (
+          {joinedDmOtherList.map((dmOther) => (
             <DirectMessageListItem
-              key={dm.id}
-              user={dm}
-              hasNewMessage={dm.hasNewMessages}
+              key={dmOther.id}
+              user={dmOther}
+              hasNewMessage={dmOther.hasNewMessages}
             />
           ))}
         </SideBarList>
