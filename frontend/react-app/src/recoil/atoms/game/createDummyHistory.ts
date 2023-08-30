@@ -48,7 +48,7 @@ export const createDummyHistory = (
       player2,
       player1ScoreChange,
       player2ScoreChange,
-      gameMode: "ladder",
+      gameMode: Math.floor(Math.random()) === 1 ? "ladder" : "normal",
     });
   }
 
