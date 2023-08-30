@@ -34,7 +34,7 @@ export const SortDropdown = styled.div`
   top: 50px; /* SortContainer의 높이 + 약간의 간격 */
   left: -12px;
   width: 180px; /* 필요한 경우 크기 조절 */
-  background-color: ${(props) => props.theme.colors.floating};
+  background-color: ${(props) => props.theme.colors.heavyPurple};
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   z-index: 10; /* 다른 요소 위에 올라오도록 함 */
@@ -51,7 +51,7 @@ export const SortOption = styled.button`
   border: none;
   text-align: left;
   font-size: 16px;
-  color: ${(props) => props.theme.colors.heavyPurple};
+  color: ${(props) => props.theme.colors.floating};
   cursor: pointer;
   transition: background-color 0.3s ease;
 
