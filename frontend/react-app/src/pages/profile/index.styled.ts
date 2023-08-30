@@ -22,6 +22,7 @@ export const MatchCard = styled.div<{ mode: string }>`
   display: flex;
   width: 90%;
   height: 100px;
+  margin-bottom: 10px;
   border-radius: 7px;
   border-left: 7px solid
     ${(props) =>
@@ -95,6 +96,7 @@ export const MatchCardProfileImage = styled.img`
   border-radius: 50%;
   margin-left: 20px;
   background-color: ${(props) => props.theme.colors.floating};
+  cursor: pointer;
 `;
 
 export const MatchCardProfileNickname = styled.span`
@@ -103,6 +105,7 @@ export const MatchCardProfileNickname = styled.span`
   font-family: inter;
   margin-right: 20px;
   color: ${(props) => props.theme.colors.heavyPurple};
+  cursor: pointer;
 `;
 
 export const MatchCardScore = styled.div`

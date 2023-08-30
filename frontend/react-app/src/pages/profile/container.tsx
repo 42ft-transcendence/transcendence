@@ -72,8 +72,13 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         <S.MatchCardMatchInfoWinLose>{winLose}</S.MatchCardMatchInfoWinLose>
       </S.MatchCardMatchInfo>
       <S.MatchCardProfile>
-        <S.MatchCardProfileImage src={player.avatarPath} />
-        <S.MatchCardProfileNickname>
+        <S.MatchCardProfileImage
+          src={player.avatarPath}
+          onClick={ProfileModalOnClickHandler(setShowProfile, true, player)}
+        />
+        <S.MatchCardProfileNickname
+          onClick={ProfileModalOnClickHandler(setShowProfile, true, player)}
+        >
           {player.nickname}
         </S.MatchCardProfileNickname>
       </S.MatchCardProfile>
@@ -88,6 +93,7 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         <S.MatchCardProfileImage
           src={enemy.avatarPath}
           style={{ marginRight: "20px" }}
+          onClick={ProfileModalOnClickHandler(setShowProfile, true, enemy)}
         />
       </S.MatchCardProfile>
       <S.MatchCardEnemyButtonContainer />
