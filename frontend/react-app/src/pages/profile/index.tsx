@@ -1,5 +1,5 @@
 import NavBar from "@src/components/common/navBar";
-import { profileRouteMatch } from "@src/components/common/sideBar";
+import { routeMatch } from "@src/components/common/sideBar";
 import { matchHistoryState } from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
 import * as DS from "../index.styled";
@@ -11,7 +11,7 @@ const Profile = () => {
   const [matchHistory] = useRecoilState(matchHistoryState);
 
   console.log("currentRoute", currentRoute);
-  const SidebarComponent = profileRouteMatch(currentRoute);
+  const SidebarComponent = routeMatch(currentRoute, "/profile/");
 
   console.log("matchHistory", matchHistory);
 

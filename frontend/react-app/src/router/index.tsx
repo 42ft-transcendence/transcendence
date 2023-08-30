@@ -10,6 +10,7 @@ import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
 import Ranking from "@src/pages/ranking";
 import Socket from "./socket";
+import Game from "@src/pages/game";
 
 const Router = createBrowserRouter([
   {
@@ -86,6 +87,16 @@ const Router = createBrowserRouter([
       <Socket>
         <PrivateRoute>
           <Ranking />
+        </PrivateRoute>
+      </Socket>
+    ),
+  },
+  {
+    path: "/game/:gameRoomId",
+    element: (
+      <Socket>
+        <PrivateRoute>
+          <Game />
         </PrivateRoute>
       </Socket>
     ),
