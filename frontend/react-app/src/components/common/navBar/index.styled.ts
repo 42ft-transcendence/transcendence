@@ -11,7 +11,7 @@ export const Container = styled.div`
   align-items: center;
   background-color: ${Theme.colors.heavyPurple};
   border-right: 1px solid ${Theme.colors.darkFreezePurple};
-  flex-shrink: 50px;
+  flex-shrink: 0;
 `;
 
 export const TabList = styled.ul`

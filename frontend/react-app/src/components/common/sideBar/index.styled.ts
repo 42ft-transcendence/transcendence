@@ -10,7 +10,7 @@ export const Container = styled.div`
   justify-content: start;
   align-items: center;
   padding-top: 20px;
-  flex-shrink: 250px;
+  flex-shrink: 0;
 `;
 
 export const TitleBox = styled.div`
