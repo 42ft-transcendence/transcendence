@@ -1,6 +1,6 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { channelState, joinedChannelListState } from "@recoil/atoms/channel";
 import {
   dmOtherState,
@@ -17,7 +17,9 @@ import { useEffect, useState } from "react";
 import { chatSocket } from "@router/socket/chatSocket";
 
 const ChattingSideBar = () => {
-  const joinedChannelList = useRecoilValue(joinedChannelListState);
+  const [joinedChannelList, setJoinedChannelList] = useRecoilState(
+    joinedChannelListState,
+  );
   const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
   const setChannelCreateModal = useSetRecoilState(channelCreateModalState);
   const [iconButtons, setIconButtons] = useState<IconButtonProps[]>([]);
@@ -34,6 +36,9 @@ const ChattingSideBar = () => {
           iconSrc: "",
           onClick: () => {
             chatSocket.emit("leave_channel", { channelId: channel.id }, () => {
+              setJoinedChannelList((prev) =>
+                prev.filter((joinedChannel) => joinedChannel.id !== channel.id),
+              );
               navigate("/channel-list");
             });
           },
@@ -71,7 +76,14 @@ const ChattingSideBar = () => {
         },
       ]);
     }
-  }, [channel, dmOther, setIconButtons, navigate, setChannelCreateModal]);
+  }, [
+    channel,
+    dmOther,
+    setIconButtons,
+    navigate,
+    setChannelCreateModal,
+    setJoinedChannelList,
+  ]);
 
   return (
     <>
