@@ -21,22 +21,22 @@ export const createDummyHistory = (
     const randomSeed2 = Math.floor(Math.random() * availableUsers.length);
     const player2 = availableUsers[randomSeed2];
 
-    let player1Score = Math.floor(Math.random() * 5);
-    let player2Score = Math.floor(Math.random() * 5);
-    if (player1Score < player2Score && player2Score !== 5) {
-      player2Score = 5;
-    } else if (player1Score > player2Score && player1Score !== 5) {
-      player1Score = 5;
-    }
+    let player1Score = Math.floor(Math.random() * 6); // 0~5 중 랜덤 점수
+    let player2Score = 5 - player1Score; // player2는 5에서 player1Score를 뺀 값
 
     let player1ScoreChange = 0;
     let player2ScoreChange = 0;
+
     if (player1Score < player2Score) {
-      player1ScoreChange = Math.floor(Math.random() * 30) * -1;
-      player2ScoreChange = Math.floor(Math.random() * 30);
+      player2Score = 5;
+      player1Score = Math.floor(Math.random() * 5); // 0~4 중 랜덤 점수
+      player1ScoreChange = Math.floor(Math.random() * 30 + 1) * -1; // 패배한 player1: -1 ~ -30
+      player2ScoreChange = Math.floor(Math.random() * 30 + 1); // 승리한 player2: 1 ~ 30
     } else {
-      player1ScoreChange = Math.floor(Math.random() * 30);
-      player2ScoreChange = Math.floor(Math.random() * 30) * -1;
+      player1Score = 5;
+      player2Score = Math.floor(Math.random() * 5); // 0~4 중 랜덤 점수
+      player1ScoreChange = Math.floor(Math.random() * 30 + 1); // 승리한 player1: 1 ~ 30
+      player2ScoreChange = Math.floor(Math.random() * 30 + 1) * -1; // 패배한 player2: -1 ~ -30
     }
 
     historyList.push({
@@ -48,7 +48,7 @@ export const createDummyHistory = (
       player2,
       player1ScoreChange,
       player2ScoreChange,
-      gameMode: Math.floor(Math.random()) === 1 ? "ladder" : "normal",
+      gameMode: Math.random() < 0.5 ? "rank" : "normal", // 수정된 게임 모드 랜덤 선택 로직
     });
   }
 
