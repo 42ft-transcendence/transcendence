@@ -3,24 +3,47 @@ import { styled } from "styled-components";
 export const Header = styled.div`
   display: flex;
   width: 100%;
-  height: 120px;
-  background-color: red;
+  height: 200px;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const HeaderToolBar = styled.div`
+  display: flex;
+  width: 98%;
+  height: 50px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  border-radius: 7px 7px 0 0;
+  border-bottom: 1px solid ${(props) => props.theme.colors.freezePurple};
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const HeaderStatistcs = styled.div`
+  display: flex;
+  width: 98%;
+  height: 150px;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
+  border-radius: 0 0 7px 7px;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
 `;
 
 export const MatchContainer = styled.div`
   display: flex;
   width: 100%;
-  height: calc(100% - 120px);
+  height: calc(100% - 200px);
   flex-direction: column;
   align-items: center;
   overflow-y: scroll;
+  margin-top: 10px;
 `;
 
 export const MatchCard = styled.div<{ mode: string }>`
   display: flex;
-  width: 90%;
+  width: 98%;
   height: 100px;
   margin-bottom: 10px;
   border-radius: 7px;
@@ -100,7 +123,7 @@ export const MatchCardProfileImage = styled.img`
 `;
 
 export const MatchCardProfileNickname = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   font-family: inter;
   margin-right: 20px;

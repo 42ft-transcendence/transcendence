@@ -3,10 +3,13 @@ import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { useRecoilState } from "recoil";
 import { showProfileState } from "@src/recoil/atoms/common";
-import { Theme } from "@src/styles/Theme";
 
 interface MatchCardProps {
   history: MatchHistoryType;
+}
+
+interface MatchHeaderProps {
+  historyList: MatchHistoryType[];
 }
 
 const createTimeAgo = (dateString: string): string => {
@@ -121,5 +124,15 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         {history.gameMode === "rank" ? playerScoreChange : "-"}
       </S.MatchCardScoreChangeContainer>
     </S.MatchCard>
+  );
+};
+
+export const MatchHeader = ({ historyList }: MatchHeaderProps) => {
+  console.log("historyList", historyList);
+  return (
+    <S.Header>
+      <S.HeaderToolBar></S.HeaderToolBar>
+      <S.HeaderStatistcs></S.HeaderStatistcs>
+    </S.Header>
   );
 };

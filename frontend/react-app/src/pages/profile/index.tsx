@@ -3,7 +3,7 @@ import { profileRouteMatch } from "@src/components/common/sideBar";
 import { useRecoilState } from "recoil";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { MatchCard } from "./container";
+import { MatchCard, MatchHeader } from "./container";
 import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 
 const Profile = () => {
@@ -22,7 +22,12 @@ const Profile = () => {
       <NavBar />
       {SidebarComponent && <SidebarComponent />}
       <DS.ContentArea>
-        <S.Header>Header</S.Header>
+        <MatchHeader
+          historyList={sortMatchHistory.filter(
+            (history) =>
+              history.player1.id === userId || history.player2.id === userId,
+          )}
+        />
         <S.MatchContainer>
           {sortMatchHistory.map((match) => {
             if (match.player1.id === userId || match.player2.id === userId) {
