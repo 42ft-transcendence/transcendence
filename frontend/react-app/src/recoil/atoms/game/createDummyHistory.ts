@@ -8,12 +8,15 @@ export const createDummyHistory = (
   const historyList: MatchHistoryType[] = [];
 
   for (let i = 0; i < num; i++) {
-    const randomSeed = Math.floor(Math.random() * userList.length);
-    const player1 = userList[randomSeed];
-    // index == randomseed이면 userList에서 제거
-    const player2 = userList.splice(randomSeed, 1)[
-      Math.floor(Math.random() * userList.length - 1)
-    ];
+    let availableUsers = [...userList]; // userList를 복사하여 원본을 수정하지 않게 합니다.
+
+    const randomSeed1 = Math.floor(Math.random() * availableUsers.length);
+    const player1 = availableUsers[randomSeed1];
+    availableUsers = availableUsers.filter((_, index) => index !== randomSeed1);
+
+    const randomSeed2 = Math.floor(Math.random() * availableUsers.length);
+    const player2 = availableUsers[randomSeed2];
+
     const currentTime = new Date().getTime();
     let player1Score = Math.floor(Math.random() * 5);
     let player2Score = Math.floor(Math.random() * 5);

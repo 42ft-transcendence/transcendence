@@ -76,7 +76,9 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
     {
       text1: "더미 전적 생성",
       text2: "500",
-      onClick: () => createDummyHistory(allUserList, 500),
+      onClick: () => {
+        console.log(createDummyHistory(allUserList, 500));
+      },
       theme: "LIGHT",
     },
   ];
