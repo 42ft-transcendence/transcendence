@@ -70,11 +70,11 @@ const AuthPage = () => {
         const dmOthers: JoinedDmOtherType[] = [];
         response.data.forEach((dm) => {
           if (dm.from.id === myId) {
-            if (!dmOthers.find((dmOther) => dmOther.id !== dm.to.id)) {
+            if (!dmOthers.find((dmOther) => dmOther.id === dm.to.id)) {
               dmOthers.push({ ...dm.to, hasNewMessages: false });
             }
           } else {
-            if (!dmOthers.find((dmOther) => dmOther.id !== dm.from.id)) {
+            if (!dmOthers.find((dmOther) => dmOther.id === dm.from.id)) {
               dmOthers.push({ ...dm.from, hasNewMessages: false });
             }
           }
