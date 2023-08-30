@@ -42,7 +42,7 @@ export const Status = styled.div`
   align-items: center;
 `;
 
-export const ChannelType = styled.span<{ type: ChannelTypeType }>`
+export const ChannelType = styled.span<{ $type: ChannelTypeType }>`
   height: 20px;
   font-size: 12px;
   font-weight: bold;
@@ -55,7 +55,7 @@ export const ChannelType = styled.span<{ type: ChannelTypeType }>`
     vertical-align: middle;
     width: 24px;
     height: 20px;
-    background-image: url(${({ type }) => channelTypeIcon[type]});
+    background-image: url(${({ $type }) => channelTypeIcon[$type]});
     background-size: 20px;
     background-repeat: no-repeat;
   }

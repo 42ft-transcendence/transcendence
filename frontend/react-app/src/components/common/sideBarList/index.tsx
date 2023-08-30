@@ -15,7 +15,7 @@ const SideBarList = ({ title, children }: SideBarListPropsType) => {
 
   return (
     <S.Container>
-      <S.Header onClick={handleHeaderClick} isFolded={isFolded}>
+      <S.Header onClick={handleHeaderClick} $isFolded={isFolded}>
         {title}
       </S.Header>
       {!isFolded && <S.List>{children}</S.List>}

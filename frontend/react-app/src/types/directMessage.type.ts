@@ -8,6 +8,12 @@ export interface DirectMessageType {
   read: boolean;
 }
 
-export interface JoinedDirectMessageType extends UserType {
+export type DmOtherType = UserType;
+
+export interface JoinedDmOtherType extends DmOtherType {
   hasNewMessages: boolean;
+}
+export interface EnterDmReturnType {
+  toUser: UserType;
+  dm: DirectMessageType[];
 }

@@ -89,7 +89,7 @@ const ChannelCreateModal = () => {
           <S.Option>
             <S.OptionLabel>채널 유형</S.OptionLabel>
             <S.OptionContent>
-              <S.TypeButton onClick={handleTypeToggle} type={type}>
+              <S.TypeButton onClick={handleTypeToggle} $type={type}>
                 {channelTypeText[type]}
               </S.TypeButton>
             </S.OptionContent>

@@ -53,6 +53,7 @@ export class ChattingGateway
       channels.forEach((channel) => {
         client.join(channel.id);
       });
+      client.join(user.id);
       this.refreshUsersList();
     } catch (e) {
       console.log(e);
@@ -419,7 +420,7 @@ export class ChattingGateway
   async sendDM(
     client: Socket,
     content: { userId: string; message: string },
-  ): Promise<DirectMessage[]> {
+  ): Promise<DirectMessage> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -427,13 +428,25 @@ export class ChattingGateway
       if (await this.relationshipService.checkBlock(user, toUser)) {
         throw new Error('차단된 사용자입니다.');
       }
-      await this.dmService.saveDM(user, toUser, content.message);
-      const dm = await this.dmService.getDM(user, toUser);
+      const dm = await this.dmService.saveDM(user, toUser, content.message);
       client.to(content.userId).emit('get_dm', {
         user: user,
         message: dm,
       });
       return dm;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @SubscribeMessage('enter_dm')
+  async enterDM(client: Socket, content: { userId: string }) {
+    try {
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      const toUser = await this.userService.getUserById(content.userId);
+      const dm = await this.dmService.getDM(user, toUser);
+      return { toUser, dm };
     } catch (e) {
       console.log(e);
     }
