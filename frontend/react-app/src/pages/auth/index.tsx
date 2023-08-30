@@ -1,5 +1,5 @@
 import Loading from "@assets/images/loading.gif";
-import { UserStatus } from "@src/types";
+import { JoinedDmOtherType, UserStatus } from "@src/types";
 import { login, verify2Fa } from "@src/api";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -9,10 +9,14 @@ import {
   Navigate,
 } from "react-router-dom";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import * as cookies from "react-cookies";
 import Logo from "@assets/logos/ccpp_logo.png";
+import { getMyChannels } from "@src/api/participants";
+import { joinedChannelListState } from "@src/recoil/atoms/channel";
+import { joinedDmOtherListState } from "@src/recoil/atoms/directMessage";
+import { getDM } from "@src/api/dm";
 
 const AuthPage = () => {
   const type = useParams().type;
@@ -24,6 +28,8 @@ const AuthPage = () => {
   const [userData, setUserData] = useRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
+  const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
+  const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
 
   const handleTwoFactorCodeChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -47,6 +53,40 @@ const AuthPage = () => {
     navigate("/login");
   };
 
+  const loadMyData = (myId: string) => {
+    getMyChannels()
+      .then((response) => {
+        setJoinedChannelList(
+          response.data.map((channel) => {
+            return { ...channel, hasNewMessages: false };
+          }),
+        );
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    // TODO: getDM List
+    // getDM("")
+    //   .then((response) => {
+    //     const dmOthers: JoinedDmOtherType[] = [];
+    //     response.data.forEach((dm) => {
+    //       if (dm.from.id === myId) {
+    //         if (!dmOthers.find((dmOther) => dmOther.id !== dm.to.id)) {
+    //           dmOthers.push({ ...dm.to, hasNewMessages: false });
+    //         }
+    //       } else {
+    //         if (!dmOthers.find((dmOther) => dmOther.id !== dm.from.id)) {
+    //           dmOthers.push({ ...dm.from, hasNewMessages: false });
+    //         }
+    //       }
+    //     });
+    //     setJoinedDmOtherList(dmOthers);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+  };
+
   useEffect(() => {
     if (status === "TwoFactor") {
       inputRef.current?.focus();
@@ -67,6 +107,7 @@ const AuthPage = () => {
           } else if (response.data.status === UserStatus.SIGNUP) {
             navigate("/signup");
           } else {
+            loadMyData(response.data.id);
             navigate("/");
           }
         })
@@ -85,6 +126,7 @@ const AuthPage = () => {
         .then((response) => {
           // save user recoil data
           setUserData(response.data);
+          loadMyData(response.data.id);
           navigate("/");
         })
         .catch((error) => {
@@ -97,7 +139,7 @@ const AuthPage = () => {
           }
         });
     }
-  }, [status, setStatus, type, code, navigate, twoFactorCode]);
+  }, [status, setStatus, type, code, navigate, twoFactorCode, setUserData]);
 
   if (!code || (type !== "42" && type !== "google"))
     return <Navigate to="/login" />;
