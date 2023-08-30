@@ -15,6 +15,7 @@ export interface MatchHistoryType {
   player1ScoreChange: number;
   player2ScoreChange: number;
   gameMode: string;
+  map: string;
 }
 
 export interface battleActionData {
