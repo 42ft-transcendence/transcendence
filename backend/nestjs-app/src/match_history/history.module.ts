@@ -19,5 +19,6 @@ import { User } from '../users/entities/user.entity';
   ],
   controllers: [MatchHistorysController],
   providers: [MatchHistorysService, UsersService],
+  exports: [MatchHistorysService],
 })
 export class MatchHistoryModule {}
