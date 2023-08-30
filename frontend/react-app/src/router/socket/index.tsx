@@ -52,22 +52,20 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     });
 
     chatSocket.off("get_dm");
-    chatSocket.on("get_dm", (dm: DirectMessageType) => {
-      console.log("dm", dm);
-      if (dmOther?.id === dm.from.id) {
-        setDmList((prev) => [...prev, dm]);
-      } else if (joinedDmOtherList.find((other) => other.id === dm.from.id)) {
+    chatSocket.on("get_dm", ({ message, user }) => {
+      console.log("dm", message, user);
+      if (dmOther?.id === user.id) {
+        setDmList((prev) => [...prev, message]);
+      } else if (joinedDmOtherList.find((other) => other.id === user.id)) {
         setJoinedDmOtherList((prev) =>
           prev.map((other) =>
-            other.id === dm.from.id
-              ? { ...other, hasNewMessages: true }
-              : other,
+            other.id === user.id ? { ...other, hasNewMessages: true } : other,
           ),
         );
       } else {
         setJoinedDmOtherList((prev) => [
           ...prev,
-          { ...dm.from, hasNewMessages: true },
+          { ...user, hasNewMessages: true },
         ]);
       }
     });
