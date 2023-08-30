@@ -16,7 +16,6 @@ import { ChatChannel } from './entities/chatchannel.entity';
 import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
-import * as bcrypt from 'bcrypt';
 
 @WebSocketGateway({
   // cors: {
@@ -108,17 +107,16 @@ export class ChattingGateway
     try {
       const ownerId = await this.getUserId(client);
       const owner = await this.userService.getUserById(ownerId);
-      const hashedPassword = await bcrypt.hash(content.password, 10);
       const channel = await this.channelRepository.createChatChannel(
         content.channelName,
         owner,
         content.type,
-        hashedPassword,
+        content.password,
       );
       if (!channel) throw new Error('Channel create failed');
       await this.chattingService.ownerJoinChannel(
         channel.id,
-        hashedPassword,
+        content.password,
         client,
         owner,
       );
@@ -141,7 +139,7 @@ export class ChattingGateway
       );
       if (
         channel.type !== 'PROTECTED' ||
-        (await bcrypt.compare(content.password, channel.password))
+        channel.password === content.password
       ) {
         client.join(content.channelId);
         const participant = await this.participantsService.addParticipant(
@@ -231,7 +229,7 @@ export class ChattingGateway
       const participant = participants.find(
         (participant) => participant.user.id === content.userId,
       );
-      if (participant && participant.owner === false) {
+      if (participant) {
         const message = await this.messageService.saveMessage(
           adminId,
           `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 강퇴되었습니다.`,
@@ -274,7 +272,7 @@ export class ChattingGateway
       const participant = participants.find(
         (participant) => participant.user.id === content.userId,
       );
-      if (participant && participant.owner === false) {
+      if (participant) {
         const message = await this.messageService.saveMessage(
           adminId,
           `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 되었습니다.`,
@@ -313,7 +311,7 @@ export class ChattingGateway
       const participant = participants.find(
         (participant) => participant.user.id === content.userId,
       );
-      if (participant && participant.owner === false) {
+      if (participant) {
         const message = await this.messageService.saveMessage(
           adminId,
           `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 해제 되었습니다.`,
@@ -355,63 +353,6 @@ export class ChattingGateway
         await this.participantsService.getAllParticipants(channel);
       const messages = await this.messageService.getMessages(content.channelId);
       return { channel, messages, participants };
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  @SubscribeMessage('change_type')
-  async changeType(
-    client: Socket,
-    content: { channelId: string; type: string; password: string },
-  ): Promise<void> {
-    try {
-      const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
-      const channel = await this.channelRepository.getChannelById(
-        content.channelId,
-      );
-      if (channel.owner.id === user.id) {
-        channel.type = content.type;
-        if (content.type === 'PROTECTED') {
-          channel.password = await bcrypt.hash(content.password, 10);
-        } else if (content.type === 'PUBLIC') {
-          channel.password = '';
-        }
-        await this.channelRepository.save(channel);
-      } else {
-        throw new Error('채널 타입 변경 권한이 없습니다.');
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  @SubscribeMessage('appoint_admin')
-  async appointAdmin(
-    client: Socket,
-    content: { channelId: string; userId: string },
-  ): Promise<void> {
-    try {
-      const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
-      const channel = await this.channelRepository.getChannelById(
-        content.channelId,
-      );
-      if (channel.owner.id === user.id) {
-        const participants =
-          await this.participantsService.getAllParticipants(channel);
-        const participant = participants.find(
-          (participant) => participant.user.id === content.userId,
-        );
-        if (participant) {
-          await this.participantsService.changeAdmin(participant.user, channel);
-        } else {
-          throw new Error('채널에 참가하지 않았습니다.');
-        }
-      } else {
-        throw new Error('관리자 임명 권한이 없습니다.');
-      }
     } catch (e) {
       console.log(e);
     }
