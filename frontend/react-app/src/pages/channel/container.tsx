@@ -56,11 +56,11 @@ const ChannelPageContainer = () => {
 
   // Get channel info at enter
   useEffect(() => {
-    const channelId = params.channelId;
+    const channelId = params.channelId as string;
 
     chatSocket.emit(
       "enter_channel",
-      channelId,
+      { channelId },
       ({ channel, messages, participants }: EnterChannelReturnType) => {
         setChannel(channel);
         setMessageList(messages);
