@@ -184,16 +184,18 @@ export const HeaderMapStats = styled.div`
   color: ${(props) => props.theme.colors.floating};
 `;
 
-export const HeaderMapStatsWinRate = styled.p<{ win: number; lose: number }>`
+export const HeaderMapStatsWinRate = styled.p<{ $win: number; $lose: number }>`
   margin-left: 10px;
   color: ${(props) =>
-    props.win > props.lose ? "red" : props.theme.colors.floating};
+    props.$win > props.$lose ? "red" : props.theme.colors.floating};
 `;
 
-export const HeaderMapStatsAvgScore = styled.div<{ score: number }>`
+export const HeaderMapStatsAvgScore = styled.div<{ $score: number }>`
   margin-left: 4px;
   color: ${(props) =>
-    props.score > 1 ? props.theme.colors.deepWin : props.theme.colors.deepLose};
+    props.$score > 1
+      ? props.theme.colors.deepWin
+      : props.theme.colors.deepLose};
 `;
 
 export const Header20gamesContainer = styled.div`
@@ -216,7 +218,7 @@ export const Header20gamesTitle = styled.div`
   color: ${(props) => props.theme.colors.freezePurple};
 `;
 
-export const Header20gamesList = styled.div<{ maxItem: number }>`
+export const Header20gamesList = styled.div<{ $maxItem: number }>`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -224,7 +226,7 @@ export const Header20gamesList = styled.div<{ maxItem: number }>`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  max-width: ${(props) => (props.maxItem === 20 ? "490px" : "250px")};
+  max-width: ${(props) => (props.$maxItem === 20 ? "490px" : "250px")};
   margin: 0 auto;
 `;
 

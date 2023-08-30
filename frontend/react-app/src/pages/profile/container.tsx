@@ -348,8 +348,8 @@ export const MatchHeader = ({
                   : "정글"}
               </div>
               <S.HeaderMapStatsWinRate
-                win={mapStats[mapType].wins}
-                lose={mapStats[mapType].losses}
+                $win={mapStats[mapType].wins}
+                $lose={mapStats[mapType].losses}
               >
                 {(
                   (mapStats[mapType].wins /
@@ -362,7 +362,7 @@ export const MatchHeader = ({
                 {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
               </div>
               <S.HeaderMapStatsAvgScore
-                score={
+                $score={
                   mapStats[mapType].totalScore /
                   mapStats[mapType].totalLoseScore
                 }
@@ -378,7 +378,7 @@ export const MatchHeader = ({
         </S.HeaderMapContainer>
         <S.Header20gamesContainer>
           <S.Header20gamesTitle>최근 게임 ({sortState})</S.Header20gamesTitle>
-          <S.Header20gamesList maxItem={maxItems}>
+          <S.Header20gamesList $maxItem={maxItems}>
             {historyList.slice(0, maxItems).map((history) => (
               <S.Header20games
                 key={history.id}
