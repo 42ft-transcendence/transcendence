@@ -11,6 +11,7 @@ interface Props {
   options: string[];
   isOpenDropdown: boolean;
   mode: string;
+  style?: React.CSSProperties;
 }
 
 export const SortDropdownComponent: React.FC<Props> = ({
@@ -22,6 +23,7 @@ export const SortDropdownComponent: React.FC<Props> = ({
   options,
   isOpenDropdown,
   mode,
+  style,
 }) => {
   const dropdownRef = useRef(null);
 
@@ -54,6 +56,7 @@ export const SortDropdownComponent: React.FC<Props> = ({
         setIsOpenDropdown(true);
       }}
       mode={mode}
+      style={style}
     >
       {showDropdown && (
         <S.SortDropdown ref={dropdownRef} mode={mode}>
