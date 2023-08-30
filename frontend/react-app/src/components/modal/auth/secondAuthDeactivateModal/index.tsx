@@ -1,14 +1,16 @@
 import { IconButton } from "@components/buttons";
-import { channelJoinModalState } from "@src/recoil/atoms/modal";
+import { secondAuthDeactivateModalState } from "@src/recoil/atoms/modal";
 import { turnOff2Fa } from "@src/api";
 import { useRecoilState } from "recoil";
 import * as S from "./index.styled";
 
 const SecondAuthDeactivateModal = () => {
-  const [channel, setChannel] = useRecoilState(channelJoinModalState);
+  const [isOpened, setIsOpened] = useRecoilState(
+    secondAuthDeactivateModalState,
+  );
 
   const handleClose = () => {
-    setChannel(null);
+    setIsOpened(false);
   };
 
   window.addEventListener("keydown", (event) => {
@@ -27,9 +29,7 @@ const SecondAuthDeactivateModal = () => {
       });
   };
 
-  if (channel === null) {
-    return null;
-  }
+  if (!isOpened) return null;
   return (
     <>
       <S.Overlay onClick={handleClose} />

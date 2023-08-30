@@ -20,3 +20,8 @@ export const secondAuthActivateModalState = atom<boolean>({
   key: "secondAuthActivateModalState",
   default: false,
 });
+
+export const secondAuthDeactivateModalState = atom<boolean>({
+  key: "secondAuthDeactivateModalState",
+  default: false,
+});
