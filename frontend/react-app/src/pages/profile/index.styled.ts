@@ -21,7 +21,22 @@ export const MatchContainer = styled.div`
 export const MatchCard = styled.div<{ mode: string }>`
   display: flex;
   width: 90%;
-  height: 120px;
+  height: 100px;
+  border-radius: 7px;
+  border-left: 7px solid
+    ${(props) =>
+      props.mode === "win"
+        ? props.theme.colors.deepWin
+        : props.theme.colors.deepLose};
   background-color: ${(props) =>
     props.mode === "win" ? props.theme.colors.win : props.theme.colors.lose};
+`;
+
+export const MatchCardMatchInfo = styled.div`
+  display: flex;
+  width: 15%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.silver};
 `;
