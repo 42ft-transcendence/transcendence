@@ -65,26 +65,25 @@ const AuthPage = () => {
       .catch((error) => {
         console.error(error);
       });
-    // TODO: getDM List
-    // getDM("")
-    //   .then((response) => {
-    //     const dmOthers: JoinedDmOtherType[] = [];
-    //     response.data.forEach((dm) => {
-    //       if (dm.from.id === myId) {
-    //         if (!dmOthers.find((dmOther) => dmOther.id !== dm.to.id)) {
-    //           dmOthers.push({ ...dm.to, hasNewMessages: false });
-    //         }
-    //       } else {
-    //         if (!dmOthers.find((dmOther) => dmOther.id !== dm.from.id)) {
-    //           dmOthers.push({ ...dm.from, hasNewMessages: false });
-    //         }
-    //       }
-    //     });
-    //     setJoinedDmOtherList(dmOthers);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    getDM()
+      .then((response) => {
+        const dmOthers: JoinedDmOtherType[] = [];
+        response.data.forEach((dm) => {
+          if (dm.from.id === myId) {
+            if (!dmOthers.find((dmOther) => dmOther.id !== dm.to.id)) {
+              dmOthers.push({ ...dm.to, hasNewMessages: false });
+            }
+          } else {
+            if (!dmOthers.find((dmOther) => dmOther.id !== dm.from.id)) {
+              dmOthers.push({ ...dm.from, hasNewMessages: false });
+            }
+          }
+        });
+        setJoinedDmOtherList(dmOthers);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   useEffect(() => {

@@ -81,19 +81,19 @@ const DirectMessagePageContainer = () => {
     const other = allUserList.find((user) => user.id === userId);
 
     setDmOther(other ? other : null);
-    getDM(userId)
-      .then((response) => {
-        setDmList(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    // getDM(userId)
+    //   .then((response) => {
+    //     setDmList(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
-    setJoinedDmOtherList((prev) =>
-      prev.map((other) =>
-        other.id === userId ? { ...other, hasNewMessages: false } : other,
-      ),
-    );
+    // setJoinedDmOtherList((prev) =>
+    //   prev.map((other) =>
+    //     other.id === userId ? { ...other, hasNewMessages: false } : other,
+    //   ),
+    // );
 
     return () => {
       setDmOther(null);
