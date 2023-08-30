@@ -137,7 +137,10 @@ export const MatchCardScoreTextContainer = styled.div`
   gap: 7px;
 `;
 
-export const MatchCardScoreChangeContainer = styled.div<{ mode: string }>`
+export const MatchCardScoreChangeContainer = styled.div<{
+  mode: string;
+  winLose: string;
+}>`
   display: flex;
   width: 12%;
   height: 100%;
@@ -147,5 +150,9 @@ export const MatchCardScoreChangeContainer = styled.div<{ mode: string }>`
   font-weight: bold;
   font-family: inter;
   color: ${(props) =>
-    props.mode === "승리" ? "blue" : props.mode === "패배" ? "red" : "gray"};
+    props.mode === "rank" && props.winLose === "승리"
+      ? "blue"
+      : props.mode === "rank" && props.winLose === "패배"
+      ? "red"
+      : props.theme.colors.heavyPurple};
 `;

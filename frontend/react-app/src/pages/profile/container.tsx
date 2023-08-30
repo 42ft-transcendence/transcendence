@@ -113,9 +113,12 @@ export const MatchCard = ({ history }: MatchCardProps) => {
           onClick={ProfileModalOnClickHandler(setShowProfile, true, enemy)}
         />
       </S.MatchCardProfile>
-      <S.MatchCardScoreChangeContainer mode={winLose}>
-        {winLose === "승리" ? "+" : "-"}
-        {playerScoreChange}
+      <S.MatchCardScoreChangeContainer
+        mode={history.gameMode}
+        winLose={winLose}
+      >
+        {history.gameMode === "rank" ? (winLose === "승리" ? "+" : "") : ""}
+        {history.gameMode === "rank" ? playerScoreChange : "-"}
       </S.MatchCardScoreChangeContainer>
     </S.MatchCard>
   );
