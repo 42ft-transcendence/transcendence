@@ -14,7 +14,7 @@ const DirectMessageListItem = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/dm/${user.id}`);
+    navigate(`/direct-message/${user.id}`);
   };
 
   return (
