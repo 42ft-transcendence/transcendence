@@ -1,3 +1,13 @@
+import {
+  Chart,
+  ArcElement,
+  DoughnutController,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 import { MatchHistoryType } from "@src/types/game.type";
 import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
@@ -6,12 +16,16 @@ import { showProfileState } from "@src/recoil/atoms/common";
 import { useState } from "react";
 import { SortDropdownComponent } from "@src/components/dropdown";
 import SearchIcon from "@src/assets/icons/MagnifyingGlass.svg";
+import { Theme } from "@src/styles/Theme";
+
+Chart.register(ArcElement, DoughnutController, Title, Tooltip, Legend, Filler);
 
 interface MatchCardProps {
   history: MatchHistoryType;
 }
 
 interface MatchHeaderProps {
+  userId: string;
   historyList: MatchHistoryType[];
   sortState: string;
   setSortState: (value: string) => void;
@@ -135,6 +149,7 @@ export const MatchCard = ({ history }: MatchCardProps) => {
 };
 
 export const MatchHeader = ({
+  userId,
   historyList,
   sortState,
   setSortState,
@@ -144,9 +159,40 @@ export const MatchHeader = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
-  console.log("historyList", historyList);
+  const winCount = historyList.filter(
+    (history) =>
+      (history.player1.id === userId && history.player1Score === 5) ||
+      (history.player2.id === userId && history.player2Score === 5),
+  ).length;
+  const loseCount = historyList.length - winCount;
 
   console.log("historyList", historyList);
+
+  const chartData = {
+    labels: ["Wins", "Losses"],
+    datasets: [
+      {
+        data: [winCount, loseCount],
+        backgroundColor: [Theme.colors.win, Theme.colors.lose],
+        borderWidth: 0,
+        cutout: "80%",
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+        position: "bottom",
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+  };
+
   return (
     <S.Header>
       <S.HeaderToolBar>
@@ -173,7 +219,22 @@ export const MatchHeader = ({
           />
         </S.SearchBar>
       </S.HeaderToolBar>
-      <S.HeaderStatistcs></S.HeaderStatistcs>
+      <S.HeaderStatistcs>
+        <S.HeaderDoughnutContainer>
+          <S.HeaderDoughnutText>
+            {historyList.length}전 {winCount}승 {loseCount}패
+          </S.HeaderDoughnutText>
+          <S.HeaderDoughnut>
+            <Doughnut data={chartData} options={chartOptions} />
+            <S.DoughnutText>
+              <>{Math.round((winCount / historyList.length) * 100)}%</>
+            </S.DoughnutText>
+          </S.HeaderDoughnut>
+        </S.HeaderDoughnutContainer>
+        <S.HeaderAvgContainer />
+        <S.HeaderMapContainer />
+        <S.Header10gamesContainer />
+      </S.HeaderStatistcs>
     </S.Header>
   );
 };

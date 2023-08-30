@@ -77,10 +77,72 @@ export const HeaderStatistcs = styled.div`
   width: 98%;
   height: 150px;
   align-items: center;
-  justify-content: center;
   flex-direction: row;
   border-radius: 0 0 7px 7px;
   background-color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
+export const HeaderDoughnutContainer = styled.div`
+  display: flex;
+  width: 150px;
+  height: 100%;
+  flex-direction: column;
+`;
+
+export const HeaderDoughnutText = styled.div`
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  font-family: inter;
+  margin-left: 14px;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const HeaderDoughnut = styled.div`
+  width: 100%;
+  height: calc(100% - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  position: relative;
+`;
+
+export const DoughnutText = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 화면의 정확한 중앙에 배치 */
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const HeaderAvgContainer = styled.div`
+  display: flex;
+  width: 150px;
+  height: 100%;
+  flex-direction: column;
+  background-color: ${(props) => props.theme.colors.silver};
+`;
+
+export const HeaderMapContainer = styled.div`
+  display: flex;
+  width: 150px;
+  height: 100%;
+  flex-direction: column;
+  background-color: ${(props) => props.theme.colors.bronze};
+`;
+
+export const Header10gamesContainer = styled.div`
+  display: flex;
+  width: calc(100% - 450px);
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  background-color: ${(props) => props.theme.colors.gold};
 `;
 
 export const MatchContainer = styled.div`

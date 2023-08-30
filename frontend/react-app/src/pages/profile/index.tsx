@@ -58,6 +58,7 @@ const Profile = () => {
       {SidebarComponent && <SidebarComponent />}
       <DS.ContentArea>
         <MatchHeader
+          userId={userId}
           historyList={filteredHistoryList.filter(
             (history) =>
               history.player1.id === userId || history.player2.id === userId,
