@@ -9,6 +9,7 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-shrink: 250px;
 `;
 
 export const TitleBox = styled.div`
