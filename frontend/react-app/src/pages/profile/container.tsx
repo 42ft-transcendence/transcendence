@@ -166,6 +166,18 @@ export const MatchHeader = ({
   ).length;
   const loseCount = historyList.length - winCount;
 
+  // 총 득점
+  const totalScore = historyList.reduce((acc, cur) => {
+    acc += cur.player1.id === userId ? cur.player1Score : cur.player2Score;
+    return acc;
+  }, 0);
+
+  // 총 실점
+  const totalLoseScore = historyList.reduce((acc, cur) => {
+    acc += cur.player1.id === userId ? cur.player2Score : cur.player1Score;
+    return acc;
+  }, 0);
+
   console.log("historyList", historyList);
 
   const chartData = {
@@ -227,11 +239,19 @@ export const MatchHeader = ({
           <S.HeaderDoughnut>
             <Doughnut data={chartData} options={chartOptions} />
             <S.DoughnutText>
-              <>{Math.round((winCount / historyList.length) * 100)}%</>
+              {Math.round((winCount / historyList.length) * 100)}%
             </S.DoughnutText>
           </S.HeaderDoughnut>
         </S.HeaderDoughnutContainer>
-        <S.HeaderAvgContainer />
+        <S.HeaderAvgContainer>
+          <S.HeaderAvgTotalScore>총 득점 / 총 실점</S.HeaderAvgTotalScore>
+          <S.HeaderAvgTotalScore>
+            {totalScore} / {totalLoseScore}
+          </S.HeaderAvgTotalScore>
+          <S.HeaderAvgScore>
+            {(totalScore / totalLoseScore).toFixed(2)}:1
+          </S.HeaderAvgScore>
+        </S.HeaderAvgContainer>
         <S.HeaderMapContainer />
         <S.Header10gamesContainer />
       </S.HeaderStatistcs>
