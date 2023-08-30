@@ -176,9 +176,6 @@ export class ChattingGateway
         client.leave(content.channelId);
         await this.participantsService.deleteParticipant(user, channel);
       }
-      if (!channel.participants) {
-        await this.channelRepository.deleteChatChannel(channel);
-      }
     } catch (e) {
       console.log(e);
     }
@@ -199,10 +196,9 @@ export class ChattingGateway
         const participants =
           await this.participantsService.getAllParticipants(channel);
         participants.forEach((participant) => {
-          const socket = this.findSocketByUserId(participant.user.id);
-          if (socket) {
-            socket.leave(content.channelId);
-          }
+          this.server
+            .to(participant.user.id)
+            .emit('leave_channel', content.channelId);
         });
         await this.participantsService.deleteAllParticipant(channel);
         await this.channelRepository.deleteChatChannel(channel);
@@ -240,15 +236,7 @@ export class ChattingGateway
           user: admin,
           message: message,
         });
-        const socket = this.findSocketByUserId(content.userId);
-        if (socket) {
-          socket.leave(content.channelId);
-        }
-        await this.participantsService.deleteParticipant(
-          participant.user,
-          channel,
-        );
-        await this.channelRepository.leaveChatChannel(channel, participant);
+        this.server.to(content.userId).emit('leave_channel', content.channelId);
       } else {
         throw new Error('채널에 참가하지 않았습니다.');
       }
@@ -467,15 +455,5 @@ export class ChattingGateway
     } catch (e) {
       throw {};
     }
-  }
-
-  private findSocketByUserId(userId: string): Socket | undefined {
-    for (const socket of this.server.sockets.sockets.values()) {
-      const socketUserId = socket.handshake.query.userId;
-      if (socketUserId === userId) {
-        return socket;
-      }
-    }
-    return undefined;
   }
 }
