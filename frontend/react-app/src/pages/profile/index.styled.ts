@@ -122,7 +122,7 @@ export const DoughnutText = styled.div`
 
 export const HeaderAvgContainer = styled.div`
   display: flex;
-  width: 150px;
+  width: 100px;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -153,7 +153,7 @@ export const HeaderAvgScore = styled.div`
 
 export const HeaderMapContainer = styled.div`
   display: flex;
-  width: 150px;
+  width: 200px;
   height: 100%;
   flex-direction: column;
   align-items: center;
@@ -188,6 +188,12 @@ export const HeaderMapStatsWinRate = styled.p<{ win: number; lose: number }>`
   margin-left: 10px;
   color: ${(props) =>
     props.win > props.lose ? "red" : props.theme.colors.floating};
+`;
+
+export const HeaderMapStatsAvgScore = styled.div<{ score: number }>`
+  margin-left: 4px;
+  color: ${(props) =>
+    props.score > 1 ? props.theme.colors.deepWin : props.theme.colors.deepLose};
 `;
 
 export const Header10gamesContainer = styled.div`

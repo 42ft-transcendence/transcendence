@@ -339,6 +339,18 @@ export const MatchHeader = ({
               <div style={{ marginLeft: "4px" }}>
                 {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
               </div>
+              <S.HeaderMapStatsAvgScore
+                score={
+                  mapStats[mapType].totalScore /
+                  mapStats[mapType].totalLoseScore
+                }
+              >
+                {(
+                  mapStats[mapType].totalScore /
+                  mapStats[mapType].totalLoseScore
+                ).toFixed(2)}
+                :1 평점
+              </S.HeaderMapStatsAvgScore>
             </S.HeaderMapStats>
           ))}
         </S.HeaderMapContainer>
