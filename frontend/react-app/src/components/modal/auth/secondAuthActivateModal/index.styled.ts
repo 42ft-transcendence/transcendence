@@ -6,7 +6,7 @@ export const ModalBlind = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  z-index: 221;
 `;
 
 export const ModalContainer = styled.form`
@@ -20,7 +20,7 @@ export const ModalContainer = styled.form`
   left: 50vw;
   top: 50vh;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 221;
   align-items: center;
   justify-content: space-between;
   padding-block: 80px;
