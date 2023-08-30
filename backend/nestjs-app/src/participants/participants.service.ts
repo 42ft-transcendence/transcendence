@@ -72,14 +72,9 @@ export class ParticipantsService {
     return getCp;
   }
 
-  async channel(user: User): Promise<ChatChannel[]> {
+  async getJoinedChannel(user: User): Promise<ChatChannel[]> {
     const channel = await this.participantRepository.getChannelByUser(user);
-    const channelReturn = [];
-    for (const i of channel) {
-      const channel = await this.channelRepository.getChannelById(i.id);
-      channelReturn.push(channel);
-    }
-    return channelReturn;
+    return channel;
   }
 
   async getOwnerChannel(user: User) {

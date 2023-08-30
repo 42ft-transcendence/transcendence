@@ -5,6 +5,7 @@ export type {
   ChannelTypeType,
   ChannelType,
   JoinedChannelType,
+  EnterChannelReturnType,
 } from "./channel.type";
 
 export type { ParticipantType } from "./participant.type";
@@ -14,6 +15,7 @@ export type {
   ChatType,
   MessageType,
   ProfileModalType,
+  SendMessageReturnType,
 } from "./chat.type";
 
 export type { OfferGameType } from "./game.type";
@@ -24,5 +26,7 @@ export type { SidebarComponentType, SidebarConfigType } from "./rendering.type";
 
 export type {
   DirectMessageType,
-  JoinedDirectMessageType,
+  DmOtherType,
+  JoinedDmOtherType,
+  EnterDmReturnType,
 } from "./directMessage.type";

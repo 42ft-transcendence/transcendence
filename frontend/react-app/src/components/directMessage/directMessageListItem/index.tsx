@@ -14,13 +14,13 @@ const DirectMessageListItem = ({
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/dm/${user.id}`);
+    navigate(`/direct-message/${user.id}`);
   };
 
   return (
     <S.Container onClick={handleClick}>
       <S.Profile src={user.avatarPath} alt={user.nickname} />
-      <S.Status status={user.status} />
+      <S.Status $status={user.status} />
       <S.Title>{user.nickname}</S.Title>
       {hasNewMessage && <S.NewMessage />}
     </S.Container>

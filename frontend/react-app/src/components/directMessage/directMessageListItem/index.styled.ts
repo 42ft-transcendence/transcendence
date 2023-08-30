@@ -16,15 +16,15 @@ export const Profile = styled.img`
   background-color: ${(props) => props.theme.colors.floating};
 `;
 
-export const Status = styled.div<{ status: UserStatus }>`
+export const Status = styled.div<{ $status: UserStatus }>`
   position: absolute;
   width: 10px;
   height: 10px;
   left: 30px;
   top: 30px;
   border-radius: 50%;
-  background-color: ${({ status, theme }) => {
-    switch (status) {
+  background-color: ${({ $status, theme }) => {
+    switch ($status) {
       case UserStatus.ONLINE:
         return theme.colors.online;
       case UserStatus.GAMING:

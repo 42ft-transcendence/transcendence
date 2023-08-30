@@ -10,6 +10,8 @@ import UserList from "@src/pages/userList";
 import GameList from "@src/pages/gameList";
 import Ranking from "@src/pages/ranking";
 import Socket from "./socket";
+import ChannelPage from "@src/pages/channel";
+import DirectMessagePage from "@src/pages/directMessage";
 
 const Router = createBrowserRouter([
   {
@@ -90,10 +92,26 @@ const Router = createBrowserRouter([
       </Socket>
     ),
   },
-  // {
-  //   path: "/channel/:channelId",
-  //   element: <ChannelPage />,
-  // },
+  {
+    path: "/channel/:channelId",
+    element: (
+      <Socket>
+        <PrivateRoute>
+          <ChannelPage />
+        </PrivateRoute>
+      </Socket>
+    ),
+  },
+  {
+    path: "/direct-message/:userId",
+    element: (
+      <Socket>
+        <PrivateRoute>
+          <DirectMessagePage />
+        </PrivateRoute>
+      </Socket>
+    ),
+  },
 ]);
 
 export default Router;
