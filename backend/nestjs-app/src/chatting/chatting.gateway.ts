@@ -120,10 +120,7 @@ export class ChattingGateway
         client,
         owner,
       );
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        channel.id,
-      );
+      await this.broadcastUpdatedChannelInfo(channel.id);
       return channel;
     } catch (e) {
       console.log(e);
@@ -156,10 +153,7 @@ export class ChattingGateway
           channel,
           participant,
         );
-        await this.chattingService.broadcastUpdatedChannelInfo(
-          this.server,
-          channel.id,
-        );
+        await this.broadcastUpdatedChannelInfo(channel.id);
         return updatedChannel;
       } else {
         throw new Error('비밀번호가 틀렸습니다.');
@@ -187,10 +181,7 @@ export class ChattingGateway
       if (!channel.participants) {
         await this.channelRepository.deleteChatChannel(channel);
       }
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        channel.id,
-      );
+      await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
       console.log(e);
     }
@@ -218,10 +209,7 @@ export class ChattingGateway
         });
         await this.participantsService.deleteAllParticipant(channel);
         await this.channelRepository.deleteChatChannel(channel);
-        await this.chattingService.broadcastUpdatedChannelInfo(
-          this.server,
-          channel.id,
-        );
+        await this.broadcastUpdatedChannelInfo(channel.id);
       } else {
         throw new Error('채널 삭제 권한이 없습니다.');
       }
@@ -257,10 +245,7 @@ export class ChattingGateway
       if (socket) {
         socket.leave(content.channelId);
       }
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        content.channelId,
-      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -290,10 +275,7 @@ export class ChattingGateway
         user: admin,
         message: message,
       });
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        content.channelId,
-      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -323,10 +305,7 @@ export class ChattingGateway
         user: admin,
         message: message,
       });
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        content.channelId,
-      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -358,10 +337,7 @@ export class ChattingGateway
         user: owner,
         message: message,
       });
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        content.channelId,
-      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -385,10 +361,7 @@ export class ChattingGateway
       const participants =
         await this.participantsService.getAllParticipants(channel);
       const messages = await this.messageService.getMessages(content.channelId);
-      await this.chattingService.broadcastUpdatedChannelInfo(
-        this.server,
-        channel.id,
-      );
+      await this.broadcastUpdatedChannelInfo(channel.id);
       return { channel, messages, participants };
     } catch (e) {
       console.log(e);
@@ -453,5 +426,18 @@ export class ChattingGateway
       }
     }
     return undefined;
+  }
+
+  private async broadcastUpdatedChannelInfo(channelId: string): Promise<void> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    if (channel.type !== 'private') {
+      const allChannels = await this.channelRepository.getAllOpenedChannels();
+      this.server.emit('refresh_all_channels', allChannels);
+    }
+    const participants =
+      await this.participantsService.getAllParticipants(channel);
+    this.server
+      .to(channelId)
+      .emit('refresh_channel', { channel, participants });
   }
 }

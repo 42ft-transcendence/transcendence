@@ -34,18 +34,4 @@ export class ChattingService {
     );
     await this.channelRepository.joinChatChannel(channel, participant);
   }
-
-  async broadcastUpdatedChannelInfo(
-    server: Server,
-    channelId: string,
-  ): Promise<void> {
-    const channel = await this.channelRepository.getChannelById(channelId);
-    if (channel.type !== 'private') {
-      const allChannels = await this.channelRepository.getAllOpenedChannels();
-      server.emit('refresh_all_channels', allChannels);
-    }
-    const participants =
-      await this.participantsService.getAllParticipants(channel);
-    server.to(channelId).emit('refresh_channel', { channel, participants });
-  }
 }
