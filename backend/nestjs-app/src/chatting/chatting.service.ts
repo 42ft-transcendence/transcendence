@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { User } from 'src/users/entities/user.entity';
 
@@ -33,5 +33,17 @@ export class ChattingService {
       true,
     );
     await this.channelRepository.joinChatChannel(channel, participant);
+  }
+
+  async broadcastUpdatedChannelInfo(
+    server: Server,
+    channelId: string,
+  ): Promise<void> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    if (channel.type !== 'private') {
+      const allChannels = await this.channelRepository.getAllOpenedChannels();
+      server.emit('update_all_channels', allChannels);
+    }
+    server.to(channelId).emit('update_channel', channel);
   }
 }
