@@ -6,11 +6,11 @@ import Unmute from "@assets/icons/unbanChat.svg";
 import Kick from "@assets/icons/kick.svg";
 
 const setAdmin = (channelId: string, userId: string) => () => {
-  chatSocket.emit("appoint_admin", { channelId, userId });
+  chatSocket.emit("appoint_admin", { channelId, userId, to: true });
 };
 
 const unsetAdmin = (channelId: string, userId: string) => () => {
-  chatSocket.emit("appoint_admin", { channelId, userId });
+  chatSocket.emit("appoint_admin", { channelId, userId, to: false });
 };
 
 const muteUser = (channelId: string, userId: string) => () => {
