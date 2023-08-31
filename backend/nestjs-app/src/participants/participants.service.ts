@@ -47,23 +47,6 @@ export class ParticipantsService {
     return false;
   }
 
-  // async changeAdmin(user: User, channel: ChatChannel) {
-  //   let getCp = await this.participantRepository.getParticipant(user, channel);
-  //   getCp = await this.participantRepository.changeAdmin(getCp);
-  //   return getCp;
-  // }
-
-  async changeMuted(user: User, channel: ChatChannel, value: boolean) {
-    let getCp = await this.participantRepository.getParticipant(user, channel);
-    if (!getCp) {
-      throw new HttpException('Invalid channel participant', 455);
-    } else if (getCp.admin) {
-      throw new HttpException('Admin cannot be muted', 455);
-    }
-    getCp = await this.participantRepository.changeMuted(getCp, value);
-    return getCp;
-  }
-
   async getParticipant(user: User, channel: ChatChannel) {
     const getCp = await this.participantRepository.getParticipant(
       user,
