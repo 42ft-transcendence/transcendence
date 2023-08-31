@@ -1,4 +1,3 @@
-// import { styled } from "styled-components";
 import NormalMapSvg from "@assets/maps/mapNormal.svg";
 
 export const ModalContent = {
@@ -7,7 +6,6 @@ export const ModalContent = {
   width: "800px",
   height: "600px",
   zIndex: 400,
-  // src
   background: `url(${NormalMapSvg})`,
 };
 
