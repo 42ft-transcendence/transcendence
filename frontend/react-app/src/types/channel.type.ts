@@ -25,6 +25,6 @@ export interface EnterChannelReturnType {
 }
 
 export interface RefreshChannelType {
-  newChannel: ChannelType;
-  newParticipantList: ParticipantType[];
+  channel: ChannelType;
+  participants: ParticipantType[];
 }

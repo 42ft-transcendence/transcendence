@@ -25,13 +25,18 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setAllUserList = useSetRecoilState(allUserListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const setMessageList = useSetRecoilState(messageListState);
-  const [channel, setChannel] = useRecoilState(channelState);
+  const [curChannel, setChannel] = useRecoilState(channelState);
   const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
   const setAllChannelList = useSetRecoilState(allChannelListState);
   const setParticipantList = useSetRecoilState(participantListState);
   const navigate = useNavigate();
+
+  const participantList = useRecoilValue(participantListState);
+  useEffect(() => {
+    console.log("participantList", participantList);
+  }, [participantList]);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -44,7 +49,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
 
     chatSocket.off("get_message");
     chatSocket.on("get_message", (chat: ChatType) => {
-      if (chat.message.channelId === channel?.id) {
+      if (chat.message.channelId === curChannel?.id) {
         setMessageList((prev) => [...prev, chat.message]);
       } else {
         setJoinedChannelList((prev) =>
@@ -73,18 +78,18 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     chatSocket.off("refresh_channel");
     chatSocket.on(
       "refresh_channel",
-      ({ newChannel, newParticipantList }: RefreshChannelType) => {
+      ({ channel, participants }: RefreshChannelType) => {
+        console.log("refresh_channel", channel, participants);
         setJoinedChannelList((prev) =>
           prev.map((prevChannel) =>
-            prevChannel.id === newChannel.id
-              ? { ...newChannel, hasNewMessages: prevChannel.hasNewMessages }
+            prevChannel.id === channel.id
+              ? { ...channel, hasNewMessages: prevChannel.hasNewMessages }
               : prevChannel,
           ),
         );
-        if (channel?.id === newChannel.id) {
-          console.log("participants", newChannel.participants);
-          setChannel(newChannel);
-          setParticipantList(newParticipantList);
+        if (curChannel?.id === channel.id) {
+          setChannel(channel);
+          setParticipantList(participants);
         }
       },
     );
@@ -99,7 +104,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       setJoinedChannelList((prev) =>
         prev.filter((joinedChannel) => joinedChannel.id !== channelId),
       );
-      if (channel?.id === channelId) {
+      if (curChannel?.id === channelId) {
         navigate("/channel-list");
         alert("채널에서 추방되었습니다.");
       }
