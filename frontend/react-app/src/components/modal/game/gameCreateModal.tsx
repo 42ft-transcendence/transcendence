@@ -37,10 +37,6 @@ const GameCreateModal = () => {
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomTitle(event.target.value);
   };
-  // console.log(roomTitle);
-  // const hashedTitle = hashTitle(gameTitle);
-  // const gameTitle = "My Awesome Game Room";
-  // console.log(hashedTitle);
 
   const onSubmit = () => {
     const currentTime: Date = new Date();
