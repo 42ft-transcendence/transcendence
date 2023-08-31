@@ -215,7 +215,11 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const other = participants.find((info) => info.user?.id === user.user.id);
 
   if (channel != null && me && other) {
-    const channelButtonSet = channelButtons(channel.id, user.user.id);
+    const channelButtonSet = channelButtons(
+      channel.id,
+      user.user.id,
+      setShowProfile,
+    );
 
     if (me.owner) {
       if (other.admin) {

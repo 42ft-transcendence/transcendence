@@ -4,6 +4,9 @@ import UnsetAdmin from "@assets/icons/unsetAdmin.svg";
 import Mute from "@assets/icons/banChat.svg";
 import Unmute from "@assets/icons/unbanChat.svg";
 import Kick from "@assets/icons/kick.svg";
+import { ProfileModalOnClickHandler, ShowProfilePayload } from "@src/utils";
+import { SetterOrUpdater } from "recoil";
+import { UserType } from "@src/types";
 
 const setAdmin = (channelId: string, userId: string) => () => {
   chatSocket.emit("appoint_admin", { channelId, userId, to: true });
@@ -21,11 +24,22 @@ const unmuteUser = (channelId: string, userId: string) => () => {
   chatSocket.emit("unmute_user", { channelId, userId });
 };
 
-const kickUser = (channelId: string, userId: string) => () => {
-  chatSocket.emit("kick_user", { channelId, userId });
-};
+const kickUser =
+  (
+    channelId: string,
+    userId: string,
+    setShowProfile: SetterOrUpdater<ShowProfilePayload>,
+  ) =>
+  () => {
+    chatSocket.emit("kick_user", { channelId, userId });
+    ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
+  };
 
-const channelButtons = (channelId: string, otherId: string) => ({
+const channelButtons = (
+  channelId: string,
+  otherId: string,
+  setShowProfile: SetterOrUpdater<ShowProfilePayload>,
+) => ({
   SetAdmin: {
     label: "관리자 설정",
     action: setAdmin(channelId, otherId),
@@ -48,7 +62,7 @@ const channelButtons = (channelId: string, otherId: string) => ({
   },
   KickUser: {
     label: "강제 퇴장",
-    action: kickUser(channelId, otherId),
+    action: kickUser(channelId, otherId, setShowProfile),
     src: Kick,
   },
 });
