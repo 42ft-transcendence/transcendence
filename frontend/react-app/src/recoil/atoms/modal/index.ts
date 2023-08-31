@@ -32,3 +32,8 @@ export const battleActionModalState = atom<battleActionData>({
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const changeNicknameModalState = atom<boolean>({
+  key: "changeNicknameModalState",
+  default: false,
+});
