@@ -313,91 +313,102 @@ export const MatchHeader = ({
           />
         </S.SearchBar>
       </S.HeaderToolBar>
-      <S.HeaderStatistcs>
-        <S.HeaderDoughnutContainer>
-          <S.HeaderDoughnutText>
-            {historyList.length}전 {winCount}승 {loseCount}패
-          </S.HeaderDoughnutText>
-          <S.HeaderDoughnut>
-            <Doughnut data={chartData} options={chartOptions} />
-            <S.DoughnutText>
-              {Math.round((winCount / historyList.length) * 100)}%
-            </S.DoughnutText>
-          </S.HeaderDoughnut>
-        </S.HeaderDoughnutContainer>
-        <S.HeaderAvgContainer>
-          <S.HeaderAvgTotalScore>총 득점 / 총 실점</S.HeaderAvgTotalScore>
-          <S.HeaderAvgTotalScore>
-            {totalScore} / {totalLoseScore}
-          </S.HeaderAvgTotalScore>
-          <S.HeaderAvgScore $score={totalScore / totalLoseScore}>
-            {(totalScore / totalLoseScore).toFixed(2)}:1
-          </S.HeaderAvgScore>
-        </S.HeaderAvgContainer>
-        <S.HeaderMapContainer>
-          <S.HeaderMapTitle>맵 통계</S.HeaderMapTitle>
-          {maps.map((mapType) => (
-            <S.HeaderMapStats key={mapType}>
-              <div>
-                {mapType === "normal"
-                  ? "일반"
-                  : mapType === "desert"
-                  ? "사막"
-                  : "정글"}
-              </div>
-              <S.HeaderMapStatsWinRate
-                $win={mapStats[mapType].wins}
-                $lose={mapStats[mapType].losses}
-              >
-                {(
-                  (mapStats[mapType].wins /
-                    (mapStats[mapType].wins + mapStats[mapType].losses)) *
-                  100
-                ).toFixed(0)}
-                {"%"}
-              </S.HeaderMapStatsWinRate>
-              <div style={{ marginLeft: "4px" }}>
-                {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
-              </div>
-              <S.HeaderMapStatsAvgScore
-                $score={
-                  mapStats[mapType].totalScore /
-                  mapStats[mapType].totalLoseScore
-                }
-              >
-                {(
-                  mapStats[mapType].totalScore /
-                  mapStats[mapType].totalLoseScore
-                ).toFixed(2)}
-                :1 평점
-              </S.HeaderMapStatsAvgScore>
-            </S.HeaderMapStats>
-          ))}
-        </S.HeaderMapContainer>
-        <S.Header20gamesContainer>
-          <S.Header20gamesTitle>최근 게임 ({sortState})</S.Header20gamesTitle>
-          <S.Header20gamesList $maxItem={maxItems}>
-            {historyList.slice(0, maxItems).map((history) => (
-              <S.Header20games
-                key={history.id}
-                $winLose={
-                  history.player1.id === userId
-                    ? history.player1Score > history.player2Score
-                    : history.player2Score > history.player1Score
-                }
-              >
-                {history.player1.id === userId
-                  ? history.player1Score > history.player2Score
-                    ? "W"
-                    : "L"
-                  : history.player2Score > history.player1Score
-                  ? "W"
-                  : "L"}
-              </S.Header20games>
+      {historyList.length === 0 ? (
+        <S.HeaderStatistcs
+          style={{
+            justifyContent: "center",
+            color: `${Theme.colors.freezePurple}`,
+          }}
+        >
+          게임 기록이 없습니다.
+        </S.HeaderStatistcs>
+      ) : (
+        <S.HeaderStatistcs>
+          <S.HeaderDoughnutContainer>
+            <S.HeaderDoughnutText>
+              {historyList.length}전 {winCount}승 {loseCount}패
+            </S.HeaderDoughnutText>
+            <S.HeaderDoughnut>
+              <Doughnut data={chartData} options={chartOptions} />
+              <S.DoughnutText>
+                {Math.round((winCount / historyList.length) * 100)}%
+              </S.DoughnutText>
+            </S.HeaderDoughnut>
+          </S.HeaderDoughnutContainer>
+          <S.HeaderAvgContainer>
+            <S.HeaderAvgTotalScore>총 득점 / 총 실점</S.HeaderAvgTotalScore>
+            <S.HeaderAvgTotalScore>
+              {totalScore} / {totalLoseScore}
+            </S.HeaderAvgTotalScore>
+            <S.HeaderAvgScore $score={totalScore / totalLoseScore}>
+              {(totalScore / totalLoseScore).toFixed(2)}:1
+            </S.HeaderAvgScore>
+          </S.HeaderAvgContainer>
+          <S.HeaderMapContainer>
+            <S.HeaderMapTitle>맵 통계</S.HeaderMapTitle>
+            {maps.map((mapType) => (
+              <S.HeaderMapStats key={mapType}>
+                <div>
+                  {mapType === "normal"
+                    ? "일반"
+                    : mapType === "desert"
+                    ? "사막"
+                    : "정글"}
+                </div>
+                <S.HeaderMapStatsWinRate
+                  $win={mapStats[mapType].wins}
+                  $lose={mapStats[mapType].losses}
+                >
+                  {(
+                    (mapStats[mapType].wins /
+                      (mapStats[mapType].wins + mapStats[mapType].losses)) *
+                    100
+                  ).toFixed(0)}
+                  {"%"}
+                </S.HeaderMapStatsWinRate>
+                <div style={{ marginLeft: "4px" }}>
+                  {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
+                </div>
+                <S.HeaderMapStatsAvgScore
+                  $score={
+                    mapStats[mapType].totalScore /
+                    mapStats[mapType].totalLoseScore
+                  }
+                >
+                  {(
+                    mapStats[mapType].totalScore /
+                    mapStats[mapType].totalLoseScore
+                  ).toFixed(2)}
+                  :1 평점
+                </S.HeaderMapStatsAvgScore>
+              </S.HeaderMapStats>
             ))}
-          </S.Header20gamesList>
-        </S.Header20gamesContainer>
-      </S.HeaderStatistcs>
+          </S.HeaderMapContainer>
+          <S.Header20gamesContainer>
+            <S.Header20gamesTitle>최근 게임 ({sortState})</S.Header20gamesTitle>
+            <S.Header20gamesList $maxItem={maxItems}>
+              {historyList.slice(0, maxItems).map((history) => (
+                <S.Header20games
+                  key={history.id}
+                  $winLose={
+                    history.player1.id === userId
+                      ? history.player1Score > history.player2Score
+                      : history.player2Score > history.player1Score
+                  }
+                >
+                  {history.player1.id === userId
+                    ? history.player1Score > history.player2Score
+                      ? "W"
+                      : "L"
+                    : history.player2Score > history.player1Score
+                    ? "W"
+                    : "L"}
+                </S.Header20games>
+              ))}
+            </S.Header20gamesList>
+          </S.Header20gamesContainer>
+        </S.HeaderStatistcs>
+      )}
     </S.Header>
   );
 };
