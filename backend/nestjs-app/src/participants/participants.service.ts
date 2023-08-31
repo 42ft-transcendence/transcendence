@@ -157,4 +157,31 @@ export class ParticipantsService {
       await this.participantRepository.changeAdmin(target);
     }
   }
+
+  async kickUser(
+    channelId: string,
+    adminId: string,
+    targetId: string,
+  ): Promise<void> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    const participants = await this.getAllParticipants(channel);
+    const admin = participants.find(
+      (participant) => participant.user.id === adminId,
+    );
+    const target = participants.find(
+      (participant) => participant.user.id === targetId,
+    );
+
+    if (!admin) {
+      throw new Error('채널에 참가하지 않았습니다.');
+    } else if (!target) {
+      throw new Error('대상이 채널에 참가하지 않았습니다.');
+    } else if (target.owner || !(admin.admin || admin.owner)) {
+      throw new Error('권한이 없습니다.');
+    } else {
+      console.log('사용자 추방');
+      await this.participantRepository.deleteParticipant(target);
+      await this.channelRepository.leaveChatChannel(channel, target);
+    }
+  }
 }

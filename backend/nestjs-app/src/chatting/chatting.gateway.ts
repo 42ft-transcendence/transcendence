@@ -237,41 +237,30 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.kickUser(
+        content.channelId,
+        adminId,
+        content.userId,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 강퇴되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
-      );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 강퇴되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        const socket = this.findSocketByUserId(content.userId);
-        if (socket) {
-          socket.leave(content.channelId);
-        }
-        await this.participantsService.deleteParticipant(
-          participant.user,
-          channel,
-        );
-        await this.channelRepository.leaveChatChannel(channel, participant);
-        await this.chattingService.broadcastUpdatedChannelInfo(
-          this.server,
-          channel.id,
-        );
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      const socket = this.findSocketByUserId(content.userId);
+      if (socket) {
+        socket.leave(content.channelId);
       }
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        content.channelId,
+      );
     } catch (e) {
       console.log(e);
     }
