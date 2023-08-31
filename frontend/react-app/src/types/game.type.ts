@@ -2,8 +2,8 @@
 import { UserType } from "./user.type";
 
 export interface OfferGameType {
-  user_id: string;
   awayUser: UserType;
+  myData: UserType;
   gameRoomURL: string;
 }
 
@@ -41,9 +41,4 @@ export interface gameType {
 
 export interface JoinedgameType extends gameType {
   hasNewMessages: boolean;
-}
-
-export interface acceptUserType {
-  // showProfile: boolean;
-  user: UserType;
 }

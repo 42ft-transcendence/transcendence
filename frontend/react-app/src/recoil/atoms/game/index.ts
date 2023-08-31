@@ -1,5 +1,5 @@
 import { UserType } from "@src/types";
-import { MatchHistoryType, acceptUserType } from "@src/types/game.type";
+import { MatchHistoryType } from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
@@ -16,12 +16,10 @@ export const gameRoomName = atom<string>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const gameAcceptUser = atom<acceptUserType>({
+export const gameAcceptUser = atom<UserType>({
   key: "gameAcceptUser",
-  default: {
-    // showProfile: false,
-    user: {} as UserType,
-  },
+  default: {} as UserType,
+  effects_UNSTABLE: [persistAtom],
 });
 
 export const gameRoomIn = atom<boolean>({

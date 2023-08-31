@@ -14,15 +14,15 @@ import { UserType } from "@src/types";
  */
 
 export const offerBattle = async (
-  userID: string,
   awayUser: UserType,
+  myData: UserType,
   gameRoomURL: string,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
     {
-      id: userID,
       awayUser: awayUser,
+      myData: myData,
       gameRoomURL: gameRoomURL,
     },
     {

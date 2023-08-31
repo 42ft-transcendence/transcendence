@@ -28,7 +28,7 @@ import KickIcon from "@src/assets/icons/kick.svg";
 import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 import sha256 from "crypto-js/sha256";
-import { gameRoomIn } from "@src/recoil/atoms/game";
+import { gameAcceptUser, gameRoomIn } from "@src/recoil/atoms/game";
 import { useNavigate } from "react-router-dom";
 
 interface ProfileButtonActionsProps {
@@ -73,7 +73,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const [gameRoomInState, setGameRoomInState] = useRecoilState(gameRoomIn);
-  const [showProfile] = useRecoilState(showProfileState);
+  const [gameUser, setGameUser] = useRecoilState(gameAcceptUser);
 
   // 친구 상태인지 확인
 
@@ -145,9 +145,9 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const currentTime: Date = new Date();
       const roomURL = currentTime + myData.id;
       const hashedTitle = hashTitle(roomURL);
-      await offerBattle(user.user.id, myData, hashedTitle).then((response) => {
-        console.log(response);
-        console.log("대전 신청 여기 임");
+      await offerBattle(user.user, myData, hashedTitle).then(() => {
+        console.log("offerBattle user.user", user.user, myData);
+        setGameUser(user.user);
       });
     } catch (error) {
       console.log(error);

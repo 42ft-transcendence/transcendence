@@ -23,7 +23,7 @@ const Game = () => {
       <GameCreateModal />
       {SideBarComponent && <SideBarComponent />}
       <GameMatchProfile user={user} />
-      <GameMatchProfile user={gameUser.user} />
+      <GameMatchProfile user={gameUser} />
       {/* 상대방*/}
     </>
   );
