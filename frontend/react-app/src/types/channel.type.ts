@@ -23,3 +23,8 @@ export interface EnterChannelReturnType {
   messages: MessageType[];
   participants: ParticipantType[];
 }
+
+export interface RefreshChannelType {
+  newChannel: ChannelType;
+  newParticipantList: ParticipantType[];
+}

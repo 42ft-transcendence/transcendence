@@ -15,6 +15,8 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
+import { useEffect } from "react";
+import { RefreshChannelType } from "@src/types/channel.type";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
@@ -28,6 +30,15 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const dmOther = useRecoilValue(dmOtherState);
   const setAllChannelList = useSetRecoilState(allChannelListState);
   const setParticipantList = useSetRecoilState(participantListState);
+
+  const participantList = useRecoilValue(participantListState);
+  useEffect(() => {
+    console.log("participantList", participantList);
+  }, [participantList]);
+  const messageList = useRecoilValue(messageListState);
+  useEffect(() => {
+    console.log("messageList", messageList);
+  }, [messageList]);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -67,19 +78,23 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     });
 
     chatSocket.off("refresh_channel");
-    chatSocket.on("refresh_channel", (updatedChannel: ChannelType) => {
-      setJoinedChannelList((prev) =>
-        prev.map((prevChannel) =>
-          prevChannel.id === updatedChannel.id
-            ? { ...updatedChannel, hasNewMessages: prevChannel.hasNewMessages }
-            : prevChannel,
-        ),
-      );
-      if (channel?.id === updatedChannel.id) {
-        setChannel(updatedChannel);
-        setParticipantList(updatedChannel.participants as ParticipantType[]);
-      }
-    });
+    chatSocket.on(
+      "refresh_channel",
+      ({ newChannel, newParticipantList }: RefreshChannelType) => {
+        setJoinedChannelList((prev) =>
+          prev.map((prevChannel) =>
+            prevChannel.id === newChannel.id
+              ? { ...newChannel, hasNewMessages: prevChannel.hasNewMessages }
+              : prevChannel,
+          ),
+        );
+        if (channel?.id === newChannel.id) {
+          console.log("participants", newChannel.participants);
+          setChannel(newChannel);
+          setParticipantList(newParticipantList);
+        }
+      },
+    );
 
     chatSocket.off("refresh_all_channels");
     chatSocket.on("refresh_all_channels", (channelList: ChannelType[]) => {
