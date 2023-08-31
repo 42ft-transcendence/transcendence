@@ -108,4 +108,37 @@ export class ParticipantsService {
     }
     return true;
   }
+
+  async changeMute(
+    channelId: string,
+    adminId: string,
+    targetId: string,
+    to: boolean,
+  ): Promise<void> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    const participants = await this.getAllParticipants(channel);
+    const admin = participants.find(
+      (participant) => participant.user.id === adminId,
+    );
+    const target = participants.find(
+      (participant) => participant.user.id === targetId,
+    );
+
+    if (!admin) {
+      throw new Error('채널에 참가하지 않았습니다.');
+    } else if (!target) {
+      throw new Error('대상이 채널에 참가하지 않았습니다.');
+    } else if (target.owner || !(admin.admin || admin.owner)) {
+      throw new Error('권한이 없습니다.');
+    } else if (to === target.muted) {
+      if (to) {
+        throw new Error('이미 음소거된 사용자입니다.');
+      } else {
+        throw new Error('이미 음소거가 해제된 사용자입니다.');
+      }
+    } else {
+      console.log('음소거 변경', target.muted, '->', to);
+      await this.participantRepository.changeMuted(target, true);
+    }
+  }
 }

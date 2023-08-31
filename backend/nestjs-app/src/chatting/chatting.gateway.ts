@@ -284,37 +284,27 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.changeMute(
+        content.channelId,
+        adminId,
+        content.userId,
+        true,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 채팅 금지가 되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        content.channelId,
       );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        await this.participantsService.changeMuted(
-          participant.user,
-          channel,
-          true,
-        );
-        await this.chattingService.broadcastUpdatedChannelInfo(
-          this.server,
-          channel.id,
-        );
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
-      }
     } catch (e) {
       console.log(e);
     }
@@ -327,37 +317,27 @@ export class ChattingGateway
   ) {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.changeMute(
+        content.channelId,
+        adminId,
+        content.userId,
+        false,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 채팅 금지가 해제 되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        content.channelId,
       );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 해제 되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        await this.participantsService.changeMuted(
-          participant.user,
-          channel,
-          false,
-        );
-        await this.chattingService.broadcastUpdatedChannelInfo(
-          this.server,
-          channel.id,
-        );
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
-      }
     } catch (e) {
       console.log(e);
     }
