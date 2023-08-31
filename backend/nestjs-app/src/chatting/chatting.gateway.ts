@@ -379,6 +379,7 @@ export class ChattingGateway
       return { channel, messages, participants };
     } catch (e) {
       console.log(e);
+      return {};
     }
   }
 

@@ -6,7 +6,7 @@ import {
   EnterChannelReturnType,
   SendMessageReturnType,
 } from "@src/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
   joinedChannelListState,
@@ -23,6 +23,7 @@ const ChannelPageContainer = () => {
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
+  const navigate = useNavigate();
 
   const handleSendMessage = (content: string) => {
     chatSocket.emit(
@@ -62,9 +63,15 @@ const ChannelPageContainer = () => {
       "enter_channel",
       { channelId },
       ({ channel, messages, participants }: EnterChannelReturnType) => {
-        setChannel(channel);
-        setMessageList(messages);
-        setParticipantList(participants);
+        console.log("enter_channel return", channel, messages, participants);
+        if (channel && messages && participants) {
+          setChannel(channel);
+          setMessageList(messages);
+          setParticipantList(participants);
+        } else {
+          navigate("/channel-list");
+          alert("가입한 적 없거나 존재하지 않는 채널입니다.");
+        }
       },
     );
     setJoinedChannelList((prev) =>
