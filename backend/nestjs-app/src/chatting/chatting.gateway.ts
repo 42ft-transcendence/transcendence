@@ -49,10 +49,11 @@ export class ChattingGateway
       if (user.status === UserStatusType.OFFLINE) {
         await this.userService.updateStatus(user, UserStatusType.ONLINE);
       }
-      const channels = await this.participantsService.channel(user);
+      const channels = await this.participantsService.getJoinedChannel(user);
       channels.forEach((channel) => {
         client.join(channel.id);
       });
+      client.join(user.id);
       this.refreshUsersList();
     } catch (e) {
       console.log(e);
@@ -361,18 +362,30 @@ export class ChattingGateway
   async sendDM(
     client: Socket,
     content: { userId: string; message: string },
-  ): Promise<DirectMessage[]> {
+  ): Promise<DirectMessage> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
       const toUser = await this.userService.getUserById(content.userId);
-      await this.dmService.saveDM(user, toUser, content.message);
-      const dm = await this.dmService.getDM(user, toUser);
+      const dm = await this.dmService.saveDM(user, toUser, content.message);
       client.to(content.userId).emit('get_dm', {
         user: user,
         message: dm,
       });
       return dm;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @SubscribeMessage('enter_dm')
+  async enterDM(client: Socket, content: { userId: string }) {
+    try {
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      const toUser = await this.userService.getUserById(content.userId);
+      const dm = await this.dmService.getDM(user, toUser);
+      return { toUser, dm };
     } catch (e) {
       console.log(e);
     }
@@ -396,10 +409,10 @@ export class ChattingGateway
   }
 
   private findSocketByUserId(userId: string): Socket | undefined {
-    for (const socket of this.server.sockets.sockets.values()) {
-      const socketUserId = socket.handshake.query.userId; // 혹은 다른 속성에 userId 정보가 있을 수 있음
-      if (socketUserId === userId) {
-        return socket;
+    const sockets = this.server.sockets.sockets;
+    for (const socketId in sockets) {
+      if (sockets[socketId].handshake.query.userId === userId) {
+        return sockets[socketId];
       }
     }
     return undefined;
