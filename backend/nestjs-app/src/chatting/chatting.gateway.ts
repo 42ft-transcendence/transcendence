@@ -120,6 +120,10 @@ export class ChattingGateway
         client,
         owner,
       );
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        channel.id,
+      );
       return channel;
     } catch (e) {
       console.log(e);
@@ -148,10 +152,15 @@ export class ChattingGateway
           channel,
           false,
         );
-        return await this.channelRepository.joinChatChannel(
+        const updatedChannel = await this.channelRepository.joinChatChannel(
           channel,
           participant,
         );
+        await this.chattingService.broadcastUpdatedChannelInfo(
+          this.server,
+          channel.id,
+        );
+        return updatedChannel;
       } else {
         throw new Error('비밀번호가 틀렸습니다.');
       }
@@ -178,6 +187,10 @@ export class ChattingGateway
       if (!channel.participants) {
         await this.channelRepository.deleteChatChannel(channel);
       }
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        channel.id,
+      );
     } catch (e) {
       console.log(e);
     }
@@ -205,6 +218,10 @@ export class ChattingGateway
         });
         await this.participantsService.deleteAllParticipant(channel);
         await this.channelRepository.deleteChatChannel(channel);
+        await this.chattingService.broadcastUpdatedChannelInfo(
+          this.server,
+          channel.id,
+        );
       } else {
         throw new Error('채널 삭제 권한이 없습니다.');
       }
@@ -248,6 +265,10 @@ export class ChattingGateway
           channel,
         );
         await this.channelRepository.leaveChatChannel(channel, participant);
+        await this.chattingService.broadcastUpdatedChannelInfo(
+          this.server,
+          channel.id,
+        );
       } else {
         throw new Error('채널에 참가하지 않았습니다.');
       }
@@ -286,6 +307,10 @@ export class ChattingGateway
           participant.user,
           channel,
           true,
+        );
+        await this.chattingService.broadcastUpdatedChannelInfo(
+          this.server,
+          channel.id,
         );
       } else {
         throw new Error('채널에 참가하지 않았습니다.');
@@ -326,6 +351,10 @@ export class ChattingGateway
           channel,
           false,
         );
+        await this.chattingService.broadcastUpdatedChannelInfo(
+          this.server,
+          channel.id,
+        );
       } else {
         throw new Error('채널에 참가하지 않았습니다.');
       }
@@ -352,6 +381,10 @@ export class ChattingGateway
       const participants =
         await this.participantsService.getAllParticipants(channel);
       const messages = await this.messageService.getMessages(content.channelId);
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        channel.id,
+      );
       return { channel, messages, participants };
     } catch (e) {
       console.log(e);
