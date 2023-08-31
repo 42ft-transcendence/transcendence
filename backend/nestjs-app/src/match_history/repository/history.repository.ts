@@ -22,4 +22,12 @@ export class MatchHistoryRepository extends Repository<MatchHistory> {
     });
     return user;
   }
+
+  async getHistoryJoinUserById(id: string): Promise<MatchHistory[]> {
+    const histories = await this.find({
+      relations: ['player1', 'player2'],
+      where: [{ player1: { id } }, { player2: { id } }],
+    });
+    return histories;
+  }
 }
