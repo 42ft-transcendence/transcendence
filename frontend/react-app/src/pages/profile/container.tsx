@@ -262,8 +262,6 @@ export const MatchHeader = ({
     return acc;
   }, 0);
 
-  console.log("historyList", historyList);
-
   const chartData = {
     labels: ["Wins", "Losses"],
     datasets: [

@@ -7,12 +7,7 @@ import { MatchCard, MatchHeader } from "./container";
 import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import { useEffect, useState } from "react";
 import { MatchHistoryType } from "@src/types/game.type";
-import { ProfileModalOnClickHandler } from "@src/utils";
-import {
-  allUserListState,
-  showProfileState,
-  userDataState,
-} from "@src/recoil/atoms/common";
+import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { UserType } from "@src/types";
 
 const Profile = () => {
@@ -29,11 +24,6 @@ const Profile = () => {
   const [filteredHistoryList, setFilteredHistoryList] =
     useState<MatchHistoryType[]>(sortMatchHistory);
   const [search, setSearch] = useState<string>("");
-  const [, setShowProfile] = useRecoilState(showProfileState);
-
-  useEffect(() => {
-    ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
-  }, []);
 
   useEffect(() => {
     if (sortState === "랭크") {
@@ -50,7 +40,6 @@ const Profile = () => {
   }, [sortState]);
 
   useEffect(() => {
-    console.log("search", search);
     if (search === "") {
       setFilteredHistoryList(sortMatchHistory);
     } else {
@@ -64,18 +53,18 @@ const Profile = () => {
     }
   }, [search]);
 
-  if (typeof userList.find((user) => user.id === userId) === "undefined") {
+  const user = userList.find((user) => user.id === userId) as UserType;
+  if (typeof user === "undefined") {
     window.location.href = "/profile/" + userData.id;
     return <></>;
   }
-  console.log("userId", userId);
 
-  if (!matchHistory) return <></>; // TODO: 로딩 컴포넌트 추가
+  if (!matchHistory || !SidebarComponent) return <></>; // TODO: 로딩 컴포넌트 추가
 
   return (
     <>
       <NavBar />
-      {SidebarComponent && <SidebarComponent />}
+      <SidebarComponent user={user} />
       <DS.ContentArea>
         <MatchHeader
           userId={userId}
