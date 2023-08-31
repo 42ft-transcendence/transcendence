@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
+import { gameRoomName } from "@src/recoil/atoms/game";
 
 const hashTitle = (title: string): string => {
   const hash = sha256(title);
@@ -25,7 +26,8 @@ const GameCreateModal = () => {
   );
 
   const [user] = useRecoilState(userDataState);
-  const [roomTitle, setRoomTitle] = useState("");
+  // const [roomTitle, setRoomTitle] = useState("");
+  const [roomTitle, setRoomTitle] = useRecoilState(gameRoomName);
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<gameRoomType>("PUBLIC");
   const [password, setPassword] = useState<string>("");
@@ -49,24 +51,6 @@ const GameCreateModal = () => {
     handleClose();
     navigate(`/game/${hashedTitle}`);
   };
-
-  // const onSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
-  //   event?.preventDefault();
-  //   gamesocket.emit(
-  //     "game_create",
-  //     { gameName: name, type, password },
-  //     (game_joined:  gameType) => {
-  //       setJoinedgameList((prev) => [
-  //         ...prev,
-  //         {
-  //           ...game_joined,
-  //         },
-  //       ]);
-  //       handleClose();
-  //       navigate(`/channel/${channel_joined.id}`);
-  //     },
-  //   );
-  // };
 
   const handleClose = () => {
     setIsOpened(false);

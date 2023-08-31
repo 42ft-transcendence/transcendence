@@ -8,3 +8,9 @@ export const matchHistoryState = atom<MatchHistoryType[]>({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+export const gameRoomName = atom<string>({
+  key: "gameRoomName",
+  default: "",
+  effects_UNSTABLE: [persistAtom],
+});
