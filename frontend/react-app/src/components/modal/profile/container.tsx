@@ -211,12 +211,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   // Set Channel Buttons
   const channel = useRecoilValue(channelState);
   const participants = useRecoilValue(participantListState);
-  const me = participants.find(
-    (participant) => participant.user?.id === myData.id,
-  );
-  const other = participants.find(
-    (participant) => participant.user?.id === user.user.id,
-  );
+  const me = participants.find((info) => info.user?.id === myData.id);
+  const other = participants.find((info) => info.user?.id === user.user.id);
 
   if (channel != null && me && other) {
     const channelButtonSet = channelButtons(channel.id, user.user.id);
