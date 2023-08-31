@@ -8,7 +8,7 @@ import {
 
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { TMP, UserStatusType } from 'src/util';
+import { TMP, UserStatusType, RoomData } from 'src/util';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
@@ -40,16 +40,6 @@ export class GameData {
     this.ball_vec_y = 0;
     this.ball_speed = 8;
   }
-}
-
-interface RoomData {
-  name: string;
-  pass: string;
-  mode: number;
-  person: number;
-  id: number;
-  secret: boolean;
-  participation: boolean;
 }
 
 const roomManager = new Map<number, GameData>();
