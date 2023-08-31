@@ -7,11 +7,20 @@ import { MatchCard, MatchHeader } from "./container";
 import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import { useEffect, useState } from "react";
 import { MatchHistoryType } from "@src/types/game.type";
+import { ProfileModalOnClickHandler } from "@src/utils";
+import {
+  allUserListState,
+  showProfileState,
+  userDataState,
+} from "@src/recoil/atoms/common";
+import { UserType } from "@src/types";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
+  const userId = currentRoute.split("/").pop() as string;
+  const [userData] = useRecoilState(userDataState);
+  const [userList] = useRecoilState(allUserListState);
   const SidebarComponent = profileRouteMatch(currentRoute);
-  const userId = currentRoute.split("/").pop();
   const [matchHistory] = useRecoilState(matchHistoryListState);
   const [sortState, setSortState] = useState<string>("모드 전체");
   const sortMatchHistory = [...matchHistory].sort((a, b) => {
@@ -20,6 +29,11 @@ const Profile = () => {
   const [filteredHistoryList, setFilteredHistoryList] =
     useState<MatchHistoryType[]>(sortMatchHistory);
   const [search, setSearch] = useState<string>("");
+  const [, setShowProfile] = useRecoilState(showProfileState);
+
+  useEffect(() => {
+    ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
+  }, []);
 
   useEffect(() => {
     if (sortState === "랭크") {
@@ -49,6 +63,12 @@ const Profile = () => {
       );
     }
   }, [search]);
+
+  if (typeof userList.find((user) => user.id === userId) === "undefined") {
+    window.location.href = "/profile/" + userData.id;
+    return <></>;
+  }
+  console.log("userId", userId);
 
   if (!matchHistory) return <></>; // TODO: 로딩 컴포넌트 추가
 
