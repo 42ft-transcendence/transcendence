@@ -3,16 +3,17 @@ import * as DS from "../index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
+import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
+  const [, setCreateGameRoom] = useRecoilState(createGameRoomModalState);
+
   const iconButtons: IconButtonProps[] = [
     {
       title: "방 만들기",
       iconSrc: "",
-      onClick: () => {
-        console.log("방 만들기");
-      },
+      onClick: () => setCreateGameRoom(true),
       theme: "LIGHT",
     },
     {

@@ -54,7 +54,7 @@ export const deleteFriend = async (
  * @returns 성공했을 때 자신의 친구 목록을 반환
  */
 export const getFriendList = async (): Promise<
-  AxiosResponse<UserType[], undefined>
+  AxiosResponse<UserType[], UserType[]>
 > => {
   const response = await axios.get(`${base_url}/relationship/friends`, {
     headers: {
