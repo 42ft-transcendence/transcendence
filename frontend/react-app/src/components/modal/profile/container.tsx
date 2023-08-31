@@ -141,7 +141,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     },
     {
       label: "DM 보내기",
-      action: () => console.log("handleActionSendMessage"),
+      action: () => navigate(`/direct-message/${user.user.id}`),
       src: "src/assets/icons/sendMessage.svg",
     },
     {
