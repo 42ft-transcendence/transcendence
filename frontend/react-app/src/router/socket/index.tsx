@@ -1,4 +1,4 @@
-import { ChannelType, ChatType, UserType } from "@type";
+import { ChannelType, ChatType, ParticipantType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -7,6 +7,7 @@ import {
   channelState,
   joinedChannelListState,
   messageListState,
+  participantListState,
 } from "@src/recoil/atoms/channel";
 import { allUserListState } from "@src/recoil/atoms/common";
 import {
@@ -26,6 +27,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
   const setAllChannelList = useSetRecoilState(allChannelListState);
+  const setParticipantList = useSetRecoilState(participantListState);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -65,15 +67,18 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     });
 
     chatSocket.off("refresh_channel");
-    chatSocket.on("refresh_channel", (channel: ChannelType) => {
+    chatSocket.on("refresh_channel", (updatedChannel: ChannelType) => {
       setJoinedChannelList((prev) =>
         prev.map((prevChannel) =>
-          prevChannel.id === channel.id
-            ? { ...channel, hasNewMessages: prevChannel.hasNewMessages }
+          prevChannel.id === updatedChannel.id
+            ? { ...updatedChannel, hasNewMessages: prevChannel.hasNewMessages }
             : prevChannel,
         ),
       );
-      setChannel((prev) => (prev?.id === channel.id ? channel : prev));
+      if (channel?.id === updatedChannel.id) {
+        setChannel(updatedChannel);
+        setParticipantList(updatedChannel.participants as ParticipantType[]);
+      }
     });
 
     chatSocket.off("refresh_all_channels");
