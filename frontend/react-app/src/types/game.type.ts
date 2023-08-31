@@ -22,3 +22,9 @@ export interface battleActionData {
   battleActionModal: boolean;
   nickname: string;
 }
+
+export type GameMapType = "NORMAL" | "JUNGLE" | "DESERT";
+
+export interface GameModalType {
+  gameMap: GameMapType | null;
+}
