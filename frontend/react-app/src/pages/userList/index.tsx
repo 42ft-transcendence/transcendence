@@ -133,7 +133,7 @@ const UserList = () => {
         userStatusCounts={userStatusCounts}
         currentClick={currentClick}
       />
-      <DS.ContentArea>
+      <DS.ContentArea style={{ overflowX: "scroll" }}>
         <SearchComponent
           search={search}
           setSearch={setSearch}

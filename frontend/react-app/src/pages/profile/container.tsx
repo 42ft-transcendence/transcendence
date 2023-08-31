@@ -320,7 +320,7 @@ export const MatchHeader = ({
             color: `${Theme.colors.freezePurple}`,
           }}
         >
-          게임 기록이 없습니다.
+          기록된 전적이 없습니다.
         </S.HeaderStatistcs>
       ) : (
         <S.HeaderStatistcs>
