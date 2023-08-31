@@ -4,11 +4,18 @@ import { battleActionModalState } from "@src/recoil/atoms/modal";
 import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
+import { useNavigate } from "react-router-dom";
+import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import { acceptBattle } from "@src/api/game";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
     battleActionModalState,
   );
+  const [myData] = useRecoilState(userDataState);
+  // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
+  const [gameUser, setGameUser] = useRecoilState(showProfileState);
+  const navigate = useNavigate();
   const [countdown, setCountdown] = useState(30);
   const [countdownInterval, setCountdownInterval] =
     useState<NodeJS.Timeout | null>(null);
@@ -38,8 +45,10 @@ const BattleActionModal = () => {
       clearInterval(countdownInterval);
     }
     setBattleActionModal({
+      ...BattleActionModal,
       battleActionModal: false,
       awayUser: {} as UserType,
+      gameRoomURL: "",
     }); // 모달 닫기
   };
 
@@ -49,18 +58,42 @@ const BattleActionModal = () => {
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
+      gameRoomURL: "",
     }); // 모달 닫기
   };
 
-  const handleAcceptButton = () => {
+  const handleAcceptButton = async () => {
     // 대전 신청 수락 api 호출
     console.log("대전 신청 수락");
+    await acceptBattle(
+      myData,
+      battleActionModal.awayUser,
+      battleActionModal.gameRoomURL,
+    )
+      .then((res) => {
+        console.log("대전 신청 수락 api 호출 결과: ", res);
+      })
+      .catch((err) => {
+        console.log("대전 신청 수락 api 호출 에러: ", err);
+      });
+    const gameRoomURL = battleActionModal.gameRoomURL;
+    console.log("gameUser", gameUser);
+    setGameUser({
+      ...gameUser,
+      user: battleActionModal.awayUser,
+    });
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
+      gameRoomURL: "",
     }); // 모달 닫기
+    navigate("/game/" + gameRoomURL);
     // 대전 신청 수락 시 대전 페이지로 이동
   };
+
+  useEffect(() => {
+    console.log("battleActionModal", battleActionModal);
+  });
 
   return (
     <S.ModalWrapper>

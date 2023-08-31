@@ -43,7 +43,7 @@ const ProfileModal = () => {
       onClick={ProfileModalOnClickHandler(
         setShowProfile,
         false,
-        {} as UserType,
+        showProfile.user,
       )}
     >
       <ProfileContainer onClick={handleClickInside}>

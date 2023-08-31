@@ -17,7 +17,19 @@ export class GameController {
     @Request() req,
     @Body('id') user_id: string,
     @Body('awayUser') awayUser: User,
+    @Body('gameRoomURL') gameRoomURL: string,
   ): Promise<boolean> {
-    return await this.gameGateway.offerGame(user_id, awayUser);
+    return await this.gameGateway.offerGame(user_id, awayUser, gameRoomURL);
+  }
+
+  @Post('battle/accept')
+  @UseGuards(JwtTwoFactorGuard)
+  async acceptBattle(
+    @Request() req,
+    @Body('myData') myData: User,
+    @Body('awayUser') awayUser: User,
+    @Body('gameRoomURL') gameRoomURL: string,
+  ): Promise<boolean> {
+    return await this.gameGateway.acceptBattle(myData, awayUser, gameRoomURL);
   }
 }

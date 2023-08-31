@@ -16,12 +16,35 @@ import { UserType } from "@src/types";
 export const offerBattle = async (
   userID: string,
   awayUser: UserType,
+  gameRoomURL: string,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
     {
       id: userID,
       awayUser: awayUser,
+      gameRoomURL: gameRoomURL,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};
+
+export const acceptBattle = async (
+  myData: UserType,
+  awayUser: UserType,
+  gameRoomURL: string,
+): Promise<AxiosResponse> => {
+  const response = await axios.post(
+    `${base_url}/game/battle/accept`,
+    {
+      myData: myData,
+      awayUser: awayUser,
+      gameRoomURL: gameRoomURL,
     },
     {
       headers: {

@@ -79,7 +79,11 @@ export class GameGateway {
   @WebSocketServer()
   server: Server;
 
-  async offerGame(user_id: string, awayUser: User): Promise<boolean> {
+  async offerGame(
+    user_id: string,
+    awayUser: User,
+    gameRoomURL: string,
+  ): Promise<boolean> {
     const user = await this.userService.getUserById(user_id);
     if (!user) {
       throw new Error('User not found');
@@ -87,10 +91,26 @@ export class GameGateway {
       const content = {
         user_id: user_id,
         awayUser: awayUser,
+        gameRoomURL: gameRoomURL,
       };
       this.server.emit('offerGame', content);
       return true;
     }
+  }
+
+  async acceptBattle(
+    myData: User,
+    awayUser: User,
+    gameRoomURL: string,
+  ): Promise<boolean> {
+    // 이거 노린거 맞음
+    const content = {
+      myData: awayUser,
+      awayUser: myData,
+      gameRoomURL: gameRoomURL,
+    };
+    this.server.emit('acceptBattle', content);
+    return true;
   }
 
   async handleConnection(@ConnectedSocket() client) {

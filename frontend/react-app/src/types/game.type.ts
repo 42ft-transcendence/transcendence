@@ -4,6 +4,7 @@ import { UserType } from "./user.type";
 export interface OfferGameType {
   user_id: string;
   awayUser: UserType;
+  gameRoomURL: string;
 }
 
 export interface MatchHistoryType {
@@ -22,6 +23,7 @@ export interface MatchHistoryType {
 export interface battleActionData {
   battleActionModal: boolean;
   awayUser: UserType;
+  gameRoomURL: string;
 }
 
 export type gameTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE";
@@ -39,4 +41,9 @@ export interface gameType {
 
 export interface JoinedgameType extends gameType {
   hasNewMessages: boolean;
+}
+
+export interface acceptUserType {
+  // showProfile: boolean;
+  user: UserType;
 }

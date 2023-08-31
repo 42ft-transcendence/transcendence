@@ -26,7 +26,6 @@ const GameCreateModal = () => {
   );
 
   const [user] = useRecoilState(userDataState);
-  // const [roomTitle, setRoomTitle] = useState("");
   const [roomTitle, setRoomTitle] = useRecoilState(gameRoomName);
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<gameRoomType>("PUBLIC");

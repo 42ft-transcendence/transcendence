@@ -27,6 +27,9 @@ import UnbanChatIcon from "@src/assets/icons/unbanChat.svg";
 import KickIcon from "@src/assets/icons/kick.svg";
 import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
+import sha256 from "crypto-js/sha256";
+import { gameRoomIn } from "@src/recoil/atoms/game";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -52,14 +55,28 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
   );
 };
 
+// const gameRoomType = {
+//   PUBLIC: "공개",
+//   PROTECTED: "비밀",
+//   PRIVATE: "비공개",
+// };
+
+const hashTitle = (title: string): string => {
+  const hash = sha256(title);
+  return hash.toString(); // 해시 값을 문자열로 반환
+};
+
 export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [myData] = useRecoilState(userDataState);
   // 상대 프로필 유저
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [gameRoomInState, setGameRoomInState] = useRecoilState(gameRoomIn);
+  const [showProfile] = useRecoilState(showProfileState);
 
   // 친구 상태인지 확인
+
   const checkFriend = async (): Promise<void> => {
     try {
       const response = await getFriendList();
@@ -125,8 +142,12 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
 
   const handleBattleOffer = async (): Promise<void> => {
     try {
-      await offerBattle(user.user.id, myData).then((response) => {
+      const currentTime: Date = new Date();
+      const roomURL = currentTime + myData.id;
+      const hashedTitle = hashTitle(roomURL);
+      await offerBattle(user.user.id, myData, hashedTitle).then((response) => {
         console.log(response);
+        console.log("대전 신청 여기 임");
       });
     } catch (error) {
       console.log(error);
@@ -198,12 +219,16 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       src: UnsetAdminIcon,
     },
   ];
-
   // 초기 상태 설정
   let filteredButtons = profileButtonData.filter((button) =>
     profileRoleButtonMapping[role].includes(button.label),
   );
-
+  useEffect(() => {
+    if (gameRoomInState === true) {
+      console.log("대전 신청 여기 임");
+      handleBattleOffer();
+    }
+  }, [gameRoomInState]);
   useEffect(() => {
     const fetchData = async () => {
       try {
