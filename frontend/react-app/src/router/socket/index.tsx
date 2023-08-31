@@ -5,13 +5,13 @@ import { gameSocket, gameSocketConnect } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { useRecoilState } from "recoil";
+import { allUserListState } from "@src/recoil/atoms/common";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import {
   channelState,
   joinedChannelListState,
   messageListState,
 } from "@src/recoil/atoms/channel";
-import { allUserListState } from "@src/recoil/atoms/common";
 import {
   dmListState,
   dmOtherState,
@@ -22,9 +22,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
   const [user] = useRecoilState(userDataState);
   const [, setBattleActionModal] = useRecoilState(battleActionModalState);
-  const [, setAllUserList] = useRecoilState(allUserListState);
-
-  // const setAllUserList = useSetRecoilState(allUserListState);
+  const setAllUserList = useSetRecoilState(allUserListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const setMessageList = useSetRecoilState(messageListState);
   const channel = useRecoilValue(channelState);
@@ -39,7 +37,6 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     // Init chat socket events
     chatSocket.off("refresh_list");
     chatSocket.on("refresh_list", (userList: UserType[]) => {
-      // console.log("refresh_list", userList);
       setAllUserList(userList);
     });
 

@@ -77,10 +77,15 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
     },
     {
       text1: "더미 전적 생성",
-      text2: "500",
+      text2: "5000",
       onClick: () => {
         console.log("더미 전적 생성");
-        setMatchHistoryList(createDummyHistory(allUserList, 500));
+        console.log(
+          "createDummyHistory",
+          createDummyHistory(allUserList, 5000),
+        );
+        const dummyHistory = createDummyHistory(allUserList, 5000);
+        setMatchHistoryList(dummyHistory);
       },
       theme: "LIGHT",
     },
