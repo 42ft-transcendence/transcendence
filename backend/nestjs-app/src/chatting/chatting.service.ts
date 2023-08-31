@@ -44,6 +44,8 @@ export class ChattingService {
       const allChannels = await this.channelRepository.getAllOpenedChannels();
       server.emit('refresh_all_channels', allChannels);
     }
-    server.to(channelId).emit('refresh_channel', channel);
+    const participants =
+      await this.participantsService.getAllParticipants(channel);
+    server.to(channelId).emit('refresh_channel', { channel, participants });
   }
 }
