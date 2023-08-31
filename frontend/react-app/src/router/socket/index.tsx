@@ -17,6 +17,7 @@ import {
 } from "@src/recoil/atoms/directMessage";
 import { useEffect } from "react";
 import { RefreshChannelType } from "@src/types/channel.type";
+import { useNavigate } from "react-router-dom";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
@@ -30,15 +31,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const dmOther = useRecoilValue(dmOtherState);
   const setAllChannelList = useSetRecoilState(allChannelListState);
   const setParticipantList = useSetRecoilState(participantListState);
-
-  const participantList = useRecoilValue(participantListState);
-  useEffect(() => {
-    console.log("participantList", participantList);
-  }, [participantList]);
-  const messageList = useRecoilValue(messageListState);
-  useEffect(() => {
-    console.log("messageList", messageList);
-  }, [messageList]);
+  const navigate = useNavigate();
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -99,6 +92,17 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     chatSocket.off("refresh_all_channels");
     chatSocket.on("refresh_all_channels", (channelList: ChannelType[]) => {
       setAllChannelList(channelList);
+    });
+
+    chatSocket.off("kicked");
+    chatSocket.on("kicked", (channelId: string) => {
+      setJoinedChannelList((prev) =>
+        prev.filter((joinedChannel) => joinedChannel.id !== channelId),
+      );
+      if (channel?.id === channelId) {
+        navigate("/channel-list");
+        alert("채널에서 추방되었습니다.");
+      }
     });
 
     chatSocketConnect(jwt);

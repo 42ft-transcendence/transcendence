@@ -245,6 +245,7 @@ export class ChattingGateway
       if (socket) {
         socket.leave(content.channelId);
       }
+      this.server.to(content.userId).emit('kicked', content.channelId);
       await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
