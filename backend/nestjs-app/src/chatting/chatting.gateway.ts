@@ -393,7 +393,7 @@ export class ChattingGateway
 
   async refreshUsersList(): Promise<void> {
     const users = await this.userService.getAllUserList();
-    this.server.emit('refresh_list', users);
+    this.server.emit('refresh_users', users);
   }
 
   private async getUserId(client: Socket) {

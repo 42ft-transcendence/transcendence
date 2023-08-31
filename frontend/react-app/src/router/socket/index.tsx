@@ -29,8 +29,8 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     chatSocket.disconnect();
   } else {
     // Init chat socket events
-    chatSocket.off("refresh_list");
-    chatSocket.on("refresh_list", (userList: UserType[]) => {
+    chatSocket.off("refresh_users");
+    chatSocket.on("refresh_users", (userList: UserType[]) => {
       setAllUserList(userList);
     });
 
