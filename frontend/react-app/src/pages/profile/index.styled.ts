@@ -396,3 +396,16 @@ export const MatchCardScoreChangeContainer = styled.div<{
       ? "red"
       : props.theme.colors.heavyPurple};
 `;
+
+export const MoreInfoButton = styled.button`
+  width: 98%;
+  margin-top: 10px;
+  padding: 20px 0; // 상하 패딩은 30px, 좌우 패딩은 0으로 설정했습니다.
+  border-radius: 7px;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  border: none;
+  color: ${(props) => props.theme.colors.freezePurple};
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 100px;
+`;

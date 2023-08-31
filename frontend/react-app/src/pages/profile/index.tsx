@@ -24,24 +24,46 @@ const Profile = () => {
   const [filteredHistoryList, setFilteredHistoryList] =
     useState<MatchHistoryType[]>(sortMatchHistory);
   const [search, setSearch] = useState<string>("");
+  const [moreInfo, setMoreInfo] = useState<number>(20);
 
   useEffect(() => {
     if (sortState === "랭크") {
       setFilteredHistoryList(
-        sortMatchHistory.filter((history) => history.gameMode === "rank"),
+        sortMatchHistory
+          .filter((history) => history.gameMode === "rank")
+          .filter(
+            (history) =>
+              history.player1.id === userId || history.player2.id === userId,
+          ),
       );
     } else if (sortState === "일반") {
       setFilteredHistoryList(
-        sortMatchHistory.filter((history) => history.gameMode === "normal"),
+        sortMatchHistory
+          .filter((history) => history.gameMode === "normal")
+          .filter(
+            (history) =>
+              history.player1.id === userId || history.player2.id === userId,
+          ),
       );
     } else {
-      setFilteredHistoryList(sortMatchHistory);
+      setFilteredHistoryList(
+        sortMatchHistory.filter(
+          (history) =>
+            history.player1.id === userId || history.player2.id === userId,
+        ),
+      );
     }
+    setMoreInfo(20);
   }, [sortState]);
 
   useEffect(() => {
     if (search === "") {
-      setFilteredHistoryList(sortMatchHistory);
+      setFilteredHistoryList(
+        sortMatchHistory.filter(
+          (history) =>
+            history.player1.id === userId || history.player2.id === userId,
+        ),
+      );
     } else {
       setFilteredHistoryList((prev) =>
         [...prev].filter(
@@ -68,21 +90,21 @@ const Profile = () => {
       <DS.ContentArea>
         <MatchHeader
           userId={userId}
-          historyList={filteredHistoryList.filter(
-            (history) =>
-              history.player1.id === userId || history.player2.id === userId,
-          )}
+          historyList={filteredHistoryList}
           sortState={sortState}
           setSortState={setSortState}
           search={search}
           setSearch={setSearch}
         />
         <S.MatchContainer>
-          {filteredHistoryList.map((match) => {
-            if (match.player1.id === userId || match.player2.id === userId) {
-              return <MatchCard history={match} key={match.id}></MatchCard>;
-            }
-          })}
+          {filteredHistoryList.slice(0, moreInfo).map((match) => (
+            <MatchCard history={match} key={match.id}></MatchCard>
+          ))}
+          {moreInfo < filteredHistoryList.length && (
+            <S.MoreInfoButton onClick={() => setMoreInfo((prev) => prev + 20)}>
+              더보기
+            </S.MoreInfoButton>
+          )}
         </S.MatchContainer>
       </DS.ContentArea>
     </>
