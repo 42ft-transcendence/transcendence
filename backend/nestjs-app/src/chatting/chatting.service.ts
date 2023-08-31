@@ -42,8 +42,8 @@ export class ChattingService {
     const channel = await this.channelRepository.getChannelById(channelId);
     if (channel.type !== 'private') {
       const allChannels = await this.channelRepository.getAllOpenedChannels();
-      server.emit('update_all_channels', allChannels);
+      server.emit('refresh_all_channels', allChannels);
     }
-    server.to(channelId).emit('update_channel', channel);
+    server.to(channelId).emit('refresh_channel', channel);
   }
 }
