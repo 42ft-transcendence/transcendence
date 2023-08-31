@@ -185,3 +185,17 @@ export const checkNickname = async (
   );
   return response;
 };
+
+/**
+ * 더미 유저 생성 요청
+ * @url /users/createDummy
+ * @method POST
+ * @param count 생성할 더미 유저 수
+ * @returns 메세지 반환
+ */
+export const createDummy = async (
+  count: number,
+): Promise<AxiosResponse<string, string>> => {
+  const response = await axios.post(`${base_url}/users/createDummy`, { count });
+  return response;
+};

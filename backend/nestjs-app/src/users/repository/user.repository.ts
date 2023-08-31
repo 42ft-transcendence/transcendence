@@ -108,4 +108,9 @@ export class UserRepository extends Repository<User> {
     await this.update(user.id, user);
     return user;
   }
+
+  // 더미 유저 생성
+  async createDummyUser(userEntity: User): Promise<void> {
+    await this.save(userEntity);
+  }
 }

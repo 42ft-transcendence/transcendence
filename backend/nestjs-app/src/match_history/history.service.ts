@@ -28,4 +28,9 @@ export class MatchHistorysService {
       await this.matchHistoryRepository.getHistoryJoinUserByNickname(nickname);
     return user;
   }
+
+  async getHistoryJoinUserById(id: string) {
+    const user = await this.matchHistoryRepository.getHistoryJoinUserById(id);
+    return user;
+  }
 }

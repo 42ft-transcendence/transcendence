@@ -1,9 +1,8 @@
 import { useRecoilState } from "recoil";
 import { useState, useEffect } from "react";
-import { battleActionModalState } from "../../../recoil/atoms/modal";
-import * as S from "./index.styled.ts";
-import { IconButton } from "../../Buttons";
-import { userDataState } from "@src/recoil/atoms/common/index.ts";
+import { battleActionModalState } from "@src/recoil/atoms/modal";
+import * as S from "./index.styled";
+import { IconButton } from "@src/components/buttons";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
