@@ -6,27 +6,6 @@ import loseIcon from "@assets/icons/lose.svg";
 import winIcon from "@assets/icons/win.svg";
 import { UserType } from "@src/types";
 
-// type gameMatchComponentProps = {
-//   avatarPath: string;
-//   status: number;
-//   nickname: string;
-//   rating: number;
-// };
-
-// export const UserCardComponent: React.
-// const GameMatchProfilebox: React.FC<gameMatchComponentProps> = ({
-//   avatarPath,
-//   // status,
-//   // nickname,
-//   // rating,
-// }) => {
-//   return (
-//     <S.GameContainer>
-//       <S.UserCardImg src={avatarPath} />;
-//     </S.GameContainer>
-//   );
-// };
-
 interface GameMatchProfileProps {
   user: UserType;
 }
@@ -56,12 +35,3 @@ export const GameMatchProfile = ({ user }: GameMatchProfileProps) => {
     </S.GameContainer>
   );
 };
-
-// export const GameMatchWaiting = () => {
-//   return (
-//     <S.GameContainer>
-//       <GameMatchProfile />
-//       <GameMatchProfile />
-//     </S.GameContainer>
-//   );
-// };
