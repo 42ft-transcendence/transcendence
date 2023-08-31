@@ -319,7 +319,7 @@ export class ChattingGateway
   ) {
     try {
       const ownerId = await this.getUserId(client);
-      await this.participantsService.changeMute(
+      await this.participantsService.changeAdmin(
         content.channelId,
         ownerId,
         content.userId,
