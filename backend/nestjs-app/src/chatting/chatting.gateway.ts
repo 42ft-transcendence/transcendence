@@ -82,18 +82,31 @@ export class ChattingGateway
     content: { message: string; channelId: string },
   ): Promise<any> {
     try {
-      const userid = await this.getUserId(client);
-      const user = await this.userService.getUserById(userid);
-      const message = await this.messageService.saveMessage(
-        userid,
-        content.message,
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      client.to(content.channelId).emit('get_message', {
+      const participant = await this.participantsService.getParticipant(
         user,
-        message,
-      });
-      return { user, message };
+        channel,
+      );
+      if (!participant) {
+        throw new Error('채널에 참가하지 않았습니다.');
+      } else if (participant.muted) {
+        throw new Error('채팅 금지된 사용자입니다.');
+      } else {
+        const message = await this.messageService.saveMessage(
+          userId,
+          content.message,
+          content.channelId,
+        );
+        client.to(content.channelId).emit('get_message', {
+          user,
+          message,
+        });
+        return { user, message };
+      }
     } catch (e) {
       console.log(e);
     }
