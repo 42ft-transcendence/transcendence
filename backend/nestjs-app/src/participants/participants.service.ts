@@ -47,11 +47,11 @@ export class ParticipantsService {
     return false;
   }
 
-  async changeAdmin(user: User, channel: ChatChannel) {
-    let getCp = await this.participantRepository.getParticipant(user, channel);
-    getCp = await this.participantRepository.changeAdmin(getCp);
-    return getCp;
-  }
+  // async changeAdmin(user: User, channel: ChatChannel) {
+  //   let getCp = await this.participantRepository.getParticipant(user, channel);
+  //   getCp = await this.participantRepository.changeAdmin(getCp);
+  //   return getCp;
+  // }
 
   async changeMuted(user: User, channel: ChatChannel, value: boolean) {
     let getCp = await this.participantRepository.getParticipant(user, channel);
@@ -138,7 +138,40 @@ export class ParticipantsService {
       }
     } else {
       console.log('음소거 변경', target.muted, '->', to);
-      await this.participantRepository.changeMuted(target, true);
+      await this.participantRepository.changeMuted(target, to);
+    }
+  }
+
+  async changeAdmin(
+    channelId: string,
+    ownerId: string,
+    targetId: string,
+    to: boolean,
+  ): Promise<void> {
+    const channel = await this.channelRepository.getChannelById(channelId);
+    const participants = await this.getAllParticipants(channel);
+    const owner = participants.find(
+      (participant) => participant.user.id === ownerId,
+    );
+    const target = participants.find(
+      (participant) => participant.user.id === targetId,
+    );
+
+    if (!owner) {
+      throw new Error('채널에 참가하지 않았습니다.');
+    } else if (!target) {
+      throw new Error('대상이 채널에 참가하지 않았습니다.');
+    } else if (!owner.owner) {
+      throw new Error('권한이 없습니다.');
+    } else if (to === target.admin) {
+      if (to) {
+        throw new Error('이미 관리자입니다.');
+      } else {
+        throw new Error('관리자가 아닙니다.');
+      }
+    } else {
+      console.log('관리자 권한 변경', target.admin, '->', to);
+      await this.participantRepository.changeAdmin(target);
     }
   }
 }

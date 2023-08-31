@@ -343,6 +343,41 @@ export class ChattingGateway
     }
   }
 
+  @SubscribeMessage('appoint_admin')
+  async appointAdmin(
+    client: Socket,
+    content: { channelId: string; userId: string; to: boolean },
+  ) {
+    try {
+      const ownerId = await this.getUserId(client);
+      await this.participantsService.changeMute(
+        content.channelId,
+        ownerId,
+        content.userId,
+        content.to,
+      );
+      const owner = await this.userService.getUserById(ownerId);
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        ownerId,
+        `채널 소유자 ${owner.nickname}님에 의해 ${target.nickname}님이 관리자${
+          content.to ? '로 임명' : '에서 해임'
+        } 되었습니다.`,
+        content.channelId,
+      );
+      this.server.to(content.channelId).emit('get_message', {
+        user: owner,
+        message: message,
+      });
+      await this.chattingService.broadcastUpdatedChannelInfo(
+        this.server,
+        content.channelId,
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   @SubscribeMessage('enter_channel')
   async enterChannel(client: Socket, content: { channelId: string }) {
     try {
