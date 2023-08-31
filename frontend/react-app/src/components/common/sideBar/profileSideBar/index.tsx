@@ -8,12 +8,21 @@ import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
-import { logout, resignUser } from "@src/api";
+import {
+  addBlock,
+  addFriend,
+  deleteBlock,
+  deleteFriend,
+  getBlockList,
+  getFriendList,
+  logout,
+  resignUser,
+} from "@src/api";
 import {
   ProfileImage,
   ProfileImageContainer,
 } from "@src/pages/signUp/index.styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChangeProfileImageModal } from "./container";
 import { UserType } from "@src/types";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
@@ -25,8 +34,11 @@ interface ProfileSideBarProps {
 const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
   const [userData, setUserData] = useRecoilState(userDataState);
   const [changeImage, setChangeImage] = useState<boolean>(false);
+  const [finalButtons, setFinalButtons] = useState<IconButtonProps[]>([]);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
+  const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const currentRoute = window.location.pathname;
-  const userId = currentRoute.split("/").pop();
+  const userId = currentRoute.split("/").pop() as string;
   const navigate = useNavigate();
 
   const myProfileButtons: IconButtonProps[] = [
@@ -74,68 +86,89 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       },
       theme: "LIGHT",
     },
-    {
-      title: "차단하기",
-      iconSrc: "",
-      onClick: () => {
-        console.log("차단하기");
-      },
-      theme: "LIGHT",
-    },
   ];
 
-  // useEffect(() => {
-  //   const temp = async () => {
-  //     const friendList = await getFriendList();
-  //     console.log("friendList", friendList);
-  //   };
-  //   temp();
-  // }, []);
+  useEffect(() => {
+    const isRelationship = async () => {
+      if (userData.id === userId) {
+        setFinalButtons(myProfileButtons);
+      } else {
+        setFinalButtons(othersProfileButtons);
+        const { data: friendList } = await getFriendList();
+        const { data: blockList } = await getBlockList();
 
-  let finalButtons: IconButtonProps[];
-  if (userData.id === userId) {
-    finalButtons = myProfileButtons;
-  } else {
-    finalButtons = othersProfileButtons;
-    // console.log(allUserList);
-    // const currentProfile = allUserList.find((user) => user.id === userId);
-    // if (!currentProfile) return null;
-    // setCurrentProfile(currentProfile);
-    // const isFriend = await ; // 친구인지 여부를 판별하는 로직 필요
-    // const isBlocked = false; // 차단했는지 여부를 판별하는 로직 필요
-
-    // if (isFriend) {
-    //   othersProfileButtons.push({
-    //     title: "친구 삭제",
-    //     iconSrc: "",
-    //     onClick: () => {
-    //       console.log("친구 삭제");
-    //     },
-    //     theme: "LIGHT",
-    //   });
-    // } else {
-    //   othersProfileButtons.push({
-    //     title: "친구신청",
-    //     iconSrc: "",
-    //     onClick: () => {
-    //       console.log("친구신청");
-    //     },
-    //     theme: "LIGHT",
-    //   });
-    // }
-
-    // if (isBlocked) {
-    //   const blockButtonIndex = othersProfileButtons.findIndex(
-    //     (button) => button.title === "차단하기",
-    //   );
-    //   if (blockButtonIndex !== -1) {
-    //     othersProfileButtons[blockButtonIndex].title = "차단 해제";
-    //     othersProfileButtons[blockButtonIndex].onClick = () => {
-    //       console.log("차단 해제");
-    //     };
-    //   }
-    // }
-  }
+        setIsFriend(
+          friendList.find((friend: UserType) => friend.id === userId) !==
+            undefined,
+        );
+        setIsBlocked(
+          blockList.find((blocked: UserType) => blocked.id === userId) !==
+            undefined,
+        );
+        if (isFriend && !isBlocked) {
+          setFinalButtons((prevButtons) => [
+            ...prevButtons,
+            {
+              title: "친구 삭제",
+              iconSrc: "",
+              onClick: async () => {
+                await deleteFriend(userId);
+                setIsFriend(false);
+              },
+              theme: "LIGHT",
+            },
+          ]);
+        } else {
+          setFinalButtons((prevButtons) => [
+            ...prevButtons,
+            {
+              title: "친구 추가",
+              iconSrc: "",
+              onClick: async () => {
+                await addFriend(userId);
+                setIsFriend(true);
+              },
+              theme: "LIGHT",
+            },
+          ]);
+        }
+        if (isBlocked) {
+          setFinalButtons((prevButtons) => [
+            ...prevButtons,
+            {
+              title: "차단 해제",
+              iconSrc: "",
+              onClick: async () => {
+                await deleteBlock(userId);
+                setIsBlocked(false);
+              },
+              theme: "LIGHT",
+            },
+          ]);
+          setFinalButtons((prevButtons) =>
+            prevButtons.filter((button) => button.title !== "친구 삭제"),
+          );
+          setFinalButtons((prevButtons) =>
+            prevButtons.filter((button) => button.title !== "친구 추가"),
+          );
+        } else {
+          setFinalButtons((prevButtons) => [
+            ...prevButtons,
+            {
+              title: "차단 하기",
+              iconSrc: "",
+              onClick: async () => {
+                await addBlock(userId);
+                setIsBlocked(true);
+              },
+              theme: "LIGHT",
+            },
+          ]);
+        }
+      }
+    };
+    isRelationship();
+  }, [isFriend, isBlocked]);
 
   return (
     <DS.Container style={{ gap: "20px" }}>
