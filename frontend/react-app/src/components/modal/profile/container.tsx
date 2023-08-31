@@ -1,6 +1,6 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import {
   addBlock,
@@ -16,6 +16,8 @@ import { RoleType, UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
+import { channelState, participantListState } from "@src/recoil/atoms/channel";
+import channelButtons from "./channelButtons";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -138,16 +140,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       src: "src/assets/iconsdeleteFriend.svg",
     },
     {
-      label: "차단 하기",
-      action: handleAddBlock,
-      src: "src/assets/icons/block.svg",
-    },
-    {
-      label: "차단 해제",
-      action: handleDeleteBlock,
-      src: "src/assets/icons/unblock.svg",
-    },
-    {
       label: "DM 보내기",
       action: () => console.log("handleActionSendMessage"),
       src: "src/assets/icons/sendMessage.svg",
@@ -159,21 +151,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
         ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
       },
       src: "src/assets/icons/showRecord.svg",
-    },
-    {
-      label: "채팅 금지",
-      action: () => console.log("handleActionBanChat"),
-      src: "src/assets/icons/banChat.svg",
-    },
-    {
-      label: "채팅 금지 해제",
-      action: () => console.log("handleActionUnbanChat"),
-      src: "src/assets/icons/unbanChat.svg",
-    },
-    {
-      label: "강제 퇴장",
-      action: () => console.log("handleActionKick"),
-      src: "src/assets/icons/kick.svg",
     },
     {
       label: "관리자 설정",
@@ -229,6 +206,36 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     filteredButtons = filteredButtons.filter(
       (button) => button.label !== "차단 해제",
     );
+  }
+
+  // Set Channel Buttons
+  const channel = useRecoilValue(channelState);
+  const participants = useRecoilValue(participantListState);
+  const me = participants.find(
+    (participant) => participant.user?.id === myData.id,
+  );
+  const other = participants.find(
+    (participant) => participant.user?.id === user.user.id,
+  );
+
+  if (channel != null && me && other) {
+    const channelButtonSet = channelButtons(channel.id, user.user.id);
+
+    if (me.owner) {
+      if (other.admin) {
+        filteredButtons.push(channelButtonSet.UnsetAdmin);
+      } else {
+        filteredButtons.push(channelButtonSet.SetAdmin);
+      }
+    }
+    if ((me.owner || me.admin) && !other.owner) {
+      if (other.muted) {
+        filteredButtons.push(channelButtonSet.UnmuteUser);
+      } else {
+        filteredButtons.push(channelButtonSet.MuteUser);
+      }
+      filteredButtons.push(channelButtonSet.KickUser);
+    }
   }
 
   return <ProfileButtons buttons={filteredButtons} />;
