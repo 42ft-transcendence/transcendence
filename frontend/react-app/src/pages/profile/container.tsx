@@ -332,7 +332,7 @@ export const MatchHeader = ({
           <S.HeaderAvgTotalScore>
             {totalScore} / {totalLoseScore}
           </S.HeaderAvgTotalScore>
-          <S.HeaderAvgScore>
+          <S.HeaderAvgScore $score={totalScore / totalLoseScore}>
             {(totalScore / totalLoseScore).toFixed(2)}:1
           </S.HeaderAvgScore>
         </S.HeaderAvgContainer>

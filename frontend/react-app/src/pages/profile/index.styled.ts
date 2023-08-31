@@ -140,7 +140,7 @@ export const HeaderAvgTotalScore = styled.div`
   color: ${(props) => props.theme.colors.floating};
 `;
 
-export const HeaderAvgScore = styled.div`
+export const HeaderAvgScore = styled.div<{ $score: number }>`
   width: 100%;
   height: 30px;
   display: flex;
@@ -148,7 +148,10 @@ export const HeaderAvgScore = styled.div`
   font-weight: bold;
   font-family: inter;
   align-items: center;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${(props) =>
+    props.$score > 1
+      ? props.theme.colors.deepWin
+      : props.theme.colors.deepLose};
 `;
 
 export const HeaderMapContainer = styled.div`
