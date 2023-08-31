@@ -29,7 +29,7 @@ export class MatchHistorysService {
     return user;
   }
 
-  async getHistoryJoinUserById(id: number) {
+  async getHistoryJoinUserById(id: string) {
     const user = await this.matchHistoryRepository.getHistoryJoinUserById(id);
     return user;
   }
