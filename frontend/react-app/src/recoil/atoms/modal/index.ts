@@ -1,4 +1,4 @@
-import { ChannelType } from "@type";
+import { ChannelType, UserType } from "@type";
 import { battleActionData } from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
@@ -28,7 +28,7 @@ export const battleActionModalState = atom<battleActionData>({
   key: "battleActionModalState",
   default: {
     battleActionModal: false,
-    nickname: "",
+    awayUser: {} as UserType,
   },
   effects_UNSTABLE: [persistAtom],
 });
