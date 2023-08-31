@@ -2,7 +2,7 @@ import { UserType } from "./user.type";
 
 export interface OfferGameType {
   user_id: string;
-  nickname: string;
+  awayUser: UserType;
 }
 
 export interface MatchHistoryType {
@@ -20,5 +20,5 @@ export interface MatchHistoryType {
 
 export interface battleActionData {
   battleActionModal: boolean;
-  nickname: string;
+  awayUser: UserType;
 }
