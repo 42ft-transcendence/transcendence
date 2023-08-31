@@ -18,6 +18,8 @@ import { ParticipantsService } from 'src/participants/participants.service';
 import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessageRepository } from 'src/dm/repository/directmessage.repository';
 import { ChattingService } from './chatting.service';
+import { RelationshipService } from 'src/relationship/relationship.service';
+import { RelationshipRepository } from 'src/relationship/repository/relationship.repository';
 
 @Global()
 @Module({
@@ -29,6 +31,7 @@ import { ChattingService } from './chatting.service';
       ChatChannelRepository,
       ParticipantsRepository,
       DirectMessageRepository,
+      RelationshipRepository,
     ]),
     AuthModule,
     HttpModule,
@@ -41,6 +44,7 @@ import { ChattingService } from './chatting.service';
     ParticipantsService,
     DirectMessageService,
     ChattingService,
+    RelationshipService,
   ],
   exports: [ChattingGateway],
   controllers: [ChattingController],

@@ -12,10 +12,15 @@ export interface MessageType {
   content: string;
   userId: string;
   channelId: string;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export interface ProfileModalType {
   showProfile: boolean;
   user: UserType;
+}
+
+export interface SendMessageReturnType {
+  user: UserType;
+  message: MessageType;
 }

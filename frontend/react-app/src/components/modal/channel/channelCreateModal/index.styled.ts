@@ -83,7 +83,7 @@ export const OptionContent = styled.div`
   flex-grow: 1;
 `;
 
-export const TypeButton = styled.button<{ type: ChannelTypeType }>`
+export const TypeButton = styled.button<{ $type: ChannelTypeType }>`
   height: 24px;
   background: none;
   border: none;
@@ -100,7 +100,7 @@ export const TypeButton = styled.button<{ type: ChannelTypeType }>`
     display: inline-block;
     width: 30px;
     height: 24px;
-    background-image: url(${({ type }) => channelTypeIcon[type]});
+    background-image: url(${({ $type }) => channelTypeIcon[$type]});
     background-size: 24px;
     background-repeat: no-repeat;
   }
