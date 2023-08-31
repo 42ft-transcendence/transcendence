@@ -7,14 +7,27 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gameRoomName } from "@src/recoil/atoms/game";
-// import { createGameRoomModalState } from "@src/recoil/atoms/modal";
+import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
   const [roomTitle] = useRecoilState(gameRoomName);
-  // const [, setCreateGameRoom] = useRecoilState(createGameRoomModalState);
+  const [createGameRoom, setCreateGameRoom] = useRecoilState(
+    createGameRoomModalState,
+  );
   const [, setLeaveGameRoom] = useState(false);
   const navigate = useNavigate();
+  const roomSettingButtons: IconButtonProps[] = [
+    {
+      title: "방 설정하기",
+      iconSrc: "",
+      onClick: () => {
+        setCreateGameRoom(true);
+        console.log("방 설정하기 :", createGameRoom);
+      },
+      theme: "LIGHT",
+    },
+  ];
   const iconButtons: IconButtonProps[] = [
     {
       title: "준비 하기",
@@ -47,6 +60,7 @@ const GameSideBar = () => {
     <>
       <DS.Container>
         <DS.roomNameBox>{roomTitle}</DS.roomNameBox>
+        <ButtonList buttons={roomSettingButtons} />
         <DS.boxWrapper>
           <DS.TitleBox>내 전적</DS.TitleBox>
           <RateDoughnutChart userData={userData} />
