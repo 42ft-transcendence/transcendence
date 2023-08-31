@@ -1,7 +1,6 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
 import { useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
 import {
   addBlock,
   addFriend,
@@ -59,7 +58,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   // 친구 상태인지 확인
   const checkFriend = async (): Promise<void> => {
@@ -169,7 +167,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "전적 보기",
       action: () => {
-        navigate(`/profile/${user.user.id}`);
+        window.location.href = `/profile/${user.user.id}`;
         ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
       },
       src: ShowRecordIcon,

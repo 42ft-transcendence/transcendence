@@ -102,12 +102,11 @@ export const LowerTabList = () => {
   const [userData] = useRecoilState(userDataState);
   const [isUserHovered, setUserHovered] = useState(false);
   const [isGearHovered, setGearHovered] = useState(false);
-  const navigate = useNavigate();
   const getUserIcon = () => (isUserHovered ? UserHovered : User);
   const getGearIcon = () => (isGearHovered ? GearHovered : Gear);
 
   const handleProfileClick = () => {
-    navigate(`/profile/${userData.id}`);
+    window.location.href = `/profile/${userData.id}`;
     console.log("profile clicked");
   };
 
