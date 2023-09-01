@@ -187,12 +187,16 @@ export class ChattingGateway
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      if (channel) {
+      if (channel.owner.id !== userId) {
         client.leave(content.channelId);
         await this.participantsService.deleteParticipant(user, channel);
-      }
-      if (!channel.participants) {
+      } else {
+        await this.participantsService.deleteAllParticipant(channel);
         await this.channelRepository.deleteChatChannel(channel);
+        this.server
+          .to(content.channelId)
+          .emit('channel_deleted', content.channelId);
+        this.server.socketsLeave(content.channelId);
       }
       await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
@@ -465,15 +469,22 @@ export class ChattingGateway
   }
 
   private async broadcastUpdatedChannelInfo(channelId: string): Promise<void> {
-    const channel = await this.channelRepository.getChannelById(channelId);
-    if (channel.type !== 'private') {
+    let channel: undefined | ChatChannel = undefined;
+    try {
+      channel = await this.channelRepository.getChannelById(channelId);
+    } catch (e) {
+      console.log(e);
+    }
+    if (channel) {
+      const participants =
+        await this.participantsService.getAllParticipants(channel);
+      this.server
+        .to(channelId)
+        .emit('refresh_channel', { channel, participants });
+    }
+    if (channel && channel.type === 'PRIVATE') {
       const allChannels = await this.channelRepository.getAllOpenedChannels();
       this.server.emit('refresh_all_channels', allChannels);
     }
-    const participants =
-      await this.participantsService.getAllParticipants(channel);
-    this.server
-      .to(channelId)
-      .emit('refresh_channel', { channel, participants });
   }
 }
