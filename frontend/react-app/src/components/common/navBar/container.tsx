@@ -1,6 +1,6 @@
 import Modal from "react-modal";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { settingOptionModalState } from "@src/recoil/atoms/modal";
 import { logout, resignUser } from "@src/api";
@@ -24,6 +24,8 @@ import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
 import { useEffect, useState } from "react";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { joinedDmOtherListState } from "@src/recoil/atoms/directMessage";
+import { joinedChannelListState } from "@src/recoil/atoms/channel";
 
 export type TabType = {
   link: string;
@@ -70,6 +72,17 @@ export const UpperTabList = () => {
   const currentPath = window.location.pathname.split("/")[1];
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
 
+  const joinedChannelList = useRecoilValue(joinedChannelListState);
+  const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
+  const [noti, setNoti] = useState(false);
+
+  useEffect(() => {
+    setNoti(
+      joinedChannelList.some((channel) => channel.hasNewMessages) ||
+        joinedDmOtherList.some((dm) => dm.hasNewMessages),
+    );
+  }, [joinedChannelList, joinedDmOtherList]);
+
   const handleTabClick = (link: string) => {
     setSelectedTab(link);
   };
@@ -111,6 +124,7 @@ export const UpperTabList = () => {
           </Link>
         </li>
       ))}
+      {noti && <S.Noti />}
     </S.TabList>
   );
 };
