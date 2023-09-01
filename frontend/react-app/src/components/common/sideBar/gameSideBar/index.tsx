@@ -33,7 +33,10 @@ const GameSideBar = () => {
       title: "준비 하기",
       iconSrc: "",
       onClick: () => {
-        console.log("준비 하기");
+        setGameRoomInfo({
+          ...gameRoomInfo,
+          homeReady: true,
+        });
       },
       theme: "LIGHT",
     },
@@ -52,8 +55,8 @@ const GameSideBar = () => {
         setGameRoomInfo({
           roomURL: "",
           roomName: "",
-          roomHome: {} as UserType,
-          roomAway: {} as UserType,
+          homeUser: {} as UserType,
+          awayUser: {} as UserType,
           homeReady: false,
           awayReady: false,
         });
@@ -77,7 +80,7 @@ const GameSideBar = () => {
         <RateDoughnutChart userData={userData} />
         <br />
         <DS.TitleBox>상대 전적</DS.TitleBox>
-        <RateDoughnutChart userData={gameRoomInfo.roomAway} />
+        <RateDoughnutChart userData={gameRoomInfo.awayUser} />
         <br />
       </DS.Container>
     </>

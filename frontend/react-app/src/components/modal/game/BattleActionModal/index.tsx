@@ -72,8 +72,8 @@ const BattleActionModal = () => {
     setGameRoomInfo({
       roomURL: battleActionModal.gameRoomURL,
       roomName: "",
-      roomHome: myData,
-      roomAway: battleActionModal.awayUser,
+      homeUser: myData,
+      awayUser: battleActionModal.awayUser,
       homeReady: false,
       awayReady: false,
     });

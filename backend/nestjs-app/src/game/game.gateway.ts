@@ -100,6 +100,15 @@ export class GameGateway {
     return true;
   }
 
+  readySignal(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+    };
+    this.server.emit('readySignal', content);
+    return true;
+  }
+
   async handleConnection(@ConnectedSocket() client) {
     const user_id = await this.getUserId(client);
     const user = await this.userService.getUserById(user_id);

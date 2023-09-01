@@ -33,8 +33,8 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
   default: {
     roomURL: "",
     roomName: "",
-    roomHome: {} as UserType,
-    roomAway: {} as UserType,
+    homeUser: {} as UserType,
+    awayUser: {} as UserType,
     homeReady: false,
     awayReady: false,
   },

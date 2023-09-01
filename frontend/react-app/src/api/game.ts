@@ -55,7 +55,21 @@ export const acceptBattle = async (
   return response;
 };
 
-// export const readySignal = async (
-//   myData: UserType,
-
-// )
+export const readySignal = async (
+  gameRoomURL: string,
+  myData: UserType,
+): Promise<AxiosResponse> => {
+  const response = await axios.post(
+    `${base_url}/game/battle/ready`,
+    {
+      gameRoomURL: gameRoomURL,
+      myData: myData,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};

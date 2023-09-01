@@ -32,4 +32,14 @@ export class GameController {
   ): Promise<boolean> {
     return this.gameGateway.acceptBattle(myData, awayUser, gameRoomURL);
   }
+
+  @Post('battle/ready')
+  @UseGuards(JwtTwoFactorGuard)
+  async readySignal(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.readySignal(gameRoomURL, myData);
+  }
 }

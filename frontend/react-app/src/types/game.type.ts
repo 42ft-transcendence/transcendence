@@ -46,8 +46,8 @@ export interface JoinedgameType extends gameType {
 export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
-  roomHome: UserType;
-  roomAway: UserType;
+  homeUser: UserType;
+  awayUser: UserType;
   homeReady: boolean;
   awayReady: boolean;
 }

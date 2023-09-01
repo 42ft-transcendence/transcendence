@@ -17,7 +17,7 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { gameAcceptUser } from "@src/recoil/atoms/game";
+import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
@@ -31,6 +31,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
   const setGameUser = useSetRecoilState(gameAcceptUser);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   if (!jwt) {
     chatSocket.disconnect();
@@ -84,6 +85,19 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       if (user.id === data.myData.id) {
         setGameUser(data.awayUser);
         window.location.href = `/game/${data.gameRoomURL}`;
+      }
+    });
+
+    gameSocket.off("readySignal");
+    gameSocket.on("readySignal", (data) => {
+      if (
+        gameRoomInfo.roomURL === data.gameRoomURL &&
+        gameRoomInfo.awayUser.id === data.awayUser.id
+      ) {
+        setGameRoomInfo({
+          ...gameRoomInfo,
+          awayReady: true,
+        });
       }
     });
 

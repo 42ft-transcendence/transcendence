@@ -149,8 +149,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       setGameRoomInfo({
         roomURL: hashedTitle,
         roomName: "",
-        roomHome: myData,
-        roomAway: user.user,
+        homeUser: myData,
+        awayUser: user.user,
         homeReady: false,
         awayReady: false,
       });
