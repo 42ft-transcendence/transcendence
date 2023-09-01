@@ -5,19 +5,29 @@ import { GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserType } from "@src/types";
+import { gameAlertModalState } from "@src/recoil/atoms/modal";
+import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
-  const [user] = useRecoilState(userDataState);
-  const [gameUser] = useRecoilState(gameAcceptUser);
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
-
-  console.log("currentRoute", currentRoute);
   const SideBarComponent = routeMatch(currentRoute, "/game/");
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameAlertModal, setGameAlertModal] =
+    useRecoilState(gameAlertModalState);
 
-  console.log("user", user);
-  console.log("gameUser", gameUser);
-  console.log("gameRoomInfo", gameRoomInfo);
+  useEffect(() => {
+    if (gameRoomInfo.gameType === "QUICK" && !gameRoomInfo.awayUser.id) {
+      setGameAlertModal({
+        gameAlertModal: true,
+        gameAlertModalMessage: "상대방이 나갔습니다.",
+        shouldRedirect: true,
+        shouldInitInfo: true,
+      });
+    }
+  }, [gameRoomInfo.awayUser.id]);
 
   return (
     <>
@@ -34,7 +44,8 @@ const Game = () => {
           isReady={gameRoomInfo.awayReady}
         />
       )}
-      {/* 상대방*/}
+      {/* 모달 */}
+      {gameAlertModal.gameAlertModal && <GameAlertModal />}
     </>
   );
 };

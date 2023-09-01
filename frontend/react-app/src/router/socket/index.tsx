@@ -109,7 +109,6 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         gameRoomInfo.roomURL === data.gameRoomURL &&
         gameRoomInfo.awayUser.id === data.awayUser.id
       ) {
-        console.log("상대방이 게임에서 나갔습니다.");
         setGameRoomInfo({
           ...gameRoomInfo,
           awayUser: {} as UserType,

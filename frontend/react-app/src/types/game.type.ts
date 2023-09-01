@@ -54,3 +54,10 @@ export interface GameRoomInfoType {
   awayReady: boolean;
   gameType: gameTypeType;
 }
+
+export interface gameAlertModalStateType {
+  gameAlertModal: boolean;
+  gameAlertModalMessage: string;
+  shouldRedirect: boolean;
+  shouldInitInfo: boolean;
+}
