@@ -4,18 +4,21 @@ import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
-import { gameAcceptUser } from "@src/recoil/atoms/game";
+import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { isConstructorDeclaration } from "typescript";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
   const [user] = useRecoilState(userDataState);
   const [gameUser] = useRecoilState(gameAcceptUser);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   console.log("currentRoute", currentRoute);
   const SideBarComponent = routeMatch(currentRoute, "/game/");
 
   console.log("user", user);
   console.log("gameUser", gameUser);
+  console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>

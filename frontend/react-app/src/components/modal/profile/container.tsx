@@ -28,8 +28,7 @@ import KickIcon from "@src/assets/icons/kick.svg";
 import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 import sha256 from "crypto-js/sha256";
-import { gameAcceptUser, gameRoomIn } from "@src/recoil/atoms/game";
-import { useNavigate } from "react-router-dom";
+import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -72,8 +71,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const [gameRoomInState, setGameRoomInState] = useRecoilState(gameRoomIn);
   const [gameUser, setGameUser] = useRecoilState(gameAcceptUser);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   // 친구 상태인지 확인
 
@@ -145,6 +144,14 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const currentTime: Date = new Date();
       const roomURL = currentTime + myData.id;
       const hashedTitle = hashTitle(roomURL);
+
+      // 대전 신청 할 때 같이 정보 저장해둠 (상대방이 거절한다면 다시 초기화)
+      setGameRoomInfo({
+        roomURL: hashedTitle,
+        roomName: "",
+        roomOwner: myData,
+        roomAway: user.user,
+      });
       await offerBattle(user.user, myData, hashedTitle).then(() => {
         console.log("offerBattle user.user", user.user, myData);
         setGameUser(user.user);
@@ -219,16 +226,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       src: UnsetAdminIcon,
     },
   ];
-  // 초기 상태 설정
-  let filteredButtons = profileButtonData.filter((button) =>
-    profileRoleButtonMapping[role].includes(button.label),
-  );
-  useEffect(() => {
-    if (gameRoomInState === true) {
-      console.log("대전 신청 여기 임");
-      handleBattleOffer();
-    }
-  }, [gameRoomInState]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -242,6 +240,10 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     fetchData().catch((error) => console.log(error));
   }, [isFriend, isBlocked]);
 
+  // 초기 상태 설정
+  let filteredButtons = profileButtonData.filter((button) =>
+    profileRoleButtonMapping[role].includes(button.label),
+  );
   if (isFriend) {
     filteredButtons = filteredButtons.filter(
       (button) => button.label !== "친구 추가",

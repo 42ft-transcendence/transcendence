@@ -7,7 +7,7 @@ import { UserType } from "@src/types";
 import { useNavigate } from "react-router-dom";
 import { userDataState } from "@src/recoil/atoms/common";
 import { acceptBattle } from "@src/api/game";
-import { gameAcceptUser } from "@src/recoil/atoms/game";
+import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
@@ -16,6 +16,7 @@ const BattleActionModal = () => {
   const [myData] = useRecoilState(userDataState);
   // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
   const [gameUser, setGameUser] = useRecoilState(gameAcceptUser);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(30);
   const [countdownInterval, setCountdownInterval] =
@@ -66,6 +67,14 @@ const BattleActionModal = () => {
   const handleAcceptButton = async () => {
     // 대전 신청 수락 api 호출
     console.log("대전 신청 수락");
+
+    // 대전 신청 수락 시 대전 정보 저장
+    setGameRoomInfo({
+      roomURL: battleActionModal.gameRoomURL,
+      roomName: "",
+      roomOwner: myData,
+      roomAway: battleActionModal.awayUser,
+    });
     await acceptBattle(
       myData,
       battleActionModal.awayUser,

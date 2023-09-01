@@ -42,3 +42,10 @@ export interface gameType {
 export interface JoinedgameType extends gameType {
   hasNewMessages: boolean;
 }
+
+export interface GameRoomInfoType {
+  roomURL: string;
+  roomName: string;
+  roomOwner: UserType;
+  roomAway: UserType;
+}

@@ -23,6 +23,7 @@ import UsersHovered from "@assets/icons/Users.svg";
 import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
 import { useState } from "react";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 
 export type TabType = {
   link: string;
@@ -67,6 +68,7 @@ export const UpperTabList = () => {
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   const handleTabClick = (link: string) => {
     setSelectedTab(link);
@@ -88,7 +90,15 @@ export const UpperTabList = () => {
           onMouseLeave={() => setHoveredTab(null)}
           onClick={() => handleTabClick(tab.link)}
         >
-          <Link to={tab.link}>
+          <Link
+            to={
+              tab.link === "/game-list"
+                ? gameRoomInfo.roomURL === ""
+                  ? tab.link
+                  : "/game/" + gameRoomInfo.roomURL
+                : tab.link
+            }
+          >
             <S.ItemIcon src={getIconSrc(tab)} />
           </Link>
         </li>
