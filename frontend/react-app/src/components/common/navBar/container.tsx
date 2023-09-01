@@ -22,7 +22,7 @@ import RankHovered from "@assets/icons/Trophy.svg";
 import UsersHovered from "@assets/icons/Users.svg";
 import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
 
 export type TabType = {
@@ -68,7 +68,7 @@ export const UpperTabList = () => {
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   const handleTabClick = (link: string) => {
     setSelectedTab(link);
@@ -81,6 +81,22 @@ export const UpperTabList = () => {
     return tab.icon;
   };
 
+  useEffect(() => {
+    if (gameRoomInfo.roomURL !== "") {
+      upperTabs.forEach((tab) => {
+        if (tab.link === "/game-list") {
+          tab.link = "/game/" + gameRoomInfo.roomURL;
+        }
+      });
+    } else {
+      upperTabs.forEach((tab) => {
+        if (tab.link.includes("/game/")) {
+          tab.link = "/game-list";
+        }
+      });
+    }
+  }, [gameRoomInfo.roomURL]);
+
   return (
     <S.TabList>
       {upperTabs.map((tab) => (
@@ -90,15 +106,7 @@ export const UpperTabList = () => {
           onMouseLeave={() => setHoveredTab(null)}
           onClick={() => handleTabClick(tab.link)}
         >
-          <Link
-            to={
-              tab.link === "/game-list"
-                ? gameRoomInfo.roomURL === ""
-                  ? tab.link
-                  : "/game/" + gameRoomInfo.roomURL
-                : tab.link
-            }
-          >
+          <Link to={tab.link}>
             <S.ItemIcon src={getIconSrc(tab)} />
           </Link>
         </li>
