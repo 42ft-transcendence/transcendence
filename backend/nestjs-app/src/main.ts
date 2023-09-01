@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  process.on('uncaughtException', (reason, promise) => {
+    console.log('uncaughtException', reason, promise);
+  });
   // app.enableCors({
   //   origin: true,
   //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
