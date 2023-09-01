@@ -207,25 +207,19 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      if (channel.owner.id === user.id) {
-        const participants =
-          await this.participantsService.getAllParticipants(channel);
-        participants.forEach((participant) => {
-          const socket = this.findSocketByUserId(participant.user.id);
-          if (socket) {
-            socket.leave(content.channelId);
-          }
-        });
-        await this.participantsService.deleteAllParticipant(channel);
-        await this.channelRepository.deleteChatChannel(channel);
-        await this.broadcastUpdatedChannelInfo(channel.id);
-      } else {
+      if (channel.owner.id !== userId) {
         throw new Error('채널 삭제 권한이 없습니다.');
       }
+      await this.participantsService.deleteAllParticipant(channel);
+      await this.channelRepository.deleteChatChannel(channel);
+      this.server
+        .to(content.channelId)
+        .emit('channel_deleted', content.channelId);
+      this.server.socketsLeave(content.channelId);
+      await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
       console.log(e);
     }
