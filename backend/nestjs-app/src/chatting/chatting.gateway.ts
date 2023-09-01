@@ -383,6 +383,33 @@ export class ChattingGateway
     }
   }
 
+  @SubscribeMessage('edit_channel')
+  async editChannel(
+    client: Socket,
+    content: {
+      channelId: string;
+      channelName: string;
+      type: string;
+      password: string;
+    },
+  ) {
+    try {
+      const userId = await this.getUserId(client);
+      const channel = await this.chattingService.editChannel(
+        content.channelId,
+        userId,
+        content.channelName,
+        content.type,
+        content.password,
+      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
+      return { channel };
+    } catch (e) {
+      console.log(e);
+      return {};
+    }
+  }
+
   @SubscribeMessage('send_dm')
   async sendDM(
     client: Socket,

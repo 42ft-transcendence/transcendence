@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Socket, Server } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { User } from 'src/users/entities/user.entity';
+import { ChatChannel } from './entities/chatchannel.entity';
 
 @Injectable()
 export class ChattingService {
@@ -41,7 +42,7 @@ export class ChattingService {
     name: string,
     type: string,
     password: string,
-  ): Promise<void> {
+  ): Promise<ChatChannel> {
     const channel = await this.channelRepository.findOne({
       where: { id: channelId },
     });
@@ -50,7 +51,7 @@ export class ChattingService {
     } else if (channel.owner.id !== userId) {
       throw new Error('권한이 없습니다.');
     } else {
-      await this.channelRepository.editChatChannel(
+      return await this.channelRepository.editChatChannel(
         channelId,
         name,
         type,
