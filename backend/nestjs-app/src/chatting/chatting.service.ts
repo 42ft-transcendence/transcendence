@@ -44,6 +44,7 @@ export class ChattingService {
     password: string,
   ): Promise<ChatChannel> {
     const channel = await this.channelRepository.findOne({
+      relations: ['owner'],
       where: { id: channelId },
     });
     if (!channel) {
