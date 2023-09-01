@@ -14,6 +14,7 @@ import {
   participantListState,
 } from "@src/recoil/atoms/channel";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { preview } from "vite";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
@@ -69,6 +70,9 @@ const ChannelPageContainer = () => {
           setMessageList(messages);
           setParticipantList(participants);
         } else {
+          setJoinedChannelList((prev) =>
+            prev.filter((channel) => channel.id !== channelId),
+          );
           navigate("/channel-list");
           alert("가입한 적 없거나 존재하지 않는 채널입니다.");
         }
@@ -93,6 +97,7 @@ const ChannelPageContainer = () => {
     setMessageList,
     setParticipantList,
     setJoinedChannelList,
+    navigate,
   ]);
 
   return (
