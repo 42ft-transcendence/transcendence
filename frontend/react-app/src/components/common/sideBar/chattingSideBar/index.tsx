@@ -81,7 +81,16 @@ const ChattingSideBar = () => {
             title: "채널 삭제",
             iconSrc: "",
             onClick: () => {
-              navigate("/channel-list");
+              chatSocket.emit(
+                "delete_channel",
+                { channelId: channel.id },
+                () => {
+                  setJoinedChannelList((prev) =>
+                    prev.filter((ch) => ch.id !== channel.id),
+                  );
+                  navigate("/channel-list");
+                },
+              );
             },
             theme: "LIGHT",
           },
