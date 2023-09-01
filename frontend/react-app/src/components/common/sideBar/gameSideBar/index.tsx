@@ -2,12 +2,13 @@ import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
 // import { roomNameBox } from "./index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gameRoomName } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomName } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
+import { UserType } from "@src/types";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -16,6 +17,7 @@ const GameSideBar = () => {
     createGameRoomModalState,
   );
   const [, setLeaveGameRoom] = useState(false);
+  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
   const roomSettingButtons: IconButtonProps[] = [
     {
@@ -49,6 +51,12 @@ const GameSideBar = () => {
       title: "방 나가기",
       iconSrc: "",
       onClick: () => {
+        setGameRoomInfo({
+          roomURL: "",
+          roomName: "",
+          roomOwner: {} as UserType,
+          roomAway: {} as UserType,
+        });
         navigate("/game-list");
         setLeaveGameRoom(true);
       },
