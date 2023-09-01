@@ -35,4 +35,9 @@ export {
   getBlockList,
 } from "./relationship";
 
-export { offerBattle, acceptBattle, readySignal } from "./game";
+export {
+  offerBattle,
+  acceptBattle,
+  readySignal,
+  readyCancleSignal,
+} from "./game";

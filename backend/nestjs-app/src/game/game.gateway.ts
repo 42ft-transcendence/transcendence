@@ -104,6 +104,17 @@ export class GameGateway {
     const content = {
       gameRoomURL: gameRoomURL,
       awayUser: awayUser,
+      isReady: true,
+    };
+    this.server.emit('readySignal', content);
+    return true;
+  }
+
+  readyCancleSignal(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+      isReady: false,
     };
     this.server.emit('readySignal', content);
     return true;

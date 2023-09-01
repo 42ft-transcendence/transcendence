@@ -96,7 +96,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       ) {
         setGameRoomInfo({
           ...gameRoomInfo,
-          awayReady: true,
+          awayReady: data.isReady,
         });
       }
     });

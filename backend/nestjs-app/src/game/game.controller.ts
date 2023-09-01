@@ -42,4 +42,14 @@ export class GameController {
   ): Promise<boolean> {
     return this.gameGateway.readySignal(gameRoomURL, myData);
   }
+
+  @Post('battle/readyCancle')
+  @UseGuards(JwtTwoFactorGuard)
+  async readyCancleSignal(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.readyCancleSignal(gameRoomURL, myData);
+  }
 }

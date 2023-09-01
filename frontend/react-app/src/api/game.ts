@@ -73,3 +73,22 @@ export const readySignal = async (
   );
   return response;
 };
+
+export const readyCancleSignal = async (
+  gameRoomURL: string,
+  myData: UserType,
+): Promise<AxiosResponse> => {
+  const response = await axios.post(
+    `${base_url}/game/battle/readyCancle`,
+    {
+      gameRoomURL: gameRoomURL,
+      myData: myData,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};
