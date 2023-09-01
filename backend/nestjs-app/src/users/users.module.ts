@@ -10,6 +10,7 @@ import { UserRepository } from './repository/user.repository';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { JwtTwoFactorStrategy } from 'src/auth/jwt/jwt-two-factor.strategy';
+import { GameModule } from 'src/game/game.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtTwoFactorStrategy } from 'src/auth/jwt/jwt-two-factor.strategy';
     }),
     AuthModule,
     ChattingModule,
+    GameModule,
   ],
   controllers: [UsersController],
   providers: [

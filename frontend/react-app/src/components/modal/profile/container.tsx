@@ -18,6 +18,18 @@ import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { channelState, participantListState } from "@src/recoil/atoms/channel";
 import channelButtons from "./channelButtons";
+import BattleIcon from "@src/assets/icons/battle.svg";
+import AddFriendIcon from "@src/assets/icons/addFriend.svg";
+import DeleteFriendIcon from "@src/assets/icons/deleteFriend.svg";
+import BlockIcon from "@src/assets/icons/block.svg";
+import UnblockIcon from "@src/assets/icons/unblock.svg";
+import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
+import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
+import BanChatIcon from "@src/assets/icons/banChat.svg";
+import UnbanChatIcon from "@src/assets/icons/unbanChat.svg";
+import KickIcon from "@src/assets/icons/kick.svg";
+import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
+import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -49,7 +61,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   // 친구 상태인지 확인
   const checkFriend = async (): Promise<void> => {
@@ -117,7 +128,9 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
 
   const handleBattleOffer = async (): Promise<void> => {
     try {
-      await offerBattle(user.user.id, myData.nickname);
+      await offerBattle(user.user.id, myData).then((response) => {
+        console.log(response);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -127,17 +140,27 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "대전 신청",
       action: handleBattleOffer,
-      src: "src/assets/icons/battle.svg",
+      src: BattleIcon,
     },
     {
       label: "친구 추가",
       action: handleAddFriend,
-      src: "src/assets/icons/addFriend.svg",
+      src: AddFriendIcon,
     },
     {
       label: "친구 삭제",
       action: handleDeleteFriend,
-      src: "src/assets/iconsdeleteFriend.svg",
+      src: DeleteFriendIcon,
+    },
+    {
+      label: "차단 하기",
+      action: handleAddBlock,
+      src: BlockIcon,
+    },
+    {
+      label: "차단 해제",
+      action: handleDeleteBlock,
+      src: UnblockIcon,
     },
     {
       label: "DM 보내기",
@@ -147,20 +170,10 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "전적 보기",
       action: () => {
-        navigate(`/profile/${user.user.id}`);
+        window.location.href = `/profile/${user.user.id}`;
         ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
       },
-      src: "src/assets/icons/showRecord.svg",
-    },
-    {
-      label: "관리자 설정",
-      action: () => console.log("handleActionSetAdmin"),
-      src: "src/assets/icons/setAdmin.svg",
-    },
-    {
-      label: "관리자 해제",
-      action: () => console.log("handleActionUnsetAdmin"),
-      src: "src/assets/icons/unsetAdmin.svg",
+      src: ShowRecordIcon,
     },
   ];
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
 import RankingIcon from "@assets/icons/ranking.svg";
+import { SortDropdownComponent } from "@src/components/dropdown";
 
 type SearchComponentProps = {
   search: string;
@@ -25,25 +26,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   setSortState,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleSortSelection = (selectedSort: string) => {
-    setSortState(selectedSort);
-    setShowDropdown(false);
-  };
+  const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
   return (
     <S.SearchBarContainer>
@@ -58,20 +41,16 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
         />
         <S.SearchBarImg src={SearchIcon} />
       </S.SearchBar>
-      <S.SortContainer onClick={() => setShowDropdown(!showDropdown)}>
-        <S.SortArrowIcon />
-        <span style={{ cursor: "pointer" }}>{sortState}</span>
-        {showDropdown && (
-          <S.SortDropdown ref={dropdownRef}>
-            <S.SortOption onClick={() => handleSortSelection("닉네임 순")}>
-              닉네임 순
-            </S.SortOption>
-            <S.SortOption onClick={() => handleSortSelection("랭크 점수 순")}>
-              랭크 점수 순
-            </S.SortOption>
-          </S.SortDropdown>
-        )}
-      </S.SortContainer>
+      <SortDropdownComponent
+        sortState={sortState}
+        showDropdown={showDropdown}
+        setShowDropdown={setShowDropdown}
+        setSortState={setSortState}
+        setIsOpenDropdown={setIsOpenDropdown}
+        options={["닉네임 순", "랭크 점수 순"]}
+        isOpenDropdown={isOpenDropdown}
+        mode="LIGHT"
+      />
     </S.SearchBarContainer>
   );
 };
