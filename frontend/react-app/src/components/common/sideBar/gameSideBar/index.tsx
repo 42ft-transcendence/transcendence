@@ -52,8 +52,10 @@ const GameSideBar = () => {
         setGameRoomInfo({
           roomURL: "",
           roomName: "",
-          roomOwner: {} as UserType,
+          roomHome: {} as UserType,
           roomAway: {} as UserType,
+          homeReady: false,
+          awayReady: false,
         });
         navigate("/game-list");
         setLeaveGameRoom(true);

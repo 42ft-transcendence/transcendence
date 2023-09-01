@@ -54,3 +54,8 @@ export const acceptBattle = async (
   );
   return response;
 };
+
+// export const readySignal = async (
+//   myData: UserType,
+
+// )

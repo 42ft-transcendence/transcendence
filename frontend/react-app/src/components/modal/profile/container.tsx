@@ -149,8 +149,10 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       setGameRoomInfo({
         roomURL: hashedTitle,
         roomName: "",
-        roomOwner: myData,
+        roomHome: myData,
         roomAway: user.user,
+        homeReady: false,
+        awayReady: false,
       });
       await offerBattle(user.user, myData, hashedTitle).then(() => {
         console.log("offerBattle user.user", user.user, myData);
