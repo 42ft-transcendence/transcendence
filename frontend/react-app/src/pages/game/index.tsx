@@ -25,8 +25,14 @@ const Game = () => {
       <NavBar />
       <GameCreateModal />
       {SideBarComponent && <SideBarComponent />}
-      <GameMatchProfile user={user} />
-      <GameMatchProfile user={gameUser} />
+      <GameMatchProfile
+        user={gameRoomInfo.homeUser}
+        isReady={gameRoomInfo.homeReady}
+      />
+      <GameMatchProfile
+        user={gameRoomInfo.awayUser}
+        isReady={gameRoomInfo.awayReady}
+      />
       {/* 상대방*/}
     </>
   );
