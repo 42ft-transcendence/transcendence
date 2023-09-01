@@ -153,8 +153,9 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
         awayUser: user.user,
         homeReady: false,
         awayReady: false,
+        gameType: "QUICK",
       });
-      await offerBattle(user.user, myData, hashedTitle).then(() => {
+      await offerBattle(user.user, myData, hashedTitle, "QUICK").then(() => {
         console.log("offerBattle user.user", user.user, myData);
         setGameUser(user.user);
       });

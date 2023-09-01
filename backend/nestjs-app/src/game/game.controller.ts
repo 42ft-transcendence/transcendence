@@ -18,8 +18,14 @@ export class GameController {
     @Body('awayUser') awayUser: User,
     @Body('myData') myData: User,
     @Body('gameRoomURL') gameRoomURL: string,
+    @Body('gameType') gameType: string,
   ): Promise<boolean> {
-    return this.gameGateway.offerBattle(awayUser, myData, gameRoomURL);
+    return this.gameGateway.offerBattle(
+      awayUser,
+      myData,
+      gameRoomURL,
+      gameType,
+    );
   }
 
   @Post('battle/accept')
@@ -51,5 +57,15 @@ export class GameController {
     @Body('myData') myData: User,
   ): Promise<boolean> {
     return this.gameGateway.readyCancleSignal(gameRoomURL, myData);
+  }
+
+  @Post('battle/exit')
+  @UseGuards(JwtTwoFactorGuard)
+  async exitGameRoom(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.exitGameRoom(gameRoomURL, myData);
   }
 }

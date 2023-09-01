@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { gameRoomInfoState, gameRoomName } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { UserType } from "@src/types";
-import { readyCancleSignal, readySignal } from "@src/api";
+import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -56,7 +56,7 @@ const GameSideBar = () => {
     {
       title: "방 나가기",
       iconSrc: "",
-      onClick: () => {
+      onClick: async () => {
         setGameRoomInfo({
           roomURL: "",
           roomName: "",
@@ -64,7 +64,9 @@ const GameSideBar = () => {
           awayUser: {} as UserType,
           homeReady: false,
           awayReady: false,
+          gameType: "",
         });
+        await exitGameRoom(gameRoomInfo.roomURL, userData);
         navigate("/game-list");
         setLeaveGameRoom(true);
       },
@@ -95,8 +97,12 @@ const GameSideBar = () => {
         <DS.TitleBox>내 전적</DS.TitleBox>
         <RateDoughnutChart userData={gameRoomInfo.homeUser} />
         <br />
-        <DS.TitleBox>상대 전적</DS.TitleBox>
-        <RateDoughnutChart userData={gameRoomInfo.awayUser} />
+        {gameRoomInfo.awayUser.id && (
+          <>
+            <DS.TitleBox>상대 전적</DS.TitleBox>
+            <RateDoughnutChart userData={gameRoomInfo.awayUser} />
+          </>
+        )}
         <br />
       </DS.Container>
     </>

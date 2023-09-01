@@ -79,11 +79,17 @@ export class GameGateway {
   @WebSocketServer()
   server: Server;
 
-  offerBattle(awayUser: User, myData: User, gameRoomURL: string): boolean {
+  offerBattle(
+    awayUser: User,
+    myData: User,
+    gameRoomURL: string,
+    gameType: string,
+  ): boolean {
     const content = {
       awayUser: myData,
       myData: awayUser,
       gameRoomURL: gameRoomURL,
+      gameType: gameType,
     };
     this.server.emit('offerBattle', content);
     return true;
@@ -117,6 +123,15 @@ export class GameGateway {
       isReady: false,
     };
     this.server.emit('readySignal', content);
+    return true;
+  }
+
+  exitGameRoom(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+    };
+    this.server.emit('exitGameRoom', content);
     return true;
   }
 

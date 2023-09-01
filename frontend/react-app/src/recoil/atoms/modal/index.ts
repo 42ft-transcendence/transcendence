@@ -30,6 +30,7 @@ export const battleActionModalState = atom<battleActionData>({
     battleActionModal: false,
     awayUser: {} as UserType,
     gameRoomURL: "",
+    gameType: "",
   },
   effects_UNSTABLE: [persistAtom],
 });

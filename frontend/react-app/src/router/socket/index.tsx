@@ -18,6 +18,7 @@ import {
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
 import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameTypeType } from "@src/types/game.type";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
@@ -77,6 +78,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         battleActionModal: user.id === data.myData.id,
         awayUser: data.awayUser,
         gameRoomURL: data.gameRoomURL,
+        gameType: data.gameType as gameTypeType,
       });
     });
 
@@ -97,6 +99,20 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         setGameRoomInfo({
           ...gameRoomInfo,
           awayReady: data.isReady,
+        });
+      }
+    });
+
+    gameSocket.off("exitGameRoom");
+    gameSocket.on("exitGameRoom", (data) => {
+      if (
+        gameRoomInfo.roomURL === data.gameRoomURL &&
+        gameRoomInfo.awayUser.id === data.awayUser.id
+      ) {
+        console.log("상대방이 게임에서 나갔습니다.");
+        setGameRoomInfo({
+          ...gameRoomInfo,
+          awayUser: {} as UserType,
         });
       }
     });

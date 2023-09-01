@@ -51,6 +51,7 @@ const BattleActionModal = () => {
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
+      gameType: "",
     }); // 모달 닫기
   };
 
@@ -61,6 +62,7 @@ const BattleActionModal = () => {
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
+      gameType: "",
     }); // 모달 닫기
   };
 
@@ -76,6 +78,7 @@ const BattleActionModal = () => {
       awayUser: battleActionModal.awayUser,
       homeReady: false,
       awayReady: false,
+      gameType: battleActionModal.gameType,
     });
     await acceptBattle(
       myData,
@@ -91,6 +94,7 @@ const BattleActionModal = () => {
           battleActionModal: false,
           awayUser: {} as UserType,
           gameRoomURL: "",
+          gameType: "",
         }); // 모달 닫기
         // 대전 신청 수락 시 대전 페이지로 이동
         navigate("/game/" + gameRoomURL);

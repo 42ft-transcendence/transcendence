@@ -5,6 +5,7 @@ export interface OfferGameType {
   awayUser: UserType;
   myData: UserType;
   gameRoomURL: string;
+  gameType: string;
 }
 
 export interface MatchHistoryType {
@@ -24,9 +25,10 @@ export interface battleActionData {
   battleActionModal: boolean;
   awayUser: UserType;
   gameRoomURL: string;
+  gameType: gameTypeType;
 }
 
-export type gameTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE";
+export type gameTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "QUICK" | ""; // QUICK은 대전 신청 혹은 랭킹전에서 사용 (PROTECTED의 사용법과 동일하다면 향후 통합)
 
 export interface gameType {
   id: string;
@@ -50,4 +52,5 @@ export interface GameRoomInfoType {
   awayUser: UserType;
   homeReady: boolean;
   awayReady: boolean;
+  gameType: gameTypeType;
 }

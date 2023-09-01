@@ -1,17 +1,16 @@
 import NavBar from "@src/components/common/navBar";
-import { routeMatch, sidebarConfig } from "@src/components/common/sideBar";
+import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
-import { isConstructorDeclaration } from "typescript";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
   const [user] = useRecoilState(userDataState);
   const [gameUser] = useRecoilState(gameAcceptUser);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   console.log("currentRoute", currentRoute);
   const SideBarComponent = routeMatch(currentRoute, "/game/");
@@ -29,10 +28,12 @@ const Game = () => {
         user={gameRoomInfo.homeUser}
         isReady={gameRoomInfo.homeReady}
       />
-      <GameMatchProfile
-        user={gameRoomInfo.awayUser}
-        isReady={gameRoomInfo.awayReady}
-      />
+      {gameRoomInfo.awayUser.id && (
+        <GameMatchProfile
+          user={gameRoomInfo.awayUser}
+          isReady={gameRoomInfo.awayReady}
+        />
+      )}
       {/* 상대방*/}
     </>
   );

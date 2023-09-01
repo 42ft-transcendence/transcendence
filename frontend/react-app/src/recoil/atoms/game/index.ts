@@ -1,5 +1,9 @@
 import { UserType } from "@src/types";
-import { GameRoomInfoType, MatchHistoryType } from "@src/types/game.type";
+import {
+  GameRoomInfoType,
+  MatchHistoryType,
+  gameTypeType,
+} from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
@@ -37,6 +41,7 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     awayUser: {} as UserType,
     homeReady: false,
     awayReady: false,
+    gameType: "" as gameTypeType,
   },
   effects_UNSTABLE: [persistAtom],
 });

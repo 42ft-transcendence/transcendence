@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
 import { base_url } from "./index";
 import { UserType } from "@src/types";
+import { gameTypeType } from "@src/types/game.type";
 
 // generate function is in user.ts
 
@@ -12,11 +13,11 @@ import { UserType } from "@src/types";
  * @param userID 대전 신청 상대 아이디
  * @returns
  */
-
 export const offerBattle = async (
   awayUser: UserType,
   myData: UserType,
   gameRoomURL: string,
+  gameType: gameTypeType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
@@ -24,6 +25,7 @@ export const offerBattle = async (
       awayUser: awayUser,
       myData: myData,
       gameRoomURL: gameRoomURL,
+      gameType: gameType,
     },
     {
       headers: {
@@ -80,6 +82,25 @@ export const readyCancleSignal = async (
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/readyCancle`,
+    {
+      gameRoomURL: gameRoomURL,
+      myData: myData,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};
+
+export const exitGameRoom = async (
+  gameRoomURL: string,
+  myData: UserType,
+): Promise<AxiosResponse> => {
+  const response = await axios.post(
+    `${base_url}/game/battle/exit`,
     {
       gameRoomURL: gameRoomURL,
       myData: myData,

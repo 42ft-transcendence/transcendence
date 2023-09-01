@@ -40,4 +40,5 @@ export {
   acceptBattle,
   readySignal,
   readyCancleSignal,
+  exitGameRoom,
 } from "./game";
