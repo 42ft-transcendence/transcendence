@@ -117,6 +117,20 @@ export const UpperTabList = () => {
     }
   }, [gameRoomInfo.roomURL]);
 
+  // 준비 완료 버튼을 눌렀다면 다른탭으로 이동 제한
+  if (gameRoomInfo.homeReady) {
+    return (
+      <S.TabList>
+        {upperTabs.map((tab) => (
+          <li key={tab.link}>
+            <S.ItemIcon src={getIconSrc(tab)} />
+          </li>
+        ))}
+        {chatNoti && <S.Noti />}
+      </S.TabList>
+    );
+  }
+
   return (
     <S.TabList>
       {upperTabs.map((tab) => (
@@ -140,6 +154,7 @@ export const UpperTabList = () => {
 export const LowerTabList = () => {
   const [, setSettingOptionModalOpen] = useRecoilState(settingOptionModalState);
   const [userData] = useRecoilState(userDataState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [isUserHovered, setUserHovered] = useState(false);
   const [isGearHovered, setGearHovered] = useState(false);
   const getUserIcon = () => (isUserHovered ? UserHovered : User);
@@ -154,6 +169,19 @@ export const LowerTabList = () => {
     console.log("setting clicked");
     setSettingOptionModalOpen(true);
   };
+
+  if (gameRoomInfo.homeReady) {
+    return (
+      <S.TabList>
+        <li>
+          <S.ItemIcon src={User} />
+        </li>
+        <li>
+          <S.ItemIcon src={Gear} />
+        </li>
+      </S.TabList>
+    );
+  }
 
   return (
     <S.TabList>
