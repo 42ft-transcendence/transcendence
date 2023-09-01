@@ -33,6 +33,24 @@ export class ChatChannelRepository extends Repository<ChatChannel> {
     return await this.save(channel);
   }
 
+  async editChatChannel(
+    id: string,
+    name: string,
+    type: string,
+    password: string,
+  ): Promise<ChatChannel> {
+    const channel = await this.findOne({
+      where: { id },
+    });
+    if (!channel) {
+      throw new Error('존재하지 않는 채널입니다.');
+    }
+    channel.name = name;
+    channel.type = type;
+    channel.password = password;
+    return await this.save(channel);
+  }
+
   async joinChatChannel(
     channel: ChatChannel,
     participant: Participants,

@@ -34,4 +34,28 @@ export class ChattingService {
     );
     await this.channelRepository.joinChatChannel(channel, participant);
   }
+
+  async editChannel(
+    channelId: string,
+    userId: string,
+    name: string,
+    type: string,
+    password: string,
+  ): Promise<void> {
+    const channel = await this.channelRepository.findOne({
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new Error('존재하지 않는 채널입니다.');
+    } else if (channel.owner.id !== userId) {
+      throw new Error('권한이 없습니다.');
+    } else {
+      await this.channelRepository.editChatChannel(
+        channelId,
+        name,
+        type,
+        password,
+      );
+    }
+  }
 }
