@@ -341,6 +341,7 @@ export class GameGateway {
     }
     this.server.emit('roomList', JSON.stringify(Array.from(roomList)));
   }
+
   /**
    * 게임 중 유저가 연결이 끊어졌을 때 몰수 처리를 진행하는 함수
    * @param {number} roomNum - 방 번호
@@ -470,8 +471,8 @@ export class GameGateway {
     roomManager.set(roomNum, gameTemp);
   }
 
-  checkAbailableGame(user: User): boolean {
-    console.log('checkAbailableGame: ', getRoomNumWithID.has(user.id));
+  checkAvailableGame(user: User): boolean {
+    console.log('checkAvailableGame: ', getRoomNumWithID.has(user.id));
     if (getRoomNumWithID.has(user.id)) {
       return false;
     }
@@ -489,7 +490,7 @@ export class GameGateway {
   //   const user = await this.userService.getUserById(user_id);
 
   //   const opponen = await this.userService.getUserById(opponentID);
-  //   if (this.checkAbailableGame(opponen)) {
+  //   if (this.checkAvailableGame(opponen)) {
   //     const roomNumTmp = normalRoom;
   //     normalRoom += 2;
 
@@ -835,46 +836,72 @@ export class GameGateway {
       user.nickname,
     );
   }
-
-  //**준비, 취소.  방 번호 주는게 좋음 */
+  /**
+   * 'setReady' 메시지를 구독하여 사용자의 준비 상태를 설정합니다.
+   *
+   * @param client 현재 연결된 소켓 클라이언트
+   * @param roomNum 사용자가 위치한 방 번호
+   */
   @SubscribeMessage('setReady')
   async setReady(@ConnectedSocket() client, @MessageBody() roomNum: number) {
     const user_id = await this.getUserId(client);
     const user = await this.userService.getUserById(user_id);
     const players = getPlayerWithRoomnum.get(roomNum);
 
+    // 현재 사용자가 방의 첫 번째 플레이어라면 준비 상태로 변경합니다.
     if (players[0] == user.nickname) {
       checkReady.get(roomNum)[0] = true;
-    } else if (players[1] == user.nickname) {
+    }
+    // 현재 사용자가 방의 두 번째 플레이어라면 준비 상태로 변경합니다.
+    else if (players[1] == user.nickname) {
       checkReady.get(roomNum)[1] = true;
     }
+
+    // 모든 사용자의 준비 상태를 방에 있는 모든 클라이언트에게 전송합니다.
     this.server
       .to(roomNum.toString())
       .emit('usersReadySet', checkReady.get(roomNum));
+
+    // 두 사용자 모두 준비 상태라면 게임 시작을 알리는 'allReady' 이벤트를 전송합니다.
     if (checkReady.get(roomNum)[0] && checkReady.get(roomNum)[1]) {
       roomManager.get(roomNum).onGame = true;
       this.server.to(roomNum.toString()).emit('allReady');
     }
   }
 
+  /**
+   * 'cancleReady' 메시지를 구독하여 사용자의 준비 취소 상태를 설정합니다.
+   *
+   * @param client 현재 연결된 소켓 클라이언트
+   * @param roomNum 사용자가 위치한 방 번호
+   */
   @SubscribeMessage('cancleReady')
   async cancleReady(@ConnectedSocket() client, @MessageBody() roomNum: number) {
     const user_id = await this.getUserId(client);
     const user = await this.userService.getUserById(user_id);
-    // const roomNum = getRoomNumWithNick.get(user.nickname);
     const players = getPlayerWithRoomnum.get(roomNum);
 
+    // 현재 사용자가 방의 첫 번째 플레이어라면 준비 취소 상태로 변경합니다.
     if (players[0] == user.nickname) {
       checkReady.get(roomNum)[0] = false;
-    } else if (players[1] == user.nickname) {
+    }
+    // 현재 사용자가 방의 두 번째 플레이어라면 준비 취소 상태로 변경합니다.
+    else if (players[1] == user.nickname) {
       checkReady.get(roomNum)[1] = false;
     }
+
+    // 모든 사용자의 준비 상태를 방에 있는 모든 클라이언트에게 전송합니다.
     this.server
       .to(roomNum.toString())
       .emit('usersReadySet', checkReady.get(roomNum));
   }
-
-  //**두명의 클라이언트의 스타트신호를 확인 후 게임 시작.  방 번호 주는게 좋음*/
+  /**
+   * 'startGame' 메시지를 구독하여 두 사용자의 게임 시작 신호를 확인합니다.
+   * 모든 사용자가 시작을 준비했을 때 게임을 시작합니다.
+   *
+   * @param client 현재 연결된 소켓 클라이언트
+   * @param data 배열로, [방 번호, 사용자 번호] 형태로 전달됩니다.
+   */
   @SubscribeMessage('startGame')
   async startGame(
     @ConnectedSocket() client,
@@ -884,25 +911,36 @@ export class GameGateway {
     const user = await this.userService.getUserById(user_id);
     const roomNum = data[0];
 
+    // 시작 준비한 사용자 번호에 따라 해당 사용자의 시작 준비 상태를 설정합니다.
     if (data[1] == 1) {
       checkStart.get(roomNum)[0] = true;
     } else if (data[1] == 2) {
       checkStart.get(roomNum)[1] = true;
     }
+
     roomManager.get(roomNum).onGame = true;
 
+    // 두 사용자 모두 시작 준비 상태라면 실제 게임을 시작합니다.
     if (checkStart.get(roomNum)[0] && checkStart.get(roomNum)[1]) {
       this.server.to(roomNum.toString()).emit('startBattle', {
         nicks: getPlayerWithRoomnum.get(roomNum),
         roomNum: roomNum,
         users: getUser.get(roomNum),
       });
+
+      // 시작 준비 상태 초기화
       checkStart.get(roomNum)[0] = false;
       checkStart.get(roomNum)[1] = false;
     }
   }
 
-  /**갱신된 paddle위치 수신, 게임 정보 갱신, 갱신된 정보 송신 */
+  /**
+   * 'paddleDeliver' 메시지를 구독하여 갱신된 패들의 위치를 받아오고,
+   * 게임 데이터를 갱신한 후에 모든 클라이언트에게 해당 데이터를 전송합니다.
+   *
+   * @param data 각 사용자의 패들 위치와 방 정보를 포함한 객체
+   * @param client 현재 연결된 소켓 클라이언트
+   */
   @SubscribeMessage('paddleDeliver')
   async sendGameData(
     @MessageBody()
@@ -916,17 +954,18 @@ export class GameGateway {
   ) {
     if (roomManager.has(data.roomIntNum)) {
       const gameData = roomManager.get(data.roomIntNum);
-      /**각각의 paddle 위치 갱신. */
+
+      // 전달된 데이터에 따라 해당 패들의 위치를 갱신합니다.
       if (data.paddleSide == 1) {
         gameData.left_user = data.paddlePos;
       } else {
         gameData.right_user = data.paddlePos;
       }
 
-      /**클레스의 맴버함수 update함수 이용. */
+      // 게임 데이터 갱신
       gameData.update();
 
-      /**목표 점수 도달시 처리. */
+      // 게임에서 목표 점수에 도달한 경우, 게임 종료 처리를 합니다.
       if (
         (gameData.score[0] == finishScore ||
           gameData.score[1] == finishScore) &&
@@ -937,6 +976,7 @@ export class GameGateway {
         await this.pushHistory(data.roomIntNum, gameData.mode);
         await this.gameResultProcess(gameData, data.roomIntNum);
         gameData.score = [0, 0];
+
         if (Number(data.roomNum) % 2) {
           checkReady.get(Number(data.roomNum))[0] = false;
           checkReady.get(Number(data.roomNum))[1] = false;
@@ -944,7 +984,7 @@ export class GameGateway {
       } else if (!gameData.onGame) {
         client.emit('finished', gameData.score);
       } else {
-        /**client가 속한 room에 게임정보 송신. */
+        // 모든 클라이언트에게 갱신된 게임 데이터 전송
         this.server.to(data.roomNum).emit('gameData', gameData);
       }
     }
