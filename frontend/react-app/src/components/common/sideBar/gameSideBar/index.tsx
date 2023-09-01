@@ -2,7 +2,7 @@ import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
 // import { roomNameBox } from "./index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,9 +17,9 @@ const GameSideBar = () => {
     createGameRoomModalState,
   );
   const [, setLeaveGameRoom] = useState(false);
-  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
-  const roomSettingButtons: IconButtonProps[] = [
+  const iconButtons: IconButtonProps[] = [
     {
       title: "방 설정하기",
       iconSrc: "",
@@ -29,8 +29,6 @@ const GameSideBar = () => {
       },
       theme: "LIGHT",
     },
-  ];
-  const iconButtons: IconButtonProps[] = [
     {
       title: "준비 하기",
       iconSrc: "",
@@ -67,14 +65,18 @@ const GameSideBar = () => {
   return (
     <>
       <DS.Container>
-        <DS.roomNameBox>{roomTitle}</DS.roomNameBox>
-        <ButtonList buttons={roomSettingButtons} />
-        <DS.boxWrapper>
-          <DS.TitleBox>내 전적</DS.TitleBox>
-          <RateDoughnutChart userData={userData} />
-          <br />
-          <ButtonList buttons={iconButtons} />
-        </DS.boxWrapper>
+        <DS.roomNameBox>
+          {roomTitle === "" ? "빠른 대전" : roomTitle}
+        </DS.roomNameBox>
+        <br />
+        <ButtonList buttons={iconButtons} />
+        <br />
+        <DS.TitleBox>내 전적</DS.TitleBox>
+        <RateDoughnutChart userData={userData} />
+        <br />
+        <DS.TitleBox>상대 전적</DS.TitleBox>
+        <RateDoughnutChart userData={gameRoomInfo.roomAway} />
+        <br />
       </DS.Container>
     </>
   );
