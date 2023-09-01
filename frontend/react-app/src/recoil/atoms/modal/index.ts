@@ -15,3 +15,8 @@ export const channelCreateModalState = atom<boolean>({
   key: "channelCreateModalState",
   default: false,
 });
+
+export const channelEditModalState = atom<boolean>({
+  key: "channelEditModalState",
+  default: false,
+});
