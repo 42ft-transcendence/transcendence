@@ -110,6 +110,17 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
+    chatSocket.off("channel_deleted");
+    chatSocket.on("channel_deleted", (channelId: string) => {
+      setJoinedChannelList((prev) =>
+        prev.filter((joinedChannel) => joinedChannel.id !== channelId),
+      );
+      if (curChannel?.id === channelId) {
+        navigate("/channel-list");
+        alert("채널이 삭제되었습니다.");
+      }
+    });
+
     chatSocketConnect(jwt);
   }
 
