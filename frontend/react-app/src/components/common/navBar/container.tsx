@@ -74,10 +74,11 @@ export const UpperTabList = () => {
 
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
-  const [noti, setNoti] = useState(false);
+  const [chatNoti, setChatNoti] = useState(false);
+  const [gameNoti, setGameNoti] = useState(false);
 
   useEffect(() => {
-    setNoti(
+    setChatNoti(
       joinedChannelList.some((channel) => channel.hasNewMessages) ||
         joinedDmOtherList.some((dm) => dm.hasNewMessages),
     );
@@ -108,6 +109,12 @@ export const UpperTabList = () => {
         }
       });
     }
+
+    if (gameRoomInfo.roomURL !== "" && currentPath !== "game") {
+      setGameNoti(true);
+    } else if (gameRoomInfo.roomURL !== "" && currentPath === "game") {
+      setGameNoti(false);
+    }
   }, [gameRoomInfo.roomURL]);
 
   return (
@@ -124,7 +131,8 @@ export const UpperTabList = () => {
           </Link>
         </li>
       ))}
-      {noti && <S.Noti />}
+      {chatNoti && <S.Noti />}
+      {gameNoti && <S.Noti style={{ top: "70px" }} />}
     </S.TabList>
   );
 };
