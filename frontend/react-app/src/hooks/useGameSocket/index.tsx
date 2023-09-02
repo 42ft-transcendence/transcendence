@@ -20,13 +20,18 @@ const useGameSocket = (jwt: string) => {
     if (!jwt) {
       gameSocket.disconnect();
     } else {
+      gameSocket.off("roomList");
+      gameSocket.on("roomList", (data) => {
+        console.log("roomList", data);
+      });
+
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
         setBattleActionModal({
           battleActionModal: user.id === data.myData.id,
           awayUser: data.awayUser,
           gameRoomURL: data.gameRoomURL,
-          gameType: data.gameType as GameRoomType,
+          gameType: data.roomType as GameRoomType,
         });
       });
 

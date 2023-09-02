@@ -5,7 +5,7 @@ export interface OfferGameType {
   awayUser: UserType;
   myData: UserType;
   gameRoomURL: string;
-  gameType: string;
+  roomType: string;
 }
 
 export interface MatchHistoryType {
@@ -48,11 +48,11 @@ export interface JoinedgameType extends gameType {
 export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
+  roomType: GameRoomType;
   homeUser: UserType;
   awayUser: UserType;
   homeReady: boolean;
   awayReady: boolean;
-  gameType: GameRoomType;
 }
 
 export interface gameAlertModalStateType {

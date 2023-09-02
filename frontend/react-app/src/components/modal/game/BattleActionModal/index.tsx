@@ -67,11 +67,11 @@ const BattleActionModal = () => {
     setGameRoomInfo({
       roomURL: battleActionModal.gameRoomURL,
       roomName: "",
+      roomType: battleActionModal.gameType,
       homeUser: myData,
       awayUser: battleActionModal.awayUser,
       homeReady: false,
       awayReady: false,
-      gameType: battleActionModal.gameType,
     });
     // 대전 신청 수락 api 호출
     await acceptBattle(

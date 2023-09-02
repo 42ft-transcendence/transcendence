@@ -14,7 +14,7 @@ const Game = () => {
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
 
   useEffect(() => {
-    if (gameRoomInfo.gameType === "QUICK" && !gameRoomInfo.awayUser.id) {
+    if (gameRoomInfo.roomType === "QUICK" && !gameRoomInfo.awayUser.id) {
       setGameAlertModal({
         gameAlertModal: true,
         gameAlertModalMessage: "상대방이 나갔습니다.",
@@ -23,6 +23,8 @@ const Game = () => {
       });
     }
   }, [gameRoomInfo.awayUser.id]);
+
+  console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>

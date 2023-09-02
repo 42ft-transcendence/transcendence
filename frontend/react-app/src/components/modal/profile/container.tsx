@@ -148,11 +148,11 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       setGameRoomInfo({
         roomURL: hashedTitle,
         roomName: "",
+        roomType: "QUICK",
         homeUser: myData,
         awayUser: user.user,
         homeReady: false,
         awayReady: false,
-        gameType: "QUICK",
       });
       await offerBattle(user.user, myData, hashedTitle, "QUICK");
     } catch (error) {

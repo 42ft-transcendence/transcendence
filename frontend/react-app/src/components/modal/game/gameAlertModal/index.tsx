@@ -23,11 +23,11 @@ const GameAlertModal = () => {
       setGameRoomInfo({
         roomURL: "",
         roomName: "",
+        roomType: "",
         homeUser: {} as UserType,
         awayUser: {} as UserType,
         homeReady: false,
         awayReady: false,
-        gameType: "",
       });
       setGameAlertModal((prev) => ({
         ...prev,
