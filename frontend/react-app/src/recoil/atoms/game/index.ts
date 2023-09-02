@@ -20,12 +20,6 @@ export const gameRoomName = atom<string>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const gameAcceptUser = atom<UserType>({
-  key: "gameAcceptUser",
-  default: {} as UserType,
-  effects_UNSTABLE: [persistAtom],
-});
-
 export const gameRoomIn = atom<boolean>({
   key: "gameRoomIn",
   default: false,

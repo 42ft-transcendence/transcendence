@@ -28,7 +28,7 @@ import KickIcon from "@src/assets/icons/kick.svg";
 import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 import sha256 from "crypto-js/sha256";
-import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -71,7 +71,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const [gameUser, setGameUser] = useRecoilState(gameAcceptUser);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   // 친구 상태인지 확인
@@ -155,10 +154,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
         awayReady: false,
         gameType: "QUICK",
       });
-      await offerBattle(user.user, myData, hashedTitle, "QUICK").then(() => {
-        console.log("offerBattle user.user", user.user, myData);
-        setGameUser(user.user);
-      });
+      await offerBattle(user.user, myData, hashedTitle, "QUICK");
     } catch (error) {
       console.log(error);
     }
