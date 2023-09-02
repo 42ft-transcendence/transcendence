@@ -38,6 +38,7 @@ export {
 export {
   offerBattle,
   acceptBattle,
+  rejectBattle,
   readySignal,
   readyCancleSignal,
   exitGameRoom,

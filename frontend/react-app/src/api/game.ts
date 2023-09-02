@@ -57,15 +57,34 @@ export const acceptBattle = async (
   return response;
 };
 
+export const rejectBattle = async (
+  awayUser: UserType,
+  gameRoomURL: string,
+): Promise<AxiosResponse> => {
+  const response = await axios.post(
+    `${base_url}/game/battle/reject`,
+    {
+      awayUser: awayUser,
+      gameRoomURL: gameRoomURL,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};
+
 export const readySignal = async (
   gameRoomURL: string,
-  myData: UserType,
+  awayUser: UserType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/ready`,
     {
       gameRoomURL: gameRoomURL,
-      myData: myData,
+      awayUser: awayUser,
     },
     {
       headers: {
