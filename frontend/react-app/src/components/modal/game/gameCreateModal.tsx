@@ -3,13 +3,15 @@ import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { IconButton } from "@components/buttons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { GameRoomType, UserType } from "@src/types";
+import { createGameRoom } from "@src/api/game";
 
-const hashTitle = (title: string): string => {
+const stringToHash = (title: string): string => {
   const hash = sha256(title);
   return hash.toString(); // 해시 값을 문자열로 반환
 };
@@ -32,7 +34,7 @@ const SPEED_OPTIONS = [
 ];
 
 const GameCreateModal = () => {
-  const [createGameRoom, setCreateGameRoom] = useRecoilState(
+  const [createGameRoomModal, setCreateGameRoomModal] = useRecoilState(
     createGameRoomModalState,
   );
   const [user] = useRecoilState(userDataState);
@@ -40,48 +42,82 @@ const GameCreateModal = () => {
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<string>("PUBLIC");
   const [password, setPassword] = useState<string>("");
+  const [created, setCreated] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log("gameRoomInfo", gameRoomInfo);
+  }, [gameRoomInfo]);
+
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const currentTime: Date = new Date();
+    const roomURL = currentTime + event.target.value + user.id;
     setGameRoomInfo((prev) => ({
       ...prev,
+      roomURL: stringToHash(roomURL),
       roomName: event.target.value,
     }));
   };
 
-  const onSubmit = () => {
-    const currentTime: Date = new Date();
-    const roomURL = currentTime + gameRoomInfo.roomName + user.id;
-    const hashedTitle = hashTitle(roomURL);
-    console.log("gameRoomSubmit");
-    console.log(hashedTitle);
+  const onSubmit = async () => {
+    await createGameRoom(gameRoomInfo);
+    setCreated(true);
     handleClose();
-    navigate(`/game/${hashedTitle}`);
+    navigate(`/game/${gameRoomInfo.roomURL}`);
   };
 
   const handleClose = () => {
-    setCreateGameRoom(false);
+    setType("PUBLIC");
+    if (!created) {
+      setGameRoomInfo({
+        roomURL: "",
+        roomName: "",
+        roomType: "",
+        roomPassword: "",
+        homeUser: {} as UserType,
+        awayUser: {} as UserType,
+        homeReady: false,
+        awayReady: false,
+      });
+    }
+    setCreateGameRoomModal(false);
   };
 
   const handleTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (type === "PUBLIC") {
       setType("PROTECTED");
+      setGameRoomInfo((prev) => ({
+        ...prev,
+        roomType: "PROTECTED" as GameRoomType,
+      }));
     } else if (type === "PROTECTED") {
       setType("PRIVATE");
+      setGameRoomInfo((prev) => ({
+        ...prev,
+        roomType: "PRIVATE" as GameRoomType,
+      }));
     } else {
       setType("PUBLIC");
+      setGameRoomInfo((prev) => ({
+        ...prev,
+        roomType: "PUBRIC" as GameRoomType,
+      }));
     }
   };
 
   const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
+    setGameRoomInfo((prev) => ({
+      ...prev,
+      roomPassword: stringToHash(event.target.value),
+    }));
   };
 
   return (
     <Modal
-      isOpen={createGameRoom}
-      onRequestClose={() => setCreateGameRoom(false)}
+      isOpen={createGameRoomModal}
+      onRequestClose={() => setCreateGameRoomModal(false)}
       style={{
         content: { ...S.ModalContent }, // Spread 연산자 사용
         overlay: { ...S.ModalOverlay }, // Spread 연산자 사용
