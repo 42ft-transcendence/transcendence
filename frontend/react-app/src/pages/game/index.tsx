@@ -2,21 +2,16 @@ import NavBar from "@src/components/common/navBar";
 import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
-import { useRecoilState } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
-import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserType } from "@src/types";
 import { gameAlertModalState } from "@src/recoil/atoms/modal";
-import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const [gameAlertModal, setGameAlertModal] =
-    useRecoilState(gameAlertModalState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const setGameAlertModal = useSetRecoilState(gameAlertModalState);
 
   useEffect(() => {
     if (gameRoomInfo.gameType === "QUICK" && !gameRoomInfo.awayUser.id) {
@@ -44,8 +39,6 @@ const Game = () => {
           isReady={gameRoomInfo.awayReady}
         />
       )}
-      {/* 모달 */}
-      {gameAlertModal.gameAlertModal && <GameAlertModal />}
     </>
   );
 };
