@@ -16,6 +16,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
+import { GameService } from './game.service';
 
 let rankRoom = 0;
 const normalRoom = 1;
@@ -73,23 +74,28 @@ export class GameGateway {
     private authService: AuthService,
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
-    private rootGateway: ChattingGateway,
+    private gameService: GameService,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
+  refreshGameRoomList() {
+    const content = this.gameService.getAllGameRooms();
+    this.server.emit('roomList', content);
+  }
+
   offerBattle(
     awayUser: User,
     myData: User,
     gameRoomURL: string,
-    gameType: string,
+    roomType: string,
   ): boolean {
     const content = {
       awayUser: myData,
       myData: awayUser,
       gameRoomURL: gameRoomURL,
-      gameType: gameType,
+      roomType: roomType,
     };
     this.server.emit('offerBattle', content);
     return true;
