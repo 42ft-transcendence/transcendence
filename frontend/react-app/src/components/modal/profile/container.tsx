@@ -54,7 +54,7 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
   );
 };
 
-// const gameRoomType = {
+// const GameRoomType = {
 //   PUBLIC: "공개",
 //   PROTECTED: "비밀",
 //   PRIVATE: "비공개",

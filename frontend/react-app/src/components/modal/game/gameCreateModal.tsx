@@ -8,13 +8,19 @@ import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import { gameRoomName } from "@src/recoil/atoms/game";
+import { GameRoomType } from "@src/types";
 
 const hashTitle = (title: string): string => {
   const hash = sha256(title);
   return hash.toString(); // 해시 값을 문자열로 반환
 };
 
-const gameRoomType = {
+const GameRoomTypeMap: {
+  PUBLIC: string;
+  PROTECTED: string;
+  PRIVATE: string;
+  [key: string]: string;
+} = {
   PUBLIC: "공개",
   PROTECTED: "비밀",
   PRIVATE: "비공개",
@@ -28,7 +34,7 @@ const GameCreateModal = () => {
   const [user] = useRecoilState(userDataState);
   const [roomTitle, setRoomTitle] = useRecoilState(gameRoomName);
   const [speed, setSpeed] = useState("normal");
-  const [type, setType] = useState<gameRoomType>("PUBLIC");
+  const [type, setType] = useState<string>("PUBLIC");
   const [password, setPassword] = useState<string>("");
   const [isOpened, setIsOpened] = useRecoilState(createGameRoomModalState);
   const navigate = useNavigate();
@@ -117,7 +123,7 @@ const GameCreateModal = () => {
         <S.gameCreateModalLabel>채널 유형</S.gameCreateModalLabel>
         <S.OptionContent>
           <S.TypeButton onClick={handleTypeToggle} type={type}>
-            {gameRoomType[type]}
+            {GameRoomTypeMap[type]}
           </S.TypeButton>
         </S.OptionContent>
       </S.gameCreateOption>

@@ -25,15 +25,15 @@ export interface battleActionData {
   battleActionModal: boolean;
   awayUser: UserType;
   gameRoomURL: string;
-  gameType: gameTypeType;
+  gameType: GameRoomType;
 }
 
-export type gameTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "QUICK" | ""; // QUICK은 대전 신청 혹은 랭킹전에서 사용 (PROTECTED의 사용법과 동일하다면 향후 통합)
+export type GameRoomType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "QUICK" | ""; // QUICK은 대전 신청 혹은 랭킹전에서 사용 (PROTECTED의 사용법과 동일하다면 향후 통합)
 
 export interface gameType {
   id: string;
   name: string;
-  type: gameTypeType;
+  type: GameRoomType;
   password: string;
   createdAt: Date;
   ownerId: string;
@@ -52,7 +52,7 @@ export interface GameRoomInfoType {
   awayUser: UserType;
   homeReady: boolean;
   awayReady: boolean;
-  gameType: gameTypeType;
+  gameType: GameRoomType;
 }
 
 export interface gameAlertModalStateType {

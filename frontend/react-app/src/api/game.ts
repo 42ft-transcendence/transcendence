@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
 import { base_url } from "./index";
 import { UserType } from "@src/types";
-import { gameTypeType } from "@src/types/game.type";
+import { GameRoomType } from "@src/types/game.type";
 
 // generate function is in user.ts
 
@@ -17,7 +17,7 @@ export const offerBattle = async (
   awayUser: UserType,
   myData: UserType,
   gameRoomURL: string,
-  gameType: gameTypeType,
+  gameType: GameRoomType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,

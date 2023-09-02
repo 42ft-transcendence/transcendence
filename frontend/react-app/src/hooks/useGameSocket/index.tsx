@@ -6,7 +6,7 @@ import {
 } from "@src/recoil/atoms/modal";
 import { gameSocket, gameSocketConnect } from "@src/router/socket/gameSocket";
 import { OfferGameType, UserType } from "@src/types";
-import { gameTypeType } from "@src/types/game.type";
+import { GameRoomType } from "@src/types/game.type";
 import { useEffect } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -26,7 +26,7 @@ const useGameSocket = (jwt: string) => {
           battleActionModal: user.id === data.myData.id,
           awayUser: data.awayUser,
           gameRoomURL: data.gameRoomURL,
-          gameType: data.gameType as gameTypeType,
+          gameType: data.gameType as GameRoomType,
         });
       });
 

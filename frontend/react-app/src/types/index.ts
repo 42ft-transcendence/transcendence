@@ -24,6 +24,7 @@ export type {
   battleActionData,
   gameType,
   JoinedgameType,
+  GameRoomType,
   GameRoomInfoType,
 } from "./game.type";
 
