@@ -1,12 +1,7 @@
-import { ChatType, OfferGameType, UserType } from "@type";
+import { ChatType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
-import { gameSocket, gameSocketConnect } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
-import {
-  battleActionModalState,
-  gameAlertModalState,
-} from "@src/recoil/atoms/modal";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -20,13 +15,10 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
-import { gameTypeType } from "@src/types/game.type";
+import useGameSocket from "@src/hooks/useGameSocket";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
-  const [user] = useRecoilState(userDataState);
-  const [, setBattleActionModal] = useRecoilState(battleActionModalState);
   const setAllUserList = useSetRecoilState(allUserListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const setMessageList = useSetRecoilState(messageListState);
@@ -34,12 +26,11 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
-  const setGameAlertModal = useSetRecoilState(gameAlertModalState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+
+  useGameSocket(jwt);
 
   if (!jwt) {
     chatSocket.disconnect();
-    gameSocket.disconnect();
   } else {
     // Init chat socket events
     chatSocket.off("refresh_list");
@@ -75,65 +66,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
-    gameSocket.off("offerBattle");
-    gameSocket.on("offerBattle", (data: OfferGameType) => {
-      setBattleActionModal({
-        battleActionModal: user.id === data.myData.id,
-        awayUser: data.awayUser,
-        gameRoomURL: data.gameRoomURL,
-        gameType: data.gameType as gameTypeType,
-      });
-    });
-
-    gameSocket.off("acceptBattle");
-    gameSocket.on("acceptBattle", (data) => {
-      if (user.id === data.myData.id) {
-        window.location.href = `/game/${data.gameRoomURL}`;
-      }
-    });
-
-    gameSocket.off("rejectBattle");
-    gameSocket.on("rejectBattle", (data) => {
-      console.log("rejectBattle", data);
-      if (user.id === data.myData.id) {
-        console.log("here");
-        setGameAlertModal({
-          gameAlertModal: true,
-          gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
-          shouldRedirect: false,
-          shouldInitInfo: true,
-        });
-      }
-    });
-
-    gameSocket.off("readySignal");
-    gameSocket.on("readySignal", (data) => {
-      if (
-        gameRoomInfo.roomURL === data.gameRoomURL &&
-        gameRoomInfo.awayUser.id === data.awayUser.id
-      ) {
-        setGameRoomInfo({
-          ...gameRoomInfo,
-          awayReady: data.isReady,
-        });
-      }
-    });
-
-    gameSocket.off("exitGameRoom");
-    gameSocket.on("exitGameRoom", (data) => {
-      if (
-        gameRoomInfo.roomURL === data.gameRoomURL &&
-        gameRoomInfo.awayUser.id === data.awayUser.id
-      ) {
-        setGameRoomInfo({
-          ...gameRoomInfo,
-          awayUser: {} as UserType,
-        });
-      }
-    });
-
     chatSocketConnect(jwt);
-    gameSocketConnect(jwt);
   }
 
   return children;
