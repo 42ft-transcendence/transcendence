@@ -6,8 +6,8 @@ import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
 import { useNavigate } from "react-router-dom";
 import { userDataState } from "@src/recoil/atoms/common";
-import { acceptBattle } from "@src/api/game";
-import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { acceptBattle, rejectBattle } from "@src/api/game";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
@@ -15,7 +15,6 @@ const BattleActionModal = () => {
   );
   const [myData] = useRecoilState(userDataState);
   // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
-  const [gameUser, setGameUser] = useRecoilState(gameAcceptUser);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(30);
@@ -42,22 +41,19 @@ const BattleActionModal = () => {
     setCountdownInterval(interval);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     if (countdownInterval !== null) {
       clearInterval(countdownInterval);
     }
-    setBattleActionModal({
-      ...BattleActionModal,
-      battleActionModal: false,
-      awayUser: {} as UserType,
-      gameRoomURL: "",
-      gameType: "",
-    }); // 모달 닫기
+    await handleCancelButton();
   };
 
-  const handleCancelButton = () => {
+  const handleCancelButton = async () => {
     // 대전 신청 거절 api 호출
-    console.log("대전 신청 거절");
+    await rejectBattle(
+      battleActionModal.awayUser,
+      battleActionModal.gameRoomURL,
+    );
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
@@ -67,9 +63,6 @@ const BattleActionModal = () => {
   };
 
   const handleAcceptButton = async () => {
-    // 대전 신청 수락 api 호출
-    console.log("대전 신청 수락");
-
     // 대전 신청 수락 시 대전 정보 저장
     setGameRoomInfo({
       roomURL: battleActionModal.gameRoomURL,
@@ -80,28 +73,21 @@ const BattleActionModal = () => {
       awayReady: false,
       gameType: battleActionModal.gameType,
     });
+    // 대전 신청 수락 api 호출
     await acceptBattle(
       myData,
       battleActionModal.awayUser,
       battleActionModal.gameRoomURL,
-    )
-      .then((res) => {
-        console.log("대전 신청 수락 api 호출 결과: ", res);
-        const gameRoomURL = battleActionModal.gameRoomURL;
-        console.log("gameUser", battleActionModal.awayUser);
-        setGameUser(battleActionModal.awayUser);
-        setBattleActionModal({
-          battleActionModal: false,
-          awayUser: {} as UserType,
-          gameRoomURL: "",
-          gameType: "",
-        }); // 모달 닫기
-        // 대전 신청 수락 시 대전 페이지로 이동
-        navigate("/game/" + gameRoomURL);
-      })
-      .catch((err) => {
-        console.log("대전 신청 수락 api 호출 에러: ", err);
-      });
+    );
+    const gameRoomURL = battleActionModal.gameRoomURL;
+    setBattleActionModal({
+      battleActionModal: false,
+      awayUser: {} as UserType,
+      gameRoomURL: "",
+      gameType: "",
+    }); // 모달 닫기
+    // 대전 신청 수락 시 대전 페이지로 이동
+    navigate("/game/" + gameRoomURL);
   };
 
   useEffect(() => {
