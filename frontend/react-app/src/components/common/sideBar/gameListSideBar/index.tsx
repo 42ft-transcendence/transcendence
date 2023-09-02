@@ -1,19 +1,29 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import sha256 from "crypto-js/sha256";
 
 const GameListSideBar = () => {
   const [userData] = useRecoilState(userDataState);
-  const [, setCreateGameRoom] = useRecoilState(createGameRoomModalState);
+  const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   const iconButtons: IconButtonProps[] = [
     {
       title: "방 만들기",
       iconSrc: "",
-      onClick: () => setCreateGameRoom(true),
+      onClick: () => {
+        setCreateGameRoom(true);
+        setGameRoomInfo({
+          ...gameRoomInfo,
+          roomURL: sha256(new Date() + userData.id).toString(),
+          roomType: "PUBLIC",
+        });
+      },
       theme: "LIGHT",
     },
     {
