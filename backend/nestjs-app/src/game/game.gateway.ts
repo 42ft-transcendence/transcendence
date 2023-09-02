@@ -106,6 +106,15 @@ export class GameGateway {
     return true;
   }
 
+  rejectBattle(myData: User, gameRoomURL: string) {
+    const content = {
+      myData: myData,
+      gameRoomURL: gameRoomURL,
+    };
+    this.server.emit('rejectBattle', content);
+    return true;
+  }
+
   readySignal(gameRoomURL: string, awayUser: User) {
     const content = {
       gameRoomURL: gameRoomURL,

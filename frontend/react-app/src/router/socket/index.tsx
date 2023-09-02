@@ -3,7 +3,10 @@ import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
 import { gameSocket, gameSocketConnect } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
-import { battleActionModalState } from "@src/recoil/atoms/modal";
+import {
+  battleActionModalState,
+  gameAlertModalState,
+} from "@src/recoil/atoms/modal";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { useRecoilValue, useSetRecoilState } from "recoil";
@@ -17,7 +20,7 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { gameAcceptUser, gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { gameTypeType } from "@src/types/game.type";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
@@ -31,7 +34,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
-  const setGameUser = useSetRecoilState(gameAcceptUser);
+  const setGameAlertModal = useSetRecoilState(gameAlertModalState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
   if (!jwt) {
@@ -85,8 +88,21 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     gameSocket.off("acceptBattle");
     gameSocket.on("acceptBattle", (data) => {
       if (user.id === data.myData.id) {
-        setGameUser(data.awayUser);
         window.location.href = `/game/${data.gameRoomURL}`;
+      }
+    });
+
+    gameSocket.off("rejectBattle");
+    gameSocket.on("rejectBattle", (data) => {
+      console.log("rejectBattle", data);
+      if (user.id === data.myData.id) {
+        console.log("here");
+        setGameAlertModal({
+          gameAlertModal: true,
+          gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
+          shouldRedirect: false,
+          shouldInitInfo: true,
+        });
       }
     });
 
