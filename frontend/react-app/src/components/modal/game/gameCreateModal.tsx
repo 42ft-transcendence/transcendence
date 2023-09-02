@@ -25,6 +25,12 @@ const GameRoomTypeMap: {
   PRIVATE: "비공개",
 };
 
+const SPEED_OPTIONS = [
+  { key: "slow", label: "느리게" },
+  { key: "normal", label: "보통" },
+  { key: "fast", label: "빠르게" },
+];
+
 const GameCreateModal = () => {
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
@@ -34,7 +40,6 @@ const GameCreateModal = () => {
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<string>("PUBLIC");
   const [password, setPassword] = useState<string>("");
-  const [isOpened, setIsOpened] = useRecoilState(createGameRoomModalState);
   const navigate = useNavigate();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,7 +60,7 @@ const GameCreateModal = () => {
   };
 
   const handleClose = () => {
-    setIsOpened(false);
+    setCreateGameRoom(false);
   };
 
   const handleTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -72,10 +77,6 @@ const GameCreateModal = () => {
   const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
-
-  if (isOpened === false) {
-    return null;
-  }
 
   return (
     <Modal
@@ -96,30 +97,20 @@ const GameCreateModal = () => {
       />
       <S.GameSpeedButtons>
         <S.gameCreateModalLabel>속도</S.gameCreateModalLabel>
-        <S.GameSpeedButton
-          $selected={speed === "slow"}
-          onClick={() => setSpeed("slow")}
-        >
-          느리게
-        </S.GameSpeedButton>
-        <S.GameSpeedButton
-          $selected={speed === "normal"}
-          onClick={() => setSpeed("normal")}
-        >
-          보통
-        </S.GameSpeedButton>
-        <S.GameSpeedButton
-          $selected={speed === "fast"}
-          onClick={() => setSpeed("fast")}
-        >
-          빠르게
-        </S.GameSpeedButton>
+        {SPEED_OPTIONS.map((option) => (
+          <S.GameSpeedButton
+            key={option.key}
+            $selected={speed === option.key}
+            onClick={() => setSpeed(option.key)}
+          >
+            {option.label}
+          </S.GameSpeedButton>
+        ))}
       </S.GameSpeedButtons>
       <S.gameCreateOption>
         <S.gameCreateModalLabel>맵 선택</S.gameCreateModalLabel>
         <S.mapbox />
       </S.gameCreateOption>
-
       <S.gameCreateOption>
         <S.gameCreateModalLabel>채널 유형</S.gameCreateModalLabel>
         <S.OptionContent>
