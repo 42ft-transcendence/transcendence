@@ -14,12 +14,6 @@ export const matchHistoryState = atom<MatchHistoryType[]>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const gameRoomName = atom<string>({
-  key: "gameRoomName",
-  default: "",
-  effects_UNSTABLE: [persistAtom],
-});
-
 export const gameRoomIn = atom<boolean>({
   key: "gameRoomIn",
   default: false,

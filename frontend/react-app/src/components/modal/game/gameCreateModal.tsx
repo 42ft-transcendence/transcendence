@@ -7,8 +7,7 @@ import React, { useState } from "react";
 import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
-import { gameRoomName } from "@src/recoil/atoms/game";
-import { GameRoomType } from "@src/types";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 
 const hashTitle = (title: string): string => {
   const hash = sha256(title);
@@ -30,9 +29,8 @@ const GameCreateModal = () => {
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
   );
-
   const [user] = useRecoilState(userDataState);
-  const [roomTitle, setRoomTitle] = useRecoilState(gameRoomName);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<string>("PUBLIC");
   const [password, setPassword] = useState<string>("");
@@ -40,12 +38,15 @@ const GameCreateModal = () => {
   const navigate = useNavigate();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomTitle(event.target.value);
+    setGameRoomInfo((prev) => ({
+      ...prev,
+      roomName: event.target.value,
+    }));
   };
 
   const onSubmit = () => {
     const currentTime: Date = new Date();
-    const roomURL = currentTime + roomTitle + user.id;
+    const roomURL = currentTime + gameRoomInfo.roomName + user.id;
     const hashedTitle = hashTitle(roomURL);
     console.log("gameRoomSubmit");
     console.log(hashedTitle);
@@ -89,7 +90,7 @@ const GameCreateModal = () => {
         type="text"
         placeholder="방 제목"
         id="nickname"
-        value={roomTitle}
+        value={gameRoomInfo.roomName}
         onChange={handleTitleChange}
         maxLength={23}
       />

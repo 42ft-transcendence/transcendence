@@ -5,14 +5,13 @@ import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gameRoomInfoState, gameRoomName } from "@src/recoil/atoms/game";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { UserType } from "@src/types";
 import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
-  const [roomTitle] = useRecoilState(gameRoomName);
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
   );
@@ -84,12 +83,11 @@ const GameSideBar = () => {
     setfilteredIconButtons(newButtons);
   }, [gameRoomInfo]);
 
-  console.log(roomTitle);
   return (
     <>
       <DS.Container>
         <DS.roomNameBox>
-          {roomTitle === "" ? "빠른 대전" : roomTitle}
+          {gameRoomInfo.roomName === "" ? "빠른 대전" : gameRoomInfo.roomName}
         </DS.roomNameBox>
         <br />
         <ButtonList buttons={filteredIconButtons} />
