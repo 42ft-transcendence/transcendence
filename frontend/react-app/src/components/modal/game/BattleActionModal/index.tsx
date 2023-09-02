@@ -68,6 +68,7 @@ const BattleActionModal = () => {
       roomURL: battleActionModal.gameRoomURL,
       roomName: "",
       roomType: battleActionModal.gameType,
+      roomPassword: "",
       homeUser: myData,
       awayUser: battleActionModal.awayUser,
       homeReady: false,

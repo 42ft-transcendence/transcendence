@@ -49,6 +49,7 @@ export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
   roomType: GameRoomType;
+  roomPassword: string;
   homeUser: UserType;
   awayUser: UserType;
   homeReady: boolean;

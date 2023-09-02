@@ -26,6 +26,7 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     roomURL: "",
     roomName: "",
     roomType: "" as GameRoomType,
+    roomPassword: "",
     homeUser: {} as UserType,
     awayUser: {} as UserType,
     homeReady: false,

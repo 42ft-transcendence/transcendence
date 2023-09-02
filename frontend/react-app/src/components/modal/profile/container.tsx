@@ -149,6 +149,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
         roomURL: hashedTitle,
         roomName: "",
         roomType: "QUICK",
+        roomPassword: "",
         homeUser: myData,
         awayUser: user.user,
         homeReady: false,

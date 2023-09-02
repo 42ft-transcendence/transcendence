@@ -60,6 +60,7 @@ const GameSideBar = () => {
           roomURL: "",
           roomName: "",
           roomType: "",
+          roomPassword: "",
           homeUser: {} as UserType,
           awayUser: {} as UserType,
           homeReady: false,
