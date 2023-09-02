@@ -22,6 +22,7 @@ const GameListSideBar = () => {
           ...gameRoomInfo,
           roomURL: sha256(new Date() + userData.id).toString(),
           roomType: "PUBLIC",
+          homeUser: userData,
         });
       },
       theme: "LIGHT",
