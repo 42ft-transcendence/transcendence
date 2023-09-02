@@ -37,8 +37,8 @@ export const offerBattle = async (
 };
 
 export const acceptBattle = async (
-  myData: UserType,
   awayUser: UserType,
+  myData: UserType,
   gameRoomURL: string,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(

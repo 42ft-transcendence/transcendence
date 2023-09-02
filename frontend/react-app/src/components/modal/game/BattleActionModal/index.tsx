@@ -69,15 +69,15 @@ const BattleActionModal = () => {
       roomName: "",
       roomType: battleActionModal.gameType,
       roomPassword: "",
-      homeUser: myData,
-      awayUser: battleActionModal.awayUser,
+      homeUser: battleActionModal.awayUser,
+      awayUser: myData,
       homeReady: false,
       awayReady: false,
     });
     // 대전 신청 수락 api 호출
     await acceptBattle(
-      myData,
       battleActionModal.awayUser,
+      myData,
       battleActionModal.gameRoomURL,
     );
     const gameRoomURL = battleActionModal.gameRoomURL;

@@ -92,8 +92,8 @@ export class GameGateway {
     roomType: string,
   ): boolean {
     const content = {
-      awayUser: myData,
-      myData: awayUser,
+      awayUser: awayUser,
+      myData: myData,
       gameRoomURL: gameRoomURL,
       roomType: roomType,
     };
@@ -102,10 +102,9 @@ export class GameGateway {
   }
 
   acceptBattle(myData: User, awayUser: User, gameRoomURL: string) {
-    // 이거 노린거 맞음
     const content = {
-      myData: awayUser,
-      awayUser: myData,
+      myData: myData,
+      awayUser: awayUser,
       gameRoomURL: gameRoomURL,
     };
     this.server.emit('acceptBattle', content);

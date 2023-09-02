@@ -27,9 +27,10 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
+        console.log("offerBattle", data);
         setBattleActionModal({
-          battleActionModal: user.id === data.myData.id,
-          awayUser: data.awayUser,
+          battleActionModal: user.id === data.awayUser.id,
+          awayUser: data.myData,
           gameRoomURL: data.gameRoomURL,
           gameType: data.roomType as GameRoomType,
         });
@@ -37,7 +38,7 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("acceptBattle");
       gameSocket.on("acceptBattle", (data) => {
-        if (user.id === data.myData.id) {
+        if (user.id === data.awayUser.id) {
           window.location.href = `/game/${data.gameRoomURL}`;
         }
       });
