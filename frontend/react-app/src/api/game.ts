@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
 import { base_url } from "./index";
 import { UserType } from "@src/types";
-import { GameRoomType } from "@src/types/game.type";
+import { GameRoomInfoType, GameRoomType } from "@src/types/game.type";
 
 // generate function is in user.ts
 
@@ -17,7 +17,7 @@ export const offerBattle = async (
   awayUser: UserType,
   myData: UserType,
   gameRoomURL: string,
-  gameType: GameRoomType,
+  roomType: GameRoomType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
@@ -25,7 +25,7 @@ export const offerBattle = async (
       awayUser: awayUser,
       myData: myData,
       gameRoomURL: gameRoomURL,
-      gameType: gameType,
+      roomType: roomType,
     },
     {
       headers: {
@@ -123,6 +123,24 @@ export const exitGameRoom = async (
     {
       gameRoomURL: gameRoomURL,
       myData: myData,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("jwt") as string}`,
+      },
+    },
+  );
+  return response;
+};
+
+export const createGameRoom = async (
+  gameRoomInfo: GameRoomInfoType,
+): Promise<AxiosResponse> => {
+  console.log("createGameRoom gameRoomInfo: ", gameRoomInfo);
+  const response = await axios.post(
+    `${base_url}/game/battle/create`,
+    {
+      gameRoomInfo: gameRoomInfo,
     },
     {
       headers: {
