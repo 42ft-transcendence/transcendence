@@ -14,7 +14,10 @@ const Game = () => {
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
 
   useEffect(() => {
-    if (gameRoomInfo.roomType === "QUICK" && !gameRoomInfo.awayUser.id) {
+    if (
+      gameRoomInfo.roomType === "QUICK" &&
+      (!gameRoomInfo.awayUser.id || !gameRoomInfo.homeUser.id)
+    ) {
       setGameAlertModal({
         gameAlertModal: true,
         gameAlertModalMessage: "상대방이 나갔습니다.",
@@ -31,15 +34,21 @@ const Game = () => {
       <NavBar />
       <GameCreateModal />
       {SideBarComponent && <SideBarComponent />}
-      <GameMatchProfile
-        user={gameRoomInfo.homeUser}
-        isReady={gameRoomInfo.homeReady}
-      />
-      {gameRoomInfo.awayUser.id && (
+      {gameRoomInfo.homeUser.id ? (
+        <GameMatchProfile
+          user={gameRoomInfo.homeUser}
+          isReady={gameRoomInfo.homeReady}
+        />
+      ) : (
+        <>대기중</>
+      )}
+      {gameRoomInfo.awayUser.id ? (
         <GameMatchProfile
           user={gameRoomInfo.awayUser}
           isReady={gameRoomInfo.awayReady}
         />
+      ) : (
+        <>대기중</>
       )}
     </>
   );

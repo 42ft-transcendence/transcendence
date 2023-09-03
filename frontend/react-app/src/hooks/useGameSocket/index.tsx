@@ -72,6 +72,7 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("exitGameRoom");
       gameSocket.on("exitGameRoom", (data) => {
+        console.log("exitGameRoom", data);
         if (
           gameRoomInfo.roomURL === data.gameRoomURL &&
           gameRoomInfo.awayUser.id === data.awayUser.id
@@ -79,6 +80,14 @@ const useGameSocket = (jwt: string) => {
           setGameRoomInfo({
             ...gameRoomInfo,
             awayUser: {} as UserType,
+          });
+        } else if (
+          gameRoomInfo.roomURL === data.gameRoomURL &&
+          gameRoomInfo.homeUser.id === data.awayUser.id
+        ) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            homeUser: {} as UserType,
           });
         }
       });
