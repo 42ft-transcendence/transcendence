@@ -34,3 +34,9 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const gameRoomListState = atom<GameRoomInfoType[]>({
+  key: "gameRoomListState",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});

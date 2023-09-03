@@ -1,5 +1,5 @@
 import { userDataState } from "@src/recoil/atoms/common";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomListState } from "@src/recoil/atoms/game";
 import {
   battleActionModalState,
   gameAlertModalState,
@@ -15,6 +15,7 @@ const useGameSocket = (jwt: string) => {
   const [user] = useRecoilState(userDataState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const setGameRoomList = useSetRecoilState(gameRoomListState);
 
   useEffect(() => {
     if (!jwt) {
@@ -23,6 +24,7 @@ const useGameSocket = (jwt: string) => {
       gameSocket.off("roomList");
       gameSocket.on("roomList", (data) => {
         console.log("roomList", data);
+        setGameRoomList(data);
       });
 
       gameSocket.off("offerBattle");
