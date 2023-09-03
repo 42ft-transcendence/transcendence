@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import { IconButton } from "@components/buttons";
-import { ChannelTypeType, ChannelType } from "@src/types/channel.type";
-import { joinedChannelListState } from "@recoil/atoms/channel";
+import { ChannelTypeType } from "@src/types/channel.type";
+import { channelState } from "@recoil/atoms/channel";
 import { chatSocket } from "@router/socket/chatSocket";
 
 import * as S from "./index.styled";
-import { channelCreateModalState } from "@src/recoil/atoms/modal";
+import { channelEditModalState } from "@src/recoil/atoms/modal";
 
 const channelTypeText = {
   PUBLIC: "공개",
@@ -16,13 +15,16 @@ const channelTypeText = {
   PRIVATE: "비공개",
 };
 
-const ChannelCreateModal = () => {
-  const [name, setName] = useState<string>("");
-  const [type, setType] = useState<ChannelTypeType>("PUBLIC");
-  const [password, setPassword] = useState<string>("");
-  const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
-  const navigate = useNavigate();
-  const [isOpened, setIsOpened] = useRecoilState(channelCreateModalState);
+const ChannelEditModal = () => {
+  const channel = useRecoilValue(channelState);
+  const [name, setName] = useState<string>(channel ? channel.name : "");
+  const [type, setType] = useState<ChannelTypeType>(
+    channel ? channel.type : "PUBLIC",
+  );
+  const [password, setPassword] = useState<string>(
+    channel ? channel.password : "",
+  );
+  const [isOpened, setIsOpened] = useRecoilState(channelEditModalState);
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
@@ -31,18 +33,15 @@ const ChannelCreateModal = () => {
       return;
     }
     chatSocket.emit(
-      "create_channel",
-      { channelName: name, type, password },
-      (channel_joined: ChannelType) => {
-        setJoinedChannelList((prev) => [
-          ...prev,
-          {
-            ...channel_joined,
-            hasNewMessages: false,
-          },
-        ]);
+      "edit_channel",
+      {
+        channelId: channel?.id,
+        channelName: name,
+        type,
+        password,
+      },
+      () => {
         handleClose();
-        navigate(`/channel/${channel_joined.id}`);
       },
     );
   };
@@ -89,7 +88,7 @@ const ChannelCreateModal = () => {
           <S.NameInput
             value={name}
             onChange={handleNameChange}
-            placeholder="채널 이름"
+            placeholder="채널"
           />
 
           <S.Option>
@@ -119,7 +118,7 @@ const ChannelCreateModal = () => {
 
           <S.ButtonContainer>
             <IconButton title="취소" onClick={handleClose} theme="LIGHT" />
-            <IconButton title="생성" onClick={handleSubmit} theme="LIGHT" />
+            <IconButton title="저장" onClick={handleSubmit} theme="LIGHT" />
           </S.ButtonContainer>
         </S.Form>
       </S.Container>
@@ -127,4 +126,4 @@ const ChannelCreateModal = () => {
   );
 };
 
-export default ChannelCreateModal;
+export default ChannelEditModal;
