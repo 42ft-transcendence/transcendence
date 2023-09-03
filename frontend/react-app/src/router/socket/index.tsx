@@ -74,7 +74,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       console.log("user.id", user.id);
       setBattleActionModal({
         battleActionModal: user.id === data.user_id,
-        nickname: data.nickname,
+        awayUser: data.awayUser,
       });
     });
 

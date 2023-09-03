@@ -79,14 +79,14 @@ export class GameGateway {
   @WebSocketServer()
   server: Server;
 
-  async offerGame(user_id: string, nickname: string): Promise<boolean> {
+  async offerGame(user_id: string, awayUser: User): Promise<boolean> {
     const user = await this.userService.getUserById(user_id);
     if (!user) {
       throw new Error('User not found');
     } else {
       const content = {
         user_id: user_id,
-        nickname: nickname,
+        awayUser: awayUser,
       };
       this.server.emit('offerGame', content);
       return true;

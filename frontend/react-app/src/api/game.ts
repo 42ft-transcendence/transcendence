@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import * as cookies from "react-cookies";
 import { base_url } from "./index";
+import { UserType } from "@src/types";
 
 // generate function is in user.ts
 
@@ -14,13 +15,13 @@ import { base_url } from "./index";
 
 export const offerBattle = async (
   userID: string,
-  nickname: string,
+  awayUser: UserType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
     {
       id: userID,
-      nickname: nickname,
+      awayUser: awayUser,
     },
     {
       headers: {
