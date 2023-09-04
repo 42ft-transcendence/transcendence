@@ -37,3 +37,8 @@ export const battleActionModalState = atom<battleActionData>({
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const channelInviteModalState = atom<boolean>({
+  key: "channelInviteModalState",
+  default: false,
+});
