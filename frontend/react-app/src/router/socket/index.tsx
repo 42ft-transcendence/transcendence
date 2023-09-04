@@ -1,9 +1,18 @@
-import { ChannelType, ChatType, OfferGameType, UserType } from "@type";
+import {
+  ChannelType,
+  ChatType,
+  OfferGameType,
+  UserStatus,
+  UserType,
+} from "@type";
 import { chatSocket } from "./chatSocket";
 import * as cookies from "react-cookies";
 import { gameSocket } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
-import { battleActionModalState } from "@src/recoil/atoms/modal";
+import {
+  battleActionModalState,
+  channelInviteAcceptModalState,
+} from "@src/recoil/atoms/modal";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -34,6 +43,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const dmOther = useRecoilValue(dmOtherState);
   const setAllChannelList = useSetRecoilState(allChannelListState);
   const setParticipantList = useSetRecoilState(participantListState);
+  const setInvite = useSetRecoilState(channelInviteAcceptModalState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -133,6 +143,13 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         alert("채널이 삭제되었습니다.");
       }
     });
+
+    chatSocket.off("get_invite");
+    chatSocket.on("get_invite", (user: UserType, channel: ChannelType) => {
+      if (user.status === UserStatus.ONLINE) {
+        setInvite({ user, channel });
+      }
+    });
   }, [
     curChannel?.id,
     dmOther?.id,
@@ -141,6 +158,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     setAllUserList,
     setChannel,
     setDmList,
+    setInvite,
     setJoinedChannelList,
     setJoinedDmOtherList,
     setMessageList,
