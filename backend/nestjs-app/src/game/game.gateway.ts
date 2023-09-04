@@ -5,7 +5,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { TMP, UserStatusType, RoomData } from 'src/util';
@@ -13,105 +12,13 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
-import { HttpException } from '@nestjs/common';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
+import { GameData } from './game.engine';
 
 let rankRoom = 0;
 let normalRoom = 1;
 const finishScore = 5;
-
-export class GameData {
-  left_user: number;
-  right_user: number;
-  ball_x: number;
-  ball_y: number;
-  ball_vec_x: number;
-  ball_vec_y: number;
-  ball_speed: number;
-  score: [number, number];
-  mode: number;
-  hitPlayer: number;
-  onGame: boolean;
-
-  public reset() {
-    this.ball_x = 350;
-    this.ball_y = 250;
-    this.ball_vec_y = 0;
-    this.ball_speed = 8;
-  }
-
-  update() {
-    let collidePoint: number;
-    let angleRad: number;
-
-    this.ball_x += this.ball_vec_x;
-    this.ball_y += this.ball_vec_y;
-
-    if (this.mode == 2) {
-      if (this.hitPlayer == 0) {
-        if (this.ball_x > 350) {
-          this.ball_y = 500 - this.ball_y;
-          this.ball_vec_y *= -1;
-          this.hitPlayer = 1;
-        }
-      }
-      if (this.hitPlayer == 1) {
-        if (this.ball_x < 350) {
-          this.ball_y = 500 - this.ball_y;
-          this.ball_vec_y *= -1;
-          this.hitPlayer = 0;
-        }
-      }
-    }
-
-    if (this.ball_y - 11 < 0) {
-      if (this.ball_vec_y < 0) this.ball_vec_y = -this.ball_vec_y;
-    } else if (this.ball_y + 11 > 500) {
-      if (this.ball_vec_y > 0) this.ball_vec_y = -this.ball_vec_y;
-    }
-
-    if (this.ball_x - 11 < 0) {
-      if (
-        this.ball_y >= this.left_user &&
-        this.ball_y <= this.left_user + 100
-      ) {
-        collidePoint = (this.ball_y - (this.left_user + 50)) / 50;
-        angleRad = (Math.PI / 4) * collidePoint;
-        this.ball_vec_x = this.ball_speed * Math.cos(angleRad);
-        this.ball_vec_y = this.ball_speed * Math.sin(angleRad);
-        if (this.ball_speed < 25) {
-          this.ball_speed += 0.2;
-        }
-      } else {
-        this.score[1]++;
-        this.ball_vec_x = -5;
-        this.reset();
-      }
-    } else if (this.ball_x + 11 > 700) {
-      if (
-        this.ball_y >= this.right_user &&
-        this.ball_y <= this.right_user + 100
-      ) {
-        collidePoint = (this.ball_y - (this.right_user + 50)) / 50;
-        angleRad = (Math.PI / 4) * collidePoint;
-        this.ball_vec_x = -1 * this.ball_speed * Math.cos(angleRad);
-        this.ball_vec_y = this.ball_speed * Math.sin(angleRad);
-        if (this.ball_speed < 25) {
-          this.ball_speed += 0.2;
-        }
-      } else {
-        this.score[0]++;
-        this.ball_vec_x = 5;
-        this.reset();
-      }
-    }
-  }
-
-  setMode(mode: number) {
-    this.mode = mode;
-  }
-}
 
 const roomManager = new Map<number, GameData>();
 const roomList = new Map<number, RoomData>();
@@ -123,9 +30,6 @@ const checkReady = new Map<number, [boolean, boolean]>();
 const checkStart = new Map<number, [boolean, boolean]>();
 
 @WebSocketGateway({
-  // cors: {
-  //   origin: "*",
-  // },
   middlewares: [],
   namespace: '/game',
 })
@@ -455,62 +359,6 @@ export class GameGateway {
       normalBattle : 일반 게임을 처리하는 함수
       rankBattle : 랭크 게임을 처리하는 함수
       */
-
-  /**
-   * 'paddleDeliver' 메시지를 구독하여 갱신된 패들의 위치를 받아오고,
-   * 게임 데이터를 갱신한 후에 모든 클라이언트에게 해당 데이터를 전송합니다.
-   *
-   * @param data 각 사용자의 패들 위치와 방 정보를 포함한 객체
-   * @param client 현재 연결된 소켓 클라이언트
-   */
-  @SubscribeMessage('paddleDeliver')
-  async sendGameData(
-    @MessageBody()
-    data: {
-      paddleSide: number;
-      paddlePos: number;
-      roomNum: string;
-      roomIntNum: number;
-    },
-    @ConnectedSocket() client,
-  ) {
-    if (roomManager.has(data.roomIntNum)) {
-      const gameData = roomManager.get(data.roomIntNum);
-
-      // 전달된 데이터에 따라 해당 패들의 위치를 갱신합니다.
-      if (data.paddleSide == 1) {
-        gameData.left_user = data.paddlePos;
-      } else {
-        gameData.right_user = data.paddlePos;
-      }
-
-      // 게임 데이터 갱신
-      gameData.update();
-
-      // 게임에서 목표 점수에 도달한 경우, 게임 종료 처리를 합니다.
-      if (
-        (gameData.score[0] == finishScore ||
-          gameData.score[1] == finishScore) &&
-        gameData.onGame
-      ) {
-        this.server.to(data.roomNum).emit('finished', gameData.score);
-        gameData.onGame = false;
-        await this.pushHistory(data.roomIntNum, gameData.mode);
-        await this.gameResultProcess(gameData, data.roomIntNum);
-        gameData.score = [0, 0];
-
-        if (Number(data.roomNum) % 2) {
-          checkReady.get(Number(data.roomNum))[0] = false;
-          checkReady.get(Number(data.roomNum))[1] = false;
-        }
-      } else if (!gameData.onGame) {
-        client.emit('finished', gameData.score);
-      } else {
-        // 모든 클라이언트에게 갱신된 게임 데이터 전송
-        this.server.to(data.roomNum).emit('gameData', gameData);
-      }
-    }
-  }
 
   /**기권. 방 번호 주는게 좋음*/
   @SubscribeMessage('giveUpGame')
@@ -1008,7 +856,7 @@ export class GameGateway {
     checkStart.set(roomNum, [false, false]);
 
     const gameTemp: GameData = new GameData();
-    gameTemp.setMode(mode);
+    gameTemp.mode = mode;
     roomManager.set(roomNum, gameTemp);
   }
 
@@ -1056,4 +904,52 @@ export class GameGateway {
   //     client.emit('canNotAvailableGame');
   //   }
   // }
+  @SubscribeMessage('processGameFrame')
+  async processGameFrame(
+    client: Socket,
+    content: {
+      userLocation: number;
+      paddlePos: number;
+      roomNum: number;
+    },
+  ) {
+    let paddleDelta;
+    if (roomManager.has(content.roomNum)) {
+      const gameData = roomManager.get(content.roomNum);
+      if (content.userLocation == 1) {
+        paddleDelta = gameData.leftPaddle - content.paddlePos;
+        gameData.leftPaddle = content.paddlePos;
+      } else {
+        paddleDelta = gameData.rightPaddle - content.paddlePos;
+        gameData.rightPaddle = content.paddlePos;
+      }
+      if (paddleDelta < 0) {
+        paddleDelta *= -1;
+      }
+
+      gameData.advance(paddleDelta);
+
+      if (
+        (gameData.score[0] === finishScore || gameData[1] === finishScore) &&
+        gameData.onGame
+      ) {
+        this.server
+          .to(String(content.roomNum))
+          .emit('finished', gameData.score);
+        gameData.onGame = false;
+        await this.pushHistory(content.roomNum, gameData.mode);
+        await this.gameResultProcess(gameData, content.roomNum);
+        gameData.score = [0, 0];
+        // 일반게임이면 레디상태 초기화
+        if (content.roomNum % 2 === 0) {
+          checkReady.get(content.roomNum)[0] = false;
+          checkReady.get(content.roomNum)[1] = false;
+        }
+      } else if (gameData.onGame === false) {
+        client.emit('finished', gameData.score);
+      } else {
+        this.server.to(String(content.roomNum)).emit('gameData', gameData);
+      }
+    }
+  }
 }
