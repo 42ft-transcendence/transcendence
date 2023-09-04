@@ -10,7 +10,9 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@recoil/atoms/directMessage";
-import SideBarList from "../../sideBarList";
+import SideBarList, {
+  SideBarFoldListPropsType,
+} from "@components/common/sideBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
 import ChannelJoinModal from "@components/modal/channel/channelJoinModal";
@@ -44,6 +46,9 @@ const ChattingSideBar = () => {
   const dmOther = useRecoilValue(dmOtherState);
   const userData = useRecoilValue(userDataState);
   const participantList = useRecoilValue(participantListState);
+  const [sideBarList, setSideBarList] = useState<SideBarFoldListPropsType[]>(
+    [],
+  );
 
   const navigate = useNavigate();
 
@@ -136,6 +141,49 @@ const ChattingSideBar = () => {
     setChannelEditModal,
   ]);
 
+  useEffect(() => {
+    const tempList = [
+      {
+        title: "참여한 채널",
+        children: joinedChannelList.map((channel) => (
+          <ChannelListItem
+            key={channel.id}
+            channel={channel}
+            hasNewMessage={channel.hasNewMessages}
+          />
+        )),
+      },
+      {
+        title: "다이렉트 메세지",
+        children: joinedDmOtherList.map((dmOther) => (
+          <DirectMessageListItem
+            key={dmOther.id}
+            user={dmOther}
+            hasNewMessage={dmOther.hasNewMessages}
+          />
+        )),
+      },
+    ];
+    setSideBarList(() => {
+      if (channel) {
+        return [
+          {
+            title: "참여자 목록",
+            children: participantList.map((participant) => (
+              <ParticipantListItem
+                key={participant.id}
+                participant={participant}
+              />
+            )),
+          },
+          ...tempList,
+        ];
+      } else {
+        return tempList;
+      }
+    });
+  }, [channel, joinedChannelList, joinedDmOtherList, participantList]);
+
   return (
     <>
       {isChannelJoinModalOpened && <ChannelJoinModal />}
@@ -143,34 +191,7 @@ const ChattingSideBar = () => {
       {isChannelEditModalOpened && <ChannelEditModal />}
       <S.Container>
         <ButtonList buttons={iconButtons} />
-        {channel && (
-          <SideBarList title="참여자 목록">
-            {participantList.map((participant) => (
-              <ParticipantListItem
-                key={participant.id}
-                participant={participant}
-              />
-            ))}
-          </SideBarList>
-        )}
-        <SideBarList title="참여한 채널">
-          {joinedChannelList.map((channel) => (
-            <ChannelListItem
-              key={channel.id}
-              channel={channel}
-              hasNewMessage={channel.hasNewMessages}
-            />
-          ))}
-        </SideBarList>
-        <SideBarList title="다이렉트 메세지">
-          {joinedDmOtherList.map((dmOther) => (
-            <DirectMessageListItem
-              key={dmOther.id}
-              user={dmOther}
-              hasNewMessage={dmOther.hasNewMessages}
-            />
-          ))}
-        </SideBarList>
+        <SideBarList lists={sideBarList} />
       </S.Container>
     </>
   );
