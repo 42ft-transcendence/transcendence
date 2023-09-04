@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-import { ChannelType } from "@src/types";
+import { ChannelType, ChannelTypeType } from "@src/types";
 import { IconButton } from "@components/buttons";
 import { joinedChannelListState } from "@recoil/atoms/channel";
 import { chatSocket } from "@router/socket/chatSocket";
@@ -56,7 +56,7 @@ const ChannelJoinModal = () => {
       <S.Overlay onClick={handleClose} />
       <S.Container>
         <S.Title>{channel.name}에 참여하시겠습니까?</S.Title>
-        {channel.type === "PROTECTED" && (
+        {channel.type === ChannelTypeType.PROTECTED && (
           <S.PasswordInput
             value={password}
             onChange={handlePasswordChange}

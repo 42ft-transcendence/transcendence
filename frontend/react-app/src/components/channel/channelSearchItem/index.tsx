@@ -1,4 +1,4 @@
-import { ChannelType } from "@src/types";
+import { ChannelType, ChannelTypeType } from "@src/types";
 import * as S from "./index.styled";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { channelJoinModalState } from "@src/recoil/atoms/modal";
@@ -9,10 +9,10 @@ export interface ChannelSearchItemPropsType {
   channel: ChannelType;
 }
 
-const ChannelDescription = {
-  PUBLIC: "공개 채널",
-  PROTECTED: "비밀 채널",
-  PRIVATE: "비공개 채널",
+const ChannelDescription: { [key in ChannelTypeType]: string } = {
+  [ChannelTypeType.PUBLIC]: "공개 채널",
+  [ChannelTypeType.PROTECTED]: "비밀 채널",
+  [ChannelTypeType.PRIVATE]: "비공개 채널",
 };
 
 const ChannelSearchItem = ({ channel }: ChannelSearchItemPropsType) => {
