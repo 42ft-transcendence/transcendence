@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { User } from 'src/users/entities/user.entity';
 import { ChatChannel } from './entities/chatchannel.entity';
@@ -40,7 +40,7 @@ export class ChattingService {
     channelId: string,
     userId: string,
     name: string,
-    type: string,
+    type: number,
     password: string,
   ): Promise<ChatChannel> {
     const channel = await this.channelRepository.findOne({

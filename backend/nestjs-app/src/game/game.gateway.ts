@@ -132,14 +132,18 @@ export class GameGateway {
     console.log('add history');
   }
 
-  async updateGameInfo(user: User, WinLose: number, isRank: number) {
+  async updateGameInfo(
+    user: User,
+    WinLose: number,
+    isRank: number,
+    changeRating: number,
+  ) {
     user = await this.userService.getUserById(user.id);
     if (isRank == 0) {
+      user.rating += changeRating;
       if (WinLose > 0) {
-        user.rating += 15;
         user.ladder_win++;
       } else {
-        user.rating -= 10;
         user.ladder_lose++;
       }
       await this.userService.updateLadderGameRecord(user);
@@ -158,9 +162,22 @@ export class GameGateway {
     const winLose = gameData.score[0] - gameData.score[1];
     const isRank = room % 2;
     const user = getUser.get(room);
+    const K = 32;
+    const expectedScore = (ratingA: number, ratingB: number): number =>
+      1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+    const calculateScore = (expected: number, actual: number): number =>
+      K * (actual - expectedScore(user[0].rating, user[1].rating));
+    const user0ChangeRating = calculateScore(
+      expectedScore(user[0].rating, user[1].rating),
+      winLose > 0 ? 1 : 0,
+    );
+    const user1ChangeRating = calculateScore(
+      expectedScore(user[1].rating, user[0].rating),
+      winLose > 0 ? 1 : 0,
+    );
 
-    await this.updateGameInfo(user[0], winLose, isRank);
-    await this.updateGameInfo(user[1], winLose * -1, isRank);
+    await this.updateGameInfo(user[0], winLose, isRank, user0ChangeRating);
+    await this.updateGameInfo(user[1], winLose * -1, isRank, user1ChangeRating);
   }
 
   async checkUserSet(roomNum: number): Promise<[boolean, boolean]> {
