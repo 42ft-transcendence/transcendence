@@ -144,6 +144,12 @@ export class UsersService {
       isTwoFactorAuthenticationEnabled: false,
     });
   }
+
+  // 더미 유저 생성
+  async createDummyUser(userEntity: User): Promise<void> {
+    await this.userRepository.createDummyUser(userEntity);
+  }
+
   async updateLadderGameRecord(user: User): Promise<User> {
     return await this.userRepository.updateLadderGameRecord(user);
   }

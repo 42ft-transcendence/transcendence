@@ -20,6 +20,7 @@ export class MatchHistorysService {
     history.player2 = player2;
     history.player2Score = historyDto.player2score;
     history.gameMode = historyDto.gameMode;
+    // TODO: gameResultProcess에서 계산된 변화하는 rating을 넣어줘야함
     this.matchHistoryRepository.putHistory(history);
   }
 

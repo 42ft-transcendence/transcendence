@@ -142,6 +142,19 @@ export class GameGateway {
 
   /*
     ========== 서버연결,서버 연결 해제 관련 핸들러 =========
+  async offerGame(user_id: string, awayUser: User): Promise<boolean> {
+    const user = await this.userService.getUserById(user_id);
+    if (!user) {
+      throw new Error('User not found');
+    } else {
+      const content = {
+        user_id: user_id,
+        awayUser: awayUser,
+      };
+      this.server.emit('offerGame', content);
+      return true;
+    }
+  }
 
     handleConnection : 유저가 연결되면 호출되는 핸들러
     hadleDisconnect : 유저가 연결이 끊어졌을 때 호출되는 핸들러
@@ -334,52 +347,10 @@ export class GameGateway {
 
   /*
       ========== 게임 결과 처리 핸들러 =========
+      pushHistory : 게임 히스토리를 저장하는 함수
       gameResultProcess : 게임 결과 처리 함수
       updateGameInfo : 유저의 게임 정보를 업데이트 하는 함수
-      pushHistory : 게임 히스토리를 저장하는 함수
       */
-
-  /**
-   * 게임 결과 처리 함수
-   * @param {GameData} gameData - 게임 데이터
-   * @param {number} room - 게임 방 번호
-   */
-  async gameResultProcess(gameData: GameData, room: number) {
-    const winLose = gameData.score[0] - gameData.score[1];
-    const isRank = room % 2;
-    const user = getUser.get(room);
-
-    await this.updateGameInfo(user[0], winLose, isRank);
-    await this.updateGameInfo(user[1], winLose * -1, isRank);
-  }
-
-  /**
-   * 유저의 게임 정보를 업데이트 하는 함수
-   * @param {User} user - 정보를 업데이트 할 유저
-   * @param {number} WinLose - 게임 승패 정보 (양수이면 승, 음수면 패)
-   * @param {number} isRank - 게임이 랭크게임인지 아닌지를 나타냄 (0이면 랭크, 그 외는 일반)
-   */
-  async updateGameInfo(user: User, WinLose: number, isRank: number) {
-    user = await this.userService.getUserById(user.id);
-    if (isRank == 0) {
-      if (WinLose > 0) {
-        user.rating += 15;
-        user.ladder_win++;
-      } else {
-        user.rating -= 10;
-        user.ladder_lose++;
-      }
-      await this.userService.updateLadderGameRecord(user);
-    } else {
-      if (WinLose > 0) {
-        user.win++;
-      } else {
-        user.lose++;
-      }
-      await this.userService.updateNormalGameRecord(user);
-    }
-    console.log('updat user info');
-  }
 
   /**
    * 게임 히스토리를 저장하는 함수
@@ -417,6 +388,62 @@ export class GameGateway {
     );
 
     console.log('add history');
+  }
+
+  /**
+   * 유저의 게임 정보를 업데이트 하는 함수
+   * @param {User} user - 정보를 업데이트 할 유저
+   * @param {number} WinLose - 게임 승패 정보 (양수이면 승, 음수면 패)
+   * @param {number} isRank - 게임이 랭크게임인지 아닌지를 나타냄 (0이면 랭크, 그 외는 일반)
+   * @param {number} changeRating - 랭크 게임일 경우 변경된 레이팅
+   */
+
+  async updateGameInfo(
+    user: User,
+    WinLose: number,
+    isRank: number,
+    changeRating: number,
+  ) {
+    user = await this.userService.getUserById(user.id);
+    if (isRank == 0) {
+      user.rating += changeRating;
+      if (WinLose > 0) {
+        user.ladder_win++;
+      } else {
+        user.ladder_lose++;
+      }
+      await this.userService.updateLadderGameRecord(user);
+    } else {
+      if (WinLose > 0) {
+        user.win++;
+      } else {
+        user.lose++;
+      }
+      await this.userService.updateNormalGameRecord(user);
+    }
+    console.log('updat user info');
+  }
+
+  async gameResultProcess(gameData: GameData, room: number) {
+    const winLose = gameData.score[0] - gameData.score[1];
+    const isRank = room % 2;
+    const user = getUser.get(room);
+    const K = 32;
+    const expectedScore = (ratingA: number, ratingB: number): number =>
+      1 / (1 + Math.pow(10, (ratingB - ratingA) / 400));
+    const calculateScore = (expected: number, actual: number): number =>
+      K * (actual - expectedScore(user[0].rating, user[1].rating));
+    const user0ChangeRating = calculateScore(
+      expectedScore(user[0].rating, user[1].rating),
+      winLose > 0 ? 1 : 0,
+    );
+    const user1ChangeRating = calculateScore(
+      expectedScore(user[1].rating, user[0].rating),
+      winLose > 0 ? 1 : 0,
+    );
+
+    await this.updateGameInfo(user[0], winLose, isRank, user0ChangeRating);
+    await this.updateGameInfo(user[1], winLose * -1, isRank, user1ChangeRating);
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -872,10 +899,10 @@ export class GameGateway {
   /**
    * 게임 제안 기능
    * @param {string} user_id - 유저의 아이디
-   * @param {string} nickname - 유저의 닉네임
+   * @param {User} awayuser - 유저의 닉네임
    * @returns {Promise<boolean>} - 게임 제안이 성공하면 true를 반환
    */
-  async offerGame(user_id: string, nickname: string): Promise<boolean> {
+  async offerGame(user_id: string, awayuser: User): Promise<boolean> {
     // 유저 정보를 ID로 가져오기
     const user = await this.userService.getUserById(user_id);
     if (!user) {
@@ -883,7 +910,7 @@ export class GameGateway {
     } else {
       const content = {
         user_id: user_id,
-        nickname: nickname,
+        away_user: awayuser,
       };
       // 게임 제안 이벤트 발행
       this.server.emit('offerGame', content);

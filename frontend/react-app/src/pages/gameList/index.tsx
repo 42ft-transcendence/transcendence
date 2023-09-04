@@ -1,5 +1,6 @@
 import NavBar from "@src/components/common/navBar";
 import { sidebarConfig } from "@src/components/common/sideBar";
+import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 
 const GameList = () => {
   const currentRoute = window.location.pathname;
@@ -12,6 +13,7 @@ const GameList = () => {
     <>
       <NavBar />
       <CurrentSideBarComponent />
+      <GameCreateModal />
     </>
   );
 };

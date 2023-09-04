@@ -29,6 +29,18 @@ export const ItemIcon = styled.img`
   height: 32px;
 `;
 
+export const Noti = styled.div`
+  position: absolute;
+  left: 35px;
+  top: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.gaming};
+`;
+
 export const SettingOptionModalContentWrapper = styled.div`
   display: flex;
   width: 150px;
