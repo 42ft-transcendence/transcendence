@@ -145,8 +145,9 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     });
 
     chatSocket.off("get_invite");
-    chatSocket.on("get_invite", (user: UserType, channel: ChannelType) => {
-      if (user.status === UserStatus.ONLINE) {
+    chatSocket.on("get_invite", ({ user, channel }) => {
+      console.log("get_invite", user, channel);
+      if (user?.status === UserStatus.ONLINE) {
         setInvite({ user, channel });
       }
     });
