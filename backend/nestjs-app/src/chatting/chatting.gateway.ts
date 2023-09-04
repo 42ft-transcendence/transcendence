@@ -16,10 +16,11 @@ import { ChatChannel } from './entities/chatchannel.entity';
 import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
-import * as bcrypt from 'bcrypt';
-import { RelationshipService } from 'src/relationship/relationship.service';
 
 @WebSocketGateway({
+  // cors: {
+  //   origin: 'http://localhost:3000',
+  // },
   middlewares: [],
   namespace: '/ChatPage',
   credential: true,
@@ -35,7 +36,6 @@ export class ChattingGateway
     private participantsService: ParticipantsService,
     private dmService: DirectMessageService,
     private chattingService: ChattingService,
-    private relationshipService: RelationshipService,
   ) {}
 
   @WebSocketServer()
@@ -120,17 +120,16 @@ export class ChattingGateway
     try {
       const ownerId = await this.getUserId(client);
       const owner = await this.userService.getUserById(ownerId);
-      const hashedPassword = await bcrypt.hash(content.password, 10);
       const channel = await this.channelRepository.createChatChannel(
         content.channelName,
         owner,
         content.type,
-        hashedPassword,
+        content.password,
       );
       if (!channel) throw new Error('Channel create failed');
       await this.chattingService.ownerJoinChannel(
         channel.id,
-        hashedPassword,
+        content.password,
         client,
         owner,
       );
@@ -154,7 +153,7 @@ export class ChattingGateway
       );
       if (
         channel.type !== 'PROTECTED' ||
-        (await bcrypt.compare(content.password, channel.password))
+        channel.password === content.password
       ) {
         client.join(content.channelId);
         const participant = await this.participantsService.addParticipant(
@@ -191,7 +190,15 @@ export class ChattingGateway
       if (channel.owner.id !== userId) {
         client.leave(content.channelId);
         await this.participantsService.deleteParticipant(user, channel);
+      } else {
+        await this.participantsService.deleteAllParticipant(channel);
+        await this.channelRepository.deleteChatChannel(channel);
+        this.server
+          .to(content.channelId)
+          .emit('channel_deleted', content.channelId);
+        this.server.socketsLeave(content.channelId);
       }
+      await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
       console.log(e);
     }
@@ -207,17 +214,7 @@ export class ChattingGateway
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      if (channel.owner.id === user.id) {
-        const participants =
-          await this.participantsService.getAllParticipants(channel);
-        participants.forEach((participant) => {
-          this.server
-            .to(participant.user.id)
-            .emit('leave_channel', content.channelId);
-        });
-        await this.participantsService.deleteAllParticipant(channel);
-        await this.channelRepository.deleteChatChannel(channel);
-      } else {
+      if (channel.owner.id !== userId) {
         throw new Error('채널 삭제 권한이 없습니다.');
       }
       await this.participantsService.deleteAllParticipant(channel);
@@ -251,24 +248,13 @@ export class ChattingGateway
         `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 강퇴되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
-      );
-      if (participant && participant.owner === false) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 강퇴되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        this.server.to(content.userId).emit('leave_channel', content.channelId);
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      const socket = this.findSocketByUserId(content.userId);
+      if (socket) {
+        socket.leave(content.channelId);
       }
       this.server.to(content.userId).emit('kicked', content.channelId);
       await this.broadcastUpdatedChannelInfo(content.channelId);
@@ -422,63 +408,6 @@ export class ChattingGateway
     }
   }
 
-  @SubscribeMessage('change_type')
-  async changeType(
-    client: Socket,
-    content: { channelId: string; type: string; password: string },
-  ): Promise<void> {
-    try {
-      const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
-      const channel = await this.channelRepository.getChannelById(
-        content.channelId,
-      );
-      if (channel.owner.id === user.id) {
-        channel.type = content.type;
-        if (content.type === 'PROTECTED') {
-          channel.password = await bcrypt.hash(content.password, 10);
-        } else if (content.type === 'PUBLIC') {
-          channel.password = '';
-        }
-        await this.channelRepository.save(channel);
-      } else {
-        throw new Error('채널 타입 변경 권한이 없습니다.');
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  @SubscribeMessage('appoint_admin')
-  async appointAdmin(
-    client: Socket,
-    content: { channelId: string; userId: string },
-  ): Promise<void> {
-    try {
-      const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
-      const channel = await this.channelRepository.getChannelById(
-        content.channelId,
-      );
-      if (channel.owner.id === user.id) {
-        const participants =
-          await this.participantsService.getAllParticipants(channel);
-        const participant = participants.find(
-          (participant) => participant.user.id === content.userId,
-        );
-        if (participant) {
-          await this.participantsService.changeAdmin(participant.user, channel);
-        } else {
-          throw new Error('채널에 참가하지 않았습니다.');
-        }
-      } else {
-        throw new Error('관리자 임명 권한이 없습니다.');
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   @SubscribeMessage('send_dm')
   async sendDM(
     client: Socket,
@@ -488,9 +417,6 @@ export class ChattingGateway
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
       const toUser = await this.userService.getUserById(content.userId);
-      if (await this.relationshipService.checkBlock(user, toUser)) {
-        throw new Error('차단된 사용자입니다.');
-      }
       const dm = await this.dmService.saveDM(user, toUser, content.message);
       client.to(content.userId).emit('get_dm', {
         user: user,
@@ -500,6 +426,35 @@ export class ChattingGateway
     } catch (e) {
       console.log(e);
     }
+  }
+
+  @SubscribeMessage('send_invite')
+  async sendInvite(
+    client: Socket,
+    content: { userId: string; channelId: string },
+  ): Promise<void> {
+    try {
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      // const toUser = await this.userService.getUserById(content.userId);
+      const channel = await this.channelRepository.getChannelById(
+        content.channelId,
+      );
+      // 초대한 유저가 채널에 참가한 유저인지 확인
+      const participant = await this.participantsService.getParticipant(
+        user,
+        channel,
+      );
+      if (!participant) {
+        throw new Error('채널에 참가하지 않았습니다.');
+      }
+      client.to(content.userId).emit('get_invite', {
+        user: user,
+        channel: channel,
+      });
+    } catch (e) {
+      console.log(e);
+    } // 채널초대한 유저랑 채널의 데이터
   }
 
   @SubscribeMessage('enter_dm')
@@ -562,4 +517,3 @@ export class ChattingGateway
     }
   }
 }
-
