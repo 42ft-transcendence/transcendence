@@ -12,7 +12,7 @@ export const Overlay = styled.div`
 
 export const Container = styled.div`
   position: absolute;
-  width: 300px;
+  width: 400px;
   max-height: 600px;
   left: 50%;
   top: 50%;

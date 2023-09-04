@@ -18,19 +18,19 @@ const ChannelInviteModal = () => {
 
   useEffect(() => {
     setInviteList((prev) => {
-      const userList = allUserList.filter(
-        (user) =>
-          !participantList.some(
-            (participant) => participant.userId === user.id,
-          ),
-      );
-      const inviteList = userList.map((user) => {
+      return allUserList.map((user) => {
         const prevItem = prev.find((prevUser) => prevUser.user.id === user.id);
-        return prevItem ?? { user: user, invited: false };
+        if (prevItem) return prevItem;
+        else if (
+          participantList.some(
+            (participant) => participant.user?.id === user.id,
+          )
+        )
+          return { user, invited: true };
+        else return { user, invited: false };
       });
-      return inviteList;
     });
-  }, [allUserList, participantList]);
+  }, [setInviteList, allUserList, participantList]);
 
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
