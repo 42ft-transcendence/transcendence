@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { User } from 'src/users/entities/user.entity';
+import { ChatChannel } from './entities/chatchannel.entity';
 
 @Injectable()
 export class ChattingService {
@@ -33,5 +34,30 @@ export class ChattingService {
       true,
     );
     await this.channelRepository.joinChatChannel(channel, participant);
+  }
+
+  async editChannel(
+    channelId: string,
+    userId: string,
+    name: string,
+    type: string,
+    password: string,
+  ): Promise<ChatChannel> {
+    const channel = await this.channelRepository.findOne({
+      relations: ['owner'],
+      where: { id: channelId },
+    });
+    if (!channel) {
+      throw new Error('존재하지 않는 채널입니다.');
+    } else if (channel.owner.id !== userId) {
+      throw new Error('권한이 없습니다.');
+    } else {
+      return await this.channelRepository.editChatChannel(
+        channelId,
+        name,
+        type,
+        password,
+      );
+    }
   }
 }
