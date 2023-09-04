@@ -1,13 +1,7 @@
-import {
-  ChannelType,
-  ChatType,
-  ParticipantType,
-  OfferGameType,
-  UserType,
-} from "@type";
-import { chatSocket, chatSocketConnect } from "./chatSocket";
+import { ChannelType, ChatType, OfferGameType, UserType } from "@type";
+import { chatSocket } from "./chatSocket";
 import * as cookies from "react-cookies";
-import { gameSocket, gameSocketConnect } from "./gameSocket";
+import { gameSocket } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { allUserListState } from "@src/recoil/atoms/common";
@@ -29,7 +23,6 @@ import { RefreshChannelType } from "@src/types/channel.type";
 import { useNavigate } from "react-router-dom";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
-  const jwt = cookies.load("jwt");
   const [user] = useRecoilState(userDataState);
   const [, setBattleActionModal] = useRecoilState(battleActionModalState);
   const setAllUserList = useSetRecoilState(allUserListState);
@@ -43,16 +36,25 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setParticipantList = useSetRecoilState(participantListState);
   const navigate = useNavigate();
 
-  const participantList = useRecoilValue(participantListState);
   useEffect(() => {
-    console.log("participantList", participantList);
-  }, [participantList]);
+    const jwt = cookies.load("jwt");
+    if (jwt) {
+      chatSocket.io.opts.extraHeaders = {
+        Authorization: `Bearer ${jwt}`,
+      };
+      gameSocket.io.opts.extraHeaders = {
+        Authorization: `Bearer ${jwt}`,
+      };
+      chatSocket.connect();
+      gameSocket.connect();
+    } else {
+      chatSocket.disconnect();
+      gameSocket.disconnect();
+    }
+  }, []);
 
-  if (!jwt) {
-    chatSocket.disconnect();
-    gameSocket.disconnect();
-  } else {
-    // Init chat socket events
+  // Init chat socket events
+  useEffect(() => {
     chatSocket.off("refresh_users");
     chatSocket.on("refresh_users", (userList: UserType[]) => {
       setAllUserList(userList);
@@ -131,7 +133,21 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         alert("채널이 삭제되었습니다.");
       }
     });
+  }, [
+    curChannel?.id,
+    dmOther?.id,
+    navigate,
+    setAllChannelList,
+    setAllUserList,
+    setChannel,
+    setDmList,
+    setJoinedChannelList,
+    setJoinedDmOtherList,
+    setMessageList,
+    setParticipantList,
+  ]);
 
+  useEffect(() => {
     gameSocket.off("offerGame");
     gameSocket.on("offerGame", (data: OfferGameType) => {
       console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
@@ -141,10 +157,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
         awayUser: data.awayUser,
       });
     });
-
-    chatSocketConnect(jwt);
-    gameSocketConnect(jwt);
-  }
+  }, [setBattleActionModal, user.id]);
 
   return children;
 };
