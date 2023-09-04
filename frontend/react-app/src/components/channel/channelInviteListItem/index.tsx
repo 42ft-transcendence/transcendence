@@ -18,7 +18,10 @@ const ChannelInviteListItem = ({
 
   const handleClick = useCallback(() => {
     if (!invited && channel) {
-      chatSocket.emit("send_invite", { userId: user.id, channel: channel.id });
+      chatSocket.emit("send_invite", {
+        userId: user.id,
+        channelId: channel.id,
+      });
     } else if (invited && channel) {
       console.log("이미 참가한 유저입니다.");
     }

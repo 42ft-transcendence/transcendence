@@ -145,15 +145,18 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
     });
 
     chatSocket.off("get_invite");
-    chatSocket.on("get_invite", ({ user, channel }) => {
-      console.log("get_invite", user, channel);
-      if (user?.status === UserStatus.ONLINE) {
-        setInvite({ user, channel });
-      }
-    });
+    chatSocket.on(
+      "get_invite",
+      (content: { user: UserType; channel: ChannelType }) => {
+        if (user?.status === UserStatus.ONLINE) {
+          setInvite({ user: content.user, channel: content.channel });
+        }
+      },
+    );
   }, [
     curChannel?.id,
     dmOther?.id,
+    user?.status,
     navigate,
     setAllChannelList,
     setAllUserList,
