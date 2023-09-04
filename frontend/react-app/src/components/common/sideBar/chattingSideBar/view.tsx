@@ -9,9 +9,11 @@ import { useRecoilValue } from "recoil";
 import {
   channelCreateModalState,
   channelEditModalState,
+  channelInviteModalState,
   channelJoinModalState,
 } from "@recoil/atoms/modal";
 import * as S from "../index.styled";
+import ChannelInviteModal from "@src/components/modal/channel/channelInviteModal";
 
 export interface ChattingSideBarViewPropsType {
   iconButtons: IconButtonProps[];
@@ -25,12 +27,14 @@ const ChattingSideBarView = ({
   const isChannelJoinModalOpened = useRecoilValue(channelJoinModalState);
   const isChannelCreateModalOpened = useRecoilValue(channelCreateModalState);
   const isChannelEditModalOpened = useRecoilValue(channelEditModalState);
+  const isChannelInviteModalOpened = useRecoilValue(channelInviteModalState);
 
   return (
     <>
       {isChannelJoinModalOpened && <ChannelJoinModal />}
       {isChannelCreateModalOpened && <ChannelCreateModal />}
       {isChannelEditModalOpened && <ChannelEditModal />}
+      {isChannelInviteModalOpened && <ChannelInviteModal />}
       <S.Container>
         <ButtonList buttons={iconButtons} />
         <SideBarList lists={sideBarList} />
