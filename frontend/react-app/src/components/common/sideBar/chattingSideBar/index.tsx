@@ -1,7 +1,11 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { channelState, joinedChannelListState } from "@recoil/atoms/channel";
+import {
+  channelState,
+  joinedChannelListState,
+  participantListState,
+} from "@recoil/atoms/channel";
 import {
   dmOtherState,
   joinedDmOtherListState,
@@ -21,6 +25,7 @@ import { useEffect, useState } from "react";
 import { chatSocket } from "@router/socket/chatSocket";
 import ChannelEditModal from "@src/components/modal/channel/channelEditModal";
 import { userDataState } from "@src/recoil/atoms/common";
+import ParticipantListItem from "@src/components/channel/participantListItem";
 
 const ChattingSideBar = () => {
   const [joinedChannelList, setJoinedChannelList] = useRecoilState(
@@ -38,6 +43,7 @@ const ChattingSideBar = () => {
   const channel = useRecoilValue(channelState);
   const dmOther = useRecoilValue(dmOtherState);
   const userData = useRecoilValue(userDataState);
+  const participantList = useRecoilValue(participantListState);
 
   const navigate = useNavigate();
 
@@ -137,6 +143,16 @@ const ChattingSideBar = () => {
       {isChannelEditModalOpened && <ChannelEditModal />}
       <S.Container>
         <ButtonList buttons={iconButtons} />
+        {channel && (
+          <SideBarList title="참여자 목록">
+            {participantList.map((participant) => (
+              <ParticipantListItem
+                key={participant.id}
+                participant={participant}
+              />
+            ))}
+          </SideBarList>
+        )}
         <SideBarList title="참여한 채널">
           {joinedChannelList.map((channel) => (
             <ChannelListItem
