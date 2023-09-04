@@ -5,6 +5,12 @@ export enum UserStatusType {
   SIGNUP,
 }
 
+export enum ChatChannelType {
+  PUBLIC,
+  PROTECTED,
+  PRIVATE,
+}
+
 export interface TMP {
   id?: string;
 }

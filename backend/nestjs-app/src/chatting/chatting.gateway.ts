@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { TMP, UserStatusType } from 'src/util';
+import { TMP, UserStatusType, ChatChannelType } from 'src/util';
 import { UsersService } from 'src/users/users.service';
 import { MessageService } from 'src/message/message.service';
 import { ChatChannelRepository } from './repository/chatchannel.repository';
@@ -18,9 +18,6 @@ import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
 
 @WebSocketGateway({
-  // cors: {
-  //   origin: 'http://localhost:3000',
-  // },
   middlewares: [],
   namespace: '/ChatPage',
   credential: true,
@@ -115,7 +112,7 @@ export class ChattingGateway
   @SubscribeMessage('create_channel')
   async createChannel(
     client: Socket,
-    content: { channelName: string; type: string; password: string },
+    content: { channelName: string; type: number; password: string },
   ): Promise<ChatChannel> {
     try {
       const ownerId = await this.getUserId(client);
@@ -152,7 +149,7 @@ export class ChattingGateway
         content.channelId,
       );
       if (
-        channel.type !== 'PROTECTED' ||
+        channel.type !== ChatChannelType.PROTECTED ||
         channel.password === content.password
       ) {
         client.join(content.channelId);
@@ -387,7 +384,7 @@ export class ChattingGateway
     content: {
       channelId: string;
       channelName: string;
-      type: string;
+      type: number;
       password: string;
     },
   ) {
@@ -436,11 +433,9 @@ export class ChattingGateway
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
-      // const toUser = await this.userService.getUserById(content.userId);
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      // 초대한 유저가 채널에 참가한 유저인지 확인
       const participant = await this.participantsService.getParticipant(
         user,
         channel,
@@ -454,7 +449,7 @@ export class ChattingGateway
       });
     } catch (e) {
       console.log(e);
-    } // 채널초대한 유저랑 채널의 데이터
+    }
   }
 
   @SubscribeMessage('enter_dm')
@@ -511,7 +506,7 @@ export class ChattingGateway
         .to(channelId)
         .emit('refresh_channel', { channel, participants });
     }
-    if (channel && channel.type === 'PRIVATE') {
+    if (channel && channel.type !== ChatChannelType.PRIVATE) {
       const allChannels = await this.channelRepository.getAllOpenedChannels();
       this.server.emit('refresh_all_channels', allChannels);
     }
