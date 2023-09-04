@@ -35,13 +35,17 @@ const ChannelJoinModal = () => {
       "join_channel",
       { channelId: channel?.id, password: password },
       (joined_channel: ChannelType) => {
-        setJoinedChannelList((prev) => [
-          ...prev,
-          {
-            ...joined_channel,
-            hasNewMessages: false,
-          },
-        ]);
+        setJoinedChannelList((prev) =>
+          prev.some((prevChannel) => prevChannel.id === joined_channel.id)
+            ? prev
+            : [
+                ...prev,
+                {
+                  ...joined_channel,
+                  hasNewMessages: false,
+                },
+              ],
+        );
         handleClose();
         navigate(`/channel/${joined_channel.id}`);
       },

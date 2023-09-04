@@ -35,13 +35,17 @@ const ChannelCreateModal = () => {
       "create_channel",
       { channelName: name, type, password },
       (channel_joined: ChannelType) => {
-        setJoinedChannelList((prev) => [
-          ...prev,
-          {
-            ...channel_joined,
-            hasNewMessages: false,
-          },
-        ]);
+        setJoinedChannelList((prev) =>
+          prev.some((prevChannel) => prevChannel.id === channel_joined.id)
+            ? prev
+            : [
+                ...prev,
+                {
+                  ...channel_joined,
+                  hasNewMessages: false,
+                },
+              ],
+        );
         handleClose();
         navigate(`/channel/${channel_joined.id}`);
       },
