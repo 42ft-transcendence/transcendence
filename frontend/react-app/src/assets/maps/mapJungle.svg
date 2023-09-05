@@ -1,0 +1,28 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 배경 설정 -->
+    <rect width="800" height="600" fill="#DFFAD5"/>
+
+    <!-- 왼쪽 나무와 나뭇잎 -->
+    <circle cx="200" cy="450" r="35" fill="#6B4D35"/> <!-- 나무 기둥 -->
+    <ellipse cx="200" cy="415" rx="70" ry="49" fill="#9AE19D"/> <!-- 나뭇잎1 -->
+    <ellipse cx="200" cy="375" rx="56" ry="42" fill="#4CAF50"/> <!-- 나뭇잎2 -->
+
+    <!-- 오른쪽 나무와 나뭇잎 (반전) -->
+    <circle cx="600" cy="80" r="35" fill="#6B4D35"/> <!-- 나무 기둥 -->
+    <ellipse cx="600" cy="115" rx="70" ry="49" fill="#4CAF50"/> <!-- 나뭇잎2 (반전) -->
+    <ellipse cx="600" cy="155" rx="56" ry="42" fill="#9AE19D"/> <!-- 나뭇잎1 (반전) -->
+
+    <!-- 중앙 물 웅덩이 -->
+    <ellipse cx="400" cy="300" rx="100" ry="70" fill="#2196F3"/> <!-- 물 웅덩이 -->
+    <ellipse cx="400" cy="300" rx="95" ry="65" fill="#64B5F6"/> <!-- 물 웅덩이 내부 (밝은 색) -->
+
+    <!-- 중앙 경계선 -->
+    <line x1="405" y1="0" x2="405" y2="600" stroke="#22543D" stroke-width="10" stroke-dasharray="20 20"/>
+
+    <!-- 외곽선 -->
+    <line x1="5" x2="5" y2="600" stroke="#22543D" stroke-width="10"/>
+    <line x1="795" x2="795" y2="600" stroke="#22543D" stroke-width="10"/>
+    <line x1="0" y1="5" x2="800" y2="5" stroke="#22543D" stroke-width="10"/>
+    <line x1="0" y1="595" x2="800" y2="595" stroke="#22543D" stroke-width="10"/>
+
+</svg>

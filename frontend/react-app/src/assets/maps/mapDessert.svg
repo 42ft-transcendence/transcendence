@@ -1,0 +1,27 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 배경 설정 -->
+    <rect width="800" height="600" fill="#FDEAA0"/>
+
+    <!-- 바위1 (위치 변경) -->
+    <path d="M200 450 Q230 370 260 450 L240 480 L220 480 Z" fill="#8D8D8D"/>
+    <!-- 바위2 (위치 변경) -->
+    <path d="M600 120 Q630 60 660 120 L640 150 L620 150 Z" fill="#6B6B6B"/>
+
+    <!-- 오아시스 물체 -->
+    <ellipse cx="400" cy="300" rx="100" ry="70" fill="#2196F3"/>
+    <ellipse cx="400" cy="300" rx="95" ry="65" fill="#64B5F6"/>
+
+    <!-- 오아시스 나뭇잎 -->
+    <ellipse cx="400" cy="275" rx="40" ry="55" fill="#4CAF50"/>
+    <ellipse cx="430" cy="290" rx="35" ry="50" fill="#8BC34A"/>
+
+    <!-- 중앙 경계선 -->
+    <line x1="405" y1="0" x2="405" y2="600" stroke="#8D8D8D" stroke-width="10" stroke-dasharray="20 20"/>
+
+    <!-- 외곽선 -->
+    <line x1="5" x2="5" y1="5" y2="595" stroke="#8D8D8D" stroke-width="10"/>
+    <line x1="795" x2="795" y1="5" y2="595" stroke="#8D8D8D" stroke-width="10"/>
+    <line x1="0" y1="5" x2="800" y2="5" stroke="#8D8D8D" stroke-width="10"/>
+    <line x1="0" y1="595" x2="800" y2="595" stroke="#8D8D8D" stroke-width="10"/>
+
+</svg>

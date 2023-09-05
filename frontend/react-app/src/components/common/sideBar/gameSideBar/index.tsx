@@ -11,16 +11,21 @@ import {
 } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
+import { GameMapType } from "@src/types/game.type";
+import NormalMap from "@src/components/modal/game/maps/normal";
+import { gameModalState } from "@src/recoil/atoms/game";
 
 const GameSideBar = () => {
+  const [, setLeaveGameRoom] = useState(false);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  // console.log("gameRoomInfo", gameRoomInfo);
   const [userData] = useRecoilState(userDataState);
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
   );
-  const [, setLeaveGameRoom] = useState(false);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  // console.log("gameRoomInfo", gameRoomInfo);
+  const [gameModal, setGameModal] = useRecoilState(gameModalState);
   const navigate = useNavigate();
+
   const iconButtons: IconButtonProps[] = [
     {
       title: "방 설정하기",
@@ -114,6 +119,24 @@ const GameSideBar = () => {
           </>
         )}
         <br />
+        <ButtonList
+          buttons={[
+            {
+              title: "게임 맵 테스트",
+              iconSrc: "",
+              onClick: () => {
+                setGameModal({
+                  ...gameModal,
+                  gameMap: "NORMAL" as GameMapType,
+                });
+                console.log("게임 맵 테스트");
+              },
+              theme: "LIGHT",
+            },
+          ]}
+        />
+        {/* gameMapModal test */}
+        {gameModal.gameMap === "NORMAL" && <NormalMap />}
       </DS.Container>
     </>
   );
