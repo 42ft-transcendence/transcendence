@@ -37,7 +37,6 @@ const SecondAuthActivateModal = () => {
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     setLoading(true);
-    console.log("confirm");
     turnOn2Fa(code)
       .then(() => {
         handleClose();
@@ -57,12 +56,16 @@ const SecondAuthActivateModal = () => {
         return;
       }
     }
-    if (newCode.length === 6) {
-      handleSubmit();
-    } else if (newCode.length < 6) {
+    if (newCode.length <= 6) {
       setCode(newCode);
     }
   };
+
+  useEffect(() => {
+    if (code.length === 6) {
+      handleSubmit();
+    }
+  }, [code]);
 
   useEffect(() => {
     setLink("");

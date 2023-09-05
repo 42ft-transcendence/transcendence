@@ -40,13 +40,17 @@ const AuthPage = () => {
         return;
       }
     }
-    if (newCode.length === 6) {
-      setStatus("TwoFactorLoading");
-    } else if (newCode.length > 6) {
+    if (newCode.length > 6) {
       return;
     }
     setTwoFactorCode(newCode);
   };
+
+  useEffect(() => {
+    if (twoFactorCode.length === 6) {
+      setStatus("TwoFactorLoading");
+    }
+  }, [twoFactorCode]);
 
   const handleTwoFactorCancel = () => {
     cookies.remove("jwt", { path: "/" });
