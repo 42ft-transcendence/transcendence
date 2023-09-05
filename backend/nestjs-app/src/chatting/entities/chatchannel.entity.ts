@@ -14,14 +14,14 @@ import * as moment from 'moment-timezone';
 
 @Entity()
 export class ChatChannel extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   name: string;
 
   @Column()
-  type: string;
+  type: number;
 
   @Column()
   password: string;

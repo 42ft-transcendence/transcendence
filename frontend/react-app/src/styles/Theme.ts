@@ -13,6 +13,8 @@ const colors = {
   win: "#86AEEA",
   lose: "#EDA1A1",
   rank: "#F1C644",
+  deepWin: "#5C9EEA",
+  deepLose: "#E27D5D",
 
   gold: "#F1C644",
   silver: "#9F9F9F",

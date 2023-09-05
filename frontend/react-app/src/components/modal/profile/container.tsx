@@ -1,6 +1,6 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import {
   addBlock,
@@ -16,6 +16,20 @@ import { RoleType, UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
+import { channelState, participantListState } from "@src/recoil/atoms/channel";
+import channelButtons from "./channelButtons";
+import BattleIcon from "@src/assets/icons/battle.svg";
+import AddFriendIcon from "@src/assets/icons/addFriend.svg";
+import DeleteFriendIcon from "@src/assets/icons/deleteFriend.svg";
+import BlockIcon from "@src/assets/icons/block.svg";
+import UnblockIcon from "@src/assets/icons/unblock.svg";
+import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
+import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
+import BanChatIcon from "@src/assets/icons/banChat.svg";
+import UnbanChatIcon from "@src/assets/icons/unbanChat.svg";
+import KickIcon from "@src/assets/icons/kick.svg";
+import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
+import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -47,7 +61,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   // 친구 상태인지 확인
   const checkFriend = async (): Promise<void> => {
@@ -115,7 +128,9 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
 
   const handleBattleOffer = async (): Promise<void> => {
     try {
-      await offerBattle(user.user.id, myData.nickname);
+      await offerBattle(user.user.id, myData).then((response) => {
+        console.log(response);
+      });
     } catch (error) {
       console.log(error);
     }
@@ -125,65 +140,40 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "대전 신청",
       action: handleBattleOffer,
-      src: "src/assets/icons/battle.svg",
+      src: BattleIcon,
     },
     {
       label: "친구 추가",
       action: handleAddFriend,
-      src: "src/assets/icons/addFriend.svg",
+      src: AddFriendIcon,
     },
     {
       label: "친구 삭제",
       action: handleDeleteFriend,
-      src: "src/assets/iconsdeleteFriend.svg",
+      src: DeleteFriendIcon,
     },
     {
       label: "차단 하기",
       action: handleAddBlock,
-      src: "src/assets/icons/block.svg",
+      src: BlockIcon,
     },
     {
       label: "차단 해제",
       action: handleDeleteBlock,
-      src: "src/assets/icons/unblock.svg",
+      src: UnblockIcon,
     },
     {
       label: "DM 보내기",
-      action: () => console.log("handleActionSendMessage"),
+      action: () => navigate(`/direct-message/${user.user.id}`),
       src: "src/assets/icons/sendMessage.svg",
     },
     {
       label: "전적 보기",
       action: () => {
-        navigate(`/profile/${user.user.id}`);
+        window.location.href = `/profile/${user.user.id}`;
         ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
       },
-      src: "src/assets/icons/showRecord.svg",
-    },
-    {
-      label: "채팅 금지",
-      action: () => console.log("handleActionBanChat"),
-      src: "src/assets/icons/banChat.svg",
-    },
-    {
-      label: "채팅 금지 해제",
-      action: () => console.log("handleActionUnbanChat"),
-      src: "src/assets/icons/unbanChat.svg",
-    },
-    {
-      label: "강제 퇴장",
-      action: () => console.log("handleActionKick"),
-      src: "src/assets/icons/kick.svg",
-    },
-    {
-      label: "관리자 설정",
-      action: () => console.log("handleActionSetAdmin"),
-      src: "src/assets/icons/setAdmin.svg",
-    },
-    {
-      label: "관리자 해제",
-      action: () => console.log("handleActionUnsetAdmin"),
-      src: "src/assets/icons/unsetAdmin.svg",
+      src: ShowRecordIcon,
     },
   ];
 
@@ -229,6 +219,36 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     filteredButtons = filteredButtons.filter(
       (button) => button.label !== "차단 해제",
     );
+  }
+
+  // Set Channel Buttons
+  const channel = useRecoilValue(channelState);
+  const participants = useRecoilValue(participantListState);
+  const me = participants.find((info) => info.user?.id === myData.id);
+  const other = participants.find((info) => info.user?.id === user.user.id);
+
+  if (channel != null && me && other) {
+    const channelButtonSet = channelButtons(
+      channel.id,
+      user.user.id,
+      setShowProfile,
+    );
+
+    if (me.owner) {
+      if (other.admin) {
+        filteredButtons.push(channelButtonSet.UnsetAdmin);
+      } else {
+        filteredButtons.push(channelButtonSet.SetAdmin);
+      }
+    }
+    if ((me.owner || me.admin) && !other.owner) {
+      if (other.muted) {
+        filteredButtons.push(channelButtonSet.UnmuteUser);
+      } else {
+        filteredButtons.push(channelButtonSet.MuteUser);
+      }
+      filteredButtons.push(channelButtonSet.KickUser);
+    }
   }
 
   return <ProfileButtons buttons={filteredButtons} />;

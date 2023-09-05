@@ -5,6 +5,12 @@ export enum UserStatusType {
   SIGNUP,
 }
 
+export enum ChatChannelType {
+  PUBLIC,
+  PROTECTED,
+  PRIVATE,
+}
+
 export interface TMP {
   id?: string;
 }
@@ -17,4 +23,14 @@ export enum UserRelationType {
 export interface ValidNicknameType {
   message: string;
   status: number;
+}
+
+export interface RoomData {
+  name: string;
+  pass: string;
+  mode: number;
+  person: number;
+  id: number;
+  secret: boolean;
+  participation: boolean;
 }

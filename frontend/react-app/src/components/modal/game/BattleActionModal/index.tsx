@@ -1,9 +1,9 @@
 import { useRecoilState } from "recoil";
 import { useState, useEffect } from "react";
-import { battleActionModalState } from "../../../recoil/atoms/modal";
-import * as S from "./index.styled.ts";
-import { IconButton } from "../../Buttons";
-import { userDataState } from "@src/recoil/atoms/common/index.ts";
+import { battleActionModalState } from "@src/recoil/atoms/modal";
+import * as S from "./index.styled";
+import { IconButton } from "@src/components/buttons";
+import { UserType } from "@src/types";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
@@ -39,7 +39,7 @@ const BattleActionModal = () => {
     }
     setBattleActionModal({
       battleActionModal: false,
-      nickname: "",
+      awayUser: {} as UserType,
     }); // 모달 닫기
   };
 
@@ -48,7 +48,7 @@ const BattleActionModal = () => {
     console.log("대전 신청 거절");
     setBattleActionModal({
       battleActionModal: false,
-      nickname: "",
+      awayUser: {} as UserType,
     }); // 모달 닫기
   };
 
@@ -57,7 +57,7 @@ const BattleActionModal = () => {
     console.log("대전 신청 수락");
     setBattleActionModal({
       battleActionModal: false,
-      nickname: "",
+      awayUser: {} as UserType,
     }); // 모달 닫기
     // 대전 신청 수락 시 대전 페이지로 이동
   };
@@ -67,7 +67,7 @@ const BattleActionModal = () => {
       <S.Container>
         <S.Title>
           {" "}
-          {battleActionModal.nickname}님 께서 대전을 신청하셨습니다.
+          {battleActionModal.awayUser.nickname}님 께서 대전을 신청하셨습니다.
         </S.Title>
         <S.Title>{countdown}</S.Title>
         <S.ButtonContainer>

@@ -24,8 +24,12 @@ const ChannelCreateModal = () => {
   const navigate = useNavigate();
   const [isOpened, setIsOpened] = useRecoilState(channelCreateModalState);
 
-  const onSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
+    if (name === "") {
+      alert("채널 이름을 입력해주세요.");
+      return;
+    }
     chatSocket.emit(
       "create_channel",
       { channelName: name, type, password },
@@ -50,6 +54,8 @@ const ChannelCreateModal = () => {
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       handleClose();
+    } else if (event.key === "Enter") {
+      handleSubmit();
     }
   });
 
@@ -89,7 +95,11 @@ const ChannelCreateModal = () => {
           <S.Option>
             <S.OptionLabel>채널 유형</S.OptionLabel>
             <S.OptionContent>
-              <S.TypeButton onClick={handleTypeToggle} $type={type}>
+              <S.TypeButton
+                type="button"
+                onClick={handleTypeToggle}
+                $type={type}
+              >
                 {channelTypeText[type]}
               </S.TypeButton>
             </S.OptionContent>
@@ -109,7 +119,7 @@ const ChannelCreateModal = () => {
 
           <S.ButtonContainer>
             <IconButton title="취소" onClick={handleClose} theme="LIGHT" />
-            <IconButton title="생성" onClick={onSubmit} theme="LIGHT" />
+            <IconButton title="생성" onClick={handleSubmit} theme="LIGHT" />
           </S.ButtonContainer>
         </S.Form>
       </S.Container>
