@@ -198,7 +198,14 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       }
     };
     isRelationship();
-  }, [isFriend, isBlocked]);
+  }, [
+    isFriend,
+    isBlocked,
+    userData,
+    userId,
+    set2FaDeactivateModal,
+    set2FaActivateModal,
+  ]);
 
   return (
     <>
