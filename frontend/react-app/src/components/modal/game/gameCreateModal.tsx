@@ -13,6 +13,7 @@ import {
 } from "@src/recoil/atoms/game";
 import { GameRoomType, UserType } from "@src/types";
 import { createGameRoom } from "@src/api/game";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 const stringToHash = (title: string): string => {
   const hash = sha256(title);
@@ -40,40 +41,37 @@ const GameCreateModal = () => {
   const [createGameRoomModal, setCreateGameRoomModal] = useRecoilState(
     createGameRoomModalState,
   );
-  const [user] = useRecoilState(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [speed, setSpeed] = useState("normal");
   const [type, setType] = useState<string>("PUBLIC");
+  const [roomName, setRoomName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [created, setCreated] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   console.log("gameRoomInfo", gameRoomInfo);
-  // }, [gameRoomInfo]);
-
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const currentTime: Date = new Date();
-    const roomURL = currentTime + event.target.value + user.id;
-    setGameRoomInfo((prev) => ({
-      ...prev,
-      roomURL: stringToHash(roomURL),
-      roomName: event.target.value,
-    }));
+    setRoomName(event.target.value);
+    gameSocket.emit("editGameRoomName", {
+      gameRoomURL: userData.gameRoomURL,
+      gameRoomName: event.target.value,
+    });
   };
 
   const onSubmit = async () => {
     await createGameRoom(gameRoomInfo);
-    setCreated(true);
     handleClose();
     navigate(`/game/${gameRoomInfo.roomURL}`);
   };
 
   const handleClose = () => {
     setType("PUBLIC");
-    if (!created) {
-      setGameRoomInfo(gameRoomInfoInitState);
-    }
+    setRoomName("");
+    console.log("deleteGameRoom", userData.gameRoomURL);
+    gameSocket.emit("deleteGameRoom", { gameRoomURL: userData.gameRoomURL });
+    setUserData({
+      ...userData,
+      gameRoomURL: "",
+    });
     setCreateGameRoomModal(false);
   };
 
@@ -111,7 +109,6 @@ const GameCreateModal = () => {
   return (
     <Modal
       isOpen={createGameRoomModal}
-      onRequestClose={() => setCreateGameRoomModal(false)}
       style={{
         content: { ...S.ModalContent }, // Spread 연산자 사용
         overlay: { ...S.ModalOverlay }, // Spread 연산자 사용
@@ -121,7 +118,7 @@ const GameCreateModal = () => {
         type="text"
         placeholder="방 제목"
         id="nickname"
-        value={gameRoomInfo.roomName}
+        value={roomName}
         onChange={handleTitleChange}
         maxLength={23}
       />

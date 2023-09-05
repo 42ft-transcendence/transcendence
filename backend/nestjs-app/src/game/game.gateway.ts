@@ -16,7 +16,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
-import { GameRoom, GameService } from './game.service';
+import { GameRoom, GameRoomType, GameService } from './game.service';
 
 let rankRoom = 0;
 const normalRoom = 1;
@@ -88,12 +88,17 @@ export class GameGateway {
   @SubscribeMessage('offerBattle')
   offerBattle(
     client: Socket,
-    content: { awayUser: User; myData: User; gameRoomURL: string },
+    content: {
+      awayUser: User;
+      myData: User;
+      gameRoomURL: string;
+      roomType: GameRoomType;
+    },
   ) {
     const newRoom: GameRoom = {
       roomURL: content.gameRoomURL,
       roomName: content.myData.nickname + ' vs ' + content.awayUser.nickname,
-      roomType: 'QUICK',
+      roomType: content.roomType,
       roomPassword: '',
       roomOwner: content.myData,
       numberOfParticipants: 2,
@@ -106,6 +111,42 @@ export class GameGateway {
     };
     this.gameService.createGameRoom(newRoom);
     this.server.emit('offerBattle', content);
+  }
+
+  @SubscribeMessage('createGameRoom')
+  createGameRoom(client: Socket, content: { user: User; gameRoomURL: string }) {
+    const newRoom: GameRoom = {
+      roomURL: content.gameRoomURL,
+      roomName: '',
+      roomType: 'PUBLIC',
+      roomPassword: '',
+      roomOwner: content.user,
+      numberOfParticipants: 1,
+      gameMode: 'NORMAL',
+      map: 'NORMAL',
+      homeUser: content.user,
+      awayUser: {} as User,
+      homeReady: false,
+      awayReady: false,
+    };
+    this.gameService.createGameRoom(newRoom);
+  }
+
+  @SubscribeMessage('deleteGameRoom')
+  deleteGameRoom(client: Socket, content: { gameRoomURL: string }) {
+    console.log('deleteGameRoom content.gameRoomURL: ', content.gameRoomURL);
+    this.gameService.deleteGameRoom(content.gameRoomURL);
+  }
+
+  @SubscribeMessage('editGameRoomName')
+  editGameRoomName(
+    client: Socket,
+    content: { gameRoomURL: string; gameRoomName: string },
+  ) {
+    this.gameService.editGameRoomName(
+      content.gameRoomURL,
+      content.gameRoomName,
+    );
   }
 
   @SubscribeMessage('acceptBattle')

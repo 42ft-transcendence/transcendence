@@ -33,4 +33,9 @@ export class GameService {
   deleteGameRoom(roomURL: string): void {
     this.rooms = this.rooms.filter((room) => room.roomURL !== roomURL);
   }
+
+  editGameRoomName(roomURL: string, roomName: string): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    room.roomName = roomName;
+  }
 }
