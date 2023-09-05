@@ -121,12 +121,18 @@ export class GameGateway {
     this.server.emit('acceptBattle', response);
   }
 
-  rejectBattle(myData: User, gameRoomURL: string) {
-    const content = {
-      myData: myData,
-      gameRoomURL: gameRoomURL,
+  @SubscribeMessage('rejectBattle')
+  rejectBattle(
+    client: Socket,
+    content: { gameRoomURL: string; awayUserId: string },
+  ) {
+    this.gameService.deleteGameRoom(content.gameRoomURL);
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      gameRoom: {} as GameRoom,
+      awayUserId: content.awayUserId,
     };
-    this.server.emit('rejectBattle', content);
+    this.server.emit('rejectBattle', response);
     return true;
   }
 

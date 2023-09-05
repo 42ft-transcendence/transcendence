@@ -16,7 +16,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 
 const useGameSocket = (jwt: string) => {
   const setBattleActionModal = useSetRecoilState(battleActionModalState);
-  const [userData] = useRecoilState(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const setGameRoomList = useSetRecoilState(gameRoomListState);
@@ -46,7 +46,6 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("acceptBattle");
       gameSocket.on("acceptBattle", (data) => {
-        console.log("acceptBattle", data, userData.gameRoomURL);
         if (data.gameRoomURL === userData.gameRoomURL) {
           console.log("acceptBattle", data);
           setGameRoomInfo(data.gameRoom);
@@ -56,14 +55,20 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("rejectBattle");
       gameSocket.on("rejectBattle", (data) => {
-        console.log("rejectBattle", data);
-        if (userData.id === data.myData.id) {
-          console.log("here");
-          setGameAlertModal({
-            gameAlertModal: true,
-            gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
-            shouldRedirect: false,
-            shouldInitInfo: true,
+        console.log("rejectBattle", data, userData);
+        if (data.gameRoomURL === userData.gameRoomURL) {
+          if (data.awayUserId === userData.id) {
+            setGameAlertModal({
+              gameAlertModal: true,
+              gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
+              shouldRedirect: false,
+              shouldInitInfo: true,
+            });
+          }
+          setGameRoomInfo(data.gameRoom);
+          setUserData({
+            ...userData,
+            gameRoomURL: "",
           });
         }
       });

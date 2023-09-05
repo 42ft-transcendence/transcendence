@@ -23,16 +23,6 @@ export class GameController {
     return true;
   }
 
-  @Post('battle/reject')
-  @UseGuards(JwtTwoFactorGuard)
-  async rejectBattle(
-    @Request() req,
-    @Body('awayUser') awayUser: User,
-    @Body('gameRoomURL') gameRoomURL: string,
-  ): Promise<boolean> {
-    return this.gameGateway.rejectBattle(awayUser, gameRoomURL);
-  }
-
   @Post('battle/ready')
   @UseGuards(JwtTwoFactorGuard)
   async readySignal(

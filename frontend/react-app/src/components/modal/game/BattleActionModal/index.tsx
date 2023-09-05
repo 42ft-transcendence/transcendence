@@ -50,11 +50,10 @@ const BattleActionModal = () => {
   };
 
   const handleCancelButton = async () => {
-    // 대전 신청 거절 api 호출
-    await rejectBattle(
-      battleActionModal.awayUser,
-      battleActionModal.gameRoomURL,
-    );
+    gameSocket.emit("rejectBattle", {
+      gameRoomURL: battleActionModal.gameRoomURL,
+      awayUserId: battleActionModal.awayUser.id,
+    });
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
@@ -63,22 +62,18 @@ const BattleActionModal = () => {
   };
 
   const handleAcceptButton = () => {
-    const gameRoomURL = battleActionModal.gameRoomURL;
-    console.log("gameRoomURL", gameRoomURL);
     gameSocket.emit("acceptBattle", {
-      gameRoomURL: gameRoomURL,
+      gameRoomURL: battleActionModal.gameRoomURL,
     });
     setUserData({
       ...userData,
-      gameRoomURL: gameRoomURL,
+      gameRoomURL: battleActionModal.gameRoomURL,
     });
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
     }); // 모달 닫기
-    // 대전 신청 수락 시 대전 페이지로 이동
-    // window.location.href = `/game/${gameRoomURL}`;
   };
 
   useEffect(() => {

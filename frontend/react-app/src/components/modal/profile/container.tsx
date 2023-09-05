@@ -55,12 +55,6 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
   );
 };
 
-// const GameRoomType = {
-//   PUBLIC: "공개",
-//   PROTECTED: "비밀",
-//   PRIVATE: "비공개",
-// };
-
 const hashTitle = (title: string): string => {
   const hash = sha256(title);
   return hash.toString(); // 해시 값을 문자열로 반환
