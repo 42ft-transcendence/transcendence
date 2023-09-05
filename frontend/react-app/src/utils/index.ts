@@ -1,7 +1,7 @@
 import { UserType } from "@src/types";
 import { SetterOrUpdater } from "recoil";
 
-type ShowProfilePayload = {
+export type ShowProfilePayload = {
   showProfile: boolean;
   user: UserType;
 };

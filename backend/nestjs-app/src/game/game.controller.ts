@@ -13,23 +13,11 @@ export class GameController {
 
   @Post('battle/offer')
   @UseGuards(JwtTwoFactorGuard)
-  async offerBattle(
+  async offerGame(
     @Request() req,
+    @Body('id') user_id: string,
     @Body('awayUser') awayUser: User,
-    @Body('myData') myData: User,
-    @Body('gameRoomURL') gameRoomURL: string,
   ): Promise<boolean> {
-    return this.gameGateway.offerBattle(awayUser, myData, gameRoomURL);
-  }
-
-  @Post('battle/accept')
-  @UseGuards(JwtTwoFactorGuard)
-  async acceptBattle(
-    @Request() req,
-    @Body('myData') myData: User,
-    @Body('awayUser') awayUser: User,
-    @Body('gameRoomURL') gameRoomURL: string,
-  ): Promise<boolean> {
-    return this.gameGateway.acceptBattle(myData, awayUser, gameRoomURL);
+    return await this.gameGateway.offerGame(user_id, awayUser);
   }
 }

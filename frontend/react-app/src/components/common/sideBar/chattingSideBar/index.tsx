@@ -1,6 +1,6 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as S from "../index.styled";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { channelState, joinedChannelListState } from "@recoil/atoms/channel";
 import {
   dmOtherState,
@@ -11,20 +11,33 @@ import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
 import ChannelJoinModal from "@components/modal/channel/channelJoinModal";
 import ChannelCreateModal from "@components/modal/channel/channelCreateModal";
-import { channelCreateModalState } from "@src/recoil/atoms/modal";
+import {
+  channelCreateModalState,
+  channelEditModalState,
+  channelJoinModalState,
+} from "@src/recoil/atoms/modal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { chatSocket } from "@router/socket/chatSocket";
+import ChannelEditModal from "@src/components/modal/channel/channelEditModal";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const ChattingSideBar = () => {
   const [joinedChannelList, setJoinedChannelList] = useRecoilState(
     joinedChannelListState,
   );
   const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
-  const setChannelCreateModal = useSetRecoilState(channelCreateModalState);
+  const [isChannelJoinModalOpened] = useRecoilState(channelJoinModalState);
+  const [isChannelCreateModalOpened, setChannelCreateModal] = useRecoilState(
+    channelCreateModalState,
+  );
+  const [isChannelEditModalOpened, setChannelEditModal] = useRecoilState(
+    channelEditModalState,
+  );
   const [iconButtons, setIconButtons] = useState<IconButtonProps[]>([]);
   const channel = useRecoilValue(channelState);
   const dmOther = useRecoilValue(dmOtherState);
+  const userData = useRecoilValue(userDataState);
 
   const navigate = useNavigate();
 
@@ -52,7 +65,37 @@ const ChattingSideBar = () => {
           },
           theme: "LIGHT",
         },
+        {
+          title: "채널 수정",
+          iconSrc: "",
+          onClick: () => {
+            setChannelEditModal(true);
+          },
+          theme: "LIGHT",
+        },
       ]);
+      if (channel.ownerId === userData.id) {
+        setIconButtons((prev) => [
+          ...prev,
+          {
+            title: "채널 삭제",
+            iconSrc: "",
+            onClick: () => {
+              chatSocket.emit(
+                "delete_channel",
+                { channelId: channel.id },
+                () => {
+                  setJoinedChannelList((prev) =>
+                    prev.filter((ch) => ch.id !== channel.id),
+                  );
+                  navigate("/channel-list");
+                },
+              );
+            },
+            theme: "LIGHT",
+          },
+        ]);
+      }
     } else if (dmOther) {
       setIconButtons([
         {
@@ -83,12 +126,15 @@ const ChattingSideBar = () => {
     navigate,
     setChannelCreateModal,
     setJoinedChannelList,
+    userData.id,
+    setChannelEditModal,
   ]);
 
   return (
     <>
-      <ChannelJoinModal />
-      <ChannelCreateModal />
+      {isChannelJoinModalOpened && <ChannelJoinModal />}
+      {isChannelCreateModalOpened && <ChannelCreateModal />}
+      {isChannelEditModalOpened && <ChannelEditModal />}
       <S.Container>
         <ButtonList buttons={iconButtons} />
         <SideBarList title="참여한 채널">

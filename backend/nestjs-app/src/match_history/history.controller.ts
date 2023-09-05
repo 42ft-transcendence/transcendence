@@ -30,4 +30,9 @@ export class MatchHistorysController {
       nickname,
     );
   }
+
+  @Get('/:id')
+  async getHistoryById(@Param('id') id): Promise<MatchHistory[]> {
+    return await this.matchHistoryService.getHistoryJoinUserById(id);
+  }
 }
