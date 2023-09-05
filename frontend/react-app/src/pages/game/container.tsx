@@ -17,7 +17,7 @@ export const GameMatchProfile = ({ user, isReady }: GameMatchProfileProps) => {
     <S.GameContainer>
       <S.GameMatchBox $isReady={isReady}>
         {isReady && <S.ReadyIcon src={ReadyIcon} />}
-        <S.gameRoomProfileImg />
+        <S.gameRoomProfileImg src={user.avatarPath} />
         {/* <S.UserCardStatus /> */}
         <S.gameRoomProfileNickname>{user.nickname}</S.gameRoomProfileNickname>
         <S.gameRoomProfileRank>
