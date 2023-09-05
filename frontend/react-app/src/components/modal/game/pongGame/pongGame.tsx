@@ -23,6 +23,14 @@ const PongGame: React.FC = () => {
       height: 100,
       color: "WHITE",
       score: 0,
+      radius: 0,
+      speed: 0,
+      velocityX: 0,
+      velocityY: 0,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
     };
 
     const com = {
@@ -32,6 +40,14 @@ const PongGame: React.FC = () => {
       height: 100,
       color: "WHITE",
       score: 0,
+      radius: 0,
+      speed: 0,
+      velocityX: 0,
+      velocityY: 0,
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
     };
 
     const ball: ballLocationType = {
@@ -128,7 +144,7 @@ const PongGame: React.FC = () => {
 
     // collision detection
     function collision(b: ballLocationType, p: ballLocationType) {
-      console.log("b", b);
+      // console.log("b", b);
       b.top = b.y - b.radius;
       b.bottom = b.y + b.radius;
       b.left = b.x - b.radius;
@@ -162,10 +178,7 @@ const PongGame: React.FC = () => {
       if (ball.y + ball.radius > cvs.height || ball.y - ball.radius < 0) {
         ball.velocityY = -ball.velocityY;
       }
-      const player: ballLocationType = {
-        ...ball,
-        score: 0,
-      };
+      const player = ball.x < cvs.width / 2 ? user : com;
       if (collision(ball, player)) {
         // ball.velocityX = -ball.velocityX;
         const collide = ball.y - (player.y + player.height / 2);
