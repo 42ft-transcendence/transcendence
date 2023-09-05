@@ -29,6 +29,7 @@ import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 import sha256 from "crypto-js/sha256";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -143,19 +144,10 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const currentTime: Date = new Date();
       const roomURL = currentTime + myData.id;
       const hashedTitle = hashTitle(roomURL);
-
-      // 대전 신청 할 때 같이 정보 저장해둠 (상대방이 거절한다면 다시 초기화)
-      setGameRoomInfo({
-        roomURL: hashedTitle,
-        roomName: "",
-        roomType: "QUICK",
-        roomPassword: "",
-        homeUser: myData,
-        awayUser: user.user,
-        homeReady: false,
-        awayReady: false,
+      gameSocket.emit("offerBattle", {
+        awayUserId: user.user.id,
+        gameRoomURL: hashedTitle,
       });
-      await offerBattle(user.user, myData, hashedTitle, "QUICK");
     } catch (error) {
       console.log(error);
     }

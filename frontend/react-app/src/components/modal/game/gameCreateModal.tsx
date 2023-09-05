@@ -7,7 +7,10 @@ import React, { useEffect, useState } from "react";
 import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+} from "@src/recoil/atoms/game";
 import { GameRoomType, UserType } from "@src/types";
 import { createGameRoom } from "@src/api/game";
 
@@ -45,9 +48,9 @@ const GameCreateModal = () => {
   const [created, setCreated] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("gameRoomInfo", gameRoomInfo);
-  }, [gameRoomInfo]);
+  // useEffect(() => {
+  //   console.log("gameRoomInfo", gameRoomInfo);
+  // }, [gameRoomInfo]);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const currentTime: Date = new Date();
@@ -69,16 +72,7 @@ const GameCreateModal = () => {
   const handleClose = () => {
     setType("PUBLIC");
     if (!created) {
-      setGameRoomInfo({
-        roomURL: "",
-        roomName: "",
-        roomType: "",
-        roomPassword: "",
-        homeUser: {} as UserType,
-        awayUser: {} as UserType,
-        homeReady: false,
-        awayReady: false,
-      });
+      setGameRoomInfo(gameRoomInfoInitState);
     }
     setCreateGameRoomModal(false);
   };

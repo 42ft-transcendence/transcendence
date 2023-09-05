@@ -5,9 +5,11 @@ import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+} from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
-import { UserType } from "@src/types";
 import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
 
 const GameSideBar = () => {
@@ -17,6 +19,7 @@ const GameSideBar = () => {
   );
   const [, setLeaveGameRoom] = useState(false);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  // console.log("gameRoomInfo", gameRoomInfo);
   const navigate = useNavigate();
   const iconButtons: IconButtonProps[] = [
     {
@@ -32,11 +35,19 @@ const GameSideBar = () => {
       title: "준비 하기",
       iconSrc: "",
       onClick: async () => {
+        console.log("준비하기", userData, gameRoomInfo);
         await readySignal(gameRoomInfo.roomURL, userData);
-        setGameRoomInfo({
-          ...gameRoomInfo,
-          homeReady: true,
-        });
+        if (gameRoomInfo.homeUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            homeReady: true,
+          });
+        } else {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            awayReady: true,
+          });
+        }
       },
       theme: "LIGHT",
     },
@@ -45,10 +56,17 @@ const GameSideBar = () => {
       iconSrc: "",
       onClick: async () => {
         await readyCancleSignal(gameRoomInfo.roomURL, userData);
-        setGameRoomInfo({
-          ...gameRoomInfo,
-          homeReady: false,
-        });
+        if (gameRoomInfo.homeUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            homeReady: false,
+          });
+        } else if (gameRoomInfo.awayUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            awayReady: false,
+          });
+        }
       },
       theme: "LIGHT",
     },
@@ -56,16 +74,7 @@ const GameSideBar = () => {
       title: "방 나가기",
       iconSrc: "",
       onClick: async () => {
-        setGameRoomInfo({
-          roomURL: "",
-          roomName: "",
-          roomType: "",
-          roomPassword: "",
-          homeUser: {} as UserType,
-          awayUser: {} as UserType,
-          homeReady: false,
-          awayReady: false,
-        });
+        setGameRoomInfo(gameRoomInfoInitState);
         await exitGameRoom(gameRoomInfo.roomURL, userData);
         navigate("/game-list");
         setLeaveGameRoom(true);
@@ -77,9 +86,11 @@ const GameSideBar = () => {
     useState<IconButtonProps[]>(iconButtons);
 
   useEffect(() => {
-    const newButtons = gameRoomInfo.homeReady
-      ? iconButtons.filter((button) => button.title !== "준비 하기")
-      : iconButtons.filter((button) => button.title !== "준비 취소");
+    const newButtons =
+      (gameRoomInfo.homeUser.id === userData.id && gameRoomInfo.homeReady) ||
+      (gameRoomInfo.awayReady && gameRoomInfo.awayUser.id === userData.id)
+        ? iconButtons.filter((button) => button.title !== "준비 하기")
+        : iconButtons.filter((button) => button.title !== "준비 취소");
 
     setfilteredIconButtons(newButtons);
   }, [gameRoomInfo]);

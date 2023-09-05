@@ -23,23 +23,6 @@ export class GameController {
     return true;
   }
 
-  @Post('battle/offer')
-  @UseGuards(JwtTwoFactorGuard)
-  async offerBattle(
-    @Request() req,
-    @Body('awayUser') awayUser: User,
-    @Body('myData') myData: User,
-    @Body('gameRoomURL') gameRoomURL: string,
-    @Body('roomType') roomType: GameRoomType,
-  ): Promise<boolean> {
-    return this.gameGateway.offerBattle(
-      awayUser,
-      myData,
-      gameRoomURL,
-      roomType,
-    );
-  }
-
   @Post('battle/accept')
   @UseGuards(JwtTwoFactorGuard)
   async acceptBattle(

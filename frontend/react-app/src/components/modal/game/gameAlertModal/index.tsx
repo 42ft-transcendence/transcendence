@@ -3,7 +3,10 @@ import Modal from "react-modal";
 import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+} from "@src/recoil/atoms/game";
 import { UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons/index";
 
@@ -20,16 +23,7 @@ const GameAlertModal = () => {
       gameAlertModalMessage: "",
     }));
     if (gameAlertModal.shouldInitInfo) {
-      setGameRoomInfo({
-        roomURL: "",
-        roomName: "",
-        roomType: "",
-        roomPassword: "",
-        homeUser: {} as UserType,
-        awayUser: {} as UserType,
-        homeReady: false,
-        awayReady: false,
-      });
+      setGameRoomInfo(gameRoomInfoInitState);
       setGameAlertModal((prev) => ({
         ...prev,
         shouldInitInfo: false,

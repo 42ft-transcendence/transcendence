@@ -85,21 +85,21 @@ export class GameGateway {
     this.server.emit('roomList', content);
   }
 
-  offerBattle(
-    awayUser: User,
-    myData: User,
-    gameRoomURL: string,
-    roomType: string,
-  ): boolean {
-    const content = {
-      awayUser: awayUser,
-      myData: myData,
-      gameRoomURL: gameRoomURL,
-      roomType: roomType,
-    };
-    this.server.emit('offerBattle', content);
-    return true;
-  }
+  // offerBattle(
+  //   awayUser: User,
+  //   myData: User,
+  //   gameRoomURL: string,
+  //   roomType: string,
+  // ): boolean {
+  //   const content = {
+  //     awayUser: awayUser,
+  //     myData: myData,
+  //     gameRoomURL: gameRoomURL,
+  //     roomType: roomType,
+  //   };
+  //   this.server.emit('offerBattle', content);
+  //   return true;
+  // }
 
   acceptBattle(myData: User, awayUser: User, gameRoomURL: string) {
     const content = {
@@ -147,6 +147,14 @@ export class GameGateway {
     };
     this.server.emit('exitGameRoom', content);
     return true;
+  }
+
+  @SubscribeMessage('offerBattle')
+  offerBattle(
+    client: Socket,
+    content: { awayUserId: string; gameRoomURL: string; gameType: string },
+  ) {
+    this.server.emit('offerBattle', content);
   }
 
   async handleConnection(@ConnectedSocket() client) {

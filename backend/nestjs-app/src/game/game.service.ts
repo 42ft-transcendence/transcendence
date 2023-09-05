@@ -8,6 +8,10 @@ export interface GameRoom {
   roomName: string;
   roomType: GameRoomType;
   roomPassword: string;
+  roomOwner: User;
+  numberOfParticipants: number;
+  gameMode: string;
+  map: string;
   homeUser: User;
   awayUser: User;
   homeReady: boolean;

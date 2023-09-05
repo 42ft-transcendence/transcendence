@@ -27,13 +27,34 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     roomName: "",
     roomType: "" as GameRoomType,
     roomPassword: "",
+    roomOwner: {} as UserType,
+    numberOfParticipants: 0,
+    gameMode: "",
+    map: "",
     homeUser: {} as UserType,
     awayUser: {} as UserType,
     homeReady: false,
     awayReady: false,
+    chatMessages: [],
   },
   effects_UNSTABLE: [persistAtom],
 });
+
+export const gameRoomInfoInitState = {
+  roomURL: "",
+  roomName: "",
+  roomType: "" as GameRoomType,
+  roomPassword: "",
+  roomOwner: {} as UserType,
+  numberOfParticipants: 0,
+  gameMode: "",
+  map: "",
+  homeUser: {} as UserType,
+  awayUser: {} as UserType,
+  homeReady: false,
+  awayReady: false,
+  chatMessages: [],
+};
 
 export const gameRoomListState = atom<GameRoomInfoType[]>({
   key: "gameRoomListState",

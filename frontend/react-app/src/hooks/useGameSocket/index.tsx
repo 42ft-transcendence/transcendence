@@ -1,5 +1,9 @@
 import { userDataState } from "@src/recoil/atoms/common";
-import { gameRoomInfoState, gameRoomListState } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+  gameRoomListState,
+} from "@src/recoil/atoms/game";
 import {
   battleActionModalState,
   gameAlertModalState,
@@ -20,7 +24,9 @@ const useGameSocket = (jwt: string) => {
   useEffect(() => {
     if (!jwt) {
       gameSocket.disconnect();
+      // setGameRoomInfo(gameRoomInfoInitState);
     } else {
+      console.log("gamesocket connected");
       gameSocket.off("roomList");
       gameSocket.on("roomList", (data) => {
         console.log("roomList", data);
@@ -29,13 +35,13 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
-        console.log("offerBattle", data);
-        setBattleActionModal({
-          battleActionModal: user.id === data.awayUser.id,
-          awayUser: data.myData,
-          gameRoomURL: data.gameRoomURL,
-          gameType: data.roomType as GameRoomType,
-        });
+        console.log("offerBattle socket", data);
+        // setBattleActionModal({
+        //   battleActionModal: user.id === data.awayUser.id,
+        //   awayUser: data.myData,
+        //   gameRoomURL: data.gameRoomURL,
+        //   gameType: data.roomType as GameRoomType,
+        // });
       });
 
       gameSocket.off("acceptBattle");
@@ -61,21 +67,40 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("readySignal");
       gameSocket.on("readySignal", (data) => {
-        if (
-          gameRoomInfo.roomURL === data.gameRoomURL &&
-          gameRoomInfo.awayUser.id === data.awayUser.id
-        ) {
-          setGameRoomInfo({
-            ...gameRoomInfo,
-            awayReady: data.isReady,
-          });
+        if (gameRoomInfo.roomURL === data.gameRoomURL) {
+          console.log(
+            "readySignal",
+            gameRoomInfo,
+            data.awayUser.id,
+            user.id,
+            data.awayUser.id === user.id,
+          );
+          if (
+            user.id !== data.awayUser.id &&
+            gameRoomInfo.awayUser.id === data.awayUser.id
+          ) {
+            setGameRoomInfo({
+              ...gameRoomInfo,
+              awayReady: data.isReady,
+            });
+          } else if (
+            user.id !== data.awayUser.id &&
+            gameRoomInfo.homeUser.id === data.awayUser.id
+          ) {
+            setGameRoomInfo({
+              ...gameRoomInfo,
+              homeReady: data.isReady,
+            });
+          }
         }
       });
 
       gameSocket.off("exitGameRoom");
       gameSocket.on("exitGameRoom", (data) => {
         console.log("exitGameRoom", data);
+
         if (
+          user.id !== data.awayUser.id &&
           gameRoomInfo.roomURL === data.gameRoomURL &&
           gameRoomInfo.awayUser.id === data.awayUser.id
         ) {
@@ -84,6 +109,7 @@ const useGameSocket = (jwt: string) => {
             awayUser: {} as UserType,
           });
         } else if (
+          user.id !== data.awayUser.id &&
           gameRoomInfo.roomURL === data.gameRoomURL &&
           gameRoomInfo.homeUser.id === data.awayUser.id
         ) {

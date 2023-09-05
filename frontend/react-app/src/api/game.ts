@@ -19,6 +19,7 @@ export const offerBattle = async (
   gameRoomURL: string,
   roomType: GameRoomType,
 ): Promise<AxiosResponse> => {
+  console.log("offerBattle api", awayUser, myData, gameRoomURL, roomType);
   const response = await axios.post(
     `${base_url}/game/battle/offer`,
     {
@@ -78,13 +79,13 @@ export const rejectBattle = async (
 
 export const readySignal = async (
   gameRoomURL: string,
-  awayUser: UserType,
+  myData: UserType,
 ): Promise<AxiosResponse> => {
   const response = await axios.post(
     `${base_url}/game/battle/ready`,
     {
       gameRoomURL: gameRoomURL,
-      awayUser: awayUser,
+      myData: myData,
     },
     {
       headers: {

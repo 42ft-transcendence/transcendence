@@ -69,10 +69,15 @@ const BattleActionModal = () => {
       roomName: "",
       roomType: battleActionModal.gameType,
       roomPassword: "",
+      roomOwner: battleActionModal.awayUser,
+      numberOfParticipants: 2,
+      gameMode: "NORMAL",
+      map: "NORMAL",
       homeUser: battleActionModal.awayUser,
       awayUser: myData,
       homeReady: false,
       awayReady: false,
+      chatMessages: [],
     });
     // 대전 신청 수락 api 호출
     await acceptBattle(
@@ -88,7 +93,8 @@ const BattleActionModal = () => {
       gameType: "",
     }); // 모달 닫기
     // 대전 신청 수락 시 대전 페이지로 이동
-    navigate("/game/" + gameRoomURL);
+    window.location.href = `/game/${gameRoomURL}`;
+    // navigate("/game/" + gameRoomURL);
   };
 
   useEffect(() => {

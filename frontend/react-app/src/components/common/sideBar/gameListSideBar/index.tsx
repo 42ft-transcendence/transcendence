@@ -12,6 +12,8 @@ const GameListSideBar = () => {
   const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
 
+  console.log("gameRoomInfo", gameRoomInfo);
+
   const iconButtons: IconButtonProps[] = [
     {
       title: "방 만들기",
@@ -22,7 +24,10 @@ const GameListSideBar = () => {
           ...gameRoomInfo,
           roomURL: sha256(new Date() + userData.id).toString(),
           roomType: "PUBLIC",
+          roomOwner: userData,
           homeUser: userData,
+          gameMode: "NORMAL",
+          map: "NORMAL",
         });
       },
       theme: "LIGHT",

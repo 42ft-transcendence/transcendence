@@ -18,6 +18,7 @@ const Game = () => {
       gameRoomInfo.roomType === "QUICK" &&
       (!gameRoomInfo.awayUser.id || !gameRoomInfo.homeUser.id)
     ) {
+      console.log("here");
       setGameAlertModal({
         gameAlertModal: true,
         gameAlertModalMessage: "상대방이 나갔습니다.",
@@ -27,7 +28,7 @@ const Game = () => {
     }
   }, [gameRoomInfo.awayUser.id]);
 
-  console.log("gameRoomInfo", gameRoomInfo);
+  // console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>

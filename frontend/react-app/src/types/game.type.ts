@@ -1,4 +1,5 @@
 // import { ParticipantType } from "./participant.type";
+import { MessageType } from "./chat.type";
 import { UserType } from "./user.type";
 
 export interface OfferGameType {
@@ -50,10 +51,15 @@ export interface GameRoomInfoType {
   roomName: string;
   roomType: GameRoomType;
   roomPassword: string;
+  roomOwner: UserType;
+  numberOfParticipants: number;
+  gameMode: string;
+  map: string;
   homeUser: UserType;
   awayUser: UserType;
   homeReady: boolean;
   awayReady: boolean;
+  chatMessages: MessageType[];
 }
 
 export interface gameAlertModalStateType {
