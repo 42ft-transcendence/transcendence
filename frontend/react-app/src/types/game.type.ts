@@ -73,3 +73,20 @@ export type GameMapType = "NORMAL" | "JUNGLE" | "DESERT";
 export interface GameModalType {
   gameMap: GameMapType | null;
 }
+
+export interface ballLocationType {
+  x: number;
+  y: number;
+  radius: number;
+  speed: number;
+  velocityX: number;
+  velocityY: number;
+  color: string;
+  top: number;
+  bottom: number;
+  left: number;
+  score: number;
+  right: number;
+  height: number;
+  width: number;
+}
