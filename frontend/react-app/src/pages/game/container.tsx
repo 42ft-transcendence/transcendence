@@ -5,15 +5,18 @@ import RankingIcon from "@assets/icons/ranking.svg";
 import loseIcon from "@assets/icons/lose.svg";
 import winIcon from "@assets/icons/win.svg";
 import { UserType } from "@src/types";
+import ReadyIcon from "@assets/icons/ready.svg";
 
 interface GameMatchProfileProps {
   user: UserType;
+  isReady: boolean;
 }
 
-export const GameMatchProfile = ({ user }: GameMatchProfileProps) => {
+export const GameMatchProfile = ({ user, isReady }: GameMatchProfileProps) => {
   return (
     <S.GameContainer>
-      <S.GameMatchBox>
+      <S.GameMatchBox $isReady={isReady}>
+        {isReady && <S.ReadyIcon src={ReadyIcon} />}
         <S.gameRoomProfileImg />
         {/* <S.UserCardStatus /> */}
         <S.gameRoomProfileNickname>{user.nickname}</S.gameRoomProfileNickname>

@@ -9,15 +9,33 @@ export const GameContainer = styled.div`
   align-items: center;
   background-color: ${(props) => props.theme.colors.freezePurple};
 `;
-export const GameMatchBox = styled.div`
+
+export const GameMatchBox = styled.div<{ $isReady: boolean }>`
+  position: relative; // 추가된 코드
   width: 300px;
   height: 400px;
-  // margin: 0 80px;
   display: flex;
   background-color: ${(props) => props.theme.colors.heavyPurple};
   flex-direction: column;
   align-items: center;
   border-radius: 20px;
+  border: 4px solid
+    ${(props) =>
+      props.$isReady
+        ? props.theme.colors.gaming
+        : props.theme.colors.heavyPurple};
+`;
+
+export const ReadyIcon = styled.img`
+  position: absolute; // 추가된 코드
+  top: 0; // 추가된 코드
+  right: 0; // 추가된 코드
+  width: 157px;
+  height: 88px;
+  transform: translate(
+    50%,
+    -50%
+  ); // 아이콘의 중심이 우측 상단에 위치하도록 조정
 `;
 
 export const VsIcon = styled.svg`

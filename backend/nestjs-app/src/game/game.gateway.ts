@@ -13,9 +13,8 @@ import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
-import { HttpException } from '@nestjs/common';
-import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
+import { GameService } from './game.service';
 
 let rankRoom = 0;
 let normalRoom = 1;
@@ -134,39 +133,89 @@ export class GameGateway {
     private authService: AuthService,
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
-    private rootGateway: ChattingGateway,
+    private gameService: GameService,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
-  /*
-    ========== 서버연결,서버 연결 해제 관련 핸들러 =========
-  async offerGame(user_id: string, awayUser: User): Promise<boolean> {
-    const user = await this.userService.getUserById(user_id);
-    if (!user) {
-      throw new Error('User not found');
-    } else {
-      const content = {
-        user_id: user_id,
-        awayUser: awayUser,
-      };
-      this.server.emit('offerGame', content);
-      return true;
-    }
+  refreshGameRoomList() {
+    const content = this.gameService.getAllGameRooms();
+    this.server.emit('roomList', content);
   }
 
-    handleConnection : 유저가 연결되면 호출되는 핸들러
-    hadleDisconnect : 유저가 연결이 끊어졌을 때 호출되는 핸들러
-    disconnectProcess : 유저가 연결이 끊어졌을 때 진행하는 전체 처리 과정
-    ConfiscationProcess : 게임 중 유저가 연결이 끊어졌을 때 몰수 처리를 진행하는 함수
-    deleteProcess : 연결 종료 및 관련 처리 함수
-  */
+  // offerBattle(
+  //   awayUser: User,
+  //   myData: User,
+  //   gameRoomURL: string,
+  //   roomType: string,
+  // ): boolean {
+  //   const content = {
+  //     awayUser: awayUser,
+  //     myData: myData,
+  //     gameRoomURL: gameRoomURL,
+  //     roomType: roomType,
+  //   };
+  //   this.server.emit('offerBattle', content);
+  //   return true;
+  // }
 
-  /**
-   * 유저가 연결되면 호출되는 핸들러
-   * @param {Socket} client - 연결된 클라이언트 소켓
-   */
+  acceptBattle(myData: User, awayUser: User, gameRoomURL: string) {
+    const content = {
+      myData: myData,
+      awayUser: awayUser,
+      gameRoomURL: gameRoomURL,
+    };
+    this.server.emit('acceptBattle', content);
+    return true;
+  }
+
+  rejectBattle(myData: User, gameRoomURL: string) {
+    const content = {
+      myData: myData,
+      gameRoomURL: gameRoomURL,
+    };
+    this.server.emit('rejectBattle', content);
+    return true;
+  }
+
+  readySignal(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+      isReady: true,
+    };
+    this.server.emit('readySignal', content);
+    return true;
+  }
+
+  readyCancleSignal(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+      isReady: false,
+    };
+    this.server.emit('readySignal', content);
+    return true;
+  }
+
+  exitGameRoom(gameRoomURL: string, awayUser: User) {
+    const content = {
+      gameRoomURL: gameRoomURL,
+      awayUser: awayUser,
+    };
+    this.server.emit('exitGameRoom', content);
+    return true;
+  }
+
+  @SubscribeMessage('offerBattle')
+  offerBattle(
+    client: Socket,
+    content: { awayUserId: string; gameRoomURL: string; gameType: string },
+  ) {
+    this.server.emit('offerBattle', content);
+  }
+
   async handleConnection(@ConnectedSocket() client) {
     // 클라이언트로부터 유저 ID를 가져오기
     const user_id = await this.getUserId(client);
@@ -291,7 +340,7 @@ export class GameGateway {
     userright: string,
     connectedNickName: string,
   ) {
-    const user_id = await this.getUserId(client);
+    await this.getUserId(client);
     if (roomList.has(roomNum)) {
       roomList.get(roomNum).person--;
       roomList.get(roomNum).participation = true;
@@ -918,51 +967,51 @@ export class GameGateway {
     }
   }
 
-  /**
-   * 대결 요청을 수락하는 핸들러.
-   * 유저가 대결 요청을 수락하면, 해당 유저를 방에 참가시키고, 방 정보를 업데이트합니다.
-   * @param {Socket} client - 클라이언트 소켓
-   * @returns {Promise<void>}
-   */
-  @SubscribeMessage('acceptBattle')
-  async acceptBattle(@ConnectedSocket() client) {
-    // 현재 클라이언트의 사용자 ID를 가져옵니다.
-    const user_id = await this.getUserId(client);
-    // 해당 ID의 사용자 정보를 가져옵니다.
-    const user = await this.userService.getUserById(user_id);
+  // /**
+  //  * 대결 요청을 수락하는 핸들러.
+  //  * 유저가 대결 요청을 수락하면, 해당 유저를 방에 참가시키고, 방 정보를 업데이트합니다.
+  //  * @param {Socket} client - 클라이언트 소켓
+  //  * @returns {Promise<void>}
+  //  */
+  // @SubscribeMessage('acceptBattle')
+  // async acceptBattle(@ConnectedSocket() client) {
+  //   // 현재 클라이언트의 사용자 ID를 가져옵니다.
+  //   const user_id = await this.getUserId(client);
+  //   // 해당 ID의 사용자 정보를 가져옵니다.
+  //   const user = await this.userService.getUserById(user_id);
 
-    // 참가할 방의 정보와 상대방의 닉네임을 가져옵니다.
-    const right = user.nickname;
-    const roomNum = getRoomNumWithID.get(user.id);
+  //   // 참가할 방의 정보와 상대방의 닉네임을 가져옵니다.
+  //   const right = user.nickname;
+  //   const roomNum = getRoomNumWithID.get(user.id);
 
-    // 방에 이미 한 명의 플레이어가 있다면, 이 사용자를 두 번째 플레이어로 등록합니다.
-    if (
-      getPlayerWithRoomnum.has(roomNum) &&
-      getPlayerWithRoomnum.get(roomNum)[0] != ''
-    ) {
-      const left = getPlayerWithRoomnum.get(roomNum)[0];
-      // 방 정보를 생성합니다.
-      const roomData: RoomData = {
-        name: left + ' vs ' + right,
-        pass: '',
-        mode: roomManager.get(roomNum).mode,
-        person: 2,
-        id: roomNum,
-        secret: false,
-        participation: false,
-      };
-      // 방 리스트에 방 정보를 업데이트합니다.
-      roomList.set(roomNum, roomData);
-      // 클라이언트에게 대결이 시작됨을 알립니다.
-      client.emit('vsbattle');
-      // 전체 서버에게 방 리스트 정보를 업데이트하여 전달합니다.
-      this.server.emit('roomList', JSON.stringify(Array.from(roomList)));
-    } else {
-      // 대결을 시작할 수 없는 경우, 방 정보를 삭제하고 알림을 보냅니다.
-      getRoomNumWithID.delete(user.id);
-      client.emit('canNotAvailableGame');
-    }
-  }
+  //   // 방에 이미 한 명의 플레이어가 있다면, 이 사용자를 두 번째 플레이어로 등록합니다.
+  //   if (
+  //     getPlayerWithRoomnum.has(roomNum) &&
+  //     getPlayerWithRoomnum.get(roomNum)[0] != ''
+  //   ) {
+  //     const left = getPlayerWithRoomnum.get(roomNum)[0];
+  //     // 방 정보를 생성합니다.
+  //     const roomData: RoomData = {
+  //       name: left + ' vs ' + right,
+  //       pass: '',
+  //       mode: roomManager.get(roomNum).mode,
+  //       person: 2,
+  //       id: roomNum,
+  //       secret: false,
+  //       participation: false,
+  //     };
+  //     // 방 리스트에 방 정보를 업데이트합니다.
+  //     roomList.set(roomNum, roomData);
+  //     // 클라이언트에게 대결이 시작됨을 알립니다.
+  //     client.emit('vsbattle');
+  //     // 전체 서버에게 방 리스트 정보를 업데이트하여 전달합니다.
+  //     this.server.emit('roomList', JSON.stringify(Array.from(roomList)));
+  //   } else {
+  //     // 대결을 시작할 수 없는 경우, 방 정보를 삭제하고 알림을 보냅니다.
+  //     getRoomNumWithID.delete(user.id);
+  //     client.emit('canNotAvailableGame');
+  //   }
+  // }
 
   /////////////////////////////////////////////////////////////////////////////
   /*

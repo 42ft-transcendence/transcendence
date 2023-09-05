@@ -1,23 +1,27 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
-// import { roomNameBox } from "./index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { gameRoomName } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+} from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
+import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
-  const [roomTitle] = useRecoilState(gameRoomName);
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
   );
   const [, setLeaveGameRoom] = useState(false);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  // console.log("gameRoomInfo", gameRoomInfo);
   const navigate = useNavigate();
-  const roomSettingButtons: IconButtonProps[] = [
+  const iconButtons: IconButtonProps[] = [
     {
       title: "방 설정하기",
       iconSrc: "",
@@ -27,46 +31,89 @@ const GameSideBar = () => {
       },
       theme: "LIGHT",
     },
-  ];
-  const iconButtons: IconButtonProps[] = [
     {
       title: "준비 하기",
       iconSrc: "",
-      onClick: () => {
-        console.log("준비 하기");
+      onClick: async () => {
+        console.log("준비하기", userData, gameRoomInfo);
+        await readySignal(gameRoomInfo.roomURL, userData);
+        if (gameRoomInfo.homeUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            homeReady: true,
+          });
+        } else {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            awayReady: true,
+          });
+        }
       },
       theme: "LIGHT",
     },
     {
       title: "준비 취소",
       iconSrc: "",
-      onClick: () => {
-        console.log("준비취소");
+      onClick: async () => {
+        await readyCancleSignal(gameRoomInfo.roomURL, userData);
+        if (gameRoomInfo.homeUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            homeReady: false,
+          });
+        } else if (gameRoomInfo.awayUser.id === userData.id) {
+          setGameRoomInfo({
+            ...gameRoomInfo,
+            awayReady: false,
+          });
+        }
       },
       theme: "LIGHT",
     },
     {
       title: "방 나가기",
       iconSrc: "",
-      onClick: () => {
+      onClick: async () => {
+        setGameRoomInfo(gameRoomInfoInitState);
+        await exitGameRoom(gameRoomInfo.roomURL, userData);
         navigate("/game-list");
         setLeaveGameRoom(true);
       },
       theme: "LIGHT",
     },
   ];
-  console.log(roomTitle);
+  const [filteredIconButtons, setfilteredIconButtons] =
+    useState<IconButtonProps[]>(iconButtons);
+
+  useEffect(() => {
+    const newButtons =
+      (gameRoomInfo.homeUser.id === userData.id && gameRoomInfo.homeReady) ||
+      (gameRoomInfo.awayReady && gameRoomInfo.awayUser.id === userData.id)
+        ? iconButtons.filter((button) => button.title !== "준비 하기")
+        : iconButtons.filter((button) => button.title !== "준비 취소");
+
+    setfilteredIconButtons(newButtons);
+  }, [gameRoomInfo]);
+
   return (
     <>
       <DS.Container>
-        <DS.roomNameBox>{roomTitle}</DS.roomNameBox>
-        <ButtonList buttons={roomSettingButtons} />
-        <DS.boxWrapper>
-          <DS.TitleBox>내 전적</DS.TitleBox>
-          <RateDoughnutChart userData={userData} />
-          <br />
-          <ButtonList buttons={iconButtons} />
-        </DS.boxWrapper>
+        <DS.roomNameBox>
+          {gameRoomInfo.roomName === "" ? "빠른 대전" : gameRoomInfo.roomName}
+        </DS.roomNameBox>
+        <br />
+        <ButtonList buttons={filteredIconButtons} />
+        <br />
+        <DS.TitleBox>내 전적</DS.TitleBox>
+        <RateDoughnutChart userData={gameRoomInfo.homeUser} />
+        <br />
+        {gameRoomInfo.awayUser.id && (
+          <>
+            <DS.TitleBox>상대 전적</DS.TitleBox>
+            <RateDoughnutChart userData={gameRoomInfo.awayUser} />
+          </>
+        )}
+        <br />
       </DS.Container>
     </>
   );

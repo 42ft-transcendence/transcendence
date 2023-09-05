@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
-import { GameService } from './game.service';
+import { GameRoom, GameService } from './game.service';
 import { GameGateway } from './game.gateway';
 import { User } from 'src/users/entities/user.entity';
 
@@ -11,13 +11,66 @@ export class GameController {
     private readonly gameGateway: GameGateway,
   ) {}
 
-  @Post('battle/offer')
+  @Post('battle/create')
   @UseGuards(JwtTwoFactorGuard)
-  async offerGame(
+  async createGameRoom(
     @Request() req,
-    @Body('id') user_id: string,
-    @Body('awayUser') awayUser: User,
+    @Body('gameRoomInfo') gameRoomInfo: GameRoom,
   ): Promise<boolean> {
-    return await this.gameGateway.offerGame(user_id, awayUser);
+    console.log('createGameRoom gameRoomInfo: ', gameRoomInfo);
+    this.gameService.createGameRoom(gameRoomInfo);
+    this.gameGateway.refreshGameRoomList();
+    return true;
+  }
+
+  @Post('battle/accept')
+  @UseGuards(JwtTwoFactorGuard)
+  async acceptBattle(
+    @Request() req,
+    @Body('myData') myData: User,
+    @Body('awayUser') awayUser: User,
+    @Body('gameRoomURL') gameRoomURL: string,
+  ): Promise<boolean> {
+    return this.gameGateway.acceptBattle(myData, awayUser, gameRoomURL);
+  }
+
+  @Post('battle/reject')
+  @UseGuards(JwtTwoFactorGuard)
+  async rejectBattle(
+    @Request() req,
+    @Body('awayUser') awayUser: User,
+    @Body('gameRoomURL') gameRoomURL: string,
+  ): Promise<boolean> {
+    return this.gameGateway.rejectBattle(awayUser, gameRoomURL);
+  }
+
+  @Post('battle/ready')
+  @UseGuards(JwtTwoFactorGuard)
+  async readySignal(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.readySignal(gameRoomURL, myData);
+  }
+
+  @Post('battle/readyCancle')
+  @UseGuards(JwtTwoFactorGuard)
+  async readyCancleSignal(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.readyCancleSignal(gameRoomURL, myData);
+  }
+
+  @Post('battle/exit')
+  @UseGuards(JwtTwoFactorGuard)
+  async exitGameRoom(
+    @Request() req,
+    @Body('gameRoomURL') gameRoomURL: string,
+    @Body('myData') myData: User,
+  ): Promise<boolean> {
+    return this.gameGateway.exitGameRoom(gameRoomURL, myData);
   }
 }

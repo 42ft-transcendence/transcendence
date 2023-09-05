@@ -57,11 +57,15 @@ const Profile = () => {
 
   const user = userList.find((user) => user.id === userId) as UserType;
   if (typeof user === "undefined") {
+    console.log("here");
     window.location.href = "/profile/" + userData.id;
     return <></>;
   }
 
-  if (!matchHistory || !SidebarComponent) return <></>; // TODO: 로딩 컴포넌트 추가
+  if (!matchHistory || !SidebarComponent) {
+    console.log("here2");
+    return <></>;
+  } // TODO: 로딩 컴포넌트 추가
 
   return (
     <>

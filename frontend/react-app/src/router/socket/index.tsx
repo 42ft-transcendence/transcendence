@@ -1,7 +1,6 @@
-import { ChannelType, ChatType, OfferGameType, UserType } from "@type";
+import { ChatType, UserType } from "@type";
 import { chatSocket, chatSocketConnect } from "./chatSocket";
 import * as cookies from "react-cookies";
-import { gameSocket, gameSocketConnect } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { allUserListState } from "@src/recoil/atoms/common";
@@ -18,15 +17,14 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { gameAcceptUser } from "@src/recoil/atoms/game";
+
 import { useEffect } from "react";
 import { RefreshChannelType } from "@src/types/channel.type";
 import { useNavigate } from "react-router-dom";
+import useGameSocket from "@src/hooks/useGameSocket";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const jwt = cookies.load("jwt");
-  const [user] = useRecoilState(userDataState);
-  const [, setBattleActionModal] = useRecoilState(battleActionModalState);
   const setAllUserList = useSetRecoilState(allUserListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const setMessageList = useSetRecoilState(messageListState);
@@ -34,19 +32,11 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   const setJoinedDmOtherList = useSetRecoilState(joinedDmOtherListState);
   const setDmList = useSetRecoilState(dmListState);
   const dmOther = useRecoilValue(dmOtherState);
-  const setGameUser = useSetRecoilState(gameAcceptUser);
-  const setAllChannelList = useSetRecoilState(allChannelListState);
-  const setParticipantList = useSetRecoilState(participantListState);
-  const navigate = useNavigate();
 
-  const participantList = useRecoilValue(participantListState);
-  useEffect(() => {
-    console.log("participantList", participantList);
-  }, [participantList]);
+  useGameSocket(jwt);
 
   if (!jwt) {
     chatSocket.disconnect();
-    gameSocket.disconnect();
   } else {
     // Init chat socket events
     chatSocket.off("refresh_users");
@@ -82,75 +72,7 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
-    // gameSocket.off("offerBattle");
-    // gameSocket.on("offerBattle", (data: OfferGameType) => {
-    chatSocket.off("refresh_channel");
-    chatSocket.on(
-      "refresh_channel",
-      ({ channel, participants }: RefreshChannelType) => {
-        console.log("refresh_channel", channel, participants);
-        setJoinedChannelList((prev) =>
-          prev.map((prevChannel) =>
-            prevChannel.id === channel.id
-              ? { ...channel, hasNewMessages: prevChannel.hasNewMessages }
-              : prevChannel,
-          ),
-        );
-        if (curChannel?.id === channel.id) {
-          setChannel(channel);
-          setParticipantList(participants);
-        }
-      },
-    );
-
-    chatSocket.off("refresh_all_channels");
-    chatSocket.on("refresh_all_channels", (channelList: ChannelType[]) => {
-      setAllChannelList(channelList);
-    });
-
-    chatSocket.off("kicked");
-    chatSocket.on("kicked", (channelId: string) => {
-      setJoinedChannelList((prev) =>
-        prev.filter((joinedChannel) => joinedChannel.id !== channelId),
-      );
-      if (curChannel?.id === channelId) {
-        navigate("/channel-list");
-        alert("채널에서 추방되었습니다.");
-      }
-    });
-
-    chatSocket.off("channel_deleted");
-    chatSocket.on("channel_deleted", (channelId: string) => {
-      setJoinedChannelList((prev) =>
-        prev.filter((joinedChannel) => joinedChannel.id !== channelId),
-      );
-      if (curChannel?.id === channelId) {
-        navigate("/channel-list");
-        alert("채널이 삭제되었습니다.");
-      }
-    });
-
-    gameSocket.off("offerGame");
-    gameSocket.on("offerGame", (data: OfferGameType) => {
-      console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
-      console.log("user.id", user.id);
-      setBattleActionModal({
-        battleActionModal: user.id === data.myData.id,
-        awayUser: data.awayUser,
-        gameRoomURL: data.gameRoomURL,
-      });
-    });
-
-    gameSocket.off("acceptBattle");
-    gameSocket.on("acceptBattle", (data) => {
-      if (user.id === data.myData.id) {
-        setGameUser(data.awayUser);
-        window.location.href = `/game/${data.gameRoomURL}`;
-      }
-    });
-
     chatSocketConnect(jwt);
-    gameSocketConnect(jwt);
   }
 
   return children;

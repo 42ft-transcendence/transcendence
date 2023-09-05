@@ -1,30 +1,56 @@
 import NavBar from "@src/components/common/navBar";
-import { routeMatch, sidebarConfig } from "@src/components/common/sideBar";
+import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
-import { useRecoilState } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
-import { gameAcceptUser } from "@src/recoil/atoms/game";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { useEffect } from "react";
+import { gameAlertModalState } from "@src/recoil/atoms/modal";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
-  const [user] = useRecoilState(userDataState);
-  const [gameUser] = useRecoilState(gameAcceptUser);
-
-  console.log("currentRoute", currentRoute);
   const SideBarComponent = routeMatch(currentRoute, "/game/");
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const setGameAlertModal = useSetRecoilState(gameAlertModalState);
 
-  console.log("user", user);
-  console.log("gameUser", gameUser);
+  useEffect(() => {
+    if (
+      gameRoomInfo.roomType === "QUICK" &&
+      (!gameRoomInfo.awayUser.id || !gameRoomInfo.homeUser.id)
+    ) {
+      console.log("here");
+      setGameAlertModal({
+        gameAlertModal: true,
+        gameAlertModalMessage: "상대방이 나갔습니다.",
+        shouldRedirect: true,
+        shouldInitInfo: true,
+      });
+    }
+  }, [gameRoomInfo.awayUser.id]);
+
+  // console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>
       <NavBar />
       <GameCreateModal />
       {SideBarComponent && <SideBarComponent />}
-      <GameMatchProfile user={user} />
-      <GameMatchProfile user={gameUser} />
-      {/* 상대방*/}
+      {gameRoomInfo.homeUser.id ? (
+        <GameMatchProfile
+          user={gameRoomInfo.homeUser}
+          isReady={gameRoomInfo.homeReady}
+        />
+      ) : (
+        <>대기중</>
+      )}
+      {gameRoomInfo.awayUser.id ? (
+        <GameMatchProfile
+          user={gameRoomInfo.awayUser}
+          isReady={gameRoomInfo.awayReady}
+        />
+      ) : (
+        <>대기중</>
+      )}
     </>
   );
 };

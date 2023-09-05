@@ -18,7 +18,15 @@ export type {
   SendMessageReturnType,
 } from "./chat.type";
 
-export type { OfferGameType } from "./game.type";
+export type {
+  OfferGameType,
+  MatchHistoryType,
+  battleActionData,
+  gameType,
+  JoinedgameType,
+  GameRoomType,
+  GameRoomInfoType,
+} from "./game.type";
 
 export type { CheckNicknameType, ButtonHanderProps } from "./response.type";
 

@@ -1,12 +1,10 @@
 import { Theme } from "@src/styles/Theme";
 import styled from "styled-components";
-
 import Hash from "@assets/icons/Hash.svg";
 import Detective from "@assets/icons/Detective.svg";
 import Lock from "@assets/icons/LockKey.svg";
-import { gameTypeType } from "@src/types/game.type";
 
-const gameTypeIcon = {
+const GameTypeIcon = {
   PUBLIC: Hash,
   PROTECTED: Lock,
   PRIVATE: Detective,
@@ -21,7 +19,7 @@ export const ModalOverlay = {
   alignItems: "center",
 };
 
-export const ModalContent = {
+export const ModalContent: React.CSSProperties = {
   backgroundColor: Theme.colors.heavyPurple,
   inset: "auto",
   width: "700px",
@@ -96,7 +94,7 @@ export const gameCreateOption = styled.div`
   justify-content: start;
 `;
 
-export const TypeButton = styled.button<{ type: gameTypeType }>`
+export const TypeButton = styled.button<{ type: string }>`
   height: 20px;
   background: none;
   border: none;
@@ -113,7 +111,8 @@ export const TypeButton = styled.button<{ type: gameTypeType }>`
     display: inline-block;
     width: 30px;
     height: 24px;
-    background-image: url(${({ type }) => gameTypeIcon[type]});
+    background-image: url(${({ type }) =>
+      GameTypeIcon[type as keyof typeof GameTypeIcon]});
     background-size: 24px;
     background-repeat: no-repeat;
   }
@@ -126,7 +125,7 @@ export const OptionContent = styled.div`
   flex-grow: 1;
 `;
 
-export const GameSpeedButton = styled.button<{ $selected: string }>`
+export const GameSpeedButton = styled.button<{ $selected: boolean }>`
   flex: 1;
   width: 100px;
   padding: 0.25rem 0.5rem;

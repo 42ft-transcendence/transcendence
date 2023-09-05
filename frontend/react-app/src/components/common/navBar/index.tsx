@@ -3,8 +3,12 @@ import { useRecoilState } from "recoil";
 import { LowerTabList, SettingOptionModal, UpperTabList } from "./container";
 import { showProfileState } from "@src/recoil/atoms/common";
 import ProfileModal from "@src/components/modal/profile";
-import { battleActionModalState } from "@src/recoil/atoms/modal";
+import {
+  battleActionModalState,
+  gameAlertModalState,
+} from "@src/recoil/atoms/modal";
 import BattleActionModal from "@src/components/modal/game/BattleActionModal";
+import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -13,6 +17,7 @@ export interface NavBarPropsType {
 const NavBar = () => {
   const [showProfile] = useRecoilState(showProfileState);
   const [battleActionModal] = useRecoilState(battleActionModalState);
+  const [gameAlertModal] = useRecoilState(gameAlertModalState);
 
   return (
     <S.Container>
@@ -22,6 +27,7 @@ const NavBar = () => {
       <SettingOptionModal />
       {showProfile && <ProfileModal />}
       {battleActionModal.battleActionModal && <BattleActionModal />}
+      {gameAlertModal.gameAlertModal && <GameAlertModal />}
     </S.Container>
   );
 };
