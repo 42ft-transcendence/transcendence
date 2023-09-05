@@ -6,13 +6,7 @@ import { IconButton } from "@components/buttons";
 import React, { useEffect, useState } from "react";
 import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
-import { useNavigate } from "react-router-dom";
-import {
-  gameRoomInfoInitState,
-  gameRoomInfoState,
-} from "@src/recoil/atoms/game";
 import { GameRoomType, UserType } from "@src/types";
-import { createGameRoom } from "@src/api/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
 const stringToHash = (title: string): string => {
@@ -32,9 +26,9 @@ const GameRoomTypeMap: {
 };
 
 const SPEED_OPTIONS = [
-  { key: "slow", label: "느리게" },
-  { key: "normal", label: "보통" },
-  { key: "fast", label: "빠르게" },
+  { key: "SLOW", label: "느리게" },
+  { key: "NORMAL", label: "보통" },
+  { key: "FAST", label: "빠르게" },
 ];
 
 const GameCreateModal = () => {
@@ -42,29 +36,28 @@ const GameCreateModal = () => {
     createGameRoomModalState,
   );
   const [userData, setUserData] = useRecoilState(userDataState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const [speed, setSpeed] = useState("normal");
+  const [speed, setSpeed] = useState("NORMAL");
   const [type, setType] = useState<string>("PUBLIC");
   const [roomName, setRoomName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const navigate = useNavigate();
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
-    gameSocket.emit("editGameRoomName", {
+    gameSocket.emit("editGameRoomInfo", {
       gameRoomURL: userData.gameRoomURL,
-      gameRoomName: event.target.value,
+      infoType: "roomName",
+      info: event.target.value,
     });
   };
 
   const onSubmit = async () => {
-    await createGameRoom(gameRoomInfo);
     handleClose();
-    navigate(`/game/${gameRoomInfo.roomURL}`);
+    window.location.href = `/game/${userData.gameRoomURL}`;
   };
 
   const handleClose = () => {
     setType("PUBLIC");
+    setSpeed("NORMAL");
     setRoomName("");
     console.log("deleteGameRoom", userData.gameRoomURL);
     gameSocket.emit("deleteGameRoom", { gameRoomURL: userData.gameRoomURL });
@@ -79,32 +72,46 @@ const GameCreateModal = () => {
     event.preventDefault();
     if (type === "PUBLIC") {
       setType("PROTECTED");
-      setGameRoomInfo((prev) => ({
-        ...prev,
-        roomType: "PROTECTED" as GameRoomType,
-      }));
+      gameSocket.emit("editGameRoomInfo", {
+        gameRoomURL: userData.gameRoomURL,
+        infoType: "roomType",
+        info: "PROTECTED" as GameRoomType,
+      });
     } else if (type === "PROTECTED") {
       setType("PRIVATE");
-      setGameRoomInfo((prev) => ({
-        ...prev,
-        roomType: "PRIVATE" as GameRoomType,
-      }));
+      gameSocket.emit("editGameRoomInfo", {
+        gameRoomURL: userData.gameRoomURL,
+        infoType: "roomType",
+        info: "PRIVATE" as GameRoomType,
+      });
     } else {
       setType("PUBLIC");
-      setGameRoomInfo((prev) => ({
-        ...prev,
-        roomType: "PUBRIC" as GameRoomType,
-      }));
+      gameSocket.emit("editGameRoomInfo", {
+        gameRoomURL: userData.gameRoomURL,
+        infoType: "roomType",
+        info: "PUBLIC" as GameRoomType,
+      });
     }
   };
 
   const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-    setGameRoomInfo((prev) => ({
-      ...prev,
-      roomPassword: stringToHash(event.target.value),
-    }));
+    gameSocket.emit("editGameRoomInfo", {
+      gameRoomURL: userData.gameRoomURL,
+      infoType: "roomPassword",
+      info: event.target.value,
+    });
   };
+
+  useEffect(() => {
+    if (createGameRoomModal) {
+      gameSocket.emit("editGameRoomInfo", {
+        gameRoomURL: userData.gameRoomURL,
+        infoType: "gameMode",
+        info: speed,
+      });
+    }
+  }, [speed]);
 
   return (
     <Modal

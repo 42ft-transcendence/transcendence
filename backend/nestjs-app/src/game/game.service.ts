@@ -36,6 +36,25 @@ export class GameService {
 
   editGameRoomName(roomURL: string, roomName: string): void {
     const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
     room.roomName = roomName;
+  }
+
+  editGameRoomType(roomURL: string, roomType: GameRoomType): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
+    room.roomType = roomType;
+  }
+
+  editGameRoomPassword(roomURL: string, roomPassword: string): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
+    room.roomPassword = roomPassword;
+  }
+
+  editGameRoomGameMode(roomURL: string, gameMode: string): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
+    room.gameMode = gameMode;
   }
 }

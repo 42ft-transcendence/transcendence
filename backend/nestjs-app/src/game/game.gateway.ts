@@ -130,22 +130,52 @@ export class GameGateway {
       awayReady: false,
     };
     this.gameService.createGameRoom(newRoom);
+    this.server.emit('roomList', this.gameService.getAllGameRooms());
   }
 
   @SubscribeMessage('deleteGameRoom')
   deleteGameRoom(client: Socket, content: { gameRoomURL: string }) {
-    console.log('deleteGameRoom content.gameRoomURL: ', content.gameRoomURL);
     this.gameService.deleteGameRoom(content.gameRoomURL);
+    this.server.emit('roomList', this.gameService.getAllGameRooms());
   }
 
-  @SubscribeMessage('editGameRoomName')
-  editGameRoomName(
+  @SubscribeMessage('editGameRoomInfo')
+  editGameRoomInfo(
     client: Socket,
-    content: { gameRoomURL: string; gameRoomName: string },
+    content: {
+      gameRoomURL: string;
+      infoType: string;
+      info: string | number | boolean | GameRoomType;
+    },
   ) {
-    this.gameService.editGameRoomName(
-      content.gameRoomURL,
-      content.gameRoomName,
+    console.log('editGameRoomInfo: ', content);
+    if (content.infoType === 'roomName') {
+      this.gameService.editGameRoomName(
+        content.gameRoomURL,
+        content.info as string,
+      );
+    } else if (content.infoType === 'roomType') {
+      this.gameService.editGameRoomType(
+        content.gameRoomURL,
+        content.info as GameRoomType,
+      );
+    } else if (content.infoType === 'roomPassword') {
+      this.gameService.editGameRoomPassword(
+        content.gameRoomURL,
+        content.info as string,
+      );
+    } else if (content.infoType === 'gameMode') {
+      this.gameService.editGameRoomGameMode(
+        content.gameRoomURL,
+        content.info as string,
+      );
+    }
+    this.server.emit('roomList', this.gameService.getAllGameRooms());
+    console.log(
+      'editGameRoomInfo: ',
+      this.gameService
+        .getAllGameRooms()
+        .find((room) => room.roomURL === content.gameRoomURL),
     );
   }
 
