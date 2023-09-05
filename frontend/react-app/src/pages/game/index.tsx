@@ -3,15 +3,29 @@ import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomListState } from "@src/recoil/atoms/game";
 import { useEffect } from "react";
 import { gameAlertModalState } from "@src/recoil/atoms/modal";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { userDataState } from "@src/recoil/atoms/common";
+import { GameRoomInfoType } from "@src/types";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [userData] = useRecoilState(userDataState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
+  const gameRoomList = useRecoilState(gameRoomListState);
+
+  useEffect(() => {
+    gameSocket.emit("getGameRoomInfo");
+    setGameRoomInfo(
+      gameRoomList[0].find(
+        (room) => room.roomURL === userData.gameRoomURL,
+      ) as GameRoomInfoType,
+    );
+  }, []);
 
   useEffect(() => {
     if (
@@ -27,8 +41,6 @@ const Game = () => {
       });
     }
   }, [gameRoomInfo.awayUser.id]);
-
-  // console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>

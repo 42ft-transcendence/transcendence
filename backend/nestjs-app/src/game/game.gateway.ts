@@ -81,8 +81,12 @@ export class GameGateway {
   server: Server;
 
   refreshGameRoomList() {
-    const content = this.gameService.getAllGameRooms();
-    this.server.emit('roomList', content);
+    this.server.emit('roomList', this.gameService.getAllGameRooms());
+  }
+
+  @SubscribeMessage('getGameRoomList')
+  getGameRoomList(client: Socket) {
+    this.refreshGameRoomList();
   }
 
   @SubscribeMessage('offerBattle')
@@ -130,13 +134,13 @@ export class GameGateway {
       awayReady: false,
     };
     this.gameService.createGameRoom(newRoom);
-    this.server.emit('roomList', this.gameService.getAllGameRooms());
+    this.refreshGameRoomList();
   }
 
   @SubscribeMessage('deleteGameRoom')
   deleteGameRoom(client: Socket, content: { gameRoomURL: string }) {
     this.gameService.deleteGameRoom(content.gameRoomURL);
-    this.server.emit('roomList', this.gameService.getAllGameRooms());
+    this.refreshGameRoomList();
   }
 
   @SubscribeMessage('editGameRoomInfo')
@@ -170,7 +174,7 @@ export class GameGateway {
         content.info as string,
       );
     }
-    this.server.emit('roomList', this.gameService.getAllGameRooms());
+    this.refreshGameRoomList();
     console.log(
       'editGameRoomInfo: ',
       this.gameService

@@ -24,12 +24,10 @@ const useGameSocket = (jwt: string) => {
   useEffect(() => {
     if (!jwt) {
       gameSocket.disconnect();
-      // setGameRoomInfo(gameRoomInfoInitState);
     } else {
       console.log("gamesocket connected");
       gameSocket.off("roomList");
       gameSocket.on("roomList", (data) => {
-        console.log("roomList", data);
         setGameRoomList(data);
       });
 

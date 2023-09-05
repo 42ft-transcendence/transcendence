@@ -51,7 +51,15 @@ const GameCreateModal = () => {
   };
 
   const onSubmit = async () => {
-    handleClose();
+    gameSocket.emit("editGameRoomInfo", {
+      gameRoomURL: userData.gameRoomURL,
+      infoType: "roomType",
+      info: type as GameRoomType,
+    });
+    setType("PUBLIC");
+    setSpeed("NORMAL");
+    setRoomName("");
+    setCreateGameRoomModal(false);
     window.location.href = `/game/${userData.gameRoomURL}`;
   };
 
@@ -59,7 +67,6 @@ const GameCreateModal = () => {
     setType("PUBLIC");
     setSpeed("NORMAL");
     setRoomName("");
-    console.log("deleteGameRoom", userData.gameRoomURL);
     gameSocket.emit("deleteGameRoom", { gameRoomURL: userData.gameRoomURL });
     setUserData({
       ...userData,
@@ -72,25 +79,10 @@ const GameCreateModal = () => {
     event.preventDefault();
     if (type === "PUBLIC") {
       setType("PROTECTED");
-      gameSocket.emit("editGameRoomInfo", {
-        gameRoomURL: userData.gameRoomURL,
-        infoType: "roomType",
-        info: "PROTECTED" as GameRoomType,
-      });
     } else if (type === "PROTECTED") {
       setType("PRIVATE");
-      gameSocket.emit("editGameRoomInfo", {
-        gameRoomURL: userData.gameRoomURL,
-        infoType: "roomType",
-        info: "PRIVATE" as GameRoomType,
-      });
     } else {
       setType("PUBLIC");
-      gameSocket.emit("editGameRoomInfo", {
-        gameRoomURL: userData.gameRoomURL,
-        infoType: "roomType",
-        info: "PUBLIC" as GameRoomType,
-      });
     }
   };
 

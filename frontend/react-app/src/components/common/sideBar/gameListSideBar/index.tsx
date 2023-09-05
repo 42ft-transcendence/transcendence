@@ -22,6 +22,11 @@ const GameListSideBar = () => {
           user: userData,
           gameRoomURL: gameRoomURL,
         });
+        gameSocket.emit("editGameRoomInfo", {
+          gameRoomURL: gameRoomURL,
+          infoType: "roomType",
+          info: "PRIVATE",
+        });
         setUserData({
           ...userData,
           gameRoomURL: gameRoomURL,
