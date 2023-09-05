@@ -32,6 +32,10 @@ const SecondAuthDeactivateModal = () => {
     turnOff2Fa()
       .then(() => {
         handleClose();
+        setUserData((prev) => ({
+          ...prev,
+          isTwoFactorAuthenticationEnabled: false,
+        }));
       })
       .catch((err) => {
         console.error(err);

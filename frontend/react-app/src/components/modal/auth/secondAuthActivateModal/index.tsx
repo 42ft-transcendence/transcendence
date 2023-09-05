@@ -40,6 +40,10 @@ const SecondAuthActivateModal = () => {
     turnOn2Fa(code)
       .then(() => {
         handleClose();
+        setUserData((prev) => ({
+          ...prev,
+          isTwoFactorAuthenticationEnabled: true,
+        }));
       })
       .catch((err) => {
         console.error(err);
