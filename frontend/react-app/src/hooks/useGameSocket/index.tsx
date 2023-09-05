@@ -35,13 +35,13 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
-        console.log("offerBattle socket", data);
-        // setBattleActionModal({
-        //   battleActionModal: user.id === data.awayUser.id,
-        //   awayUser: data.myData,
-        //   gameRoomURL: data.gameRoomURL,
-        //   gameType: data.roomType as GameRoomType,
-        // });
+        if (data.awayUser.id === user.id) {
+          setBattleActionModal({
+            battleActionModal: true,
+            awayUser: data.myData,
+            gameRoomURL: data.gameRoomURL,
+          });
+        }
       });
 
       gameSocket.off("acceptBattle");

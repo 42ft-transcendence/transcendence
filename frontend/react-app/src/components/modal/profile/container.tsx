@@ -145,7 +145,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const roomURL = currentTime + myData.id;
       const hashedTitle = hashTitle(roomURL);
       gameSocket.emit("offerBattle", {
-        awayUserId: user.user.id,
+        awayUser: user.user,
+        myData: myData,
         gameRoomURL: hashedTitle,
       });
     } catch (error) {

@@ -152,7 +152,7 @@ export class GameGateway {
   @SubscribeMessage('offerBattle')
   offerBattle(
     client: Socket,
-    content: { awayUserId: string; gameRoomURL: string; gameType: string },
+    content: { awayUser: User; myData: User; gameRoomURL: string },
   ) {
     this.server.emit('offerBattle', content);
   }
