@@ -71,9 +71,9 @@ export class UsersController {
         user.status === UserStatusType.SIGNUP
       ) {
         const jwt = await this.authService.sign(payload);
-        if (user.status === UserStatusType.OFFLINE) {
-          await this.usersService.updateStatus(user, UserStatusType.ONLINE);
-        }
+        // if (user.status === UserStatusType.OFFLINE) {
+        //   await this.usersService.updateStatus(user, UserStatusType.ONLINE);
+        // }
         console.log('jwt: ', jwt);
         res.setHeader('Authorization', 'Bearer ' + jwt);
         res.cookie('jwt', jwt, {
