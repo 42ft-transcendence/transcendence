@@ -104,13 +104,12 @@ const AuthPage = () => {
         .then((response) => {
           // save user recoil data
           setUserData(response.data);
-
+          loadMyData(response.data.id);
           if (response.data.isTwoFactorAuthenticationEnabled) {
             setStatus("TwoFactor");
           } else if (response.data.status === UserStatus.SIGNUP) {
             navigate("/signup");
           } else {
-            loadMyData(response.data.id);
             navigate("/");
           }
         })
@@ -126,10 +125,7 @@ const AuthPage = () => {
         });
     } else if (status === "TwoFactorLoading") {
       verify2Fa(twoFactorCode)
-        .then((response) => {
-          // save user recoil data
-          setUserData(response.data);
-          loadMyData(response.data.id);
+        .then(() => {
           navigate("/");
         })
         .catch((error) => {
