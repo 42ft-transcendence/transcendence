@@ -16,7 +16,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 
 const useGameSocket = (jwt: string) => {
   const setBattleActionModal = useSetRecoilState(battleActionModalState);
-  const [user] = useRecoilState(userDataState);
+  const [userData] = useRecoilState(userDataState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const setGameRoomList = useSetRecoilState(gameRoomListState);
@@ -35,7 +35,7 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
-        if (data.awayUser.id === user.id) {
+        if (data.awayUser.id === userData.id) {
           setBattleActionModal({
             battleActionModal: true,
             awayUser: data.myData,
@@ -46,7 +46,10 @@ const useGameSocket = (jwt: string) => {
 
       gameSocket.off("acceptBattle");
       gameSocket.on("acceptBattle", (data) => {
-        if (user.id === data.awayUser.id) {
+        console.log("acceptBattle", data, userData.gameRoomURL);
+        if (data.gameRoomURL === userData.gameRoomURL) {
+          console.log("acceptBattle", data);
+          setGameRoomInfo(data.gameRoom);
           window.location.href = `/game/${data.gameRoomURL}`;
         }
       });
@@ -54,7 +57,7 @@ const useGameSocket = (jwt: string) => {
       gameSocket.off("rejectBattle");
       gameSocket.on("rejectBattle", (data) => {
         console.log("rejectBattle", data);
-        if (user.id === data.myData.id) {
+        if (userData.id === data.myData.id) {
           console.log("here");
           setGameAlertModal({
             gameAlertModal: true,
@@ -72,11 +75,11 @@ const useGameSocket = (jwt: string) => {
             "readySignal",
             gameRoomInfo,
             data.awayUser.id,
-            user.id,
-            data.awayUser.id === user.id,
+            userData.id,
+            data.awayUser.id === userData.id,
           );
           if (
-            user.id !== data.awayUser.id &&
+            userData.id !== data.awayUser.id &&
             gameRoomInfo.awayUser.id === data.awayUser.id
           ) {
             setGameRoomInfo({
@@ -84,7 +87,7 @@ const useGameSocket = (jwt: string) => {
               awayReady: data.isReady,
             });
           } else if (
-            user.id !== data.awayUser.id &&
+            userData.id !== data.awayUser.id &&
             gameRoomInfo.homeUser.id === data.awayUser.id
           ) {
             setGameRoomInfo({
@@ -98,9 +101,8 @@ const useGameSocket = (jwt: string) => {
       gameSocket.off("exitGameRoom");
       gameSocket.on("exitGameRoom", (data) => {
         console.log("exitGameRoom", data);
-
         if (
-          user.id !== data.awayUser.id &&
+          userData.id !== data.awayUser.id &&
           gameRoomInfo.roomURL === data.gameRoomURL &&
           gameRoomInfo.awayUser.id === data.awayUser.id
         ) {
@@ -109,7 +111,7 @@ const useGameSocket = (jwt: string) => {
             awayUser: {} as UserType,
           });
         } else if (
-          user.id !== data.awayUser.id &&
+          userData.id !== data.awayUser.id &&
           gameRoomInfo.roomURL === data.gameRoomURL &&
           gameRoomInfo.homeUser.id === data.awayUser.id
         ) {
@@ -132,7 +134,7 @@ const useGameSocket = (jwt: string) => {
       gameSocket.off("exitGameRoom");
       // ... (다른 gameSocket 이벤트 해제 로직)
     };
-  }, [jwt]); // 의존성 배열에 필요한 값들을 넣어주세요.
+  }, [jwt, userData]); // 의존성 배열에 필요한 값들을 넣어주세요.
 };
 
 export default useGameSocket;

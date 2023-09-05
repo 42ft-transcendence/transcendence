@@ -67,7 +67,7 @@ const hashTitle = (title: string): string => {
 };
 
 export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
-  const [myData] = useRecoilState(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   // 상대 프로필 유저
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
@@ -142,11 +142,16 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const handleBattleOffer = async (): Promise<void> => {
     try {
       const currentTime: Date = new Date();
-      const roomURL = currentTime + myData.id;
+      const roomURL = currentTime + userData.id;
       const hashedTitle = hashTitle(roomURL);
+      setUserData({
+        ...userData,
+        gameRoomURL: hashedTitle,
+      });
+      console.log("hashedTitle", hashedTitle);
       gameSocket.emit("offerBattle", {
         awayUser: user.user,
-        myData: myData,
+        myData: userData,
         gameRoomURL: hashedTitle,
       });
     } catch (error) {

@@ -16,7 +16,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
-import { GameService } from './game.service';
+import { GameRoom, GameService } from './game.service';
 
 let rankRoom = 0;
 const normalRoom = 1;
@@ -85,30 +85,40 @@ export class GameGateway {
     this.server.emit('roomList', content);
   }
 
-  // offerBattle(
-  //   awayUser: User,
-  //   myData: User,
-  //   gameRoomURL: string,
-  //   roomType: string,
-  // ): boolean {
-  //   const content = {
-  //     awayUser: awayUser,
-  //     myData: myData,
-  //     gameRoomURL: gameRoomURL,
-  //     roomType: roomType,
-  //   };
-  //   this.server.emit('offerBattle', content);
-  //   return true;
-  // }
-
-  acceptBattle(myData: User, awayUser: User, gameRoomURL: string) {
-    const content = {
-      myData: myData,
-      awayUser: awayUser,
-      gameRoomURL: gameRoomURL,
+  @SubscribeMessage('offerBattle')
+  offerBattle(
+    client: Socket,
+    content: { awayUser: User; myData: User; gameRoomURL: string },
+  ) {
+    const newRoom: GameRoom = {
+      roomURL: content.gameRoomURL,
+      roomName: content.myData.nickname + ' vs ' + content.awayUser.nickname,
+      roomType: 'QUICK',
+      roomPassword: '',
+      roomOwner: content.myData,
+      numberOfParticipants: 2,
+      gameMode: 'NORMAL',
+      map: 'NORMAL',
+      homeUser: content.myData,
+      awayUser: content.awayUser,
+      homeReady: false,
+      awayReady: false,
     };
-    this.server.emit('acceptBattle', content);
-    return true;
+    this.gameService.createGameRoom(newRoom);
+    this.server.emit('offerBattle', content);
+  }
+
+  @SubscribeMessage('acceptBattle')
+  acceptBattle(client: Socket, content: { gameRoomURL: string }) {
+    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
+      return room.roomURL === content.gameRoomURL;
+    });
+    console.log('acceptBattle: ', gameRoom);
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      gameRoom: gameRoom,
+    };
+    this.server.emit('acceptBattle', response);
   }
 
   rejectBattle(myData: User, gameRoomURL: string) {
@@ -147,14 +157,6 @@ export class GameGateway {
     };
     this.server.emit('exitGameRoom', content);
     return true;
-  }
-
-  @SubscribeMessage('offerBattle')
-  offerBattle(
-    client: Socket,
-    content: { awayUser: User; myData: User; gameRoomURL: string },
-  ) {
-    this.server.emit('offerBattle', content);
   }
 
   async handleConnection(@ConnectedSocket() client) {

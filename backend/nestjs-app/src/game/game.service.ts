@@ -29,4 +29,8 @@ export class GameService {
   getAllGameRooms(): GameRoom[] {
     return this.rooms;
   }
+
+  deleteGameRoom(roomURL: string): void {
+    this.rooms = this.rooms.filter((room) => room.roomURL !== roomURL);
+  }
 }

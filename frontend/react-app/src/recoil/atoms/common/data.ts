@@ -13,6 +13,7 @@ export const initialUserData = {
   twoFactorAuthenticationSecret: "",
   isTwoFactorAuthenticationEnabled: false,
   rating: 1000,
+  gameRoomURL: "",
 };
 
 const K = 32;
@@ -74,6 +75,7 @@ export const createDummyUsers = (num: number): UserType[] => {
       twoFactorAuthenticationSecret: "",
       isTwoFactorAuthenticationEnabled: false,
       rating,
+      gameRoomURL: "",
     };
   });
 };

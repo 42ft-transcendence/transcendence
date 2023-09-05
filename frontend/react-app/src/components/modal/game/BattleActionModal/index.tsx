@@ -8,12 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { userDataState } from "@src/recoil/atoms/common";
 import { acceptBattle, rejectBattle } from "@src/api/game";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
     battleActionModalState,
   );
-  const [myData] = useRecoilState(userDataState);
+  const [userData, setUserData] = useRecoilState(userDataState);
   // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
@@ -58,43 +59,26 @@ const BattleActionModal = () => {
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
-      gameType: "",
     }); // 모달 닫기
   };
 
-  const handleAcceptButton = async () => {
-    // 대전 신청 수락 시 대전 정보 저장
-    setGameRoomInfo({
-      roomURL: battleActionModal.gameRoomURL,
-      roomName: "",
-      roomType: battleActionModal.gameType,
-      roomPassword: "",
-      roomOwner: battleActionModal.awayUser,
-      numberOfParticipants: 2,
-      gameMode: "NORMAL",
-      map: "NORMAL",
-      homeUser: battleActionModal.awayUser,
-      awayUser: myData,
-      homeReady: false,
-      awayReady: false,
-      chatMessages: [],
-    });
-    // 대전 신청 수락 api 호출
-    await acceptBattle(
-      battleActionModal.awayUser,
-      myData,
-      battleActionModal.gameRoomURL,
-    );
+  const handleAcceptButton = () => {
     const gameRoomURL = battleActionModal.gameRoomURL;
+    console.log("gameRoomURL", gameRoomURL);
+    gameSocket.emit("acceptBattle", {
+      gameRoomURL: gameRoomURL,
+    });
+    setUserData({
+      ...userData,
+      gameRoomURL: gameRoomURL,
+    });
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
-      gameType: "",
     }); // 모달 닫기
     // 대전 신청 수락 시 대전 페이지로 이동
-    window.location.href = `/game/${gameRoomURL}`;
-    // navigate("/game/" + gameRoomURL);
+    // window.location.href = `/game/${gameRoomURL}`;
   };
 
   useEffect(() => {

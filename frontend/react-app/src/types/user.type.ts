@@ -11,6 +11,7 @@ export interface UserType {
   twoFactorAuthenticationSecret: string;
   isTwoFactorAuthenticationEnabled: boolean;
   rating: number;
+  gameRoomURL: string;
 }
 
 export enum UserStatus {
