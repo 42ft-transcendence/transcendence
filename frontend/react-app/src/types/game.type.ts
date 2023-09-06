@@ -50,12 +50,18 @@ export interface GameRoomParticipantType {
   ready: boolean;
 }
 
+export enum GameRoomStatus {
+  WAITING = 0,
+  GAMING = 1,
+}
+
 export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
   roomType: GameRoomType;
   roomPassword: string;
   roomOwner: UserType;
+  status: GameRoomStatus;
   numberOfParticipants: number;
   gameMode: string;
   map: string;

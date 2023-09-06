@@ -3,6 +3,7 @@ import {
   GameRoomInfoType,
   MatchHistoryType,
   GameRoomType,
+  GameRoomStatus,
 } from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
@@ -33,6 +34,7 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     map: "",
     participants: [],
     chatMessages: [],
+    status: GameRoomStatus.GAMING,
   },
   effects_UNSTABLE: [persistAtom],
 });

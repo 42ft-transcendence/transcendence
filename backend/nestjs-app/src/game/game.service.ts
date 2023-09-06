@@ -8,6 +8,11 @@ export interface GameRoomParticipant {
   ready: boolean;
 }
 
+export enum GameRoomStatus {
+  WAITING = 0,
+  GAMING = 1,
+}
+
 export interface GameRoom {
   roomURL: string;
   roomName: string;
@@ -18,6 +23,7 @@ export interface GameRoom {
   gameMode: string;
   map: string;
   participants: GameRoomParticipant[];
+  status: GameRoomStatus;
 }
 
 @Injectable()

@@ -16,7 +16,12 @@ import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
-import { GameRoom, GameRoomType, GameService } from './game.service';
+import {
+  GameRoom,
+  GameRoomStatus,
+  GameRoomType,
+  GameService,
+} from './game.service';
 
 // const rankRoom = 0;
 // const normalRoom = 1;
@@ -112,6 +117,7 @@ export class GameGateway {
         { user: content.myData, ready: false },
         { user: content.awayUser, ready: false },
       ],
+      status: GameRoomStatus.WAITING,
     };
     this.gameService.createGameRoom(newRoom);
     this.server.emit('offerBattle', content);
@@ -129,6 +135,7 @@ export class GameGateway {
       gameMode: 'NORMAL',
       map: 'NORMAL',
       participants: [{ user: content.user, ready: false }],
+      status: GameRoomStatus.WAITING,
     };
     this.gameService.createGameRoom(newRoom);
     this.refreshGameRoomList();

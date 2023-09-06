@@ -35,22 +35,6 @@ const Game = () => {
             isReady={user.ready}
           />
         ))}
-      {/* {gameRoomInfo.homeUser.id ? (
-        <GameMatchProfile
-          user={gameRoomInfo.homeUser}
-          isReady={gameRoomInfo.homeReady}
-        />
-      ) : (
-        <>대기중</>
-      )}
-      {gameRoomInfo.awayUser.id ? (
-        <GameMatchProfile
-          user={gameRoomInfo.awayUser}
-          isReady={gameRoomInfo.awayReady}
-        />
-      ) : (
-        <>대기중</>
-      )} */}
     </>
   );
 };

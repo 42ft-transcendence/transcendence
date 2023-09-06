@@ -4,6 +4,7 @@ import * as S from "./index.styled";
 import { SearchComponent } from "../userList/container";
 import { useRecoilState } from "recoil";
 import { gameRoomListState } from "@src/recoil/atoms/game";
+import { GameRoomStatus } from "@src/types/game.type";
 
 export const GameListContent = () => {
   const [search, setSearch] = useState<string>("");
@@ -41,7 +42,11 @@ export const GameListContent = () => {
                 <S.GameRoomNumOfPeople>
                   {gameRoom.numberOfParticipants} / 2
                 </S.GameRoomNumOfPeople>
-                <S.GameRoomStatus>대기중</S.GameRoomStatus>
+                <S.GameRoomStatus>
+                  {gameRoom.status === GameRoomStatus.WAITING
+                    ? "대기중"
+                    : "게임중"}
+                </S.GameRoomStatus>
               </S.GameRoomCardRight>
             </S.GameRoomCard>
           ))}

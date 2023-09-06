@@ -62,7 +62,6 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
         navigate("/game-list");
         setGameRoomURL("");
         setLeaveGameRoom(true);
-        // gameSocket.emit()
       },
       theme: "LIGHT",
     },
