@@ -75,3 +75,9 @@ export interface gameAlertModalStateType {
   shouldRedirect: boolean;
   shouldInitInfo: boolean;
 }
+
+export type GameMapType = "NORMAL" | "JUNGLE" | "DESERT";
+
+export interface GameModalType {
+  gameMap: GameMapType | null;
+}

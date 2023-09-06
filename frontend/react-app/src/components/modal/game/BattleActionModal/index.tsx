@@ -4,19 +4,13 @@ import { battleActionModalState } from "@src/recoil/atoms/modal";
 import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
-import { useNavigate } from "react-router-dom";
-import { userDataState } from "@src/recoil/atoms/common";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
     battleActionModalState,
   );
-  const [userData, setUserData] = useRecoilState(userDataState);
-  // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
-  // const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const navigate = useNavigate();
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [countdown, setCountdown] = useState(30);
   const [countdownInterval, setCountdownInterval] =

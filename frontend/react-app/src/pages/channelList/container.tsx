@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getAllChannels } from "@api/chatting";
-import { ChannelType } from "@type";
 import ChannelListPageView from "./view";
+import { useRecoilState } from "recoil";
+import { allChannelListState } from "@src/recoil/atoms/channel";
 
 const ChannelListPageContainer = () => {
-  const [channels, setChannels] = useState<ChannelType[]>([]);
+  const [channels, setChannels] = useRecoilState(allChannelListState);
 
   const handleChannelSearch = (keyword: string) => {
     console.log(keyword);

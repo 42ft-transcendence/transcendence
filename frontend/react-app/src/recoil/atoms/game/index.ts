@@ -4,6 +4,7 @@ import {
   MatchHistoryType,
   GameRoomType,
   GameRoomStatus,
+  GameModalType,
 } from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
@@ -55,5 +56,13 @@ export const gameRoomInfoInitState = {
 export const gameRoomListState = atom<GameRoomInfoType[]>({
   key: "gameRoomListState",
   default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+export const gameModalState = atom<GameModalType>({
+  key: "gameModalState",
+  default: {
+    gameMap: null,
+  },
   effects_UNSTABLE: [persistAtom],
 });

@@ -9,6 +9,12 @@ import {
 
 const { persistAtom } = recoilPersist();
 
+export const allChannelListState = atom<ChannelType[]>({
+  key: "allChannelListState",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
 export const joinedChannelListState = atom<JoinedChannelType[]>({
   key: "joinedChannelListState",
   default: [],

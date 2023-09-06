@@ -29,7 +29,7 @@ import { TwoFactorAuthenticationService } from 'src/auth/2FA/twoFactorAuthentica
       }),
     }),
     HttpModule,
-    TypeOrmModule.forFeature([User, UserRepository]),
+    TypeOrmModule.forFeature([User]),
     TypeOrmExModule.forCustomRepository([UserRepository]),
   ],
   controllers: [AuthController],
