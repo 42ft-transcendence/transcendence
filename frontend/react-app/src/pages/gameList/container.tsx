@@ -30,19 +30,19 @@ export const GameListContent = () => {
               gameRoom.roomType === "PROTECTED",
           )
           .map((gameRoom) => (
-            <S.GameRoomCard key={gameRoom.roomURL}>
+            <S.GameRoomCard key={gameRoom.roomURL} roomType={gameRoom.roomType}>
               <S.GameRoomCardLeft>
                 <S.GameRoomTitle>
                   {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
                 </S.GameRoomTitle>
                 {/* 향후 맵 추가 */}
-                {/* <S.GameRoomOption>
-                일반 | {gameRoom.homeUser.nickname}
-              </S.GameRoomOption> */}
+                <S.GameRoomOption>
+                  {gameRoom.map} | {gameRoom.roomOwner.nickname}
+                </S.GameRoomOption>
               </S.GameRoomCardLeft>
               <S.GameRoomCardRight>
                 <S.GameRoomNumOfPeople>
-                  {/* {}{" "} */}/ 2
+                  {gameRoom.numberOfParticipants} / 2
                 </S.GameRoomNumOfPeople>
                 <S.GameRoomStatus>대기중</S.GameRoomStatus>
               </S.GameRoomCardRight>

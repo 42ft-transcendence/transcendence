@@ -250,6 +250,15 @@ export class GameGateway {
     const exitUser = gameRoomParticipants.find(
       (participant) => participant.user.id === content.user.id,
     );
+    const notExitUser = gameRoomParticipants.find(
+      (participant) => participant.user.id !== content.user.id,
+    );
+    if (
+      gameRoom.numberOfParticipants === 2 &&
+      gameRoom.roomOwner.id === exitUser.user.id
+    ) {
+      gameRoom.roomOwner = notExitUser.user;
+    }
     const exitUserIndex = gameRoomParticipants.indexOf(exitUser);
     gameRoomParticipants.splice(exitUserIndex, 1);
     gameRoom.numberOfParticipants--;
