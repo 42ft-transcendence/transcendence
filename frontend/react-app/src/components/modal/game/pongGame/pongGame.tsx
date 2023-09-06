@@ -47,7 +47,6 @@ const PongGame: React.FC = () => {
 
     const com = {
       x: userIndex === 1 ? 0 : cvs.width - 10,
-      // x: cvs.width - 10,
       y: cvs.height / 2 - 100 / 2,
       width: 10,
       height: 100,
@@ -244,7 +243,9 @@ const PongGame: React.FC = () => {
     gameSocket.on("gameProcess", (data) => {
       if (data.gameRoomURL !== gameRoomURL) return;
       if (data.userIndex === userIndex) return;
-      com.y = data.userPaddle;
+      data.userIndex === 0
+        ? (com.y = data.gameData.leftPaddle)
+        : (com.y = data.gameData.rightPaddle);
     });
 
     // 이펙트 클린업 함수

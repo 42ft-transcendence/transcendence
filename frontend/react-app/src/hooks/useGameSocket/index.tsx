@@ -1,5 +1,6 @@
 import { userDataState } from "@src/recoil/atoms/common";
 import {
+  gameModalState,
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
@@ -11,7 +12,11 @@ import {
 } from "@src/recoil/atoms/modal";
 import { gameSocket, gameSocketConnect } from "@src/router/socket/gameSocket";
 import { OfferGameType, UserType } from "@src/types";
-import { GameRoomInfoType, GameRoomType } from "@src/types/game.type";
+import {
+  GameMapType,
+  GameRoomInfoType,
+  GameRoomType,
+} from "@src/types/game.type";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -23,6 +28,7 @@ const useGameSocket = (jwt: string) => {
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
+  const [gameModal, setGameModal] = useRecoilState(gameModalState);
 
   useEffect(() => {
     if (!jwt) {
@@ -139,6 +145,14 @@ const useGameSocket = (jwt: string) => {
         //     homeUser: {} as UserType,
         //   });
         // }
+      });
+
+      gameSocket.on("startGame", (data) => {
+        if (data.gameRoomURL !== gameRoomURL) return;
+        setGameModal({
+          ...gameModal,
+          gameMap: "NORMAL" as GameMapType,
+        });
       });
 
       gameSocketConnect(jwt);

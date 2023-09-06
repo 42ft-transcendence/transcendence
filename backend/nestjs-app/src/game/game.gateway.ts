@@ -295,7 +295,7 @@ export class GameGateway {
       gameRoomURL: content.gameRoomURL,
       gameData: roomManager.get(content.gameRoomURL),
     };
-    this.server.emit('gameProcess', response);
+    this.server.emit('startGame', response);
   }
 
   @SubscribeMessage('userPaddle')

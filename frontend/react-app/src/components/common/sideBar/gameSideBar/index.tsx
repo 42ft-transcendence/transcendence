@@ -8,7 +8,6 @@ import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import GameEditModal from "@src/components/modal/game/gameEditModal";
 import { gameModalState } from "@src/recoil/atoms/game";
-import { GameMapType } from "@src/types/game.type";
 import NormalMap from "@src/components/modal/game/maps/normal";
 
 interface GameSideBarProps {
@@ -21,7 +20,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [gameModal, setGameModal] = useRecoilState(gameModalState);
+  const [gameModal] = useRecoilState(gameModalState);
   const navigate = useNavigate();
 
   const iconButtons: IconButtonProps[] = [
@@ -101,10 +100,10 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
               title: "게임 맵 테스트",
               iconSrc: "",
               onClick: () => {
-                setGameModal({
-                  ...gameModal,
-                  gameMap: "NORMAL" as GameMapType,
-                });
+                // setGameModal({
+                //   ...gameModal,
+                //   gameMap: "NORMAL" as GameMapType,
+                // });
                 gameSocket.emit("startGameTest", {
                   gameRoomURL: gameRoomURL,
                 });
