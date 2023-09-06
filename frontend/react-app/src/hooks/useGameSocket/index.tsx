@@ -23,7 +23,6 @@ const useGameSocket = (jwt: string) => {
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!jwt) {
@@ -67,7 +66,6 @@ const useGameSocket = (jwt: string) => {
         if (data.gameRoomURL === gameRoomURL) {
           console.log("acceptBattle", data);
           setGameRoomInfo(data.gameRoom);
-          // navigate(`/game/${data.gameRoomURL}`);
           window.location.href = `/game/${data.gameRoomURL}`;
         }
       });

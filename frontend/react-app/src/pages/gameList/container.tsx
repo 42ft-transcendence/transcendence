@@ -4,12 +4,28 @@ import * as S from "./index.styled";
 import { SearchComponent } from "../userList/container";
 import { useRecoilState } from "recoil";
 import { gameRoomListState } from "@src/recoil/atoms/game";
-import { GameRoomStatus } from "@src/types/game.type";
+import { GameRoomInfoType, GameRoomStatus } from "@src/types/game.type";
 
-export const GameListContent = () => {
+interface GameListContentProps {
+  setSelectGameRoom: React.Dispatch<
+    React.SetStateAction<GameRoomInfoType | undefined>
+  >;
+  setIsOpenEnterModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const GameListContent = ({
+  setSelectGameRoom,
+  setIsOpenEnterModal,
+}: GameListContentProps) => {
   const [search, setSearch] = useState<string>("");
   const [gameRoomList] = useRecoilState(gameRoomListState);
   const [sortState, setSortState] = useState<string>("전체 방");
+
+  const handleOnClick = (props: GameRoomInfoType) => {
+    console.log("게임 방 클릭", props);
+    setSelectGameRoom(props);
+    setIsOpenEnterModal(true);
+  };
 
   return (
     <DS.ContentArea>
@@ -31,6 +47,10 @@ export const GameListContent = () => {
             <S.GameRoomCard
               key={gameRoom.roomURL}
               $roomType={gameRoom.roomType}
+              onClick={() => {
+                if (gameRoom.status === GameRoomStatus.GAMING) return;
+                handleOnClick(gameRoom);
+              }}
             >
               <S.GameRoomCardLeft>
                 <S.GameRoomTitle>

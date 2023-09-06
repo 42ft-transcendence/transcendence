@@ -2,16 +2,17 @@ import NavBar from "@src/components/common/navBar";
 import { sidebarConfig } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameListContent } from "./container";
-import { gameRoomListState } from "@src/recoil/atoms/game";
-import { useRecoilState } from "recoil";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import { GameRoomInfoType } from "@src/types";
+import GameRoomEnterModal from "@src/components/modal/game/gameEnterModal";
 
 const GameList = () => {
   const currentRoute = window.location.pathname;
   const CurrentSideBar = sidebarConfig[currentRoute];
   const CurrentSideBarComponent = CurrentSideBar.component;
-  const gameRoomList = useRecoilState(gameRoomListState);
+  const [selectGameRoom, setSelectGameRoom] = useState<GameRoomInfoType>();
+  const [isOpenEnterModal, setIsOpenEnterModal] = useState<boolean>(false);
 
   useEffect(() => {
     gameSocket.emit("getGameRoomList");
@@ -21,9 +22,20 @@ const GameList = () => {
     <>
       <NavBar />
       <CurrentSideBarComponent />
-      <GameListContent />
+      <GameListContent
+        setSelectGameRoom={setSelectGameRoom}
+        setIsOpenEnterModal={setIsOpenEnterModal}
+      />
       {/* 모달 영역 */}
       <GameCreateModal />
+      {selectGameRoom && (
+        <GameRoomEnterModal
+          gameRoomInfo={selectGameRoom}
+          setSelectGameRoom={setSelectGameRoom}
+          isOpen={isOpenEnterModal}
+          setIsOpen={setIsOpenEnterModal}
+        />
+      )}
     </>
   );
 };

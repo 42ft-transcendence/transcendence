@@ -242,6 +242,22 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @SubscribeMessage('enterGameRoom')
+  enterGameRoom(client: Socket, content: { gameRoomURL: string; user: User }) {
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === content.gameRoomURL);
+    if (!gameRoom) return;
+    const gameRoomParticipants = gameRoom.participants;
+    const enterUser = gameRoomParticipants.find(
+      (participant) => participant.user.id === content.user.id,
+    );
+    if (enterUser) return;
+    gameRoomParticipants.push({ user: content.user, ready: false });
+    gameRoom.numberOfParticipants++;
+    this.refreshGameRoomList();
+  }
+
   @SubscribeMessage('exitGameRoom')
   exitGameRoom(client: Socket, content: { gameRoomURL: string; user: User }) {
     const gameRoom = this.gameService
