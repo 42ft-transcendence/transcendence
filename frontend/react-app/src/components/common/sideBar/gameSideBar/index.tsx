@@ -5,8 +5,8 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
-import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import GameEditModal from "@src/components/modal/game/gameEditModal";
 
 interface GameSideBarProps {
   isReady: boolean;
@@ -14,12 +14,10 @@ interface GameSideBarProps {
 
 const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [userData] = useRecoilState(userDataState);
-  const [createGameRoom, setCreateGameRoom] = useRecoilState(
-    createGameRoomModalState,
-  );
   const [, setLeaveGameRoom] = useState(false);
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const iconButtons: IconButtonProps[] = [
@@ -27,8 +25,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
       title: "방 설정하기",
       iconSrc: "",
       onClick: () => {
-        setCreateGameRoom(true);
-        console.log("방 설정하기 :", createGameRoom);
+        setIsEditModalOpen(true);
       },
       theme: "LIGHT",
     },
@@ -100,6 +97,12 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
           </>
         )}
         <br /> */}
+        {/* 모달 영역 */}
+        <GameEditModal
+          isOpen={isEditModalOpen}
+          setIsOpen={setIsEditModalOpen}
+          gameRoomInfo={gameRoomInfo}
+        />
       </DS.Container>
     </>
   );

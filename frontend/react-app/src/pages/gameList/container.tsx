@@ -7,11 +7,8 @@ import { gameRoomListState } from "@src/recoil/atoms/game";
 
 export const GameListContent = () => {
   const [search, setSearch] = useState<string>("");
-  const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
+  const [gameRoomList] = useRecoilState(gameRoomListState);
   const [sortState, setSortState] = useState<string>("전체 방");
-  // const [numberOfPeople, setNumberOfPeople] = useState<number>();
-
-  console.log("gameRoomList", gameRoomList);
 
   return (
     <DS.ContentArea>
@@ -35,9 +32,9 @@ export const GameListContent = () => {
                 <S.GameRoomTitle>
                   {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
                 </S.GameRoomTitle>
-                {/* 향후 맵 추가 */}
                 <S.GameRoomOption>
-                  {gameRoom.map} | {gameRoom.roomOwner.nickname}
+                  {gameRoom.map} | {gameRoom.gameMode} |{" "}
+                  {gameRoom.roomOwner.nickname}
                 </S.GameRoomOption>
               </S.GameRoomCardLeft>
               <S.GameRoomCardRight>
