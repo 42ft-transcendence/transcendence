@@ -17,7 +17,6 @@ const PongGame: React.FC = () => {
   );
 
   useEffect(() => {
-    // Canvas에 핑퐁 게임을 그리는 코드를 작성합니다.
     const cvs = document.getElementById("pong") as HTMLCanvasElement;
     const ctx = cvs.getContext("2d");
     if (!ctx) {
@@ -25,7 +24,7 @@ const PongGame: React.FC = () => {
       return;
     }
     const backgroundImage = new Image();
-    // 핑퐁 게임 로직을 구현합니다
+
     backgroundImage.src = NormalMapSvg;
     // ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
     const user = {
@@ -94,7 +93,6 @@ const PongGame: React.FC = () => {
       ctx.fillRect(x, y, w, h);
     }
 
-    // drawpaddle(0, 0, cvs.width, cvs.height, "white");
     function drawText(text: number, x: number, y: number, color: string) {
       if (!ctx) {
         console.error("Canvas context is null.");
@@ -118,24 +116,16 @@ const PongGame: React.FC = () => {
     // }
 
     function render() {
-      //clear canvas
       if (!ctx) {
         console.error("Canvas context is null.");
         return;
       }
-
-      // ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
-      // ctx.fillStyle = "BLACK";
-      // ctx.fillRect(0, 0, cvs.width, cvs.height);
       ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
 
-      //draw the net
-      // drawNet();
       //draw score
       drawText(user.score, cvs.width / 4, cvs.height / 5, "WHITE");
       // drawText(com.score, (3 * cvs.width) / 4, cvs.height / 5, "WHITE");
 
-      //draw the user and com paddle
       drawpaddle(user.x, user.y, user.width, user.height, user.color);
       drawpaddle(com.x, com.y, com.width, com.height, com.color);
 
@@ -147,7 +137,6 @@ const PongGame: React.FC = () => {
     cvs.addEventListener("mousemove", movePaddle);
 
     function movePaddle(evt: MouseEvent) {
-      // console.log("evt", evt);
       const rect = cvs.getBoundingClientRect();
       user.y = evt.clientY - rect.top - user.height / 2;
     }
@@ -217,7 +206,6 @@ const PongGame: React.FC = () => {
     // }
 
     let animationFrameId: number;
-    //game init
 
     backgroundImage.onload = () => {
       function game() {
@@ -231,7 +219,7 @@ const PongGame: React.FC = () => {
           userIndex: userIndex,
           userPaddle: user.y,
         });
-        // 다음 프레임을 기다립니다.
+
         animationFrameId = requestAnimationFrame(game);
       }
 
