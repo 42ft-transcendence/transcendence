@@ -3,6 +3,11 @@ import { User } from 'src/users/entities/user.entity';
 
 export type GameRoomType = 'PUBLIC' | 'PROTECTED' | 'PRIVATE' | 'QUICK' | ''; // QUICK은 대전 신청 혹은 랭킹전에서 사용 (PROTECTED의 사용법과 동일하다면 향후 통합)
 
+export interface GameRoomParticipant {
+  user: User;
+  ready: boolean;
+}
+
 export interface GameRoom {
   roomURL: string;
   roomName: string;
@@ -12,10 +17,7 @@ export interface GameRoom {
   numberOfParticipants: number;
   gameMode: string;
   map: string;
-  homeUser: User;
-  awayUser: User;
-  homeReady: boolean;
-  awayReady: boolean;
+  participants: GameRoomParticipant[];
 }
 
 @Injectable()
@@ -56,5 +58,26 @@ export class GameService {
     const room = this.rooms.find((room) => room.roomURL === roomURL);
     if (!room) return;
     room.gameMode = gameMode;
+  }
+
+  editGameRoomMap(roomURL: string, map: string): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
+    room.map = map;
+  }
+
+  editGameRoomUserReady(roomURL: string, userId: string, ready: boolean): void {
+    const room = this.rooms.find((room) => room.roomURL === roomURL);
+    if (!room) return;
+    const participant = room.participants.find(
+      (participant) => participant.user.id === userId,
+    );
+    if (!participant) return;
+    participant.ready = ready;
+    console.log('edit ready', room.participants);
+    console.log(
+      'edit ready',
+      this.rooms.find((room) => room.roomURL === roomURL).participants,
+    );
   }
 }

@@ -1,16 +1,13 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
-import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  gameRoomInfoInitState,
-  gameRoomInfoState,
-} from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
-import { exitGameRoom, readyCancleSignal, readySignal } from "@src/api";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { GameRoomParticipantType } from "@src/types/game.type";
 
 const GameSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -18,9 +15,30 @@ const GameSideBar = () => {
     createGameRoomModalState,
   );
   const [, setLeaveGameRoom] = useState(false);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  // console.log("gameRoomInfo", gameRoomInfo);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const navigate = useNavigate();
+  const [participants, setParticipants] = useState<GameRoomParticipantType[]>(
+    gameRoomInfo.participants,
+  );
+  const [participant, setParticipant] = useState<GameRoomParticipantType>(
+    participants.find(
+      (participant) => participant.user.id === userData.id,
+    ) as GameRoomParticipantType,
+  );
+
+  useEffect(() => {
+    console.log("gameRoomInfo in gameSideBar/index.tsx", gameRoomInfo);
+    console.log("participants in gameSideBar/index.tsx", participants);
+    console.log("participant in gameSideBar/index.tsx", participant);
+    setParticipants(gameRoomInfo.participants);
+    setParticipant(
+      participants.find(
+        (participant) => participant.user.id === userData.id,
+      ) as GameRoomParticipantType,
+    );
+  }, [gameRoomInfo]);
+
   const iconButtons: IconButtonProps[] = [
     {
       title: "방 설정하기",
@@ -34,39 +52,23 @@ const GameSideBar = () => {
     {
       title: "준비 하기",
       iconSrc: "",
-      onClick: async () => {
-        console.log("준비하기", userData, gameRoomInfo);
-        await readySignal(gameRoomInfo.roomURL, userData);
-        if (gameRoomInfo.homeUser.id === userData.id) {
-          setGameRoomInfo({
-            ...gameRoomInfo,
-            homeReady: true,
-          });
-        } else {
-          setGameRoomInfo({
-            ...gameRoomInfo,
-            awayReady: true,
-          });
-        }
+      onClick: () => {
+        console.log("내가 누름");
+        gameSocket.emit("readyGameRoom", {
+          gameRoomURL: gameRoomURL,
+          userId: userData.id,
+        });
       },
       theme: "LIGHT",
     },
     {
       title: "준비 취소",
       iconSrc: "",
-      onClick: async () => {
-        await readyCancleSignal(gameRoomInfo.roomURL, userData);
-        if (gameRoomInfo.homeUser.id === userData.id) {
-          setGameRoomInfo({
-            ...gameRoomInfo,
-            homeReady: false,
-          });
-        } else if (gameRoomInfo.awayUser.id === userData.id) {
-          setGameRoomInfo({
-            ...gameRoomInfo,
-            awayReady: false,
-          });
-        }
+      onClick: () => {
+        gameSocket.emit("readyCancleGameRoom", {
+          gameRoomURL: gameRoomURL,
+          userId: userData.id,
+        });
       },
       theme: "LIGHT",
     },
@@ -74,10 +76,14 @@ const GameSideBar = () => {
       title: "방 나가기",
       iconSrc: "",
       onClick: async () => {
-        setGameRoomInfo(gameRoomInfoInitState);
-        await exitGameRoom(gameRoomInfo.roomURL, userData);
+        gameSocket.emit("exitGameRoom", {
+          gameRoomURL: gameRoomURL,
+          user: userData,
+        });
         navigate("/game-list");
+        setGameRoomURL("");
         setLeaveGameRoom(true);
+        // gameSocket.emit()
       },
       theme: "LIGHT",
     },
@@ -86,11 +92,9 @@ const GameSideBar = () => {
     useState<IconButtonProps[]>(iconButtons);
 
   useEffect(() => {
-    const newButtons =
-      (gameRoomInfo.homeUser.id === userData.id && gameRoomInfo.homeReady) ||
-      (gameRoomInfo.awayReady && gameRoomInfo.awayUser.id === userData.id)
-        ? iconButtons.filter((button) => button.title !== "준비 하기")
-        : iconButtons.filter((button) => button.title !== "준비 취소");
+    const newButtons = participant.ready
+      ? iconButtons.filter((button) => button.title !== "준비 하기")
+      : iconButtons.filter((button) => button.title !== "준비 취소");
 
     setfilteredIconButtons(newButtons);
   }, [gameRoomInfo]);
@@ -104,7 +108,7 @@ const GameSideBar = () => {
         <br />
         <ButtonList buttons={filteredIconButtons} />
         <br />
-        <DS.TitleBox>내 전적</DS.TitleBox>
+        {/* <DS.TitleBox>내 전적</DS.TitleBox>
         <RateDoughnutChart userData={gameRoomInfo.homeUser} />
         <br />
         {gameRoomInfo.awayUser.id && (
@@ -113,7 +117,7 @@ const GameSideBar = () => {
             <RateDoughnutChart userData={gameRoomInfo.awayUser} />
           </>
         )}
-        <br />
+        <br /> */}
       </DS.Container>
     </>
   );

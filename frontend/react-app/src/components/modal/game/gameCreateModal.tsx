@@ -8,6 +8,7 @@ import sha256 from "crypto-js/sha256";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameRoomType, UserType } from "@src/types";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
 
 const stringToHash = (title: string): string => {
   const hash = sha256(title);
@@ -40,11 +41,12 @@ const GameCreateModal = () => {
   const [type, setType] = useState<string>("PUBLIC");
   const [roomName, setRoomName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
     gameSocket.emit("editGameRoomInfo", {
-      gameRoomURL: userData.gameRoomURL,
+      gameRoomURL: gameRoomURL,
       infoType: "roomName",
       info: event.target.value,
     });
@@ -52,7 +54,7 @@ const GameCreateModal = () => {
 
   const onSubmit = async () => {
     gameSocket.emit("editGameRoomInfo", {
-      gameRoomURL: userData.gameRoomURL,
+      gameRoomURL: gameRoomURL,
       infoType: "roomType",
       info: type as GameRoomType,
     });
@@ -60,18 +62,15 @@ const GameCreateModal = () => {
     setSpeed("NORMAL");
     setRoomName("");
     setCreateGameRoomModal(false);
-    window.location.href = `/game/${userData.gameRoomURL}`;
+    window.location.href = `/game/${gameRoomURL}`;
   };
 
   const handleClose = () => {
     setType("PUBLIC");
     setSpeed("NORMAL");
     setRoomName("");
-    gameSocket.emit("deleteGameRoom", { gameRoomURL: userData.gameRoomURL });
-    setUserData({
-      ...userData,
-      gameRoomURL: "",
-    });
+    gameSocket.emit("deleteGameRoom", { gameRoomURL: gameRoomURL });
+    setGameRoomURL("");
     setCreateGameRoomModal(false);
   };
 
@@ -89,7 +88,7 @@ const GameCreateModal = () => {
   const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
     gameSocket.emit("editGameRoomInfo", {
-      gameRoomURL: userData.gameRoomURL,
+      gameRoomURL: gameRoomURL,
       infoType: "roomPassword",
       info: event.target.value,
     });
@@ -98,7 +97,7 @@ const GameCreateModal = () => {
   useEffect(() => {
     if (createGameRoomModal) {
       gameSocket.emit("editGameRoomInfo", {
-        gameRoomURL: userData.gameRoomURL,
+        gameRoomURL: gameRoomURL,
         infoType: "gameMode",
         info: speed,
       });

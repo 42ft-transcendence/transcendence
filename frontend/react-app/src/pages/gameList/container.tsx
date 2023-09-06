@@ -30,9 +30,9 @@ export const GameListContent = () => {
                 {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
               </S.GameRoomTitle>
               {/* 향후 맵 추가 */}
-              <S.GameRoomOption>
+              {/* <S.GameRoomOption>
                 일반 | {gameRoom.homeUser.nickname}
-              </S.GameRoomOption>
+              </S.GameRoomOption> */}
             </S.GameRoomCardLeft>
             <S.GameRoomCardRight>
               <S.GameRoomNumOfPeople>{/* {}{" "} */}/ 2</S.GameRoomNumOfPeople>

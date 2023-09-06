@@ -23,7 +23,7 @@ import UsersHovered from "@assets/icons/Users.svg";
 import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
 import { useEffect, useState } from "react";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { joinedDmOtherListState } from "@src/recoil/atoms/directMessage";
 import { joinedChannelListState } from "@src/recoil/atoms/channel";
 
@@ -71,6 +71,7 @@ export const UpperTabList = () => {
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
@@ -96,10 +97,10 @@ export const UpperTabList = () => {
   };
 
   useEffect(() => {
-    if (gameRoomInfo.roomURL !== "") {
+    if (gameRoomURL !== "") {
       upperTabs.forEach((tab) => {
         if (tab.link === "/game-list") {
-          tab.link = "/game/" + gameRoomInfo.roomURL;
+          tab.link = "/game/" + gameRoomURL;
         }
       });
     } else {
@@ -110,26 +111,26 @@ export const UpperTabList = () => {
       });
     }
 
-    if (gameRoomInfo.roomURL !== "" && currentPath !== "game") {
+    if (gameRoomURL !== "" && currentPath !== "game") {
       setGameNoti(true);
-    } else if (gameRoomInfo.roomURL !== "" && currentPath === "game") {
+    } else if (gameRoomURL !== "" && currentPath === "game") {
       setGameNoti(false);
     }
-  }, [gameRoomInfo.roomURL]);
+  }, [gameRoomURL, currentPath]);
 
   // 준비 완료 버튼을 눌렀다면 다른탭으로 이동 제한
-  if (gameRoomInfo.homeReady) {
-    return (
-      <S.TabList>
-        {upperTabs.map((tab) => (
-          <li key={tab.link}>
-            <S.ItemIcon src={getIconSrc(tab)} />
-          </li>
-        ))}
-        {chatNoti && <S.Noti />}
-      </S.TabList>
-    );
-  }
+  // if (gameRoomInfo.homeReady) {
+  //   return (
+  //     <S.TabList>
+  //       {upperTabs.map((tab) => (
+  //         <li key={tab.link}>
+  //           <S.ItemIcon src={getIconSrc(tab)} />
+  //         </li>
+  //       ))}
+  //       {chatNoti && <S.Noti />}
+  //     </S.TabList>
+  //   );
+  // }
 
   return (
     <S.TabList>
@@ -170,18 +171,18 @@ export const LowerTabList = () => {
     setSettingOptionModalOpen(true);
   };
 
-  if (gameRoomInfo.homeReady) {
-    return (
-      <S.TabList>
-        <li>
-          <S.ItemIcon src={User} />
-        </li>
-        <li>
-          <S.ItemIcon src={Gear} />
-        </li>
-      </S.TabList>
-    );
-  }
+  // if (gameRoomInfo.participants) {
+  //   return (
+  //     <S.TabList>
+  //       <li>
+  //         <S.ItemIcon src={User} />
+  //       </li>
+  //       <li>
+  //         <S.ItemIcon src={Gear} />
+  //       </li>
+  //     </S.TabList>
+  //   );
+  // }
 
   return (
     <S.TabList>

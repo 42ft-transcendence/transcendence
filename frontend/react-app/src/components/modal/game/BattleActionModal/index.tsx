@@ -1,4 +1,4 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useState, useEffect } from "react";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import * as S from "./index.styled";
@@ -6,8 +6,7 @@ import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
 import { useNavigate } from "react-router-dom";
 import { userDataState } from "@src/recoil/atoms/common";
-import { acceptBattle, rejectBattle } from "@src/api/game";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
 const BattleActionModal = () => {
@@ -16,8 +15,9 @@ const BattleActionModal = () => {
   );
   const [userData, setUserData] = useRecoilState(userDataState);
   // const [showProfile, setShowProfile] = useRecoilState(showProfileState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  // const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const navigate = useNavigate();
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [countdown, setCountdown] = useState(30);
   const [countdownInterval, setCountdownInterval] =
     useState<NodeJS.Timeout | null>(null);
@@ -26,6 +26,7 @@ const BattleActionModal = () => {
     if (battleActionModal) {
       setCountdown(5);
       startCountdown();
+      console.log("battleActionModal", battleActionModal.gameRoomURL);
     }
   }, [battleActionModal]);
 
@@ -65,20 +66,13 @@ const BattleActionModal = () => {
     gameSocket.emit("acceptBattle", {
       gameRoomURL: battleActionModal.gameRoomURL,
     });
-    setUserData({
-      ...userData,
-      gameRoomURL: battleActionModal.gameRoomURL,
-    });
+    setGameRoomURL(battleActionModal.gameRoomURL);
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
       gameRoomURL: "",
     }); // 모달 닫기
   };
-
-  useEffect(() => {
-    console.log("battleActionModal", battleActionModal);
-  });
 
   return (
     <S.ModalWrapper>

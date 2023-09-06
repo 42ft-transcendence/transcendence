@@ -45,6 +45,11 @@ export interface JoinedgameType extends gameType {
   hasNewMessages: boolean;
 }
 
+export interface GameRoomParticipantType {
+  user: UserType;
+  ready: boolean;
+}
+
 export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
@@ -54,10 +59,7 @@ export interface GameRoomInfoType {
   numberOfParticipants: number;
   gameMode: string;
   map: string;
-  homeUser: UserType;
-  awayUser: UserType;
-  homeReady: boolean;
-  awayReady: boolean;
+  participants: GameRoomParticipantType[];
   chatMessages: MessageType[];
 }
 

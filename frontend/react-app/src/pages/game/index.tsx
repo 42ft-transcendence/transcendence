@@ -16,38 +16,21 @@ const Game = () => {
   const [userData] = useRecoilState(userDataState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
-  const gameRoomList = useRecoilState(gameRoomListState);
-
-  useEffect(() => {
-    gameSocket.emit("getGameRoomInfo");
-    setGameRoomInfo(
-      gameRoomList[0].find(
-        (room) => room.roomURL === userData.gameRoomURL,
-      ) as GameRoomInfoType,
-    );
-  }, []);
-
-  useEffect(() => {
-    if (
-      gameRoomInfo.roomType === "QUICK" &&
-      (!gameRoomInfo.awayUser.id || !gameRoomInfo.homeUser.id)
-    ) {
-      console.log("here");
-      setGameAlertModal({
-        gameAlertModal: true,
-        gameAlertModalMessage: "상대방이 나갔습니다.",
-        shouldRedirect: true,
-        shouldInitInfo: true,
-      });
-    }
-  }, [gameRoomInfo.awayUser.id]);
 
   return (
     <>
       <NavBar />
       <GameCreateModal />
       {SideBarComponent && <SideBarComponent />}
-      {gameRoomInfo.homeUser.id ? (
+      {typeof gameRoomInfo.participants !== "undefined" &&
+        gameRoomInfo.participants.map((user) => (
+          <GameMatchProfile
+            key={user.user.id}
+            user={user.user}
+            isReady={user.ready}
+          />
+        ))}
+      {/* {gameRoomInfo.homeUser.id ? (
         <GameMatchProfile
           user={gameRoomInfo.homeUser}
           isReady={gameRoomInfo.homeReady}
@@ -62,7 +45,7 @@ const Game = () => {
         />
       ) : (
         <>대기중</>
-      )}
+      )} */}
     </>
   );
 };

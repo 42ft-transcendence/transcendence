@@ -1,6 +1,6 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   addBlock,
   addFriend,
@@ -28,7 +28,7 @@ import KickIcon from "@src/assets/icons/kick.svg";
 import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
 import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
 import sha256 from "crypto-js/sha256";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
 interface ProfileButtonActionsProps {
@@ -66,7 +66,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
 
   // 친구 상태인지 확인
 
@@ -138,16 +138,13 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const currentTime: Date = new Date();
       const roomURL = currentTime + userData.id;
       const hashedTitle = hashTitle(roomURL);
-      setUserData({
-        ...userData,
-        gameRoomURL: hashedTitle,
-      });
       console.log("hashedTitle", hashedTitle);
+      setGameRoomURL(hashedTitle);
       gameSocket.emit("offerBattle", {
         awayUser: user.user,
         myData: userData,
         gameRoomURL: hashedTitle,
-        roomType: "PROTECTED",
+        roomType: "QUICK",
       });
     } catch (error) {
       console.log(error);

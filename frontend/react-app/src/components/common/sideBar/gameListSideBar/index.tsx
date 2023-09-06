@@ -6,10 +6,12 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
 
 const GameListSideBar = () => {
-  const [userData, setUserData] = useRecoilState(userDataState);
+  const [userData] = useRecoilState(userDataState);
   const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
 
   const iconButtons: IconButtonProps[] = [
     {
@@ -27,10 +29,7 @@ const GameListSideBar = () => {
           infoType: "roomType",
           info: "PRIVATE",
         });
-        setUserData({
-          ...userData,
-          gameRoomURL: gameRoomURL,
-        });
+        setGameRoomURL(gameRoomURL);
       },
       theme: "LIGHT",
     },

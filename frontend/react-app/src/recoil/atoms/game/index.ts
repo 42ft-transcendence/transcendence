@@ -14,9 +14,9 @@ export const matchHistoryState = atom<MatchHistoryType[]>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const gameRoomIn = atom<boolean>({
-  key: "gameRoomIn",
-  default: false,
+export const gameRoomURLState = atom<string>({
+  key: "gameRoomURLState",
+  default: "",
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -31,10 +31,7 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     numberOfParticipants: 0,
     gameMode: "",
     map: "",
-    homeUser: {} as UserType,
-    awayUser: {} as UserType,
-    homeReady: false,
-    awayReady: false,
+    participants: [],
     chatMessages: [],
   },
   effects_UNSTABLE: [persistAtom],
@@ -49,10 +46,7 @@ export const gameRoomInfoInitState = {
   numberOfParticipants: 0,
   gameMode: "",
   map: "",
-  homeUser: {} as UserType,
-  awayUser: {} as UserType,
-  homeReady: false,
-  awayReady: false,
+  participants: [],
   chatMessages: [],
 };
 
