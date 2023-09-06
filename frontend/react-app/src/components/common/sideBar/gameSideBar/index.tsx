@@ -74,7 +74,12 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
       ? iconButtons.filter((button) => button.title !== "준비 하기")
       : iconButtons.filter((button) => button.title !== "준비 취소");
 
-    setfilteredIconButtons(newButtons);
+    const finalButtons =
+      gameRoomInfo.roomOwner.id !== userData.id
+        ? newButtons.filter((button) => button.title !== "방 설정하기")
+        : newButtons;
+
+    setfilteredIconButtons(finalButtons);
   }, [gameRoomInfo]);
 
   return (

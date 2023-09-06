@@ -28,7 +28,10 @@ export const GameListContent = () => {
               gameRoom.roomType === "PROTECTED",
           )
           .map((gameRoom) => (
-            <S.GameRoomCard key={gameRoom.roomURL} roomType={gameRoom.roomType}>
+            <S.GameRoomCard
+              key={gameRoom.roomURL}
+              $roomType={gameRoom.roomType}
+            >
               <S.GameRoomCardLeft>
                 <S.GameRoomTitle>
                   {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
