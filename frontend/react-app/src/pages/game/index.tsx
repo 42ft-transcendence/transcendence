@@ -3,12 +3,9 @@ import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { gameRoomInfoState, gameRoomListState } from "@src/recoil/atoms/game";
-import { useEffect } from "react";
+import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { gameAlertModalState } from "@src/recoil/atoms/modal";
-import { gameSocket } from "@src/router/socket/gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
-import { GameRoomInfoType } from "@src/types";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
@@ -21,7 +18,15 @@ const Game = () => {
     <>
       <NavBar />
       <GameCreateModal />
-      {SideBarComponent && <SideBarComponent />}
+      {SideBarComponent && (
+        <SideBarComponent
+          isReady={
+            gameRoomInfo.participants.find(
+              (participant) => participant.user.id === userData.id,
+            )?.ready
+          }
+        />
+      )}
       {typeof gameRoomInfo.participants !== "undefined" &&
         gameRoomInfo.participants.map((user) => (
           <GameMatchProfile

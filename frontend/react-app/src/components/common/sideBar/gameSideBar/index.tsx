@@ -7,9 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { gameSocket } from "@src/router/socket/gameSocket";
-import { GameRoomParticipantType } from "@src/types/game.type";
 
-const GameSideBar = () => {
+interface GameSideBarProps {
+  isReady: boolean;
+}
+
+const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [userData] = useRecoilState(userDataState);
   const [createGameRoom, setCreateGameRoom] = useRecoilState(
     createGameRoomModalState,
@@ -18,26 +21,6 @@ const GameSideBar = () => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const navigate = useNavigate();
-  const [participants, setParticipants] = useState<GameRoomParticipantType[]>(
-    gameRoomInfo.participants,
-  );
-  const [participant, setParticipant] = useState<GameRoomParticipantType>(
-    participants.find(
-      (participant) => participant.user.id === userData.id,
-    ) as GameRoomParticipantType,
-  );
-
-  useEffect(() => {
-    console.log("gameRoomInfo in gameSideBar/index.tsx", gameRoomInfo);
-    console.log("participants in gameSideBar/index.tsx", participants);
-    console.log("participant in gameSideBar/index.tsx", participant);
-    setParticipants(gameRoomInfo.participants);
-    setParticipant(
-      participants.find(
-        (participant) => participant.user.id === userData.id,
-      ) as GameRoomParticipantType,
-    );
-  }, [gameRoomInfo]);
 
   const iconButtons: IconButtonProps[] = [
     {
@@ -53,7 +36,6 @@ const GameSideBar = () => {
       title: "준비 하기",
       iconSrc: "",
       onClick: () => {
-        console.log("내가 누름");
         gameSocket.emit("readyGameRoom", {
           gameRoomURL: gameRoomURL,
           userId: userData.id,
@@ -92,7 +74,7 @@ const GameSideBar = () => {
     useState<IconButtonProps[]>(iconButtons);
 
   useEffect(() => {
-    const newButtons = participant.ready
+    const newButtons = isReady
       ? iconButtons.filter((button) => button.title !== "준비 하기")
       : iconButtons.filter((button) => button.title !== "준비 취소");
 

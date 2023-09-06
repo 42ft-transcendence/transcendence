@@ -227,7 +227,7 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
-  @SubscribeMessage('readyGameRoom')
+  @SubscribeMessage('readyCancleGameRoom')
   readyCancleGameRoom(
     client: Socket,
     content: { gameRoomURL: string; userId: string },

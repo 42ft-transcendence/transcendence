@@ -29,14 +29,14 @@ const useGameSocket = (jwt: string) => {
     if (!jwt) {
       gameSocket.disconnect();
     } else {
-      console.log("gamesocket connected");
+      // console.log("gamesocket connected");
       gameSocket.off("roomList");
       gameSocket.on("roomList", (data: GameRoomInfoType[]) => {
         console.log("roomList", data, gameRoomURL);
         setGameRoomList(data);
         console.log(
           "roomList find",
-          data.find((room) => room.roomURL === gameRoomURL),
+          data.find((room) => room.roomURL === gameRoomURL)?.participants,
         );
         if (data.find((room) => room.roomURL === gameRoomURL) !== undefined) {
           setGameRoomInfo((prevInfo) => ({
@@ -44,9 +44,10 @@ const useGameSocket = (jwt: string) => {
             // ... 여기에 변경하고 싶은 값들을 넣습니다.
             ...data.find((room) => room.roomURL === gameRoomURL),
           }));
-        } else {
-          setGameRoomInfo(gameRoomInfoInitState);
         }
+        // else {
+        //   setGameRoomInfo(gameRoomInfoInitState);
+        // }
       });
 
       gameSocket.off("offerBattle");

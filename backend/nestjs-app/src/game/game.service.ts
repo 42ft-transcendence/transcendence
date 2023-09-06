@@ -67,17 +67,25 @@ export class GameService {
   }
 
   editGameRoomUserReady(roomURL: string, userId: string, ready: boolean): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    const participant = room.participants.find(
-      (participant) => participant.user.id === userId,
-    );
-    if (!participant) return;
-    participant.ready = ready;
-    console.log('edit ready', room.participants);
+    this.rooms
+      .find((room) => room.roomURL === roomURL)
+      .participants.find(
+        (participant) => participant.user.id === userId,
+      ).ready = ready;
     console.log(
       'edit ready',
       this.rooms.find((room) => room.roomURL === roomURL).participants,
     );
+    // if (!room) return;
+    // const participant = room.participants.find(
+    //   (participant) => participant.user.id === userId,
+    // );
+    // if (!participant) return;
+    // participant.ready = ready;
+    // console.log('edit ready', room.participants);
+    // console.log(
+    //   'edit ready',
+    //   this.rooms.find((room) => room.roomURL === roomURL).participants,
+    // );
   }
 }
