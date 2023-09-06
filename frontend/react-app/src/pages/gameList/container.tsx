@@ -47,7 +47,10 @@ export const GameListContent = ({
             <S.GameRoomCard
               key={gameRoom.roomURL}
               $roomType={gameRoom.roomType}
-              onClick={() => handleOnClick(gameRoom)}
+              onClick={() => {
+                if (gameRoom.status === GameRoomStatus.GAMING) return;
+                handleOnClick(gameRoom);
+              }}
             >
               <S.GameRoomCardLeft>
                 <S.GameRoomTitle>

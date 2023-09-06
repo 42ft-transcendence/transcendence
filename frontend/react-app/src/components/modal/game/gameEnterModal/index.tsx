@@ -1,6 +1,5 @@
 import {
   gameRoomInfoInitState,
-  gameRoomInfoState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
 import Modal from "react-modal";
@@ -8,7 +7,10 @@ import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 import { GameRoomInfoType } from "@src/types";
 import { useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { userDataState } from "@src/recoil/atoms/common";
+import { useNavigate } from "react-router-dom";
 
 interface GameRoomEnterModalProps {
   gameRoomInfo: GameRoomInfoType;
@@ -26,8 +28,9 @@ const GameRoomEnterModal = ({
   setIsOpen,
 }: GameRoomEnterModalProps) => {
   const [password, setPassword] = useState<string>("");
-  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
+  const [userData] = useRecoilState(userDataState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
+  const navigate = useNavigate();
 
   const handleCloseModal = () => {
     setSelectGameRoom(gameRoomInfoInitState);
@@ -35,16 +38,25 @@ const GameRoomEnterModal = ({
   };
 
   const handleEnterButton = () => {
-    setGameRoomInfo(gameRoomInfo);
-    setGameRoomURL(gameRoomInfo.roomURL);
-    if (gameRoomInfo.roomType === "PROTECTED") {
-      if (password !== gameRoomInfo.roomPassword) {
-        alert("비밀번호가 틀렸습니다.");
-        return;
-      }
+    if (gameRoomInfo.numberOfParticipants === 2) {
+      alert("인원이 가득 찼습니다.");
+      return;
     }
+    if (
+      gameRoomInfo.roomType === "PROTECTED" &&
+      password !== gameRoomInfo.roomPassword
+    ) {
+      alert("비밀번호가 틀렸습니다.");
+      setPassword("");
+      return;
+    }
+    gameSocket.emit("enterGameRoom", {
+      gameRoomURL: gameRoomInfo.roomURL,
+      user: userData,
+    });
+    setGameRoomURL(gameRoomInfo.roomURL);
     setIsOpen(false);
-    window.location.href = `/game/${gameRoomInfo.roomURL}`;
+    navigate(`/game/${gameRoomInfo.roomURL}`);
   };
 
   return (
@@ -61,6 +73,7 @@ const GameRoomEnterModal = ({
           <S.PasswordInput
             type="password"
             placeholder="비밀번호를 입력하세요"
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         )}
