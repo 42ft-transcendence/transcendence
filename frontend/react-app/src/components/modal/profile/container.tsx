@@ -144,7 +144,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
         awayUser: user.user,
         myData: userData,
         gameRoomURL: hashedTitle,
-        roomType: "QUICK",
+        roomType: "PRIVATE",
       });
     } catch (error) {
       console.log(error);

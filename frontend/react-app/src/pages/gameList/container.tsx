@@ -23,23 +23,31 @@ export const GameListContent = () => {
         placeholder="방 이름을 입력하세요"
       />
       <S.GameRoomCardContainer>
-        {gameRoomList.map((gameRoom) => (
-          <S.GameRoomCard key={gameRoom.roomURL}>
-            <S.GameRoomCardLeft>
-              <S.GameRoomTitle>
-                {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
-              </S.GameRoomTitle>
-              {/* 향후 맵 추가 */}
-              {/* <S.GameRoomOption>
+        {gameRoomList
+          .filter(
+            (gameRoom) =>
+              gameRoom.roomType === "PUBLIC" ||
+              gameRoom.roomType === "PROTECTED",
+          )
+          .map((gameRoom) => (
+            <S.GameRoomCard key={gameRoom.roomURL}>
+              <S.GameRoomCardLeft>
+                <S.GameRoomTitle>
+                  {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
+                </S.GameRoomTitle>
+                {/* 향후 맵 추가 */}
+                {/* <S.GameRoomOption>
                 일반 | {gameRoom.homeUser.nickname}
               </S.GameRoomOption> */}
-            </S.GameRoomCardLeft>
-            <S.GameRoomCardRight>
-              <S.GameRoomNumOfPeople>{/* {}{" "} */}/ 2</S.GameRoomNumOfPeople>
-              <S.GameRoomStatus>대기중</S.GameRoomStatus>
-            </S.GameRoomCardRight>
-          </S.GameRoomCard>
-        ))}
+              </S.GameRoomCardLeft>
+              <S.GameRoomCardRight>
+                <S.GameRoomNumOfPeople>
+                  {/* {}{" "} */}/ 2
+                </S.GameRoomNumOfPeople>
+                <S.GameRoomStatus>대기중</S.GameRoomStatus>
+              </S.GameRoomCardRight>
+            </S.GameRoomCard>
+          ))}
       </S.GameRoomCardContainer>
     </DS.ContentArea>
   );
