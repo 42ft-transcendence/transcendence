@@ -1,19 +1,11 @@
 import Modal from "react-modal";
-import * as S from "./index.styled";
+import * as DS from "../index.styled";
 import { useRecoilState } from "recoil";
-import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { IconButton } from "@components/buttons";
 import React, { useEffect, useState } from "react";
-import sha256 from "crypto-js/sha256";
-import { userDataState } from "@src/recoil/atoms/common";
-import { GameRoomType, UserType } from "@src/types";
+import { GameRoomInfoType, GameRoomType } from "@src/types";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
-
-const stringToHash = (title: string): string => {
-  const hash = sha256(title);
-  return hash.toString(); // 해시 값을 문자열로 반환
-};
 
 const GameRoomTypeMap: {
   PUBLIC: string;
@@ -32,24 +24,25 @@ const SPEED_OPTIONS = [
   { key: "FAST", label: "빠르게" },
 ];
 
-const GameCreateModal = () => {
-  const [createGameRoomModal, setCreateGameRoomModal] = useRecoilState(
-    createGameRoomModalState,
-  );
-  const [userData, setUserData] = useRecoilState(userDataState);
-  const [speed, setSpeed] = useState("NORMAL");
-  const [type, setType] = useState<string>("PUBLIC");
-  const [roomName, setRoomName] = useState<string>("");
+interface GameEditModalProps {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  gameRoomInfo: GameRoomInfoType;
+}
+
+const GameEditModal = ({
+  isOpen,
+  setIsOpen,
+  gameRoomInfo,
+}: GameEditModalProps) => {
+  const [speed, setSpeed] = useState(gameRoomInfo.gameMode);
+  const [type, setType] = useState<string>(gameRoomInfo.roomType);
+  const [roomName, setRoomName] = useState<string>(gameRoomInfo.roomName);
   const [password, setPassword] = useState<string>("");
-  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
-    gameSocket.emit("editGameRoomInfo", {
-      gameRoomURL: gameRoomURL,
-      infoType: "roomName",
-      info: event.target.value,
-    });
   };
 
   const onSubmit = async () => {
@@ -58,20 +51,16 @@ const GameCreateModal = () => {
       infoType: "roomType",
       info: type as GameRoomType,
     });
-    setType("PUBLIC");
-    setSpeed("NORMAL");
-    setRoomName("");
-    setCreateGameRoomModal(false);
-    window.location.href = `/game/${gameRoomURL}`;
+    gameSocket.emit("editGameRoomInfo", {
+      gameRoomURL: gameRoomURL,
+      infoType: "roomName",
+      info: roomName,
+    });
+    setIsOpen(false);
   };
 
   const handleClose = () => {
-    setType("PUBLIC");
-    setSpeed("NORMAL");
-    setRoomName("");
-    gameSocket.emit("deleteGameRoom", { gameRoomURL: gameRoomURL });
-    setGameRoomURL("");
-    setCreateGameRoomModal(false);
+    setIsOpen(false);
   };
 
   const handleTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -95,7 +84,7 @@ const GameCreateModal = () => {
   };
 
   useEffect(() => {
-    if (createGameRoomModal) {
+    if (isOpen) {
       gameSocket.emit("editGameRoomInfo", {
         gameRoomURL: gameRoomURL,
         infoType: "gameMode",
@@ -106,13 +95,13 @@ const GameCreateModal = () => {
 
   return (
     <Modal
-      isOpen={createGameRoomModal}
+      isOpen={isOpen}
       style={{
-        content: { ...S.ModalContent }, // Spread 연산자 사용
-        overlay: { ...S.ModalOverlay }, // Spread 연산자 사용
+        content: { ...DS.ModalContent }, // Spread 연산자 사용
+        overlay: { ...DS.ModalOverlay }, // Spread 연산자 사용
       }}
     >
-      <S.InputBoxWrapper
+      <DS.InputBoxWrapper
         type="text"
         placeholder="방 제목"
         id="nickname"
@@ -120,46 +109,46 @@ const GameCreateModal = () => {
         onChange={handleTitleChange}
         maxLength={23}
       />
-      <S.GameSpeedButtons>
-        <S.gameCreateModalLabel>속도</S.gameCreateModalLabel>
+      <DS.GameSpeedButtons>
+        <DS.gameCreateModalLabel>속도</DS.gameCreateModalLabel>
         {SPEED_OPTIONS.map((option) => (
-          <S.GameSpeedButton
+          <DS.GameSpeedButton
             key={option.key}
             $selected={speed === option.key}
             onClick={() => setSpeed(option.key)}
           >
             {option.label}
-          </S.GameSpeedButton>
+          </DS.GameSpeedButton>
         ))}
-      </S.GameSpeedButtons>
-      <S.gameCreateOption>
-        <S.gameCreateModalLabel>맵 선택</S.gameCreateModalLabel>
-        <S.mapbox />
-      </S.gameCreateOption>
-      <S.gameCreateOption>
-        <S.gameCreateModalLabel>채널 유형</S.gameCreateModalLabel>
-        <S.OptionContent>
-          <S.TypeButton onClick={handleTypeToggle} type={type}>
+      </DS.GameSpeedButtons>
+      <DS.gameCreateOption>
+        <DS.gameCreateModalLabel>맵 선택</DS.gameCreateModalLabel>
+        <DS.mapbox />
+      </DS.gameCreateOption>
+      <DS.gameCreateOption>
+        <DS.gameCreateModalLabel>채널 유형</DS.gameCreateModalLabel>
+        <DS.OptionContent>
+          <DS.TypeButton onClick={handleTypeToggle} type={type}>
             {GameRoomTypeMap[type]}
-          </S.TypeButton>
-        </S.OptionContent>
-      </S.gameCreateOption>
-      <S.gameCreateOption>
-        <S.gameCreateModalLabel>비밀번호</S.gameCreateModalLabel>
-        <S.OptionContent>
-          <S.PasswordInput
+          </DS.TypeButton>
+        </DS.OptionContent>
+      </DS.gameCreateOption>
+      <DS.gameCreateOption>
+        <DS.gameCreateModalLabel>비밀번호</DS.gameCreateModalLabel>
+        <DS.OptionContent>
+          <DS.PasswordInput
             disabled={type !== "PROTECTED"}
             placeholder="비밀번호"
             value={password}
             onChange={onPasswordChange}
           />
-        </S.OptionContent>
-      </S.gameCreateOption>
-      <S.ButtonContainer>
+        </DS.OptionContent>
+      </DS.gameCreateOption>
+      <DS.ButtonContainer>
         <IconButton title="취소" onClick={handleClose} theme="LIGHT" />
         <IconButton title="생성" onClick={onSubmit} theme="LIGHT" />
-      </S.ButtonContainer>
+      </DS.ButtonContainer>
     </Modal>
   );
 };
-export default GameCreateModal;
+export default GameEditModal;

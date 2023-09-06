@@ -28,7 +28,7 @@ export interface battleActionData {
   gameRoomURL: string;
 }
 
-export type GameRoomType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "QUICK" | ""; // QUICK은 대전 신청 혹은 랭킹전에서 사용 (PROTECTED의 사용법과 동일하다면 향후 통합)
+export type GameRoomType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "CREATING" | "";
 
 export interface gameType {
   id: string;
@@ -45,19 +45,27 @@ export interface JoinedgameType extends gameType {
   hasNewMessages: boolean;
 }
 
+export interface GameRoomParticipantType {
+  user: UserType;
+  ready: boolean;
+}
+
+export enum GameRoomStatus {
+  WAITING = 0,
+  GAMING = 1,
+}
+
 export interface GameRoomInfoType {
   roomURL: string;
   roomName: string;
   roomType: GameRoomType;
   roomPassword: string;
   roomOwner: UserType;
+  status: GameRoomStatus;
   numberOfParticipants: number;
   gameMode: string;
   map: string;
-  homeUser: UserType;
-  awayUser: UserType;
-  homeReady: boolean;
-  awayReady: boolean;
+  participants: GameRoomParticipantType[];
   chatMessages: MessageType[];
 }
 

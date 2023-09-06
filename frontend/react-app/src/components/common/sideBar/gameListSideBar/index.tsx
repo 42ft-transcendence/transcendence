@@ -4,15 +4,14 @@ import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import sha256 from "crypto-js/sha256";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
 
 const GameListSideBar = () => {
   const [userData] = useRecoilState(userDataState);
   const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-
-  console.log("gameRoomInfo", gameRoomInfo);
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
 
   const iconButtons: IconButtonProps[] = [
     {
@@ -20,15 +19,17 @@ const GameListSideBar = () => {
       iconSrc: "",
       onClick: () => {
         setCreateGameRoom(true);
-        setGameRoomInfo({
-          ...gameRoomInfo,
-          roomURL: sha256(new Date() + userData.id).toString(),
-          roomType: "PUBLIC",
-          roomOwner: userData,
-          homeUser: userData,
-          gameMode: "NORMAL",
-          map: "NORMAL",
+        const gameRoomURL = sha256(new Date() + userData.id).toString();
+        gameSocket.emit("createGameRoom", {
+          user: userData,
+          gameRoomURL: gameRoomURL,
         });
+        gameSocket.emit("editGameRoomInfo", {
+          gameRoomURL: gameRoomURL,
+          infoType: "roomType",
+          info: "CREATING",
+        });
+        setGameRoomURL(gameRoomURL);
       },
       theme: "LIGHT",
     },

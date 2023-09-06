@@ -9,10 +9,19 @@ export const GameRoomCardContainer = styled.div`
   overflow-y: auto;
 `;
 
-export const GameRoomCard = styled.div`
+export const GameRoomCard = styled.div<{ $roomType: string }>`
   width: 360px;
   height: 100px;
-  background-color: ${(props) => props.theme.colors.heavyPurple};
+  background-color: ${(props) => {
+    const heavyPurple = props.theme.colors.heavyPurple;
+    if (props.$roomType !== "PUBLIC") {
+      const r = parseInt(heavyPurple.slice(1, 3), 16);
+      const g = parseInt(heavyPurple.slice(3, 5), 16);
+      const b = parseInt(heavyPurple.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, 0.8)`;
+    }
+    return heavyPurple; // 'PUBLIC'일 때의 색상값
+  }};
   border-radius: 20px;
   align-items: center;
   display: flex;

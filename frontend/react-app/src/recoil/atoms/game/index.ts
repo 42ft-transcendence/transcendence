@@ -3,6 +3,7 @@ import {
   GameRoomInfoType,
   MatchHistoryType,
   GameRoomType,
+  GameRoomStatus,
   GameModalType,
 } from "@src/types/game.type";
 import { atom } from "recoil";
@@ -15,9 +16,9 @@ export const matchHistoryState = atom<MatchHistoryType[]>({
   effects_UNSTABLE: [persistAtom],
 });
 
-export const gameRoomIn = atom<boolean>({
-  key: "gameRoomIn",
-  default: false,
+export const gameRoomURLState = atom<string>({
+  key: "gameRoomURLState",
+  default: "",
   effects_UNSTABLE: [persistAtom],
 });
 
@@ -32,11 +33,9 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     numberOfParticipants: 0,
     gameMode: "",
     map: "",
-    homeUser: {} as UserType,
-    awayUser: {} as UserType,
-    homeReady: false,
-    awayReady: false,
+    participants: [],
     chatMessages: [],
+    status: GameRoomStatus.GAMING,
   },
   effects_UNSTABLE: [persistAtom],
 });
@@ -50,10 +49,7 @@ export const gameRoomInfoInitState = {
   numberOfParticipants: 0,
   gameMode: "",
   map: "",
-  homeUser: {} as UserType,
-  awayUser: {} as UserType,
-  homeReady: false,
-  awayReady: false,
+  participants: [],
   chatMessages: [],
 };
 
@@ -68,5 +64,5 @@ export const gameModalState = atom<GameModalType>({
   default: {
     gameMap: null,
   },
-  // effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtom],
 });

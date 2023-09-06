@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { TMP, UserStatusType } from 'src/util';
+import { TMP, UserStatusType, ChatChannelType } from 'src/util';
 import { UsersService } from 'src/users/users.service';
 import { MessageService } from 'src/message/message.service';
 import { ChatChannelRepository } from './repository/chatchannel.repository';
@@ -18,9 +18,6 @@ import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
 
 @WebSocketGateway({
-  // cors: {
-  //   origin: 'http://localhost:3000',
-  // },
   middlewares: [],
   namespace: '/ChatPage',
   credential: true,
@@ -82,18 +79,31 @@ export class ChattingGateway
     content: { message: string; channelId: string },
   ): Promise<any> {
     try {
-      const userid = await this.getUserId(client);
-      const user = await this.userService.getUserById(userid);
-      const message = await this.messageService.saveMessage(
-        userid,
-        content.message,
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      client.to(content.channelId).emit('get_message', {
+      const participant = await this.participantsService.getParticipant(
         user,
-        message,
-      });
-      return { user, message };
+        channel,
+      );
+      if (!participant) {
+        throw new Error('채널에 참가하지 않았습니다.');
+      } else if (participant.muted) {
+        throw new Error('채팅 금지된 사용자입니다.');
+      } else {
+        const message = await this.messageService.saveMessage(
+          userId,
+          content.message,
+          content.channelId,
+        );
+        client.to(content.channelId).emit('get_message', {
+          user,
+          message,
+        });
+        return { user, message };
+      }
     } catch (e) {
       console.log(e);
     }
@@ -102,7 +112,7 @@ export class ChattingGateway
   @SubscribeMessage('create_channel')
   async createChannel(
     client: Socket,
-    content: { channelName: string; type: string; password: string },
+    content: { channelName: string; type: number; password: string },
   ): Promise<ChatChannel> {
     try {
       const ownerId = await this.getUserId(client);
@@ -120,6 +130,7 @@ export class ChattingGateway
         client,
         owner,
       );
+      await this.broadcastUpdatedChannelInfo(channel.id);
       return channel;
     } catch (e) {
       console.log(e);
@@ -138,7 +149,7 @@ export class ChattingGateway
         content.channelId,
       );
       if (
-        channel.type !== 'PROTECTED' ||
+        channel.type !== ChatChannelType.PROTECTED ||
         channel.password === content.password
       ) {
         client.join(content.channelId);
@@ -148,10 +159,12 @@ export class ChattingGateway
           channel,
           false,
         );
-        return await this.channelRepository.joinChatChannel(
+        const updatedChannel = await this.channelRepository.joinChatChannel(
           channel,
           participant,
         );
+        await this.broadcastUpdatedChannelInfo(channel.id);
+        return updatedChannel;
       } else {
         throw new Error('비밀번호가 틀렸습니다.');
       }
@@ -171,13 +184,18 @@ export class ChattingGateway
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      if (channel) {
+      if (channel.owner.id !== userId) {
         client.leave(content.channelId);
         await this.participantsService.deleteParticipant(user, channel);
-      }
-      if (!channel.participants) {
+      } else {
+        await this.participantsService.deleteAllParticipant(channel);
         await this.channelRepository.deleteChatChannel(channel);
+        this.server
+          .to(content.channelId)
+          .emit('channel_deleted', content.channelId);
+        this.server.socketsLeave(content.channelId);
       }
+      await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
       console.log(e);
     }
@@ -190,24 +208,19 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const userId = await this.getUserId(client);
-      const user = await this.userService.getUserById(userId);
       const channel = await this.channelRepository.getChannelById(
         content.channelId,
       );
-      if (channel.owner.id === user.id) {
-        const participants =
-          await this.participantsService.getAllParticipants(channel);
-        participants.forEach((participant) => {
-          const socket = this.findSocketByUserId(participant.user.id);
-          if (socket) {
-            socket.leave(content.channelId);
-          }
-        });
-        await this.participantsService.deleteAllParticipant(channel);
-        await this.channelRepository.deleteChatChannel(channel);
-      } else {
+      if (channel.owner.id !== userId) {
         throw new Error('채널 삭제 권한이 없습니다.');
       }
+      await this.participantsService.deleteAllParticipant(channel);
+      await this.channelRepository.deleteChatChannel(channel);
+      this.server
+        .to(content.channelId)
+        .emit('channel_deleted', content.channelId);
+      this.server.socketsLeave(content.channelId);
+      await this.broadcastUpdatedChannelInfo(channel.id);
     } catch (e) {
       console.log(e);
     }
@@ -220,37 +233,28 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.kickUser(
+        content.channelId,
+        adminId,
+        content.userId,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 강퇴되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
-      );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 강퇴되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        const socket = this.findSocketByUserId(content.userId);
-        if (socket) {
-          socket.leave(content.channelId);
-        }
-        await this.participantsService.deleteParticipant(
-          participant.user,
-          channel,
-        );
-        await this.channelRepository.leaveChatChannel(channel, participant);
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      const socket = this.findSocketByUserId(content.userId);
+      if (socket) {
+        socket.leave(content.channelId);
       }
+      this.server.to(content.userId).emit('kicked', content.channelId);
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -263,33 +267,24 @@ export class ChattingGateway
   ): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.changeMute(
+        content.channelId,
+        adminId,
+        content.userId,
+        true,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 채팅 금지가 되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
-      );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        await this.participantsService.changeMuted(
-          participant.user,
-          channel,
-          true,
-        );
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
-      }
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -302,33 +297,56 @@ export class ChattingGateway
   ) {
     try {
       const adminId = await this.getUserId(client);
+      await this.participantsService.changeMute(
+        content.channelId,
+        adminId,
+        content.userId,
+        false,
+      );
       const admin = await this.userService.getUserById(adminId);
-      const channel = await this.channelRepository.getChannelById(
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        adminId,
+        `관리자 ${admin.nickname}님에 의해 ${target.nickname}님이 채팅 금지가 해제 되었습니다.`,
         content.channelId,
       );
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
-      const participant = participants.find(
-        (participant) => participant.user.id === content.userId,
+      this.server.to(content.channelId).emit('get_message', {
+        user: admin,
+        message: message,
+      });
+      await this.broadcastUpdatedChannelInfo(content.channelId);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  @SubscribeMessage('appoint_admin')
+  async appointAdmin(
+    client: Socket,
+    content: { channelId: string; userId: string; to: boolean },
+  ) {
+    try {
+      const ownerId = await this.getUserId(client);
+      await this.participantsService.changeAdmin(
+        content.channelId,
+        ownerId,
+        content.userId,
+        content.to,
       );
-      if (participant) {
-        const message = await this.messageService.saveMessage(
-          adminId,
-          `관리자 ${admin.nickname}님에 의해 ${participant.user.nickname}님이 채팅 금지가 해제 되었습니다.`,
-          content.channelId,
-        );
-        client.to(content.channelId).emit('get_message', {
-          user: admin,
-          message: message,
-        });
-        await this.participantsService.changeMuted(
-          participant.user,
-          channel,
-          false,
-        );
-      } else {
-        throw new Error('채널에 참가하지 않았습니다.');
-      }
+      const owner = await this.userService.getUserById(ownerId);
+      const target = await this.userService.getUserById(content.userId);
+      const message = await this.messageService.saveMessage(
+        ownerId,
+        `채널 소유자 ${owner.nickname}님에 의해 ${target.nickname}님이 관리자${
+          content.to ? '로 임명' : '에서 해임'
+        } 되었습니다.`,
+        content.channelId,
+      );
+      this.server.to(content.channelId).emit('get_message', {
+        user: owner,
+        message: message,
+      });
+      await this.broadcastUpdatedChannelInfo(content.channelId);
     } catch (e) {
       console.log(e);
     }
@@ -352,9 +370,38 @@ export class ChattingGateway
       const participants =
         await this.participantsService.getAllParticipants(channel);
       const messages = await this.messageService.getMessages(content.channelId);
+      await this.broadcastUpdatedChannelInfo(channel.id);
       return { channel, messages, participants };
     } catch (e) {
       console.log(e);
+      return {};
+    }
+  }
+
+  @SubscribeMessage('edit_channel')
+  async editChannel(
+    client: Socket,
+    content: {
+      channelId: string;
+      channelName: string;
+      type: number;
+      password: string;
+    },
+  ) {
+    try {
+      const userId = await this.getUserId(client);
+      const channel = await this.chattingService.editChannel(
+        content.channelId,
+        userId,
+        content.channelName,
+        content.type,
+        content.password,
+      );
+      await this.broadcastUpdatedChannelInfo(content.channelId);
+      return { channel };
+    } catch (e) {
+      console.log(e);
+      return {};
     }
   }
 
@@ -378,6 +425,33 @@ export class ChattingGateway
     }
   }
 
+  @SubscribeMessage('send_invite')
+  async sendInvite(
+    client: Socket,
+    content: { userId: string; channelId: string },
+  ): Promise<void> {
+    try {
+      const userId = await this.getUserId(client);
+      const user = await this.userService.getUserById(userId);
+      const channel = await this.channelRepository.getChannelById(
+        content.channelId,
+      );
+      const participant = await this.participantsService.getParticipant(
+        user,
+        channel,
+      );
+      if (!participant) {
+        throw new Error('채널에 참가하지 않았습니다.');
+      }
+      client.to(content.userId).emit('get_invite', {
+        user: user,
+        channel: channel,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   @SubscribeMessage('enter_dm')
   async enterDM(client: Socket, content: { userId: string }) {
     try {
@@ -393,7 +467,7 @@ export class ChattingGateway
 
   async refreshUsersList(): Promise<void> {
     const users = await this.userService.getAllUserList();
-    this.server.emit('refresh_list', users);
+    this.server.emit('refresh_users', users);
   }
 
   private async getUserId(client: Socket) {
@@ -416,5 +490,25 @@ export class ChattingGateway
       }
     }
     return undefined;
+  }
+
+  private async broadcastUpdatedChannelInfo(channelId: string): Promise<void> {
+    let channel: undefined | ChatChannel = undefined;
+    try {
+      channel = await this.channelRepository.getChannelById(channelId);
+    } catch (e) {
+      console.log(e);
+    }
+    if (channel) {
+      const participants =
+        await this.participantsService.getAllParticipants(channel);
+      this.server
+        .to(channelId)
+        .emit('refresh_channel', { channel, participants });
+    }
+    if (channel && channel.type !== ChatChannelType.PRIVATE) {
+      const allChannels = await this.channelRepository.getAllOpenedChannels();
+      this.server.emit('refresh_all_channels', allChannels);
+    }
   }
 }

@@ -6,7 +6,7 @@ import {
   EnterChannelReturnType,
   SendMessageReturnType,
 } from "@src/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
   joinedChannelListState,
@@ -14,6 +14,7 @@ import {
   participantListState,
 } from "@src/recoil/atoms/channel";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { preview } from "vite";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
@@ -23,6 +24,7 @@ const ChannelPageContainer = () => {
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
+  const navigate = useNavigate();
 
   const handleSendMessage = (content: string) => {
     chatSocket.emit(
@@ -62,9 +64,18 @@ const ChannelPageContainer = () => {
       "enter_channel",
       { channelId },
       ({ channel, messages, participants }: EnterChannelReturnType) => {
-        setChannel(channel);
-        setMessageList(messages);
-        setParticipantList(participants);
+        console.log("enter_channel return", channel, messages, participants);
+        if (channel && messages && participants) {
+          setChannel(channel);
+          setMessageList(messages);
+          setParticipantList(participants);
+        } else {
+          setJoinedChannelList((prev) =>
+            prev.filter((channel) => channel.id !== channelId),
+          );
+          navigate("/channel-list");
+          alert("가입한 적 없거나 존재하지 않는 채널입니다.");
+        }
       },
     );
     setJoinedChannelList((prev) =>
@@ -86,6 +97,7 @@ const ChannelPageContainer = () => {
     setMessageList,
     setParticipantList,
     setJoinedChannelList,
+    navigate,
   ]);
 
   return (

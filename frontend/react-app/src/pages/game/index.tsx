@@ -4,53 +4,37 @@ import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameMatchProfile } from "./container";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
-import { useEffect } from "react";
 import { gameAlertModalState } from "@src/recoil/atoms/modal";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [userData] = useRecoilState(userDataState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
-
-  useEffect(() => {
-    if (
-      gameRoomInfo.roomType === "QUICK" &&
-      (!gameRoomInfo.awayUser.id || !gameRoomInfo.homeUser.id)
-    ) {
-      console.log("here");
-      setGameAlertModal({
-        gameAlertModal: true,
-        gameAlertModalMessage: "상대방이 나갔습니다.",
-        shouldRedirect: true,
-        shouldInitInfo: true,
-      });
-    }
-  }, [gameRoomInfo.awayUser.id]);
-
-  // console.log("gameRoomInfo", gameRoomInfo);
 
   return (
     <>
       <NavBar />
       <GameCreateModal />
-      {SideBarComponent && <SideBarComponent />}
-      {gameRoomInfo.homeUser.id ? (
-        <GameMatchProfile
-          user={gameRoomInfo.homeUser}
-          isReady={gameRoomInfo.homeReady}
+      {SideBarComponent && (
+        <SideBarComponent
+          isReady={
+            gameRoomInfo.participants.find(
+              (participant) => participant.user.id === userData.id,
+            )?.ready
+          }
         />
-      ) : (
-        <>대기중</>
       )}
-      {gameRoomInfo.awayUser.id ? (
-        <GameMatchProfile
-          user={gameRoomInfo.awayUser}
-          isReady={gameRoomInfo.awayReady}
-        />
-      ) : (
-        <>대기중</>
-      )}
+      {typeof gameRoomInfo.participants !== "undefined" &&
+        gameRoomInfo.participants.map((user) => (
+          <GameMatchProfile
+            key={user.user.id}
+            user={user.user}
+            isReady={user.ready}
+          />
+        ))}
     </>
   );
 };
