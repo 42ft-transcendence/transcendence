@@ -304,7 +304,6 @@ export class GameGateway {
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
     const engine = roomManager.get(content.gameRoomURL);
-    // console.log('userPaddle: ', engine);
     if (content.userIndex === 0) engine.leftPaddle = content.userPaddle;
     else engine.rightPaddle = content.userPaddle;
     content.userIndex === 0
