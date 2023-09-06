@@ -148,6 +148,7 @@ const GameCreateModal = () => {
         <S.gameCreateModalLabel>비밀번호</S.gameCreateModalLabel>
         <S.OptionContent>
           <S.PasswordInput
+            type="password"
             disabled={type !== "PROTECTED"}
             placeholder="비밀번호"
             value={password}

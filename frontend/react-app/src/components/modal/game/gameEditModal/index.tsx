@@ -137,6 +137,7 @@ const GameEditModal = ({
         <DS.gameCreateModalLabel>비밀번호</DS.gameCreateModalLabel>
         <DS.OptionContent>
           <DS.PasswordInput
+            type="password"
             disabled={type !== "PROTECTED"}
             placeholder="비밀번호"
             value={password}

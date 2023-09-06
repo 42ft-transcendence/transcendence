@@ -35,7 +35,7 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     map: "",
     participants: [],
     chatMessages: [],
-    status: GameRoomStatus.GAMING,
+    status: GameRoomStatus.WAITING,
   },
   effects_UNSTABLE: [persistAtom],
 });
@@ -51,6 +51,7 @@ export const gameRoomInfoInitState = {
   map: "",
   participants: [],
   chatMessages: [],
+  status: GameRoomStatus.WAITING,
 };
 
 export const gameRoomListState = atom<GameRoomInfoType[]>({
