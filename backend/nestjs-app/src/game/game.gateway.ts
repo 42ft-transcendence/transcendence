@@ -14,6 +14,7 @@ import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/history.dto';
+import { GameData } from './game.engine';
 import {
   GameRoom,
   GameRoomStatus,
@@ -56,7 +57,7 @@ import {
 //   participation: boolean;
 // }
 
-// const roomManager = new Map<number, GameData>();
+const roomManager = new Map<string, GameData>();
 // const roomList = new Map<number, RoomData>();
 // const getPlayerWithRoomnum = new Map<number, [string, string]>();
 // const getRoomNumWithID = new Map<string, number>();
@@ -75,6 +76,7 @@ export class GameGateway {
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
     private gameService: GameService,
+    private gameData: GameData,
   ) {}
 
   @WebSocketServer()
@@ -284,6 +286,36 @@ export class GameGateway {
       this.gameService.deleteGameRoom(content.gameRoomURL);
     }
     this.refreshGameRoomList();
+  }
+
+  @SubscribeMessage('startGameTest')
+  startGameTest(client: Socket, content: { gameRoomURL: string }) {
+    roomManager.set(content.gameRoomURL, this.gameData);
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      gameData: roomManager.get(content.gameRoomURL),
+    };
+    this.server.emit('gameProcess', response);
+  }
+
+  @SubscribeMessage('userPaddle')
+  userPaddle(
+    client: Socket,
+    content: { gameRoomURL: string; userIndex: number; userPaddle: number },
+  ) {
+    const engine = roomManager.get(content.gameRoomURL);
+    // console.log('userPaddle: ', engine);
+    if (content.userIndex === 0) engine.leftPaddle = content.userPaddle;
+    else engine.rightPaddle = content.userPaddle;
+    content.userIndex === 0
+      ? (engine.leftPaddle = content.userPaddle)
+      : (engine.rightPaddle = content.userPaddle);
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      userIndex: content.userIndex,
+      gameData: engine,
+    };
+    this.server.emit('gameProcess', response);
   }
 
   // async handleConnection(@ConnectedSocket() client) {

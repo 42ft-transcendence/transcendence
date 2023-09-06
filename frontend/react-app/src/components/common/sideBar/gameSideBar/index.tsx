@@ -105,7 +105,9 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
                   ...gameModal,
                   gameMap: "NORMAL" as GameMapType,
                 });
-                console.log("게임 맵 테스트");
+                gameSocket.emit("startGameTest", {
+                  gameRoomURL: gameRoomURL,
+                });
               },
               theme: "LIGHT",
             },
