@@ -9,13 +9,13 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { useMatch } from "react-router-dom";
 import { chatSocket } from "@src/router/socket/chatSocket";
 import { DirectMessageType, MessageType } from "@src/types";
-import { dmListState } from "@src/recoil/atoms/directMessage";
+import { dmListState, dmOtherState } from "@src/recoil/atoms/directMessage";
+import sha256 from "crypto-js/sha256";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
+import { channelInviteModalState } from "@src/recoil/atoms/modal";
 
-export interface ChatInputPropsType {
-  onInvite: () => void;
-}
-
-const ChatInput = ({ onInvite }: ChatInputPropsType) => {
+const ChatInput = () => {
   const [value, setValue] = useState<string>("");
   const [muted, setMuted] = useState<boolean>(false);
   const userData = useRecoilValue(userDataState);
@@ -24,9 +24,41 @@ const ChatInput = ({ onInvite }: ChatInputPropsType) => {
   const isDM = useMatch("/dm/:dmId");
   const setMessageList = useSetRecoilState(messageListState);
   const setDmList = useSetRecoilState(dmListState);
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
+  const setChannelInviteModalOpened = useSetRecoilState(
+    channelInviteModalState,
+  );
+  const dmOther = useRecoilValue(dmOtherState);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
+  };
+
+  const hashTitle = (title: string): string => {
+    const hash = sha256(title);
+    return hash.toString(); // 해시 값을 문자열로 반환
+  };
+
+  const handleBattleOffer = (): void => {
+    if (userData.id === dmOther?.id) {
+      alert("자기 자신과 게임을 할 수 없습니다.");
+      return;
+    }
+    try {
+      const currentTime: Date = new Date();
+      const roomURL = currentTime + userData.id;
+      const hashedTitle = hashTitle(roomURL);
+      console.log("hashedTitle", hashedTitle);
+      setGameRoomURL(hashedTitle);
+      gameSocket.emit("offerBattle", {
+        awayUser: dmOther,
+        myData: userData,
+        gameRoomURL: hashedTitle,
+        roomType: "PRIVATE",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const sendMessage = (event: React.FormEvent<HTMLFormElement>) => {
@@ -60,10 +92,13 @@ const ChatInput = ({ onInvite }: ChatInputPropsType) => {
     setValue("");
   };
 
-  const handleGameClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleInviteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    // TODO: send game message
-    onInvite();
+    if (isChannel) {
+      setChannelInviteModalOpened(true);
+    } else if (isDM && userData && dmOther) {
+      handleBattleOffer();
+    }
   };
 
   useEffect(() => {
@@ -80,7 +115,7 @@ const ChatInput = ({ onInvite }: ChatInputPropsType) => {
   return (
     <S.Container>
       <S.InviteButton
-        onClick={handleGameClick}
+        onClick={handleInviteClick}
         $isChannel={isChannel == null}
       />
       <S.Form onSubmit={sendMessage}>

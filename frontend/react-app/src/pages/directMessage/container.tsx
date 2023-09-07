@@ -1,23 +1,15 @@
 import { useEffect, useState } from "react";
 import DirectMessagePageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import {
-  ChatType,
-  DirectMessageType,
-  EnterDmReturnType,
-  MessageType,
-} from "@src/types";
+import { ChatType, EnterDmReturnType, MessageType } from "@src/types";
 import { useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   dmListState,
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
 import { userDataState } from "@src/recoil/atoms/common";
-import { gameSocket } from "@src/router/socket/gameSocket";
-import { gameRoomURLState } from "@src/recoil/atoms/game";
-import sha256 from "crypto-js/sha256";
 
 const DirectMessagePageContainer = () => {
   const [dmOther, setDmOther] = useRecoilState(dmOtherState);
@@ -26,35 +18,6 @@ const DirectMessagePageContainer = () => {
   const userData = useRecoilValue(userDataState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
-  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
-
-  const hashTitle = (title: string): string => {
-    const hash = sha256(title);
-    return hash.toString(); // 해시 값을 문자열로 반환
-  };
-
-  const handleInvite = () => {
-    if (userData === null || dmOther === null) return;
-    else if (userData.id === dmOther.id) {
-      alert("자기 자신과 게임을 할 수 없습니다.");
-      return;
-    }
-    try {
-      const currentTime: Date = new Date();
-      const roomURL = currentTime + userData.id;
-      const hashedTitle = hashTitle(roomURL);
-      console.log("hashedTitle", hashedTitle);
-      setGameRoomURL(hashedTitle);
-      gameSocket.emit("offerBattle", {
-        awayUser: dmOther,
-        myData: userData,
-        gameRoomURL: hashedTitle,
-        roomType: "PRIVATE",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     console.log("dm list", dmList);
@@ -111,7 +74,7 @@ const DirectMessagePageContainer = () => {
     };
   }, [params, setDmOther, setDmList, setJoinedDmOtherList]);
 
-  return <DirectMessagePageView onInvite={handleInvite} chatList={chatList} />;
+  return <DirectMessagePageView chatList={chatList} />;
 };
 
 export default DirectMessagePageContainer;

@@ -7,18 +7,17 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 
 export interface ChannelPageViewPropsType {
-  onInvite: () => void;
   chatList: ChatType[];
 }
 
-const ChannelPageView = ({ onInvite, chatList }: ChannelPageViewPropsType) => {
+const ChannelPageView = ({ chatList }: ChannelPageViewPropsType) => {
   const userData = useRecoilValue(userDataState);
 
   return (
     <>
       <NavBar />
       <ChattingSideBar />
-      <ChatList onInvite={onInvite}>
+      <ChatList>
         {chatList.map((chat) => (
           <ChatListItem
             key={chat.message.id}

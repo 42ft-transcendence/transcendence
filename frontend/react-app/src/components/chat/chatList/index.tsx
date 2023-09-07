@@ -4,10 +4,9 @@ import * as S from "./index.styled";
 
 export interface ChatListProps {
   children?: React.ReactNode;
-  onInvite: () => void;
 }
 
-const ChatList = ({ children, onInvite }: ChatListProps) => {
+const ChatList = ({ children }: ChatListProps) => {
   const messageEndRef = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
@@ -20,7 +19,7 @@ const ChatList = ({ children, onInvite }: ChatListProps) => {
         {children}
         <li ref={messageEndRef} />
       </S.ChatList>
-      <ChatInput onInvite={onInvite} />
+      <ChatInput />
     </S.Container>
   );
 };

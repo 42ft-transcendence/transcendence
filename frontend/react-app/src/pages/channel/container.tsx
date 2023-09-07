@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import ChannelPageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import {
-  ChatType,
-  EnterChannelReturnType,
-  SendMessageReturnType,
-} from "@src/types";
+import { ChatType, EnterChannelReturnType } from "@src/types";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
@@ -14,7 +10,6 @@ import {
   participantListState,
 } from "@src/recoil/atoms/channel";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { channelInviteModalState } from "@src/recoil/atoms/modal";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
@@ -22,16 +17,9 @@ const ChannelPageContainer = () => {
   const [participantList, setParticipantList] =
     useRecoilState(participantListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
-  const setChannelInviteModalOpened = useSetRecoilState(
-    channelInviteModalState,
-  );
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
   const navigate = useNavigate();
-
-  const handleInvite = () => {
-    setChannelInviteModalOpened(true);
-  };
 
   // Assemble chat list
   useEffect(() => {
@@ -93,7 +81,7 @@ const ChannelPageContainer = () => {
     navigate,
   ]);
 
-  return <ChannelPageView onInvite={handleInvite} chatList={chatList} />;
+  return <ChannelPageView chatList={chatList} />;
 };
 
 export default ChannelPageContainer;
