@@ -12,10 +12,10 @@
     "frontend/**/*.{ts,tsx}": [
       "npm run test:frontend:lint-staged"
     ],
-    "**/*": "prettier --write --ignore-unknown",
+    "**/*": "prettier --ignore-unknown",
     "*.{ts,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier"
     ]
   },
   "license": "ISC",

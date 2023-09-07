@@ -1,19 +1,15 @@
 import Modal from "react-modal";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import { IconButton } from "@components/buttons";
 import React, { useEffect, useState } from "react";
-import sha256 from "crypto-js/sha256";
-import { userDataState } from "@src/recoil/atoms/common";
-import { GameRoomType, UserType } from "@src/types";
+import { GameRoomType } from "@src/types";
 import { gameSocket } from "@src/router/socket/gameSocket";
-import { gameRoomURLState } from "@src/recoil/atoms/game";
-
-const stringToHash = (title: string): string => {
-  const hash = sha256(title);
-  return hash.toString(); // 해시 값을 문자열로 반환
-};
+import {
+  gameRoomChatListState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 
 const GameRoomTypeMap: {
   PUBLIC: string;
@@ -36,12 +32,12 @@ const GameCreateModal = () => {
   const [createGameRoomModal, setCreateGameRoomModal] = useRecoilState(
     createGameRoomModalState,
   );
-  const [userData, setUserData] = useRecoilState(userDataState);
   const [speed, setSpeed] = useState("NORMAL");
   const [type, setType] = useState<string>("PUBLIC");
   const [roomName, setRoomName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(event.target.value);
@@ -62,6 +58,7 @@ const GameCreateModal = () => {
     setSpeed("NORMAL");
     setRoomName("");
     setCreateGameRoomModal(false);
+    setGameRoomChatList([]);
     window.location.href = `/game/${gameRoomURL}`;
   };
 

@@ -2,14 +2,17 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { MessageRepository } from 'src/message/repository/message.repository';
 import { Message } from 'src/message/entities/message.entity';
 import { ChatChannel } from './entities/chatchannel.entity';
+import { GetMessagesQueryDto } from './dto/get-messages-query.dto';
+import { SearchChannelsQueryDto } from './dto/search-channels-query.dto';
+
 @Controller('chatting')
 export class ChattingController {
   constructor(private messageRepository: MessageRepository) {}
 
   @Get('/messages')
-  async getMessages(@Query('channelId') channelId: string): Promise<Message[]> {
+  async getMessages(@Query() query: GetMessagesQueryDto): Promise<Message[]> {
     return await this.messageRepository.find({
-      where: { channelId: channelId },
+      where: { channelId: query.channelId },
     });
   }
 
@@ -24,9 +27,9 @@ export class ChattingController {
 
   @Get('/channels/search')
   async searchChannels(
-    @Query('keyword') keyword: string,
+    @Query() query: SearchChannelsQueryDto,
   ): Promise<ChatChannel[]> {
     const channels = await ChatChannel.find();
-    return await channels.filter((channel) => channel.name.includes(keyword));
+    return channels.filter((channel) => channel.name.includes(query.keyword));
   }
 }

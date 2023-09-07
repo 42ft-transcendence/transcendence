@@ -5,6 +5,7 @@ import {
   GameRoomType,
   GameRoomStatus,
   GameModalType,
+  GameChattingType,
 } from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
@@ -34,7 +35,6 @@ export const gameRoomInfoState = atom<GameRoomInfoType>({
     gameMode: "",
     map: "",
     participants: [],
-    chatMessages: [],
     status: GameRoomStatus.WAITING,
   },
   effects_UNSTABLE: [persistAtom],
@@ -50,9 +50,14 @@ export const gameRoomInfoInitState = {
   gameMode: "",
   map: "",
   participants: [],
-  chatMessages: [],
   status: GameRoomStatus.WAITING,
 };
+
+export const gameRoomChatListState = atom<GameChattingType[]>({
+  key: "gameRoomChatListState",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});
 
 export const gameRoomListState = atom<GameRoomInfoType[]>({
   key: "gameRoomListState",

@@ -4,6 +4,7 @@ import { getUser, turnOff2Fa } from "@src/api";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import * as S from "./index.styled";
 import { userDataState } from "@src/recoil/atoms/common";
+import { useCallback, useEffect } from "react";
 
 const SecondAuthDeactivateModal = () => {
   const [isOpened, setIsOpened] = useRecoilState(
@@ -11,7 +12,7 @@ const SecondAuthDeactivateModal = () => {
   );
   const setUserData = useSetRecoilState(userDataState);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     getUser()
       .then((res) => {
         setUserData(res.data);
@@ -20,13 +21,22 @@ const SecondAuthDeactivateModal = () => {
         console.error(err);
       });
     setIsOpened(false);
-  };
+  }, [setIsOpened, setUserData]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleDeactivate = () => {
     turnOff2Fa()

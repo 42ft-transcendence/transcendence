@@ -22,8 +22,6 @@ export type {
   OfferGameType,
   MatchHistoryType,
   battleActionData,
-  gameType,
-  JoinedgameType,
   GameRoomType,
   GameRoomInfoType,
 } from "./game.type";

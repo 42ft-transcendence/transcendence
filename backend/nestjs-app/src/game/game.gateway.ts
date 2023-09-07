@@ -13,7 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
-import { HistoryDto } from 'src/match_history/history.dto';
+import { HistoryDto } from 'src/match_history/dto/history.dto';
 import { GameData } from './game.engine';
 import {
   GameRoom,
@@ -89,6 +89,21 @@ export class GameGateway {
   @SubscribeMessage('getGameRoomList')
   getGameRoomList(client: Socket) {
     this.refreshGameRoomList();
+  }
+
+  @SubscribeMessage('sendGameRoomChat')
+  sendGameRoomChat(
+    client: Socket,
+    content: {
+      roomURL: string;
+      roomName: string;
+      message: string;
+      userId: string;
+      userNickname: string;
+      createAt: Date;
+    },
+  ) {
+    this.server.emit('getGameRoomChat', content);
   }
 
   @SubscribeMessage('offerBattle')

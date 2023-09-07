@@ -73,7 +73,7 @@ export class GameData {
         this.ballVecX = this.ballSpeed * Math.cos(angleRad);
         this.ballVecY = this.ballSpeed * Math.sin(angleRad);
         this.ballSpeed *= speedModifier;
-        if (this.ballSpeed < 9) {
+        if (this.ballSpeed > 9) {
           this.ballSpeed = 9;
         }
       } else {
@@ -91,7 +91,7 @@ export class GameData {
         this.ballVecX = -1 * this.ballSpeed * Math.cos(angleRad);
         this.ballVecY = this.ballSpeed * Math.sin(angleRad);
         this.ballSpeed *= speedModifier;
-        if (this.ballSpeed < 9) {
+        if (this.ballSpeed > 9) {
           this.ballSpeed = 9;
         }
       } else {

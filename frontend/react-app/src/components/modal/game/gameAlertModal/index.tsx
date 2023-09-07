@@ -1,19 +1,18 @@
 import { gameAlertModalState } from "@src/recoil/atoms/modal";
 import Modal from "react-modal";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import {
   gameRoomInfoInitState,
   gameRoomInfoState,
 } from "@src/recoil/atoms/game";
-import { UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons/index";
 
 const GameAlertModal = () => {
   const [gameAlertModal, setGameAlertModal] =
     useRecoilState(gameAlertModalState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
 
   const navigate = useNavigate();
   const handleCloseModal = () => {
