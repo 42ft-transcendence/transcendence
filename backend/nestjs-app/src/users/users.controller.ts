@@ -18,6 +18,11 @@ import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { User } from './entities/user.entity';
 import { createDummyUsers } from './createDummyUsers';
+import { AvatarPathUpdateDto } from './dto/avatar-path-update.dto';
+import { LoginDto } from './dto/login.dto';
+import { CreateDummyDto } from './dto/create-dummy.dto';
+import { AvatarDefaultDto } from './dto/avatar-default.dto';
+import { NicknameDto } from './dto/nickname.dto';
 
 @Controller('users')
 export class UsersController {
@@ -35,11 +40,8 @@ export class UsersController {
   }
 
   @Post('/login')
-  async login(
-    @Response() res,
-    @Body('code') code: string,
-    @Body('type') type: string,
-  ) {
+  async login(@Response() res, @Body() loginDto: LoginDto) {
+    const { code, type } = loginDto;
     let OwnerId;
 
     if (type === '42') {
@@ -91,7 +93,8 @@ export class UsersController {
 
   @Post('/nickname')
   @UseGuards(JwtTwoFactorGuard)
-  async createNickname(@Request() req, @Body('nickname') nickname) {
+  async createNickname(@Request() req, @Body() nicknameDto: NicknameDto) {
+    const { nickname } = nicknameDto;
     const user = await this.usersService.updateNickname(nickname, req.user.id);
     await this.usersService.updateStatus(user, UserStatusType.ONLINE);
     this.rootGateway.refreshUsersList();
@@ -100,7 +103,11 @@ export class UsersController {
 
   @Post('/avatarPathUpdate')
   @UseGuards(JwtTwoFactorGuard)
-  async updateAvatarPath(@Request() req, @Body('avatarPath') avatarPath) {
+  async updateAvatarPath(
+    @Request() req,
+    @Body() avatarPathUpdateDto: AvatarPathUpdateDto,
+  ) {
+    const { avatarPath } = avatarPathUpdateDto;
     const user = await this.usersService.updateAvatarPath(
       req.user.id,
       avatarPath,
@@ -112,8 +119,9 @@ export class UsersController {
   @UseGuards(JwtTwoFactorGuard)
   async updateAvatarDefault(
     @Request() req,
-    @Body('avatarPath') avatarPath: string,
+    @Body() avatarDefaultDto: AvatarDefaultDto,
   ) {
+    const { avatarPath } = avatarDefaultDto;
     const user = await this.usersService.updateAvatarPath(
       req.user.id,
       avatarPath,
@@ -160,7 +168,8 @@ export class UsersController {
 
   // 더미 유저 생성
   @Post('/createDummy')
-  async createDummyUser(@Body('count') count: number) {
+  async createDummyUser(@Body() createDummyDto: CreateDummyDto) {
+    const { count } = createDummyDto;
     const dummyUsers = createDummyUsers(count);
 
     for (const user of dummyUsers) {
