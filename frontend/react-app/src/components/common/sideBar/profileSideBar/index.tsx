@@ -26,6 +26,8 @@ import { useEffect, useState } from "react";
 import { ChangeProfileImageModal } from "./container";
 import { UserType } from "@src/types";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
+import { changeNicknameModalState } from "@src/recoil/atoms/modal";
+import { ChangeNicknameModal } from "@src/components/modal/profile/changeNickname";
 import {
   secondAuthActivateModalState,
   secondAuthDeactivateModalState,
@@ -52,6 +54,9 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
   const currentRoute = window.location.pathname;
   const userId = currentRoute.split("/").pop() as string;
   const navigate = useNavigate();
+  const [changeNicknameModal, setChangeNicknameModal] = useRecoilState(
+    changeNicknameModalState,
+  );
 
   const myProfileButtons: IconButtonProps[] = [
     {
@@ -222,8 +227,13 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
         <S.NicknameContainer>
           <S.NicknameText>{user.nickname}</S.NicknameText>
           <S.PencilIcon
+            title="닉네임 변경"
             src={`../src/assets/icons/pencil_freezePurple.svg`}
             alt="level"
+            onClick={() => {
+              setChangeNicknameModal(true);
+            }}
+            style={{ cursor: "pointer" }}
           />
         </S.NicknameContainer>
         <RateDoughnutChart userData={user} />
@@ -235,6 +245,7 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
             setUserData={setUserData}
           />
         )}
+        {changeNicknameModal && <ChangeNicknameModal />}
       </DS.Container>
     </>
   );

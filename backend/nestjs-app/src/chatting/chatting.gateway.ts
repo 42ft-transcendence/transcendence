@@ -378,8 +378,9 @@ export class ChattingGateway
       if (!participant) {
         throw new Error('채널에 참가하지 않았습니다.');
       }
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
+      const participants = await this.participantsService.getAllParticipants(
+        channel,
+      );
       const messages = await this.messageService.getMessages(content.channelId);
       await this.broadcastUpdatedChannelInfo(channel.id);
       return { channel, messages, participants };
@@ -502,8 +503,9 @@ export class ChattingGateway
       console.log(e);
     }
     if (channel) {
-      const participants =
-        await this.participantsService.getAllParticipants(channel);
+      const participants = await this.participantsService.getAllParticipants(
+        channel,
+      );
       this.server
         .to(channelId)
         .emit('refresh_channel', { channel, participants });
