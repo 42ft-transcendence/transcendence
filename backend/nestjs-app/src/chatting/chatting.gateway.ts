@@ -14,7 +14,6 @@ import { ChatChannelRepository } from './repository/chatchannel.repository';
 import { ParticipantsService } from 'src/participants/participants.service';
 import { ChatChannel } from './entities/chatchannel.entity';
 import { DirectMessageService } from 'src/dm/directmessage.service';
-import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
 import * as bcrypt from 'bcrypt';
 import { SendMessageDTO } from './dto/sendmessage.dto';
