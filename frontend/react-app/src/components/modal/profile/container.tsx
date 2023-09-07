@@ -130,7 +130,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     }
   };
 
-  const handleBattleOffer = async (): Promise<void> => {
+  const handleBattleOffer = (): void => {
     try {
       const currentTime: Date = new Date();
       const roomURL = currentTime + userData.id;

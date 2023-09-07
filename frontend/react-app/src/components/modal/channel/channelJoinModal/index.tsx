@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-import { ChannelType } from "@src/types";
+import { ChannelType, ChannelTypeType } from "@src/types";
 import { IconButton } from "@components/buttons";
 import { joinedChannelListState } from "@recoil/atoms/channel";
 import { chatSocket } from "@router/socket/chatSocket";
@@ -20,28 +20,41 @@ const ChannelJoinModal = () => {
     setPassword(event.target.value);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setChannel(null);
-  };
+  }, [setChannel]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleJoin = () => {
     chatSocket.emit(
       "join_channel",
       { channelId: channel?.id, password: password },
       (joined_channel: ChannelType) => {
-        setJoinedChannelList((prev) => [
-          ...prev,
-          {
-            ...joined_channel,
-            hasNewMessages: false,
-          },
-        ]);
+        setJoinedChannelList((prev) =>
+          prev.some((prevChannel) => prevChannel.id === joined_channel.id)
+            ? prev
+            : [
+                ...prev,
+                {
+                  ...joined_channel,
+                  hasNewMessages: false,
+                },
+              ],
+        );
         handleClose();
         navigate(`/channel/${joined_channel.id}`);
       },
@@ -56,7 +69,7 @@ const ChannelJoinModal = () => {
       <S.Overlay onClick={handleClose} />
       <S.Container>
         <S.Title>{channel.name}에 참여하시겠습니까?</S.Title>
-        {channel.type === "PROTECTED" && (
+        {channel.type === ChannelTypeType.PROTECTED && (
           <S.PasswordInput
             value={password}
             onChange={handlePasswordChange}

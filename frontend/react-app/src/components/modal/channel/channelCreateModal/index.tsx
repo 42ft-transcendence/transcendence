@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -10,21 +10,22 @@ import { chatSocket } from "@router/socket/chatSocket";
 import * as S from "./index.styled";
 import { channelCreateModalState } from "@src/recoil/atoms/modal";
 
-const channelTypeText = {
-  PUBLIC: "공개",
-  PROTECTED: "비밀",
-  PRIVATE: "비공개",
+const channelTypeText: { [key in ChannelTypeType]: string } = {
+  [ChannelTypeType.PUBLIC]: "공개",
+  [ChannelTypeType.PROTECTED]: "비밀",
+  [ChannelTypeType.PRIVATE]: "비공개",
 };
 
 const ChannelCreateModal = () => {
   const [name, setName] = useState<string>("");
-  const [type, setType] = useState<ChannelTypeType>("PUBLIC");
+  const [type, setType] = useState<ChannelTypeType>(ChannelTypeType.PUBLIC);
   const [password, setPassword] = useState<string>("");
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const navigate = useNavigate();
   const [isOpened, setIsOpened] = useRecoilState(channelCreateModalState);
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
+    console.log("handleSubmit", name);
     event?.preventDefault();
     if (name === "") {
       alert("채널 이름을 입력해주세요.");
@@ -34,30 +35,41 @@ const ChannelCreateModal = () => {
       "create_channel",
       { channelName: name, type, password },
       (channel_joined: ChannelType) => {
-        setJoinedChannelList((prev) => [
-          ...prev,
-          {
-            ...channel_joined,
-            hasNewMessages: false,
-          },
-        ]);
+        setJoinedChannelList((prev) =>
+          prev.some((prevChannel) => prevChannel.id === channel_joined.id)
+            ? prev
+            : [
+                ...prev,
+                {
+                  ...channel_joined,
+                  hasNewMessages: false,
+                },
+              ],
+        );
         handleClose();
         navigate(`/channel/${channel_joined.id}`);
       },
     );
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpened(false);
-  };
+  }, [setIsOpened]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    } else if (event.key === "Enter") {
-      handleSubmit();
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -65,12 +77,16 @@ const ChannelCreateModal = () => {
 
   const handleTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (type === "PUBLIC") {
-      setType("PROTECTED");
-    } else if (type === "PROTECTED") {
-      setType("PRIVATE");
-    } else {
-      setType("PUBLIC");
+    switch (type) {
+      case ChannelTypeType.PUBLIC:
+        setType(ChannelTypeType.PROTECTED);
+        break;
+      case ChannelTypeType.PROTECTED:
+        setType(ChannelTypeType.PRIVATE);
+        break;
+      default:
+        setType(ChannelTypeType.PUBLIC);
+        break;
     }
   };
 
@@ -109,7 +125,7 @@ const ChannelCreateModal = () => {
             <S.OptionLabel>비밀번호</S.OptionLabel>
             <S.OptionContent>
               <S.PasswordInput
-                disabled={type !== "PROTECTED"}
+                disabled={type !== ChannelTypeType.PROTECTED}
                 placeholder="비밀번호"
                 value={password}
                 onChange={onPasswordChange}

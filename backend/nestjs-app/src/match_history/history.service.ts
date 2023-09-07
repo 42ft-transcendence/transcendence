@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchHistoryRepository } from './repository/history.repository';
 import { MatchHistory } from './entities/match_history.entity';
-import { HistoryDto } from './history.dto';
+import { HistoryDto } from './dto/history.dto';
 import { User } from '../users/entities/user.entity';
 
 @Injectable()

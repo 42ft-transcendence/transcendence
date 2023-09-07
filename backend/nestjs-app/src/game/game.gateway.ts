@@ -13,7 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
-import { HistoryDto } from 'src/match_history/history.dto';
+import { HistoryDto } from 'src/match_history/dto/history.dto';
 import { GameData } from './game.engine';
 import {
   GameRoom,
@@ -319,16 +319,25 @@ export class GameGateway {
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
     const engine = roomManager.get(content.gameRoomURL);
-    if (content.userIndex === 0) engine.leftPaddle = content.userPaddle;
-    else engine.rightPaddle = content.userPaddle;
+    let paddleDelta;
+    if (content.userIndex === 0) {
+      paddleDelta = content.userPaddle - engine.leftPaddle;
+      engine.leftPaddle = content.userPaddle;
+    } else {
+      paddleDelta = content.userPaddle - engine.rightPaddle;
+      engine.rightPaddle = content.userPaddle;
+    }
     content.userIndex === 0
       ? (engine.leftPaddle = content.userPaddle)
       : (engine.rightPaddle = content.userPaddle);
+    engine.advance(paddleDelta);
     const response = {
       gameRoomURL: content.gameRoomURL,
       userIndex: content.userIndex,
       gameData: engine,
     };
+    // console.log('engine.ballSpeed: ', engine.ballSpeed);
+    // console.log('engine.ball ', engine.ballX, engine.ballY);
     this.server.emit('gameProcess', response);
   }
 

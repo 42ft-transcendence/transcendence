@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import ChannelPageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import {
-  ChatType,
-  EnterChannelReturnType,
-  SendMessageReturnType,
-} from "@src/types";
+import { ChatType, EnterChannelReturnType } from "@src/types";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
@@ -14,7 +10,6 @@ import {
   participantListState,
 } from "@src/recoil/atoms/channel";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { preview } from "vite";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
@@ -25,20 +20,6 @@ const ChannelPageContainer = () => {
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
   const navigate = useNavigate();
-
-  const handleSendMessage = (content: string) => {
-    chatSocket.emit(
-      "send_message",
-      { message: content, channelId: params.channelId },
-      ({ message }: SendMessageReturnType) => {
-        setMessageList((prev) => [...prev, message]);
-      },
-    );
-  };
-
-  const handleInvite = () => {
-    // TODO: invite
-  };
 
   // Assemble chat list
   useEffect(() => {
@@ -100,13 +81,7 @@ const ChannelPageContainer = () => {
     navigate,
   ]);
 
-  return (
-    <ChannelPageView
-      onSendMessage={handleSendMessage}
-      onInvite={handleInvite}
-      chatList={chatList}
-    />
-  );
+  return <ChannelPageView chatList={chatList} />;
 };
 
 export default ChannelPageContainer;
