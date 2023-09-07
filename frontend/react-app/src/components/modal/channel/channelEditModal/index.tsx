@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 import { IconButton } from "@components/buttons";
@@ -45,15 +45,24 @@ const ChannelEditModal = () => {
     );
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpened(false);
-  };
+  }, [setIsOpened]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
