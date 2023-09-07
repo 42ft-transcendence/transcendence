@@ -85,7 +85,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./share/images
+      device: ${PWD}/share/images
 
   vol-profiles:
     name: dev-profiles
@@ -93,4 +93,4 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: ./share/profiles
+      device: ${PWD}/share/profiles
