@@ -1,5 +1,6 @@
 import NavBar from "@src/components/common/navBar";
-import { profileRouteMatch } from "@src/components/common/sideBar";
+import { routeMatch } from "@src/components/common/sideBar";
+import { matchHistoryState } from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
@@ -12,11 +13,12 @@ import { UserType } from "@src/types";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
+  const [matchHistory] = useRecoilState(matchHistoryState);
+  console.log("currentRoute", currentRoute);
+  const SidebarComponent = routeMatch(currentRoute, "/profile/");
   const userId = currentRoute.split("/").pop() as string;
   const [userData] = useRecoilState(userDataState);
   const [userList] = useRecoilState(allUserListState);
-  const SidebarComponent = profileRouteMatch(currentRoute);
-  const [matchHistory] = useRecoilState(matchHistoryListState);
   const [sortState, setSortState] = useState<string>("모드 전체");
   const sortMatchHistory = [...matchHistory].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -55,11 +57,15 @@ const Profile = () => {
 
   const user = userList.find((user) => user.id === userId) as UserType;
   if (typeof user === "undefined") {
+    console.log("here");
     window.location.href = "/profile/" + userData.id;
     return <></>;
   }
 
-  if (!matchHistory || !SidebarComponent) return <></>; // TODO: 로딩 컴포넌트 추가
+  if (!matchHistory || !SidebarComponent) {
+    console.log("here2");
+    return <></>;
+  } // TODO: 로딩 컴포넌트 추가
 
   return (
     <>

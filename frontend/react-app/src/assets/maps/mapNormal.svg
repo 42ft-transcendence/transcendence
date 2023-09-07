@@ -5,8 +5,8 @@
 </mask>
 <path d="M0 0H800V600H0V0Z" fill="black"/>
 <line x1="405" y1="3.13493e-09" x2="405" y2="600" stroke="#D7DCE6" stroke-width="10" stroke-dasharray="20 20"/>
-<line x1="5" x2="5" y2="600" stroke="white" stroke-width="10"/>
-<line x1="795" x2="795" y2="600" stroke="white" stroke-width="10"/>
+<!-- <line x1="5" x2="5" y2="600" stroke="white" stroke-width="10"/> -->
+<!-- <line x1="795" x2="795" y2="600" stroke="white" stroke-width="10"/> -->
 </g>
 <path d="M0 10H800V-10H0V10ZM800 590H0V610H800V590Z" fill="#D7DCE6" mask="url(#path-1-inside-1_1136_8827)"/>
 <defs>

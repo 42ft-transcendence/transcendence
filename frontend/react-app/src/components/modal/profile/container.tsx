@@ -1,6 +1,6 @@
 import { ProfileButtonContainer } from "./index.styled";
 import { profileRoleButtonMapping } from "./data";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { useNavigate } from "react-router-dom";
 import {
   addBlock,
@@ -9,7 +9,6 @@ import {
   deleteFriend,
   getBlockList,
   getFriendList,
-  offerBattle,
 } from "@src/api";
 import { useEffect, useState } from "react";
 import { RoleType, UserType } from "@src/types";
@@ -23,13 +22,10 @@ import AddFriendIcon from "@src/assets/icons/addFriend.svg";
 import DeleteFriendIcon from "@src/assets/icons/deleteFriend.svg";
 import BlockIcon from "@src/assets/icons/block.svg";
 import UnblockIcon from "@src/assets/icons/unblock.svg";
-import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
 import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
-import BanChatIcon from "@src/assets/icons/banChat.svg";
-import UnbanChatIcon from "@src/assets/icons/unbanChat.svg";
-import KickIcon from "@src/assets/icons/kick.svg";
-import SetAdminIcon from "@src/assets/icons/setAdmin.svg";
-import UnsetAdminIcon from "@src/assets/icons/unsetAdmin.svg";
+import sha256 from "crypto-js/sha256";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 interface ProfileButtonActionsProps {
   role: RoleType; // "self" | "attendee" | "owner" | "admin"
@@ -55,14 +51,22 @@ const ProfileButtons: React.FC<ProfileButtonProps> = ({ buttons }) => {
   );
 };
 
+const hashTitle = (title: string): string => {
+  const hash = sha256(title);
+  return hash.toString(); // 해시 값을 문자열로 반환
+};
+
 export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
-  const [myData] = useRecoilState(userDataState);
+  const [userData] = useRecoilState(userDataState);
   // 상대 프로필 유저
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
+  const navigate = useNavigate();
 
   // 친구 상태인지 확인
+
   const checkFriend = async (): Promise<void> => {
     try {
       const response = await getFriendList();
@@ -128,8 +132,16 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
 
   const handleBattleOffer = async (): Promise<void> => {
     try {
-      await offerBattle(user.user.id, myData).then((response) => {
-        console.log(response);
+      const currentTime: Date = new Date();
+      const roomURL = currentTime + userData.id;
+      const hashedTitle = hashTitle(roomURL);
+      console.log("hashedTitle", hashedTitle);
+      setGameRoomURL(hashedTitle);
+      gameSocket.emit("offerBattle", {
+        awayUser: user.user,
+        myData: userData,
+        gameRoomURL: hashedTitle,
+        roomType: "PRIVATE",
       });
     } catch (error) {
       console.log(error);
@@ -177,11 +189,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     },
   ];
 
-  // 초기 상태 설정
-  let filteredButtons = profileButtonData.filter((button) =>
-    profileRoleButtonMapping[role].includes(button.label),
-  );
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -195,6 +202,10 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     fetchData().catch((error) => console.log(error));
   }, [isFriend, isBlocked]);
 
+  // 초기 상태 설정
+  let filteredButtons = profileButtonData.filter((button) =>
+    profileRoleButtonMapping[role].includes(button.label),
+  );
   if (isFriend) {
     filteredButtons = filteredButtons.filter(
       (button) => button.label !== "친구 추가",
@@ -224,7 +235,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   // Set Channel Buttons
   const channel = useRecoilValue(channelState);
   const participants = useRecoilValue(participantListState);
-  const me = participants.find((info) => info.user?.id === myData.id);
+  const me = participants.find((info) => info.user?.id === userData.id);
   const other = participants.find((info) => info.user?.id === user.user.id);
 
   if (channel != null && me && other) {

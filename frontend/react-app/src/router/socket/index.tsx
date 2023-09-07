@@ -1,3 +1,5 @@
+import { chatSocket, chatSocketConnect } from "./chatSocket";
+import * as cookies from "react-cookies";
 import {
   ChannelType,
   ChatType,
@@ -7,8 +9,6 @@ import {
   UserStatus,
   UserType,
 } from "@type";
-import { chatSocket } from "./chatSocket";
-import * as cookies from "react-cookies";
 import { gameSocket } from "./gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import {
@@ -29,8 +29,10 @@ import {
   dmOtherState,
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
-import { useCallback, useEffect } from "react";
+import useGameSocket from "@src/hooks/useGameSocket";
+import { RefreshChannelType } from "@src/types/channel.type";
 import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect } from "react";
 
 const Socket = ({ children }: { children: React.ReactNode }) => {
   const [user] = useRecoilState(userDataState);
@@ -68,6 +70,8 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       gameSocket.disconnect();
     };
   }, []);
+
+  useGameSocket();
 
   /**
    * Chat Socket Events Handlers
@@ -171,22 +175,6 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
   );
 
   /**
-   * Game Socket Events Handlers
-   */
-
-  const handleOfferGame = useCallback(
-    (data: OfferGameType) => {
-      console.log("대전 신청 소켓 통신 확인: ", data, data.user_id);
-      console.log("user.id", user.id);
-      setBattleActionModal({
-        battleActionModal: user.id === data.user_id,
-        awayUser: data.awayUser,
-      });
-    },
-    [setBattleActionModal, user.id],
-  );
-
-  /**
    * ChatSocket Event Listeners
    */
   useEffect(() => {
@@ -244,13 +232,6 @@ const Socket = ({ children }: { children: React.ReactNode }) => {
       chatSocket.off("get_invite");
     };
   }, [handleGetInvite]);
-
-  useEffect(() => {
-    gameSocket.on("offerGame", handleOfferGame);
-    return () => {
-      gameSocket.off("offerGame");
-    };
-  }, [handleOfferGame]);
 
   return children;
 };

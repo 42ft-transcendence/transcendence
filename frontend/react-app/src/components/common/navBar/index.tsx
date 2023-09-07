@@ -6,8 +6,10 @@ import ProfileModal from "@src/components/modal/profile";
 import {
   battleActionModalState,
   channelInviteAcceptModalState,
+  gameAlertModalState,
 } from "@src/recoil/atoms/modal";
 import BattleActionModal from "@src/components/modal/game/BattleActionModal";
+import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 import ChannelInviteAcceptModal from "@src/components/modal/channel/channelInviteAcceptModal";
 
 export interface NavBarPropsType {
@@ -17,6 +19,7 @@ export interface NavBarPropsType {
 const NavBar = () => {
   const [showProfile] = useRecoilState(showProfileState);
   const [battleActionModal] = useRecoilState(battleActionModalState);
+  const [gameAlertModal] = useRecoilState(gameAlertModalState);
   const channelInvite = useRecoilValue(channelInviteAcceptModalState);
 
   return (
@@ -27,6 +30,7 @@ const NavBar = () => {
       <SettingOptionModal />
       {showProfile && <ProfileModal />}
       {battleActionModal.battleActionModal && <BattleActionModal />}
+      {gameAlertModal.gameAlertModal && <GameAlertModal />}
       {channelInvite && <ChannelInviteAcceptModal />}
     </S.Container>
   );

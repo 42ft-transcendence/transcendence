@@ -23,6 +23,7 @@ import UsersHovered from "@assets/icons/Users.svg";
 import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
 import { useEffect, useState } from "react";
+import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { joinedDmOtherListState } from "@src/recoil/atoms/directMessage";
 import { joinedChannelListState } from "@src/recoil/atoms/channel";
 
@@ -69,13 +70,16 @@ export const UpperTabList = () => {
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const joinedDmOtherList = useRecoilValue(joinedDmOtherListState);
-  const [noti, setNoti] = useState(false);
+  const [chatNoti, setChatNoti] = useState(false);
+  const [gameNoti, setGameNoti] = useState(false);
 
   useEffect(() => {
-    setNoti(
+    setChatNoti(
       joinedChannelList.some((channel) => channel.hasNewMessages) ||
         joinedDmOtherList.some((dm) => dm.hasNewMessages),
     );
@@ -92,6 +96,42 @@ export const UpperTabList = () => {
     return tab.icon;
   };
 
+  useEffect(() => {
+    if (gameRoomURL !== "") {
+      upperTabs.forEach((tab) => {
+        if (tab.link === "/game-list") {
+          tab.link = "/game/" + gameRoomURL;
+        }
+      });
+    } else {
+      upperTabs.forEach((tab) => {
+        if (tab.link.includes("/game/")) {
+          tab.link = "/game-list";
+        }
+      });
+    }
+
+    if (gameRoomURL !== "" && currentPath !== "game") {
+      setGameNoti(true);
+    } else if (gameRoomURL !== "" && currentPath === "game") {
+      setGameNoti(false);
+    }
+  }, [gameRoomURL, currentPath]);
+
+  // 준비 완료 버튼을 눌렀다면 다른탭으로 이동 제한
+  // if (gameRoomInfo.homeReady) {
+  //   return (
+  //     <S.TabList>
+  //       {upperTabs.map((tab) => (
+  //         <li key={tab.link}>
+  //           <S.ItemIcon src={getIconSrc(tab)} />
+  //         </li>
+  //       ))}
+  //       {chatNoti && <S.Noti />}
+  //     </S.TabList>
+  //   );
+  // }
+
   return (
     <S.TabList>
       {upperTabs.map((tab) => (
@@ -106,7 +146,8 @@ export const UpperTabList = () => {
           </Link>
         </li>
       ))}
-      {noti && <S.Noti />}
+      {chatNoti && <S.Noti />}
+      {gameNoti && <S.Noti style={{ top: "70px" }} />}
     </S.TabList>
   );
 };
@@ -114,6 +155,7 @@ export const UpperTabList = () => {
 export const LowerTabList = () => {
   const [, setSettingOptionModalOpen] = useRecoilState(settingOptionModalState);
   const [userData] = useRecoilState(userDataState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [isUserHovered, setUserHovered] = useState(false);
   const [isGearHovered, setGearHovered] = useState(false);
   const getUserIcon = () => (isUserHovered ? UserHovered : User);
@@ -128,6 +170,19 @@ export const LowerTabList = () => {
     console.log("setting clicked");
     setSettingOptionModalOpen(true);
   };
+
+  // if (gameRoomInfo.participants) {
+  //   return (
+  //     <S.TabList>
+  //       <li>
+  //         <S.ItemIcon src={User} />
+  //       </li>
+  //       <li>
+  //         <S.ItemIcon src={Gear} />
+  //       </li>
+  //     </S.TabList>
+  //   );
+  // }
 
   return (
     <S.TabList>

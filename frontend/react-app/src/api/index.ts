@@ -34,5 +34,3 @@ export {
   deleteBlock,
   getBlockList,
 } from "./relationship";
-
-export { offerBattle } from "./game";

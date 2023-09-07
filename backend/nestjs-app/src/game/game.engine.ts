@@ -37,6 +37,7 @@ export class GameData {
     this.ballX += this.ballVecX;
     this.ballY += this.ballVecY;
 
+    console.log(`BallX: ${this.ballX}, BallY: ${this.ballY}`);
     const speedModifier = 1 + paddleDelta * 0.002;
 
     if (this.ballY < 0 + 10) {
