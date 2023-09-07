@@ -4,11 +4,16 @@ import loseIcon from "@assets/icons/lose.svg";
 import winIcon from "@assets/icons/win.svg";
 import { UserType } from "@src/types";
 import ReadyIcon from "@assets/icons/ready.svg";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameRoomChatListState,
+  gameRoomInfoState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
 import { useEffect, useRef, useState } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
+import { GameChattingType } from "@src/types/game.type";
 
 interface GameMatchProfileProps {
   user: UserType;
@@ -41,7 +46,7 @@ export const GameMatchProfile = ({ user, isReady }: GameMatchProfileProps) => {
 };
 
 interface GameChattingBoxProps {
-  gameChatting: GameChattingListType;
+  gameChatting: GameChattingType;
 }
 
 const formatDateToKST = (dateString: string) => {
@@ -112,24 +117,28 @@ const GameChattingBox = ({ gameChatting }: GameChattingBoxProps) => {
   );
 };
 
-interface GameChattingListType {
-  roomURL: string;
-  roomName: string;
-  message: string;
-  userId: string;
-  userNickname: string;
-  createdAt: Date;
-}
-
 export const GameChattingContainer = () => {
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
+  const [userData] = useRecoilState(userDataState);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
-  const [chattingList, setChattingList] = useState<GameChattingListType[]>([]);
+  const [chattingList, setChattingList] = useRecoilState(gameRoomChatListState);
+
+  useEffect(() => {
+    if (chattingList.length === 0) {
+      gameSocket.emit("sendGameRoomChat", {
+        roomURL: gameRoomURL,
+        roomName: gameRoomInfo.roomName,
+        message: `${userData.nickname}님이 입장하셨습니다.`,
+        userId: userData.id,
+        userNickname: userData.nickname,
+        createdAt: new Date(),
+      });
+    }
+  }, [chattingList]);
 
   gameSocket.on("getGameRoomChat", (data) => {
     if (gameRoomURL === data.roomURL) {
-      console.log(data);
       setChattingList([...chattingList, data]);
     }
   });
@@ -154,7 +163,7 @@ export const GameChattingContainer = () => {
 };
 
 const GameChattingInputBox = () => {
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [inputText, setInputText] = useState("");
   const [userData] = useRecoilState(userDataState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
@@ -165,7 +174,6 @@ const GameChattingInputBox = () => {
 
   const handleSendText = () => {
     if (inputText === "") return;
-    console.log("date", new Date());
     gameSocket.emit("sendGameRoomChat", {
       roomURL: gameRoomURL,
       roomName: gameRoomInfo.roomName,

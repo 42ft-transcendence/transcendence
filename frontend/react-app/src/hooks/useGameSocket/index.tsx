@@ -1,6 +1,7 @@
 import { userDataState } from "@src/recoil/atoms/common";
 import {
   gameModalState,
+  gameRoomChatListState,
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
@@ -29,6 +30,7 @@ const useGameSocket = (jwt: string) => {
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
   const [gameModal, setGameModal] = useRecoilState(gameModalState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   useEffect(() => {
     if (!jwt) {
@@ -72,6 +74,7 @@ const useGameSocket = (jwt: string) => {
         if (data.gameRoomURL === gameRoomURL) {
           console.log("acceptBattle", data);
           setGameRoomInfo(data.gameRoom);
+          setGameRoomChatList([]);
           window.location.href = `/game/${data.gameRoomURL}`;
         }
       });
@@ -88,6 +91,7 @@ const useGameSocket = (jwt: string) => {
               shouldInitInfo: true,
             });
           }
+          setGameRoomChatList([]);
           setGameRoomInfo(data.gameRoom);
           setGameRoomURL("");
         }

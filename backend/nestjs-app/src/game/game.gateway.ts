@@ -103,7 +103,6 @@ export class GameGateway {
       createAt: Date;
     },
   ) {
-    console.log('sendGameRoomChat: ', content);
     this.server.emit('getGameRoomChat', content);
   }
 
