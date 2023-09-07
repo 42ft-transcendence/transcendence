@@ -2,7 +2,7 @@ import { NotFoundException, HttpException } from '@nestjs/common';
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
 import { Repository } from 'typeorm';
 import { MatchHistory } from '../entities/match_history.entity';
-import { HistoryDto } from 'src/match_history/history.dto';
+import { HistoryDto } from 'src/match_history/dto/history.dto';
 
 @CustomRepository(MatchHistory)
 export class MatchHistoryRepository extends Repository<MatchHistory> {

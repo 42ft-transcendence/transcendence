@@ -28,6 +28,12 @@ import { UserType } from "@src/types";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { changeNicknameModalState } from "@src/recoil/atoms/modal";
 import { ChangeNicknameModal } from "@src/components/modal/profile/changeNickname";
+import {
+  secondAuthActivateModalState,
+  secondAuthDeactivateModalState,
+} from "@src/recoil/atoms/modal";
+import SecondAuthActivateModal from "@src/components/modal/auth/secondAuthActivateModal";
+import SecondAuthDeactivateModal from "@src/components/modal/auth/secondAuthDeactivateModal";
 
 interface ProfileSideBarProps {
   user: UserType;
@@ -35,6 +41,12 @@ interface ProfileSideBarProps {
 
 const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
   const [userData, setUserData] = useRecoilState(userDataState);
+  const [is2FaActivateModalOpened, set2FaActivateModal] = useRecoilState(
+    secondAuthActivateModalState,
+  );
+  const [is2FaDeactivateModalOpened, set2FaDeactivateModal] = useRecoilState(
+    secondAuthDeactivateModalState,
+  );
   const [changeImage, setChangeImage] = useState<boolean>(false);
   const [finalButtons, setFinalButtons] = useState<IconButtonProps[]>([]);
   const [isFriend, setIsFriend] = useState<boolean>(false);
@@ -96,7 +108,25 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
   useEffect(() => {
     const isRelationship = async () => {
       if (userData.id === userId) {
-        setFinalButtons(myProfileButtons);
+        const twoFactorButton: IconButtonProps =
+          userData.isTwoFactorAuthenticationEnabled
+            ? {
+                title: "2차 인증 비활성화",
+                iconSrc: "",
+                onClick: () => {
+                  set2FaDeactivateModal(true);
+                },
+                theme: "LIGHT",
+              }
+            : {
+                title: "2차 인증 활성화",
+                iconSrc: "",
+                onClick: () => {
+                  set2FaActivateModal(true);
+                },
+                theme: "LIGHT",
+              };
+        setFinalButtons([...myProfileButtons, twoFactorButton]);
       } else {
         setFinalButtons(othersProfileButtons);
         const { data: friendList } = await getFriendList();
@@ -173,40 +203,51 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       }
     };
     isRelationship();
-  }, [isFriend, isBlocked]);
+  }, [
+    isFriend,
+    isBlocked,
+    userData,
+    userId,
+    set2FaDeactivateModal,
+    set2FaActivateModal,
+  ]);
 
   return (
-    <DS.Container style={{ gap: "20px" }}>
-      <ProfileImageContainer>
-        <ProfileImage
-          src={user.avatarPath}
-          alt="profile image"
-          style={{ cursor: "default" }}
-        />
-      </ProfileImageContainer>
-      <S.NicknameContainer>
-        <S.NicknameText>{user.nickname}</S.NicknameText>
-        <S.PencilIcon
-          title="닉네임 변경"
-          src={`../src/assets/icons/pencil_freezePurple.svg`}
-          alt="level"
-          onClick={() => {
-            setChangeNicknameModal(true);
-          }}
-          style={{ cursor: "pointer" }}
-        />
-      </S.NicknameContainer>
-      <RateDoughnutChart userData={user} />
-      <ButtonList buttons={finalButtons} />
-      {changeImage && (
-        <ChangeProfileImageModal
-          changeImage={changeImage}
-          setChangeImage={setChangeImage}
-          setUserData={setUserData}
-        />
-      )}
-      {changeNicknameModal && <ChangeNicknameModal />}
-    </DS.Container>
+    <>
+      {is2FaActivateModalOpened && <SecondAuthActivateModal />}
+      {is2FaDeactivateModalOpened && <SecondAuthDeactivateModal />}
+      <DS.Container style={{ gap: "20px" }}>
+        <ProfileImageContainer>
+          <ProfileImage
+            src={user.avatarPath}
+            alt="profile image"
+            style={{ cursor: "default" }}
+          />
+        </ProfileImageContainer>
+        <S.NicknameContainer>
+          <S.NicknameText>{user.nickname}</S.NicknameText>
+          <S.PencilIcon
+            title="닉네임 변경"
+            src={`../src/assets/icons/pencil_freezePurple.svg`}
+            alt="level"
+            onClick={() => {
+              setChangeNicknameModal(true);
+            }}
+            style={{ cursor: "pointer" }}
+          />
+        </S.NicknameContainer>
+        <RateDoughnutChart userData={user} />
+        <ButtonList buttons={finalButtons} />
+        {changeImage && (
+          <ChangeProfileImageModal
+            changeImage={changeImage}
+            setChangeImage={setChangeImage}
+            setUserData={setUserData}
+          />
+        )}
+        {changeNicknameModal && <ChangeNicknameModal />}
+      </DS.Container>
+    </>
   );
 };
 

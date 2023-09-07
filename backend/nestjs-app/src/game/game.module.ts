@@ -7,7 +7,7 @@ import { UserRepository } from 'src/users/repository/user.repository';
 import { GameGateway } from './game.gateway';
 import { AuthModule } from 'src/auth/auth.module';
 import { MatchHistoryModule } from 'src/match_history/history.module';
-
+import { GameData } from './game.engine';
 @Module({
   imports: [
     TypeOrmExModule.forCustomRepository([UserRepository]),
@@ -15,7 +15,7 @@ import { MatchHistoryModule } from 'src/match_history/history.module';
     MatchHistoryModule,
   ],
   controllers: [GameController],
-  providers: [GameService, UsersService, GameGateway, GameService],
+  providers: [GameService, UsersService, GameGateway, GameService, GameData],
   exports: [GameService, GameGateway],
 })
 export class GameModule {}

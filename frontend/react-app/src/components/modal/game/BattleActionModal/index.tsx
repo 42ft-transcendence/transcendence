@@ -1,14 +1,17 @@
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { useState, useEffect } from "react";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 const BattleActionModal = () => {
   const [battleActionModal, setBattleActionModal] = useRecoilState(
     battleActionModalState,
   );
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [countdown, setCountdown] = useState(30);
   const [countdownInterval, setCountdownInterval] =
     useState<NodeJS.Timeout | null>(null);
@@ -17,6 +20,7 @@ const BattleActionModal = () => {
     if (battleActionModal) {
       setCountdown(5);
       startCountdown();
+      console.log("battleActionModal", battleActionModal.gameRoomURL);
     }
   }, [battleActionModal]);
 
@@ -33,33 +37,35 @@ const BattleActionModal = () => {
     setCountdownInterval(interval);
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     if (countdownInterval !== null) {
       clearInterval(countdownInterval);
     }
-    setBattleActionModal({
-      battleActionModal: false,
-      awayUser: {} as UserType,
-    }); // 모달 닫기
+    await handleCancelButton();
   };
 
-  const handleCancelButton = () => {
-    // 대전 신청 거절 api 호출
-    console.log("대전 신청 거절");
+  const handleCancelButton = async () => {
+    gameSocket.emit("rejectBattle", {
+      gameRoomURL: battleActionModal.gameRoomURL,
+      awayUserId: battleActionModal.awayUser.id,
+    });
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
+      gameRoomURL: "",
     }); // 모달 닫기
   };
 
   const handleAcceptButton = () => {
-    // 대전 신청 수락 api 호출
-    console.log("대전 신청 수락");
+    gameSocket.emit("acceptBattle", {
+      gameRoomURL: battleActionModal.gameRoomURL,
+    });
+    setGameRoomURL(battleActionModal.gameRoomURL);
     setBattleActionModal({
       battleActionModal: false,
       awayUser: {} as UserType,
+      gameRoomURL: "",
     }); // 모달 닫기
-    // 대전 신청 수락 시 대전 페이지로 이동
   };
 
   return (

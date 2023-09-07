@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
-import { GameService } from './game.service';
+import { GameRoom, GameRoomType, GameService } from './game.service';
 import { GameGateway } from './game.gateway';
 import { User } from 'src/users/entities/user.entity';
 
@@ -10,14 +10,4 @@ export class GameController {
     private readonly gameService: GameService,
     private readonly gameGateway: GameGateway,
   ) {}
-
-  @Post('battle/offer')
-  @UseGuards(JwtTwoFactorGuard)
-  async offerGame(
-    @Request() req,
-    @Body('id') user_id: string,
-    @Body('awayUser') awayUser: User,
-  ): Promise<boolean> {
-    return await this.gameGateway.offerGame(user_id, awayUser);
-  }
 }

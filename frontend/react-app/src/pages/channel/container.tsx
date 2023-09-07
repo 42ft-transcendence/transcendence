@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import ChannelPageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import {
-  ChatType,
-  EnterChannelReturnType,
-  SendMessageReturnType,
-} from "@src/types";
-import { useParams } from "react-router-dom";
+import { ChatType, EnterChannelReturnType } from "@src/types";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
   joinedChannelListState,
@@ -23,20 +19,7 @@ const ChannelPageContainer = () => {
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
-
-  const handleSendMessage = (content: string) => {
-    chatSocket.emit(
-      "send_message",
-      { message: content, channelId: params.channelId },
-      ({ message }: SendMessageReturnType) => {
-        setMessageList((prev) => [...prev, message]);
-      },
-    );
-  };
-
-  const handleInvite = () => {
-    // TODO: invite
-  };
+  const navigate = useNavigate();
 
   // Assemble chat list
   useEffect(() => {
@@ -62,9 +45,18 @@ const ChannelPageContainer = () => {
       "enter_channel",
       { channelId },
       ({ channel, messages, participants }: EnterChannelReturnType) => {
-        setChannel(channel);
-        setMessageList(messages);
-        setParticipantList(participants);
+        console.log("enter_channel return", channel, messages, participants);
+        if (channel && messages && participants) {
+          setChannel(channel);
+          setMessageList(messages);
+          setParticipantList(participants);
+        } else {
+          setJoinedChannelList((prev) =>
+            prev.filter((channel) => channel.id !== channelId),
+          );
+          navigate("/channel-list");
+          alert("가입한 적 없거나 존재하지 않는 채널입니다.");
+        }
       },
     );
     setJoinedChannelList((prev) =>
@@ -86,15 +78,10 @@ const ChannelPageContainer = () => {
     setMessageList,
     setParticipantList,
     setJoinedChannelList,
+    navigate,
   ]);
 
-  return (
-    <ChannelPageView
-      onSendMessage={handleSendMessage}
-      onInvite={handleInvite}
-      chatList={chatList}
-    />
-  );
+  return <ChannelPageView chatList={chatList} />;
 };
 
 export default ChannelPageContainer;

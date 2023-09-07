@@ -1,8 +1,8 @@
 export { UserStatus } from "./user.type";
 export type { UserType, LoginResponseDataType } from "./user.type";
 
+export { ChannelTypeType } from "./channel.type";
 export type {
-  ChannelTypeType,
   ChannelType,
   JoinedChannelType,
   EnterChannelReturnType,
@@ -18,7 +18,13 @@ export type {
   SendMessageReturnType,
 } from "./chat.type";
 
-export type { OfferGameType } from "./game.type";
+export type {
+  OfferGameType,
+  MatchHistoryType,
+  battleActionData,
+  GameRoomType,
+  GameRoomInfoType,
+} from "./game.type";
 
 export type { CheckNicknameType, ButtonHanderProps } from "./response.type";
 

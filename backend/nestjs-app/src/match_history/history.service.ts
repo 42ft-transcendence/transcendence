@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MatchHistoryRepository } from './repository/history.repository';
 import { MatchHistory } from './entities/match_history.entity';
-import { HistoryDto } from './history.dto';
+import { HistoryDto } from './dto/history.dto';
 import { User } from '../users/entities/user.entity';
 
 @Injectable()
@@ -20,12 +20,14 @@ export class MatchHistorysService {
     history.player2 = player2;
     history.player2Score = historyDto.player2score;
     history.gameMode = historyDto.gameMode;
+    // TODO: gameResultProcess에서 계산된 변화하는 rating을 넣어줘야함
     this.matchHistoryRepository.putHistory(history);
   }
 
   async getHistoryJoinUserByNickname(nickname: string) {
-    const user =
-      await this.matchHistoryRepository.getHistoryJoinUserByNickname(nickname);
+    const user = await this.matchHistoryRepository.getHistoryJoinUserByNickname(
+      nickname,
+    );
     return user;
   }
 

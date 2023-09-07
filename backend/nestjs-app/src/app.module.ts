@@ -32,7 +32,7 @@ import { MatchHistoryModule } from './match_history/history.module';
     ParticipantsModule,
     RelationshipModule,
     MatchHistoryModule,
-    // GameModule,
+    GameModule,
   ],
   controllers: [],
   providers: [],

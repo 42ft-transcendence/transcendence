@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import DirectMessagePageView from "./view";
 import { chatSocket } from "@router/socket/chatSocket";
-import {
-  ChatType,
-  DirectMessageType,
-  EnterDmReturnType,
-  MessageType,
-} from "@src/types";
+import { ChatType, EnterDmReturnType, MessageType } from "@src/types";
 import { useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import {
   dmListState,
   dmOtherState,
@@ -19,28 +14,10 @@ import { userDataState } from "@src/recoil/atoms/common";
 const DirectMessagePageContainer = () => {
   const [dmOther, setDmOther] = useRecoilState(dmOtherState);
   const [dmList, setDmList] = useRecoilState(dmListState);
-  const [joinedDmOtherList, setJoinedDmOtherList] = useRecoilState(
-    joinedDmOtherListState,
-  );
+  const [, setJoinedDmOtherList] = useRecoilState(joinedDmOtherListState);
   const userData = useRecoilValue(userDataState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
-
-  const handleSendMessage = (content: string) => {
-    const userId = params.userId as string;
-    chatSocket.emit(
-      "send_dm",
-      { message: content, userId },
-      (dm: DirectMessageType) => {
-        console.log("send dm", dm);
-        setDmList((prev) => [...prev, dm]);
-      },
-    );
-  };
-
-  const handleInvite = () => {
-    // TODO: invite
-  };
 
   useEffect(() => {
     console.log("dm list", dmList);
@@ -97,13 +74,7 @@ const DirectMessagePageContainer = () => {
     };
   }, [params, setDmOther, setDmList, setJoinedDmOtherList]);
 
-  return (
-    <DirectMessagePageView
-      onSendMessage={handleSendMessage}
-      onInvite={handleInvite}
-      chatList={chatList}
-    />
-  );
+  return <DirectMessagePageView chatList={chatList} />;
 };
 
 export default DirectMessagePageContainer;
