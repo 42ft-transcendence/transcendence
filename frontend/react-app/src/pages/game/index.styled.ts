@@ -17,16 +17,6 @@ export const GameProfileContainer = styled.div`
   justify-content: center;
   gap: 50px;
   align-items: center;
-  background-color: ${(props) => props.theme.colors.gold};
-`;
-
-export const GameChattingContainer = styled.div`
-  width: 100%;
-  height: 40%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.colors.bronze};
 `;
 
 export const GameMatchBox = styled.div<{ $isReady: boolean }>`
@@ -134,10 +124,65 @@ export const gameRoomProfileRank = styled.div`
   cursor: pointer;
 `;
 
+export const GameChattingContainer = styled.div`
+  width: 100%;
+  height: 36%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid ${(props) => props.theme.colors.darkFreezePurple};
+  // background-color: ${(props) => props.theme.colors.heavyPurple};
+  background-color: black;
+  overflow-y: scroll;
+`;
+
+export const GameChattingInputBox = styled.div`
+  width: 100%;
+  height: 4%;
+  display: flex;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  border-left: 1px solid ${(props) => props.theme.colors.darkFreezePurple};
+`;
+
 export const GameChattingBox = styled.div`
   width: 100%;
-  height: 25px;
+  height: 16px;
   display; flex;
-  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
+  color: #18e3c8;
+`;
+
+export const GameChattingBorder = styled.div`
+  display: inline-block;
+`;
+
+export const GameChattingInput = styled.input`
+  width: 100%;
+  height: 100%;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
   color: ${(props) => props.theme.colors.freezePurple};
+  padding-left: 10px;
+  padding-right: 10px;
+  ::placeholder {
+    color: ${(props) => props.theme.colors.freezePurple};
+  }
+`;
+
+export const GameChattingSendButton = styled.button`
+  width: 100px;
+  height: 100%;
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.freezePurple};
+  cursor: pointer;
 `;

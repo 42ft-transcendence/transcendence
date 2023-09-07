@@ -91,6 +91,22 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @SubscribeMessage('sendGameRoomChat')
+  sendGameRoomChat(
+    client: Socket,
+    content: {
+      roomURL: string;
+      roomName: string;
+      message: string;
+      userId: string;
+      userNickname: string;
+      createAt: Date;
+    },
+  ) {
+    console.log('sendGameRoomChat: ', content);
+    this.server.emit('getGameRoomChat', content);
+  }
+
   @SubscribeMessage('offerBattle')
   offerBattle(
     client: Socket,
