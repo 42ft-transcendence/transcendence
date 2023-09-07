@@ -15,16 +15,18 @@ import {
   joinedDmOtherListState,
 } from "@src/recoil/atoms/directMessage";
 import { userDataState } from "@src/recoil/atoms/common";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
+import sha256 from "crypto-js/sha256";
 
 const DirectMessagePageContainer = () => {
   const [dmOther, setDmOther] = useRecoilState(dmOtherState);
   const [dmList, setDmList] = useRecoilState(dmListState);
-  const [joinedDmOtherList, setJoinedDmOtherList] = useRecoilState(
-    joinedDmOtherListState,
-  );
+  const [, setJoinedDmOtherList] = useRecoilState(joinedDmOtherListState);
   const userData = useRecoilValue(userDataState);
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
+  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
 
   const handleSendMessage = (content: string) => {
     const userId = params.userId as string;
@@ -38,8 +40,27 @@ const DirectMessagePageContainer = () => {
     );
   };
 
+  const hashTitle = (title: string): string => {
+    const hash = sha256(title);
+    return hash.toString(); // 해시 값을 문자열로 반환
+  };
+
   const handleInvite = () => {
-    // TODO: invite
+    try {
+      const currentTime: Date = new Date();
+      const roomURL = currentTime + userData.id;
+      const hashedTitle = hashTitle(roomURL);
+      console.log("hashedTitle", hashedTitle);
+      setGameRoomURL(hashedTitle);
+      gameSocket.emit("offerBattle", {
+        awayUser: dmOther,
+        myData: userData,
+        gameRoomURL: hashedTitle,
+        roomType: "PRIVATE",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
