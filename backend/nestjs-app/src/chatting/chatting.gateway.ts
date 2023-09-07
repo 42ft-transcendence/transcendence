@@ -32,6 +32,7 @@ import { SendDmDto } from './dto/senddm.dto';
 import { SendInviteDto } from './dto/sendinvite.dto';
 import { EnterDmDto } from './dto/enterdm.dto';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { RelationshipService } from 'src/relationship/relationship.service';
 
 @WebSocketGateway({
   middlewares: [],
@@ -49,6 +50,7 @@ export class ChattingGateway
     private participantsService: ParticipantsService,
     private dmService: DirectMessageService,
     private chattingService: ChattingService,
+    private relationshipService: RelationshipService,
   ) {}
 
   @WebSocketServer()
@@ -105,7 +107,7 @@ export class ChattingGateway
       if (!participant) {
         throw new Error('채널에 참가하지 않았습니다.');
       } else if (participant.muted) {
-        throw new Error('채팅 금지된 사용자입니다.');
+        return {};
       } else {
         const message = await this.messageService.saveMessage(
           userId,
@@ -412,11 +414,15 @@ export class ChattingGateway
 
   @UsePipes(new ValidationPipe())
   @SubscribeMessage('send_dm')
-  async sendDM(client: Socket, content: SendDmDto): Promise<DirectMessage> {
+  async sendDM(client: Socket, content: SendDmDto): Promise<any> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
       const toUser = await this.userService.getUserById(content.userId);
+      const isBlocked = await this.relationshipService.checkBlock(toUser, user);
+      if (isBlocked) {
+        return {};
+      }
       const dm = await this.dmService.saveDM(user, toUser, content.message);
       client.to(content.userId).emit('get_dm', {
         user: user,
