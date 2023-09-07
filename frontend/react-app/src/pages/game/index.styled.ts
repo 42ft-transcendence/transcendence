@@ -4,10 +4,29 @@ export const GameContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  border-radius: 20px;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   background-color: ${(props) => props.theme.colors.freezePurple};
+`;
+
+export const GameProfileContainer = styled.div`
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.gold};
+`;
+
+export const GameChattingContainer = styled.div`
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.bronze};
 `;
 
 export const GameMatchBox = styled.div<{ $isReady: boolean }>`
@@ -26,6 +45,20 @@ export const GameMatchBox = styled.div<{ $isReady: boolean }>`
         : props.theme.colors.heavyPurple};
 `;
 
+export const GameWaitingBox = styled.div`
+  position: relative; // 추가된 코드
+  width: 300px;
+  height: 400px;
+  display: flex;
+  color: ${(props) => props.theme.colors.freezePurple};
+  background-color: ${(props) => props.theme.colors.heavyPurple};
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  border: 4px solid ${(props) => props.theme.colors.heavyPurple};
+`;
+
 export const ReadyIcon = styled.img`
   position: absolute; // 추가된 코드
   top: 0; // 추가된 코드
@@ -38,10 +71,13 @@ export const ReadyIcon = styled.img`
   ); // 아이콘의 중심이 우측 상단에 위치하도록 조정
 `;
 
-export const VsIcon = styled.svg`
+export const VsIcon = styled.div`
   width: 30px;
   height: 30px;
-  fill: white;
+  font-size: 30px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.heavyPurple};
 `;
 
 export const gameRoomProfileImg = styled.img`
@@ -96,4 +132,12 @@ export const gameRoomProfileRank = styled.div`
   color: ${(props) => props.theme.colors.freezePurple};
   margin-left: 30px;
   cursor: pointer;
+`;
+
+export const GameChattingBox = styled.div`
+  width: 100%;
+  height: 25px;
+  display; flex;
+  align-items: center;
+  color: ${(props) => props.theme.colors.freezePurple};
 `;
