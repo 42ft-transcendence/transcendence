@@ -23,10 +23,18 @@ const PongGame: React.FC = () => {
       console.error("Canvas context is null.");
       return;
     }
+
     const backgroundImage = new Image();
 
     backgroundImage.src = NormalMapSvg;
-    // ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
+    ctx.fillStyle = "BLACK";
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.fillStyle = "WHITE";
+    ctx.font = "60px fantasy";
+    ctx.textAlign = "center"; // 텍스트 정렬을 가운데로 설정
+    ctx.textBaseline = "middle"; // 수직 정렬을 중앙으로 설정
+    ctx.fillText("Game Start!!", cvs.width / 2, cvs.height / 2);
+
     const user = {
       x: userIndex === 0 ? 0 : cvs.width - 10,
       y: cvs.height / 2 - 100 / 2,
@@ -146,21 +154,37 @@ const PongGame: React.FC = () => {
 
     let animationFrameId: number;
 
+    // 3초 후에 게임 함수 실행
+
     backgroundImage.onload = () => {
-      function game() {
-        render();
-        gameSocket.emit("userPaddle", {
-          gameRoomURL: gameRoomURL,
-          userIndex: userIndex,
-          userPaddle: user.y,
-        });
-
-        animationFrameId = requestAnimationFrame(game);
-      }
-
-      // 게임 루프 시작
-      game();
+      let count = 3;
+      const countDown = setInterval(() => {
+        if (!ctx) {
+          console.error("Canvas context is null.");
+          return;
+        }
+        ctx.fillStyle = "BLACK";
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = "WHITE";
+        ctx.font = "45px fantasy";
+        ctx.fillText(count.toString(), cvs.width / 2, cvs.height / 2);
+        count--;
+        if (count === -1) {
+          clearInterval(countDown);
+          //게임 함수 실행
+          game();
+        }
+      }, 1000);
     };
+    function game() {
+      render();
+      gameSocket.emit("userPaddle", {
+        gameRoomURL: gameRoomURL,
+        userIndex: userIndex,
+        userPaddle: user.y,
+      });
+      animationFrameId = requestAnimationFrame(game);
+    }
 
     gameSocket.off("gameProcess");
     gameSocket.on("gameProcess", (data) => {
@@ -173,13 +197,11 @@ const PongGame: React.FC = () => {
         user.score = data.gameData.score[0];
         com.score = data.gameData.score[1];
       } else {
-        user.score = data.gameData.score[1];
-        com.score = data.gameData.score[0];
+        user.score = data.gameData.score[0];
+        com.score = data.gameData.score[1];
       }
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
-      ball.velocityX = data.gameData.ballVecX;
-      ball.velocityY = data.gameData.ballVecY;
       ball.speed = data.gameData.ballSpeed;
 
       // console.log("gameProcess", data.gameData);
