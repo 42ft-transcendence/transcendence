@@ -80,11 +80,11 @@ const ChatInput = () => {
       chatSocket.emit(
         "send_dm",
         { userId: isDM.params.dmId, message: value },
-        ({ dm }: { dm: DirectMessageType }) => {
-          if (!dm) {
+        ({ message }: { message: DirectMessageType }) => {
+          if (!message) {
             alert("채팅이 차단되었습니다.");
           } else {
-            setDmList((prev) => [...prev, dm]);
+            setDmList((prev) => [...prev, message]);
           }
         },
       );
