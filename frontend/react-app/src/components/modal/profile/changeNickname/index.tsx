@@ -53,12 +53,12 @@ export const ChangeNicknameModal = () => {
       .catch((error) => {
         setValidateNickname(false);
         setValidateMessage(error.data.message);
-        console.error("error: ", error);
       });
   };
 
   useEffect(() => {
     (async () => {
+      if (changeNickname === "") return;
       try {
         const response = await checkNickname(changeNickname);
         if (response.data.status === 200) {
@@ -75,10 +75,10 @@ export const ChangeNicknameModal = () => {
               );
         }
       } catch (error) {
-        console.error("Error: ", error);
+        void error;
       }
     })().catch((error) => {
-      console.error("Error: ", error);
+      void error;
     });
   }, [changeNickname]);
 
