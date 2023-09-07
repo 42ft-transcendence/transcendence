@@ -46,6 +46,11 @@ const DirectMessagePageContainer = () => {
   };
 
   const handleInvite = () => {
+    if (userData === null || dmOther === null) return;
+    else if (userData.id === dmOther.id) {
+      alert("자기 자신과 게임을 할 수 없습니다.");
+      return;
+    }
     try {
       const currentTime: Date = new Date();
       const roomURL = currentTime + userData.id;
