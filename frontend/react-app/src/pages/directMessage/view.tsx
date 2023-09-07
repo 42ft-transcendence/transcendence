@@ -7,14 +7,10 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { useRecoilValue } from "recoil";
 
 export interface DirectMessagePageViewPropsType {
-  onSendMessage: (keyword: string) => void;
-  onInvite: () => void;
   chatList: ChatType[];
 }
 
 const DirectMessagePageView = ({
-  onSendMessage,
-  onInvite,
   chatList,
 }: DirectMessagePageViewPropsType) => {
   const userData = useRecoilValue(userDataState);
@@ -23,11 +19,7 @@ const DirectMessagePageView = ({
     <>
       <NavBar />
       <ChattingSideBar />
-      <ChatList
-        onSendMessage={onSendMessage}
-        onInvite={onInvite}
-        isChannel={false}
-      >
+      <ChatList>
         {chatList.map((chat) => (
           <ChatListItem
             key={chat.message.id}
