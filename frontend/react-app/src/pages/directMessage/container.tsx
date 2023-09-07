@@ -28,18 +28,6 @@ const DirectMessagePageContainer = () => {
   const params = useParams();
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
 
-  const handleSendMessage = (content: string) => {
-    const userId = params.userId as string;
-    chatSocket.emit(
-      "send_dm",
-      { message: content, userId },
-      (dm: DirectMessageType) => {
-        console.log("send dm", dm);
-        setDmList((prev) => [...prev, dm]);
-      },
-    );
-  };
-
   const hashTitle = (title: string): string => {
     const hash = sha256(title);
     return hash.toString(); // 해시 값을 문자열로 반환
@@ -123,13 +111,7 @@ const DirectMessagePageContainer = () => {
     };
   }, [params, setDmOther, setDmList, setJoinedDmOtherList]);
 
-  return (
-    <DirectMessagePageView
-      onSendMessage={handleSendMessage}
-      onInvite={handleInvite}
-      chatList={chatList}
-    />
-  );
+  return <DirectMessagePageView onInvite={handleInvite} chatList={chatList} />;
 };
 
 export default DirectMessagePageContainer;

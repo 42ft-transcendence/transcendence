@@ -29,16 +29,6 @@ const ChannelPageContainer = () => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const handleSendMessage = (content: string) => {
-    chatSocket.emit(
-      "send_message",
-      { message: content, channelId: params.channelId },
-      ({ message }: SendMessageReturnType) => {
-        setMessageList((prev) => [...prev, message]);
-      },
-    );
-  };
-
   const handleInvite = () => {
     setChannelInviteModalOpened(true);
   };
@@ -103,13 +93,7 @@ const ChannelPageContainer = () => {
     navigate,
   ]);
 
-  return (
-    <ChannelPageView
-      onSendMessage={handleSendMessage}
-      onInvite={handleInvite}
-      chatList={chatList}
-    />
-  );
+  return <ChannelPageView onInvite={handleInvite} chatList={chatList} />;
 };
 
 export default ChannelPageContainer;
