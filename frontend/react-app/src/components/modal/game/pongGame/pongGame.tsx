@@ -176,8 +176,6 @@ const PongGame: React.FC = () => {
         user.score = data.gameData.score[1];
         com.score = data.gameData.score[0];
       }
-      // ? {user.score = data.gameData.score[0], com.score = data.gameData.sxore[1]}
-      // : (com.score = data.gameData.sxore[1]);
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
       ball.velocityX = data.gameData.ballVecX;
