@@ -21,7 +21,7 @@ const ChatInput = () => {
   const userData = useRecoilValue(userDataState);
   const participantList = useRecoilValue(participantListState);
   const isChannel = useMatch("/channel/:channelId");
-  const isDM = useMatch("/dm/:dmId");
+  const isDM = useMatch("/direct-message/:dmId");
   const setMessageList = useSetRecoilState(messageListState);
   const setDmList = useSetRecoilState(dmListState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
