@@ -103,18 +103,6 @@ const PongGame: React.FC = () => {
       ctx.fillText(text.toString(), x, y);
     }
 
-    // function drawBall(x: number, y: number, r: number, color: string) {
-    //   if (!ctx) {
-    //     console.error("Canvas context is null.");
-    //     return;
-    //   }
-    //   ctx.fillStyle = color;
-    //   ctx.beginPath();
-    //   ctx.arc(x, y, r, 0, Math.PI * 2, false);
-    //   ctx.closePath();
-    //   ctx.fill();
-    // }
-
     function drawBall(x: number, y: number, color: string) {
       if (!ctx) {
         console.error("Canvas context is null.");
@@ -160,11 +148,7 @@ const PongGame: React.FC = () => {
 
     backgroundImage.onload = () => {
       function game() {
-        // 게임 상태 업데이트
-        // update();
-        // 게임 요소 그리기
         render();
-        // 게임 소켓 통신
         gameSocket.emit("userPaddle", {
           gameRoomURL: gameRoomURL,
           userIndex: userIndex,
