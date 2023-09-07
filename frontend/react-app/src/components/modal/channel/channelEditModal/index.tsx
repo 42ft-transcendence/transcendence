@@ -22,9 +22,7 @@ const ChannelEditModal = () => {
   const [type, setType] = useState<ChannelTypeType>(
     channel ? channel.type : ChannelTypeType.PUBLIC,
   );
-  const [password, setPassword] = useState<string>(
-    channel ? channel.password : "",
-  );
+  const [password, setPassword] = useState<string>("");
   const [isOpened, setIsOpened] = useRecoilState(channelEditModalState);
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
