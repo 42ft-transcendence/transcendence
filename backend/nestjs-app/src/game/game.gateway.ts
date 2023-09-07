@@ -321,7 +321,7 @@ export class GameGateway {
       userIndex: content.userIndex,
       gameData: engine,
     };
-    // console.log('engine.ballSpeed: ', engine.ballSpeed);
+    console.log('engine.ballSpeed: ', engine.ballSpeed);
     // console.log('engine.ball ', engine.ballX, engine.ballY);
     this.server.emit('gameProcess', response);
   }
