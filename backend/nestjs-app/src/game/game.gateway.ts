@@ -309,11 +309,14 @@ export class GameGateway {
     content.userIndex === 0
       ? (engine.leftPaddle = content.userPaddle)
       : (engine.rightPaddle = content.userPaddle);
+    engine.advance(content.userPaddle);
     const response = {
       gameRoomURL: content.gameRoomURL,
       userIndex: content.userIndex,
       gameData: engine,
     };
+    // console.log('engine.ballSpeed: ', engine.ballSpeed);
+    // console.log('engine.ball ', engine.ballX, engine.ballY);
     this.server.emit('gameProcess', response);
   }
 
