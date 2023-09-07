@@ -23,6 +23,7 @@ import { LoginDto } from './dto/login.dto';
 import { CreateDummyDto } from './dto/create-dummy.dto';
 import { AvatarDefaultDto } from './dto/avatar-default.dto';
 import { NicknameDto } from './dto/nickname.dto';
+import { CheckNicknameDto } from './dto/check-nickname.dto';
 
 @Controller('users')
 export class UsersController {
@@ -161,9 +162,11 @@ export class UsersController {
 
   @Get('/checkNickname')
   async checkNickname(
-    @Query('nickname') nickname: string,
+    @Query() checkNicknameDto: CheckNicknameDto,
   ): Promise<ValidNicknameType> {
-    return await this.usersService.checkValidNickname(nickname);
+    return await this.usersService.checkValidNickname(
+      checkNicknameDto.nickname,
+    );
   }
 
   // 더미 유저 생성
