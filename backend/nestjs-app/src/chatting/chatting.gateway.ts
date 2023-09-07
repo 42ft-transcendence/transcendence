@@ -16,6 +16,7 @@ import { ChatChannel } from './entities/chatchannel.entity';
 import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
+import * as bcrypt from 'bcrypt';
 
 @WebSocketGateway({
   middlewares: [],
@@ -117,16 +118,17 @@ export class ChattingGateway
     try {
       const ownerId = await this.getUserId(client);
       const owner = await this.userService.getUserById(ownerId);
+      const hashedPassword = await bcrypt.hash(content.password, 10);
       const channel = await this.channelRepository.createChatChannel(
         content.channelName,
         owner,
         content.type,
-        content.password,
+        hashedPassword,
       );
       if (!channel) throw new Error('Channel create failed');
       await this.chattingService.ownerJoinChannel(
         channel.id,
-        content.password,
+        hashedPassword,
         client,
         owner,
       );
@@ -150,7 +152,7 @@ export class ChattingGateway
       );
       if (
         channel.type !== ChatChannelType.PROTECTED ||
-        channel.password === content.password
+        (await bcrypt.compare(content.password, channel.password))
       ) {
         client.join(content.channelId);
         const participant = await this.participantsService.addParticipant(
@@ -390,12 +392,13 @@ export class ChattingGateway
   ) {
     try {
       const userId = await this.getUserId(client);
+      const hashedPassword = await bcrypt.hash(content.password, 10);
       const channel = await this.chattingService.editChannel(
         content.channelId,
         userId,
         content.channelName,
         content.type,
-        content.password,
+        hashedPassword,
       );
       await this.broadcastUpdatedChannelInfo(content.channelId);
       return { channel };
