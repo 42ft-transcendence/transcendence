@@ -13,6 +13,7 @@ import { RelationshipService } from './relationship.service';
 import { UsersService } from 'src/users/users.service';
 import { Relationship } from './entities/relationship.entity';
 import { User } from 'src/users/entities/user.entity';
+import { UserIdDto } from './dto/user-id.dto';
 
 @Controller('relationship')
 export class RelationshipController {
@@ -25,10 +26,10 @@ export class RelationshipController {
   @UseGuards(JwtTwoFactorGuard)
   async makeFriends(
     @Request() req,
-    @Body('id') user_id,
+    @Body() userIdDto: UserIdDto,
   ): Promise<Relationship> {
     const self = await this.usersService.getUserById(req.user.id);
-    const friend = await this.usersService.getUserById(user_id);
+    const friend = await this.usersService.getUserById(userIdDto.id);
     return await this.relationshipService.setFriend(self, friend);
   }
 
@@ -43,18 +44,21 @@ export class RelationshipController {
   @UseGuards(JwtTwoFactorGuard)
   async deleteFriends(
     @Request() req,
-    @Query('id') user_id: string,
+    @Query() userIdDto: UserIdDto,
   ): Promise<void> {
     const self = await this.usersService.getUserById(req.user.id);
-    const friend = await this.usersService.getUserById(user_id);
+    const friend = await this.usersService.getUserById(userIdDto.id);
     return await this.relationshipService.deleteRelation(self, friend);
   }
 
   @Post('block')
   @UseGuards(JwtTwoFactorGuard)
-  async makeBlock(@Request() req, @Body('id') user_id): Promise<Relationship> {
+  async makeBlock(
+    @Request() req,
+    @Body() userIdDto: UserIdDto,
+  ): Promise<Relationship> {
     const self = await this.usersService.getUserById(req.user.id);
-    const user = await this.usersService.getUserById(user_id);
+    const user = await this.usersService.getUserById(userIdDto.id);
     return await this.relationshipService.setBlock(self, user);
   }
 
@@ -69,10 +73,10 @@ export class RelationshipController {
   @UseGuards(JwtTwoFactorGuard)
   async deleteBlock(
     @Request() req,
-    @Query('id') user_id: string,
+    @Query() userIdDto: UserIdDto,
   ): Promise<void> {
     const self = await this.usersService.getUserById(req.user.id);
-    const user = await this.usersService.getUserById(user_id);
+    const user = await this.usersService.getUserById(userIdDto.id);
     return await this.relationshipService.deleteRelation(self, user);
   }
 }
