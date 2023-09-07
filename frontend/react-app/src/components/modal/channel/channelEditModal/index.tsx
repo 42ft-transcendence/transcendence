@@ -52,8 +52,6 @@ const ChannelEditModal = () => {
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       handleClose();
-    } else if (event.key === "Enter") {
-      handleSubmit();
     }
   });
 
