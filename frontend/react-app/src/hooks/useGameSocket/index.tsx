@@ -18,10 +18,10 @@ import {
   GameRoomType,
 } from "@src/types/game.type";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import * as cookies from "react-cookies";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
-const useGameSocket = (jwt: string) => {
+const useGameSocket = () => {
   const setBattleActionModal = useSetRecoilState(battleActionModalState);
   const [userData, setUserData] = useRecoilState(userDataState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
@@ -29,6 +29,7 @@ const useGameSocket = (jwt: string) => {
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
   const [gameModal, setGameModal] = useRecoilState(gameModalState);
+  const jwt = cookies.load("jwt");
 
   useEffect(() => {
     if (!jwt) {
