@@ -3,6 +3,7 @@ import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { GameService } from './game.service';
 import { GameGateway } from './game.gateway';
 import { User } from 'src/users/entities/user.entity';
+import { OfferGameDto } from './dto/offer-game.dto';
 
 @Controller('game')
 export class GameController {
@@ -15,9 +16,11 @@ export class GameController {
   @UseGuards(JwtTwoFactorGuard)
   async offerGame(
     @Request() req,
-    @Body('id') user_id: string,
-    @Body('awayUser') awayUser: User,
+    @Body() offerGameDto: OfferGameDto,
   ): Promise<boolean> {
-    return await this.gameGateway.offerGame(user_id, awayUser);
+    return await this.gameGateway.offerGame(
+      offerGameDto.id,
+      offerGameDto.awayUser,
+    );
   }
 }
