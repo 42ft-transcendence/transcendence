@@ -1,5 +1,8 @@
 import { ChannelType, UserType } from "@type";
-import { battleActionData } from "@src/types/game.type";
+import {
+  battleActionData,
+  gameAlertModalStateType,
+} from "@src/types/game.type";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 const { persistAtom } = recoilPersist();
@@ -43,10 +46,20 @@ export const battleActionModalState = atom<battleActionData>({
   default: {
     battleActionModal: false,
     awayUser: {} as UserType,
+    gameRoomURL: "",
   },
   effects_UNSTABLE: [persistAtom],
 });
 
+export const gameAlertModalState = atom<gameAlertModalStateType>({
+  key: "gameAlertModalState",
+  default: {
+    gameAlertModal: false,
+    gameAlertModalMessage: "",
+    shouldRedirect: false,
+    shouldInitInfo: false,
+  },
+});
 export const channelInviteModalState = atom<boolean>({
   key: "channelInviteModalState",
   default: false,

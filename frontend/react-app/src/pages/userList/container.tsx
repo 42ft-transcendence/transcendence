@@ -9,6 +9,7 @@ type SearchComponentProps = {
   setSearch: (value: string) => void;
   sortState: string;
   setSortState: (value: string) => void;
+  placeholder?: string;
 };
 
 type UserCardComponentProps = {
@@ -24,6 +25,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   setSearch,
   sortState,
   setSortState,
+  placeholder,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -33,7 +35,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
       <S.SearchBar>
         <S.SearchBarInput
           type="text"
-          placeholder="유저 닉네임 검색"
+          placeholder={placeholder || "닉네임을 입력하세요"}
           maxLength={10}
           id="nickname"
           value={search}

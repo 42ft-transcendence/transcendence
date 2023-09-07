@@ -22,9 +22,7 @@ const ChannelEditModal = () => {
   const [type, setType] = useState<ChannelTypeType>(
     channel ? channel.type : ChannelTypeType.PUBLIC,
   );
-  const [password, setPassword] = useState<string>(
-    channel ? channel.password : "",
-  );
+  const [password, setPassword] = useState<string>("");
   const [isOpened, setIsOpened] = useRecoilState(channelEditModalState);
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
@@ -54,8 +52,6 @@ const ChannelEditModal = () => {
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       handleClose();
-    } else if (event.key === "Enter") {
-      handleSubmit();
     }
   });
 
