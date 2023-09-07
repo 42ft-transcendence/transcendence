@@ -5,10 +5,10 @@ import Lock from "@assets/icons/LockKey.svg";
 import Detect from "@assets/icons/Detective.svg";
 import { ChannelTypeType } from "@type";
 
-const channelTypeIcon = {
-  PUBLIC: Hash,
-  PRIVATE: Detect,
-  PROTECTED: Lock,
+const channelTypeIcon: { [key in ChannelTypeType]: string } = {
+  [ChannelTypeType.PUBLIC]: Hash,
+  [ChannelTypeType.PRIVATE]: Detect,
+  [ChannelTypeType.PROTECTED]: Lock,
 };
 
 export const Container = styled.li`

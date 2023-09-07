@@ -1,8 +1,11 @@
 import { MessageType } from "./chat.type";
 import { ParticipantType } from "./participant.type";
 
-export type ChannelTypeType = "PUBLIC" | "PROTECTED" | "PRIVATE";
-
+export enum ChannelTypeType {
+  PUBLIC = 0,
+  PROTECTED = 1,
+  PRIVATE = 2,
+}
 export interface ChannelType {
   id: string;
   name: string;

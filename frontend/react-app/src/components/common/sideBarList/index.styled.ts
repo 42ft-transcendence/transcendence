@@ -4,6 +4,27 @@ import CaretDown from "@assets/icons/CaretDown.svg";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    display: none;
+  }
+`;
+
+export const FoldContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 230px;
   margin-top: 10px;
 `;

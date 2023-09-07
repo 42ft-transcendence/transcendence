@@ -14,7 +14,7 @@ import {
   participantListState,
 } from "@src/recoil/atoms/channel";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { preview } from "vite";
+import { channelInviteModalState } from "@src/recoil/atoms/modal";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
@@ -22,6 +22,9 @@ const ChannelPageContainer = () => {
   const [participantList, setParticipantList] =
     useRecoilState(participantListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
+  const setChannelInviteModalOpened = useSetRecoilState(
+    channelInviteModalState,
+  );
   const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
   const navigate = useNavigate();
@@ -37,7 +40,7 @@ const ChannelPageContainer = () => {
   };
 
   const handleInvite = () => {
-    // TODO: invite
+    setChannelInviteModalOpened(true);
   };
 
   // Assemble chat list
