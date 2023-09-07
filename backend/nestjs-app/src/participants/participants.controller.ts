@@ -4,6 +4,7 @@ import { ParticipantsService } from 'src/participants/participants.service';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { ChatChannel } from 'src/chatting/entities/chatchannel.entity';
 import { ChatChannelRepository } from 'src/chatting/repository/chatchannel.repository';
+import { ChannelIdDto } from './dto/channel-id.dto';
 
 @Controller('participants')
 export class ParticipantsController {
@@ -20,9 +21,11 @@ export class ParticipantsController {
 
   @Get('/participants')
   async getParticipantsByChannelId(
-    @Query('channelId') channelId: string,
+    @Query() channelIdDto: ChannelIdDto,
   ): Promise<Participants[]> {
-    const channel = await this.channelRepository.getChannelById(channelId);
+    const channel = await this.channelRepository.getChannelById(
+      channelIdDto.channelId,
+    );
     return await this.participantsService.getAllParticipants(channel);
   }
 }
