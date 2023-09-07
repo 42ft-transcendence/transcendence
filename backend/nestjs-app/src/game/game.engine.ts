@@ -9,6 +9,7 @@ export class GameData {
   score: [number, number];
   onGame: boolean;
   mode: number;
+  isGamePaused: boolean;
 
   constructor() {
     (this.leftPaddle = 300),
@@ -17,28 +18,44 @@ export class GameData {
       (this.ballY = 300),
       (this.ballVecX = 5),
       (this.ballVecY = 0),
-      (this.ballSpeed = 8),
+      (this.ballSpeed = 6),
       (this.score = [0, 0]),
       (this.onGame = false),
-      (this.mode = 0);
+      (this.mode = 0),
+      (this.isGamePaused = false);
   }
 
   public reset() {
     this.ballX = 400;
     this.ballY = 300;
     this.ballVecY = 0;
-    this.ballSpeed = 8;
+    this.ballSpeed = 6;
+
+    this.isGamePaused = true;
+    setTimeout(() => {
+      this.isGamePaused = false;
+    }, 1000);
   }
 
   advance(paddleDelta: number) {
+    if (this.isGamePaused) {
+      return;
+    }
     let collidePoint: number;
     let angleRad: number;
-
+    let speedModifier: number;
     this.ballX += this.ballVecX;
     this.ballY += this.ballVecY;
 
     // console.log(`BallX: ${this.ballX}, BallY: ${this.ballY}`);
-    const speedModifier = 1 + paddleDelta * 0.002;
+    if (
+      (this.ballVecY > 0 && paddleDelta > 0) ||
+      (this.ballVecY < 0 && paddleDelta < 0)
+    ) {
+      speedModifier = 1 - paddleDelta * 0.001;
+    } else {
+      speedModifier = 1 + paddleDelta * 0.001;
+    }
 
     if (this.ballY < 0 + 10) {
       if (this.ballVecY < 0) this.ballVecY = -this.ballVecY;

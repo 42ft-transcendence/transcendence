@@ -304,12 +304,18 @@ export class GameGateway {
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
     const engine = roomManager.get(content.gameRoomURL);
-    if (content.userIndex === 0) engine.leftPaddle = content.userPaddle;
-    else engine.rightPaddle = content.userPaddle;
+    let paddleDelta;
+    if (content.userIndex === 0) {
+      paddleDelta = content.userPaddle - engine.leftPaddle;
+      engine.leftPaddle = content.userPaddle;
+    } else {
+      paddleDelta = content.userPaddle - engine.rightPaddle;
+      engine.rightPaddle = content.userPaddle;
+    }
     content.userIndex === 0
       ? (engine.leftPaddle = content.userPaddle)
       : (engine.rightPaddle = content.userPaddle);
-    engine.advance(content.userPaddle);
+    engine.advance(paddleDelta);
     const response = {
       gameRoomURL: content.gameRoomURL,
       userIndex: content.userIndex,
