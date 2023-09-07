@@ -1,4 +1,5 @@
 import {
+  gameRoomChatListState,
   gameRoomInfoInitState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
@@ -30,6 +31,7 @@ const GameRoomEnterModal = ({
   const [password, setPassword] = useState<string>("");
   const [userData] = useRecoilState(userDataState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
   const navigate = useNavigate();
 
   const handleCloseModal = () => {
@@ -56,6 +58,7 @@ const GameRoomEnterModal = ({
     });
     setGameRoomURL(gameRoomInfo.roomURL);
     setIsOpen(false);
+    setGameRoomChatList([]);
     navigate(`/game/${gameRoomInfo.roomURL}`);
   };
 

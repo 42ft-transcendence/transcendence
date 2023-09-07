@@ -1,5 +1,4 @@
 // import { ParticipantType } from "./participant.type";
-import { MessageType } from "./chat.type";
 import { UserType } from "./user.type";
 
 export interface OfferGameType {
@@ -30,21 +29,6 @@ export interface battleActionData {
 
 export type GameRoomType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "CREATING" | "";
 
-export interface gameType {
-  id: string;
-  name: string;
-  type: GameRoomType;
-  password: string;
-  createdAt: Date;
-  ownerId: string;
-
-  // participants?: ParticipantType[];
-}
-
-export interface JoinedgameType extends gameType {
-  hasNewMessages: boolean;
-}
-
 export interface GameRoomParticipantType {
   user: UserType;
   ready: boolean;
@@ -53,6 +37,15 @@ export interface GameRoomParticipantType {
 export enum GameRoomStatus {
   WAITING = 0,
   GAMING = 1,
+}
+
+export interface GameChattingType {
+  roomURL: string;
+  roomName: string;
+  message: string;
+  userId: string;
+  userNickname: string;
+  createdAt: Date;
 }
 
 export interface GameRoomInfoType {
@@ -66,7 +59,6 @@ export interface GameRoomInfoType {
   gameMode: string;
   map: string;
   participants: GameRoomParticipantType[];
-  chatMessages: MessageType[];
 }
 
 export interface gameAlertModalStateType {
