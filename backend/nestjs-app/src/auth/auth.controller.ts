@@ -13,6 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { TwoFactorAuthenticationService } from './2FA/twoFactorAuthentication.service';
 import { JwtAuthGuard } from './jwt/jwt-auth.gaurd';
 import JwtTwoFactorGuard from './jwt/jwt-two-factor.gaurd';
+import { TwoFactorCodeDto } from './dto/two-factor-code.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +28,9 @@ export class AuthController {
   async getTwoFactorJwt(
     @Request() req,
     @Response() res,
-    @Body('code') code: string,
+    @Body() twoFactorCodeDto: TwoFactorCodeDto,
   ) {
+    const { code } = twoFactorCodeDto;
     const user = await this.usersService.getUserById(req.user.user.id);
     const isCodeValid =
       this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(
@@ -70,8 +72,9 @@ export class AuthController {
   async turnOnTwoFactorAuthentication(
     @Request() req,
     @Response() res,
-    @Body('code') code,
+    @Body() twoFactorCodeDto: TwoFactorCodeDto,
   ) {
+    const { code } = twoFactorCodeDto;
     const user = await this.usersService.getUserById(req.user.id);
     const isCodeValid =
       this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(

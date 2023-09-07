@@ -4,7 +4,7 @@ import ChannelInviteListItem, {
 import { participantListState } from "@recoil/atoms/channel";
 import { channelInviteModalState } from "@recoil/atoms/modal";
 import { allUserListState } from "@recoil/atoms/common";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import * as S from "./index.styled";
 
@@ -32,15 +32,24 @@ const ChannelInviteModal = () => {
     });
   }, [setInviteList, allUserList, participantList]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    }
-  });
-
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setChannelInviteModal(false);
-  };
+  }, [setChannelInviteModal]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   return (
     <>

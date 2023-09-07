@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -52,17 +52,24 @@ const ChannelCreateModal = () => {
     );
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpened(false);
-  };
+  }, [setIsOpened]);
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      handleClose();
-    } else if (event.key === "Enter") {
-      handleSubmit();
-    }
-  });
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);

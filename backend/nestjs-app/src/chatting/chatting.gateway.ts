@@ -17,6 +17,21 @@ import { DirectMessageService } from 'src/dm/directmessage.service';
 import { DirectMessage } from 'src/dm/entities/directmessage.entity';
 import { ChattingService } from './chatting.service';
 import * as bcrypt from 'bcrypt';
+import { SendMessageDTO } from './dto/sendmessage.dto';
+import { CreateChannelDto } from './dto/createchannel.dto';
+import { JoinChannelDto } from './dto/joinchannel.dto';
+import { LeaveChannelDto } from './dto/leavechannel.dto';
+import { DeleteChannelDto } from './dto/deletechannel.dto';
+import { KickUserDto } from './dto/kickuser.dto';
+import { MuteUserDto } from './dto/muteuser.dto';
+import { UnMuteUserDto } from './dto/unmuteuser.dto';
+import { AppointAdminDto } from './dto/appointadmin.dto';
+import { EnterChannelDto } from './dto/enterchannel.dto';
+import { EditChannelDto } from './dto/editchannel.dto';
+import { SendDmDto } from './dto/senddm.dto';
+import { SendInviteDto } from './dto/sendinvite.dto';
+import { EnterDmDto } from './dto/enterdm.dto';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 @WebSocketGateway({
   middlewares: [],
@@ -74,11 +89,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('send_message')
-  async sendMessage(
-    client: Socket,
-    content: { message: string; channelId: string },
-  ): Promise<any> {
+  async sendMessage(client: Socket, content: SendMessageDTO): Promise<any> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -110,15 +123,18 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('create_channel')
   async createChannel(
     client: Socket,
-    content: { channelName: string; type: number; password: string },
+    content: CreateChannelDto,
   ): Promise<ChatChannel> {
     try {
       const ownerId = await this.getUserId(client);
       const owner = await this.userService.getUserById(ownerId);
       const hashedPassword = await bcrypt.hash(content.password, 10);
+      if (content.type === ChatChannelType.PROTECTED && !content.password)
+        throw new Error('비밀번호를 입력해주세요.');
       const channel = await this.channelRepository.createChatChannel(
         content.channelName,
         owner,
@@ -139,10 +155,11 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('join_channel')
   async joinChannel(
     client: Socket,
-    content: { channelId: string; password: string },
+    content: JoinChannelDto,
   ): Promise<ChatChannel> {
     try {
       const userId = await this.getUserId(client);
@@ -175,11 +192,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('leave_channel')
-  async leaveChannel(
-    client: Socket,
-    content: { channelId: string },
-  ): Promise<void> {
+  async leaveChannel(client: Socket, content: LeaveChannelDto): Promise<void> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -203,10 +218,11 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('delete_channel')
   async deleteChannel(
     client: Socket,
-    content: { channelId: string },
+    content: DeleteChannelDto,
   ): Promise<void> {
     try {
       const userId = await this.getUserId(client);
@@ -228,11 +244,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('kick_user')
-  async kickUser(
-    client: Socket,
-    content: { channelId: string; userId: string },
-  ): Promise<void> {
+  async kickUser(client: Socket, content: KickUserDto): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
       await this.participantsService.kickUser(
@@ -262,11 +276,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('mute_user')
-  async muteUser(
-    client: Socket,
-    content: { channelId: string; userId: string },
-  ): Promise<void> {
+  async muteUser(client: Socket, content: MuteUserDto): Promise<void> {
     try {
       const adminId = await this.getUserId(client);
       await this.participantsService.changeMute(
@@ -292,11 +304,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('unmute_user')
-  async unmuteUser(
-    client: Socket,
-    content: { channelId: string; userId: string },
-  ) {
+  async unmuteUser(client: Socket, content: UnMuteUserDto) {
     try {
       const adminId = await this.getUserId(client);
       await this.participantsService.changeMute(
@@ -322,11 +332,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('appoint_admin')
-  async appointAdmin(
-    client: Socket,
-    content: { channelId: string; userId: string; to: boolean },
-  ) {
+  async appointAdmin(client: Socket, content: AppointAdminDto) {
     try {
       const ownerId = await this.getUserId(client);
       await this.participantsService.changeAdmin(
@@ -354,8 +362,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('enter_channel')
-  async enterChannel(client: Socket, content: { channelId: string }) {
+  async enterChannel(client: Socket, content: EnterChannelDto) {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -380,16 +389,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('edit_channel')
-  async editChannel(
-    client: Socket,
-    content: {
-      channelId: string;
-      channelName: string;
-      type: number;
-      password: string;
-    },
-  ) {
+  async editChannel(client: Socket, content: EditChannelDto) {
     try {
       const userId = await this.getUserId(client);
       const hashedPassword = await bcrypt.hash(content.password, 10);
@@ -408,11 +410,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('send_dm')
-  async sendDM(
-    client: Socket,
-    content: { userId: string; message: string },
-  ): Promise<DirectMessage> {
+  async sendDM(client: Socket, content: SendDmDto): Promise<DirectMessage> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -428,11 +428,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('send_invite')
-  async sendInvite(
-    client: Socket,
-    content: { userId: string; channelId: string },
-  ): Promise<void> {
+  async sendInvite(client: Socket, content: SendInviteDto): Promise<void> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -455,8 +453,9 @@ export class ChattingGateway
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('enter_dm')
-  async enterDM(client: Socket, content: { userId: string }) {
+  async enterDM(client: Socket, content: EnterDmDto) {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);

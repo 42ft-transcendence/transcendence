@@ -28,11 +28,20 @@ const SecondAuthActivateModal = () => {
     setIsOpened(false);
   }, [setIsOpened, setUserData]);
 
-  window.onkeydown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      handleClose();
-    }
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          handleClose();
+        }
+      });
+    };
+  }, [handleClose]);
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
