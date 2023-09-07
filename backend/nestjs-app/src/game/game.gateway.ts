@@ -13,7 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
 import * as bcrypt from 'bcrypt';
 import { ChattingGateway } from 'src/chatting/chatting.gateway';
-import { HistoryDto } from 'src/match_history/history.dto';
+import { HistoryDto } from 'src/match_history/dto/history.dto';
 import { GameData } from './game.engine';
 
 let rankRoom = 0;

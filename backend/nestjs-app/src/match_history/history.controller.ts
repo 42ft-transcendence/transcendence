@@ -1,8 +1,10 @@
 import { Controller, Get, Param, Post, Body } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from './history.service';
-import { HistoryDto } from './history.dto';
+import { HistoryDto } from './dto/history.dto';
 import { MatchHistory } from './entities/match_history.entity';
+import { NicknameParamDto } from './dto/nickname-param.dto';
+import { IdParamDto } from './dto/id-param.dto';
 
 @Controller('MatchHistory')
 export class MatchHistorysController {
@@ -24,15 +26,15 @@ export class MatchHistorysController {
 
   @Get('/:nickname')
   async getHistoryByNickname(
-    @Param('nickname') nickname,
+    @Param() params: NicknameParamDto,
   ): Promise<MatchHistory[]> {
     return await this.matchHistoryService.getHistoryJoinUserByNickname(
-      nickname,
+      params.nickname,
     );
   }
 
   @Get('/:id')
-  async getHistoryById(@Param('id') id): Promise<MatchHistory[]> {
-    return await this.matchHistoryService.getHistoryJoinUserById(id);
+  async getHistoryById(@Param() params: IdParamDto): Promise<MatchHistory[]> {
+    return await this.matchHistoryService.getHistoryJoinUserById(params.id);
   }
 }
