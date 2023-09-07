@@ -5,4 +5,5 @@ img_files/*
 share/profiles/*
 !share/profiles/profile[0-9].svg
 
-# .env
+.env
+.DS_Store
