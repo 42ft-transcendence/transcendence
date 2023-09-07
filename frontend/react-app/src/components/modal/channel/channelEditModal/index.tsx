@@ -9,17 +9,18 @@ import { chatSocket } from "@router/socket/chatSocket";
 import * as S from "./index.styled";
 import { channelEditModalState } from "@src/recoil/atoms/modal";
 
-const channelTypeText = {
-  PUBLIC: "공개",
-  PROTECTED: "비밀",
-  PRIVATE: "비공개",
+const channelTypeText: { [key in ChannelTypeType]: string } = {
+  [ChannelTypeType.PUBLIC]: "공개",
+  [ChannelTypeType.PROTECTED]: "비밀",
+  [ChannelTypeType.PRIVATE]: "비공개",
 };
 
 const ChannelEditModal = () => {
+  ChannelTypeType.PUBLIC;
   const channel = useRecoilValue(channelState);
   const [name, setName] = useState<string>(channel ? channel.name : "");
   const [type, setType] = useState<ChannelTypeType>(
-    channel ? channel.type : "PUBLIC",
+    channel ? channel.type : ChannelTypeType.PUBLIC,
   );
   const [password, setPassword] = useState<string>(
     channel ? channel.password : "",
@@ -64,12 +65,16 @@ const ChannelEditModal = () => {
 
   const handleTypeToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (type === "PUBLIC") {
-      setType("PROTECTED");
-    } else if (type === "PROTECTED") {
-      setType("PRIVATE");
-    } else {
-      setType("PUBLIC");
+    switch (type) {
+      case ChannelTypeType.PUBLIC:
+        setType(ChannelTypeType.PROTECTED);
+        break;
+      case ChannelTypeType.PROTECTED:
+        setType(ChannelTypeType.PRIVATE);
+        break;
+      default:
+        setType(ChannelTypeType.PUBLIC);
+        break;
     }
   };
 
@@ -108,7 +113,7 @@ const ChannelEditModal = () => {
             <S.OptionLabel>비밀번호</S.OptionLabel>
             <S.OptionContent>
               <S.PasswordInput
-                disabled={type !== "PROTECTED"}
+                disabled={type !== ChannelTypeType.PROTECTED}
                 placeholder="비밀번호"
                 value={password}
                 onChange={onPasswordChange}

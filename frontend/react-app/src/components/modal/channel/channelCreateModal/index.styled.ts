@@ -5,10 +5,10 @@ import Detective from "@assets/icons/Detective.svg";
 import Lock from "@assets/icons/LockKey.svg";
 import { ChannelTypeType } from "@src/types";
 
-const channelTypeIcon = {
-  PUBLIC: Hash,
-  PROTECTED: Lock,
-  PRIVATE: Detective,
+const channelTypeIcon: { [key in ChannelTypeType]: string } = {
+  [ChannelTypeType.PUBLIC]: Hash,
+  [ChannelTypeType.PROTECTED]: Lock,
+  [ChannelTypeType.PRIVATE]: Detective,
 };
 
 export const ModalOverlay = styled.div`

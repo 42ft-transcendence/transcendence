@@ -22,6 +22,15 @@ export const channelCreateModalState = atom<boolean>({
   default: false,
 });
 
+export const secondAuthActivateModalState = atom<boolean>({
+  key: "secondAuthActivateModalState",
+  default: false,
+});
+
+export const secondAuthDeactivateModalState = atom<boolean>({
+  key: "secondAuthDeactivateModalState",
+  default: false,
+});
 export const channelEditModalState = atom<boolean>({
   key: "channelEditModalState",
   default: false,
@@ -50,4 +59,16 @@ export const gameAlertModalState = atom<gameAlertModalStateType>({
     shouldRedirect: false,
     shouldInitInfo: false,
   },
+});
+export const channelInviteModalState = atom<boolean>({
+  key: "channelInviteModalState",
+  default: false,
+});
+
+export const channelInviteAcceptModalState = atom<{
+  channel: ChannelType;
+  user: UserType;
+} | null>({
+  key: "channelInviteAcceptModalState",
+  default: null,
 });

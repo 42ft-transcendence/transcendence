@@ -8,20 +8,20 @@ import { joinedChannelListState } from "@recoil/atoms/channel";
 import { chatSocket } from "@router/socket/chatSocket";
 
 import * as S from "./index.styled";
-import { channelJoinModalState } from "@src/recoil/atoms/modal";
+import { channelInviteAcceptModalState } from "@src/recoil/atoms/modal";
 
-const ChannelJoinModal = () => {
+const ChannelInviteAcceptModal = () => {
+  const [invite, setInvite] = useRecoilState(channelInviteAcceptModalState);
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
-  const [channel, setChannel] = useRecoilState(channelJoinModalState);
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
   const handleClose = () => {
-    setChannel(null);
+    setInvite(null);
   };
 
   window.addEventListener("keydown", (event) => {
@@ -33,7 +33,7 @@ const ChannelJoinModal = () => {
   const handleJoin = () => {
     chatSocket.emit(
       "join_channel",
-      { channelId: channel?.id, password: password },
+      { channelId: invite?.channel.id, password: password },
       (joined_channel: ChannelType) => {
         setJoinedChannelList((prev) =>
           prev.some((prevChannel) => prevChannel.id === joined_channel.id)
@@ -52,15 +52,15 @@ const ChannelJoinModal = () => {
     );
   };
 
-  if (channel === null) {
-    return null;
-  }
   return (
     <>
       <S.Overlay onClick={handleClose} />
       <S.Container>
-        <S.Title>{channel.name}에 참여하시겠습니까?</S.Title>
-        {channel.type === ChannelTypeType.PROTECTED && (
+        <S.Title>
+          {invite?.user.nickname} 님께서 {invite?.channel.name}에
+          초대하였습니다.
+        </S.Title>
+        {invite?.channel.type === ChannelTypeType.PROTECTED && (
           <S.PasswordInput
             value={password}
             onChange={handlePasswordChange}
@@ -76,4 +76,4 @@ const ChannelJoinModal = () => {
   );
 };
 
-export default ChannelJoinModal;
+export default ChannelInviteAcceptModal;

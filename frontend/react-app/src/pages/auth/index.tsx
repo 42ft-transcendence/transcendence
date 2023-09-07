@@ -40,13 +40,17 @@ const AuthPage = () => {
         return;
       }
     }
-    if (newCode.length === 6) {
-      setStatus("TwoFactorLoading");
-    } else if (newCode.length > 6) {
+    if (newCode.length > 6) {
       return;
     }
     setTwoFactorCode(newCode);
   };
+
+  useEffect(() => {
+    if (twoFactorCode.length === 6) {
+      setStatus("TwoFactorLoading");
+    }
+  }, [twoFactorCode]);
 
   const handleTwoFactorCancel = () => {
     cookies.remove("jwt", { path: "/" });
@@ -100,13 +104,12 @@ const AuthPage = () => {
         .then((response) => {
           // save user recoil data
           setUserData(response.data);
-
+          loadMyData(response.data.id);
           if (response.data.isTwoFactorAuthenticationEnabled) {
             setStatus("TwoFactor");
           } else if (response.data.status === UserStatus.SIGNUP) {
             navigate("/signup");
           } else {
-            loadMyData(response.data.id);
             navigate("/");
           }
         })
@@ -122,10 +125,7 @@ const AuthPage = () => {
         });
     } else if (status === "TwoFactorLoading") {
       verify2Fa(twoFactorCode)
-        .then((response) => {
-          // save user recoil data
-          setUserData(response.data);
-          loadMyData(response.data.id);
+        .then(() => {
           navigate("/");
         })
         .catch((error) => {
