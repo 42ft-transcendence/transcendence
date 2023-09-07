@@ -100,10 +100,6 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
               title: "게임 맵 테스트",
               iconSrc: "",
               onClick: () => {
-                // setGameModal({
-                //   ...gameModal,
-                //   gameMap: "NORMAL" as GameMapType,
-                // });
                 gameSocket.emit("startGameTest", {
                   gameRoomURL: gameRoomURL,
                 });
