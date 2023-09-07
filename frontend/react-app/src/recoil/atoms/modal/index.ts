@@ -19,6 +19,15 @@ export const channelCreateModalState = atom<boolean>({
   default: false,
 });
 
+export const secondAuthActivateModalState = atom<boolean>({
+  key: "secondAuthActivateModalState",
+  default: false,
+});
+
+export const secondAuthDeactivateModalState = atom<boolean>({
+  key: "secondAuthDeactivateModalState",
+  default: false,
+});
 export const channelEditModalState = atom<boolean>({
   key: "channelEditModalState",
   default: false,
