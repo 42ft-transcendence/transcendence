@@ -157,4 +157,8 @@ export class UsersService {
   async updateNormalGameRecord(user: User): Promise<User> {
     return await this.userRepository.updateNormalGameRecord(user);
   }
+
+  updateRating(user: User, score: number) {
+    this.userRepository.updateRating(user, score);
+  }
 }
