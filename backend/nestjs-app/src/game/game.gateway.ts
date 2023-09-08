@@ -1,6 +1,4 @@
 import {
-  ConnectedSocket,
-  MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -21,8 +19,10 @@ import {
   GameRoomType,
   GameService,
 } from './game.service';
+import { SHA256 } from 'crypto-js';
 
 const roomManager = new Map<string, GameData>();
+const rankGameWaitingQueue = [];
 
 @WebSocketGateway({
   middlewares: [],
@@ -62,6 +62,44 @@ export class GameGateway {
     },
   ) {
     this.server.emit('getGameRoomChat', content);
+  }
+
+  @SubscribeMessage('joinRankGame')
+  joinRankGame(client: Socket, content: { user: User }) {
+    if (rankGameWaitingQueue.includes(content.user)) return;
+    rankGameWaitingQueue.push(content.user);
+    if (rankGameWaitingQueue.length >= 2) {
+      const user1 = rankGameWaitingQueue.shift();
+      const user2 = rankGameWaitingQueue.shift();
+      const newRoom: GameRoom = {
+        roomURL: SHA256(new Date() + user1.id + user2.id).toString(),
+        roomName: '랭킹전',
+        roomType: 'RANKING',
+        roomPassword: '',
+        roomOwner: user1,
+        numberOfParticipants: 2,
+        gameMode: ['SLOW', 'NORMAL', 'FAST'][Math.floor(Math.random() * 3)],
+        map: 'NORMAL',
+        participants: [
+          { user: user1, ready: false },
+          { user: user2, ready: false },
+        ],
+        status: GameRoomStatus.WAITING,
+      };
+      this.gameService.createGameRoom(newRoom);
+      const response = {
+        gameRoomURL: newRoom.roomURL,
+        gameRoom: newRoom,
+        participants: [user1, user2],
+      };
+      this.server.emit('joinRankGame', response);
+    }
+  }
+
+  @SubscribeMessage('cancleRankGame')
+  cancleRankGame(client: Socket, content: { user: User }) {
+    const userIndex = rankGameWaitingQueue.indexOf(content.user);
+    rankGameWaitingQueue.splice(userIndex, 1);
   }
 
   @SubscribeMessage('offerBattle')
@@ -297,6 +335,7 @@ export class GameGateway {
     const engine = roomManager.get(content.gameRoomURL);
     if (!engine.onGame || engine.score[0] === 6 || engine.score[1] === 6) {
       this.server.emit('finished', engine.score);
+      //히스토리 업데이트?
     }
     let paddleDelta;
     if (content.userIndex === 0) {

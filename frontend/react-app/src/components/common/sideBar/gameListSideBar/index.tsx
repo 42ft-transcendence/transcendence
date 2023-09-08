@@ -7,11 +7,15 @@ import { createGameRoomModalState } from "@src/recoil/atoms/modal";
 import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
+import { useState } from "react";
+import { RankGameWaitingModal } from "@src/components/modal/game/rankGameWatingModal";
 
 const GameListSideBar = () => {
   const [userData] = useRecoilState(userDataState);
   const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
+  const [isOpenRankGameWatingModal, setIsOpenRankGameWatingModal] =
+    useState<boolean>(false);
 
   const iconButtons: IconButtonProps[] = [
     {
@@ -37,15 +41,12 @@ const GameListSideBar = () => {
       title: "랭킹전 참가",
       iconSrc: "",
       onClick: () => {
-        console.log("랭킹전 참가");
-      },
-      theme: "LIGHT",
-    },
-    {
-      title: "둘러보기",
-      iconSrc: "",
-      onClick: () => {
-        console.log("둘러보기");
+        setIsOpenRankGameWatingModal(true);
+        setTimeout(() => {
+          gameSocket.emit("joinRankGame", {
+            user: userData,
+          });
+        }, 3000); // 바로 소켓 통신을 하면, 두번째 사람은 누르자마자 매칭이 잡히기 때문에, 3초 뒤에 소켓 통신을 하도록 함.
       },
       theme: "LIGHT",
     },
@@ -57,6 +58,11 @@ const GameListSideBar = () => {
       <br />
       <DS.TitleBox>내 전적</DS.TitleBox>
       <RateDoughnutChart userData={userData} />
+      {/* 모달 영역 */}
+      <RankGameWaitingModal
+        isOpen={isOpenRankGameWatingModal}
+        setIsOpen={setIsOpenRankGameWatingModal}
+      />
     </DS.Container>
   );
 };

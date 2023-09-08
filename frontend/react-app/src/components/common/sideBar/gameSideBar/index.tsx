@@ -1,5 +1,6 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
+import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import { gameSocket } from "@src/router/socket/gameSocket";
 import GameEditModal from "@src/components/modal/game/gameEditModal";
 import { gameModalState } from "@src/recoil/atoms/game";
 import NormalMap from "@src/components/modal/game/maps/normal";
+import { RankGameExitModal } from "@src/components/modal/game/rankGameExitModal";
 
 interface GameSideBarProps {
   isReady: boolean;
@@ -20,6 +22,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [gameModal] = useRecoilState(gameModalState);
   const navigate = useNavigate();
 
@@ -57,7 +60,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
     {
       title: "방 나가기",
       iconSrc: "",
-      onClick: async () => {
+      onClick: () => {
         gameSocket.emit("exitGameRoom", {
           gameRoomURL: gameRoomURL,
           user: userData,
@@ -69,6 +72,18 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
       theme: "LIGHT",
     },
   ];
+
+  const rankMatchIconButtons: IconButtonProps[] = [
+    {
+      title: "방 나가기",
+      iconSrc: "",
+      onClick: () => {
+        setIsExitModalOpen(true);
+      },
+      theme: "LIGHT",
+    },
+  ];
+
   const [filteredIconButtons, setfilteredIconButtons] =
     useState<IconButtonProps[]>(iconButtons);
 
@@ -88,56 +103,52 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
   return (
     <>
       <DS.Container>
-        <DS.roomNameBox>
-          {gameRoomInfo.roomName === "" ? "빠른 대전" : gameRoomInfo.roomName}
-        </DS.roomNameBox>
-        <br />
-        <ButtonList buttons={filteredIconButtons} />
-        <br />
-        <ButtonList
-          buttons={[
-            {
-              title: "게임 맵 테스트",
-              iconSrc: "",
-              onClick: () => {
-                // setGameModal({
-                //   ...gameModal,
-                //   gameMap: "NORMAL" as GameMapType,
-                // });
-                gameSocket.emit("startGameTest", {
-                  gameRoomURL: gameRoomURL,
-                });
-              },
-              theme: "LIGHT",
-            },
-          ]}
-        />
-        {/* <DS.TitleBox>내 전적</DS.TitleBox>
-        <RateDoughnutChart userData={gameRoomInfo.homeUser} />
-        <br />
-        {gameRoomInfo.awayUser.id && (
+        {gameRoomInfo.roomType !== "RANKING" ? (
           <>
-            <DS.TitleBox>상대 전적</DS.TitleBox>
-            <RateDoughnutChart userData={gameRoomInfo.awayUser} />
+            <DS.roomNameBox>
+              {gameRoomInfo.roomName === ""
+                ? "빠른 대전"
+                : gameRoomInfo.roomName}
+            </DS.roomNameBox>
+            <br />
+            <ButtonList buttons={filteredIconButtons} />
+            <br />
+            <ButtonList
+              buttons={[
+                {
+                  title: "게임 맵 테스트",
+                  iconSrc: "",
+                  onClick: () => {
+                    gameSocket.emit("startGameTest", {
+                      gameRoomURL: gameRoomURL,
+                    });
+                  },
+                  theme: "LIGHT",
+                },
+              ]}
+            />
+          </>
+        ) : (
+          <>
+            <DS.roomNameBox>{gameRoomInfo.roomName}</DS.roomNameBox>
+            <br />
+            <ButtonList buttons={rankMatchIconButtons} />
+            <br />
+            <S.RoomInfoBox>게임 정보</S.RoomInfoBox>
+            <br />
+            <S.RoomInfoBox>
+              맵 : {gameRoomInfo.map === "NORMAL" ? " 일반" : " 정글"}
+            </S.RoomInfoBox>
+            <S.RoomInfoBox>
+              속도 :
+              {gameRoomInfo.gameMode === "NORMAL"
+                ? " 보통"
+                : gameRoomInfo.gameMode === "FAST"
+                ? " 빠름"
+                : " 느림"}
+            </S.RoomInfoBox>
           </>
         )}
-        <br />
-        <ButtonList
-          buttons={[
-            {
-              title: "게임 맵 테스트",
-              iconSrc: "",
-              onClick: () => {
-                setGameModal({
-                  ...gameModal,
-                  gameMap: "NORMAL" as GameMapType,
-                });
-                console.log("게임 맵 테스트");
-              },
-              theme: "LIGHT",
-            },
-          ]}
-        <br /> */}
         {/* 모달 영역 */}
         <GameEditModal
           isOpen={isEditModalOpen}
@@ -147,6 +158,10 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
         {/* gameMapModal test */}
         {gameModal.gameMap === "NORMAL" && <NormalMap />}
       </DS.Container>
+      <RankGameExitModal
+        isOpen={isExitModalOpen}
+        setIsOpen={setIsExitModalOpen}
+      />
     </>
   );
 };
