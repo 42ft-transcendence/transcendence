@@ -10,15 +10,15 @@ import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-interface RankGameWatingModalProps {
+interface RankGameWaitingModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
 
-export const RankGameWatingModal = ({
+export const RankGameWaitingModal = ({
   isOpen,
   setIsOpen,
-}: RankGameWatingModalProps) => {
+}: RankGameWaitingModalProps) => {
   const [userData] = useRecoilState(userDataState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);

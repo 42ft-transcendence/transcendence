@@ -8,7 +8,7 @@ import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { useState } from "react";
-import { RankGameWatingModal } from "@src/components/modal/game/rankGameWatingModal";
+import { RankGameWaitingModal } from "@src/components/modal/game/rankGameWatingModal";
 
 const GameListSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -59,7 +59,7 @@ const GameListSideBar = () => {
       <DS.TitleBox>내 전적</DS.TitleBox>
       <RateDoughnutChart userData={userData} />
       {/* 모달 영역 */}
-      <RankGameWatingModal
+      <RankGameWaitingModal
         isOpen={isOpenRankGameWatingModal}
         setIsOpen={setIsOpenRankGameWatingModal}
       />
