@@ -8,7 +8,6 @@ import { GameRoomInfoType, UserType } from "@src/types";
 import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { useEffect } from "react";
 import { IconButton } from "@src/components/buttons";
-import { useNavigate } from "react-router-dom";
 
 interface RankGameExitModalProps {
   isOpen: boolean;
@@ -21,8 +20,7 @@ export const RankGameExitModal = ({
 }: RankGameExitModalProps) => {
   const [userData] = useRecoilState(userDataState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
-  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
-  const navigate = useNavigate();
+  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
 
   useEffect(() => {
     gameSocket.on("joinRankGame", (data) => {
@@ -37,11 +35,11 @@ export const RankGameExitModal = ({
   });
 
   const handleExit = () => {
-    // gameSocket.emit("leaveRankGame", {
-    //   user: userData,
-    // });
+    gameSocket.emit("exitRankGameRoom", {
+      gameRoomURL: gameRoomURL,
+      user: userData,
+    });
     setIsOpen(false);
-    navigate("/game-list");
   };
 
   return (

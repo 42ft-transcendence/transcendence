@@ -110,7 +110,8 @@ export class GameGateway {
 
   @SubscribeMessage('joinRankGame')
   joinRankGame(client: Socket, content: { user: User }) {
-    if (rankGameWaitingQueue.includes(content.user)) return;
+    if (rankGameWaitingQueue.map((user) => user.id).includes(content.user.id))
+      return;
     rankGameWaitingQueue.push(content.user);
     if (rankGameWaitingQueue.length >= 2) {
       const user1 = rankGameWaitingQueue.shift();
@@ -144,6 +145,22 @@ export class GameGateway {
   cancleRankGame(client: Socket, content: { user: User }) {
     const userIndex = rankGameWaitingQueue.indexOf(content.user);
     rankGameWaitingQueue.splice(userIndex, 1);
+  }
+
+  @SubscribeMessage('exitRankGameRoom')
+  exitRankGameRoom(
+    client: Socket,
+    content: { gameRoomURL: string; user: User },
+  ) {
+    // TODO: 요청 보낸 유저는 점수 감소
+    this.userService.updateRating(content.user, -20);
+    // TODO: gameRoomURL을 가진 두 유저에게 정보 전달
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      exitUser: content.user,
+    };
+    this.server.emit('exitRankGameRoom', response);
+    this.gameService.deleteGameRoom(content.gameRoomURL);
   }
 
   @SubscribeMessage('offerBattle')

@@ -6,7 +6,7 @@ import { GameChattingContainer, GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
-import React, { useEffect } from "react";
+import React from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 
@@ -14,8 +14,8 @@ const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
   const [userData] = useRecoilState(userDataState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const areBothUsersReady = () => {
     if (typeof gameRoomInfo.participants === "undefined") {

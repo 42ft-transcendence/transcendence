@@ -1,7 +1,7 @@
 import { ButtonList, IconButtonProps } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import GameEditModal from "@src/components/modal/game/gameEditModal";
 import { gameModalState } from "@src/recoil/atoms/game";
 import NormalMap from "@src/components/modal/game/maps/normal";
 import { RankGameExitModal } from "@src/components/modal/game/rankGameExitModal";
+import { isOpenRankGameWatingModalState } from "@src/recoil/atoms/modal";
 
 interface GameSideBarProps {
   isReady: boolean;
@@ -24,6 +25,9 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
   const [gameModal] = useRecoilState(gameModalState);
+  const setIsOpenRankGameWatingModal = useSetRecoilState(
+    isOpenRankGameWatingModalState,
+  );
   const navigate = useNavigate();
 
   const iconButtons: IconButtonProps[] = [
@@ -99,6 +103,25 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
 
     setfilteredIconButtons(finalButtons);
   }, [gameRoomInfo]);
+
+  useEffect(() => {
+    gameSocket.on("exitRankGameRoom", (data) => {
+      console.log("exitRankGameRoom data", data);
+      if (data.gameRoomURL !== gameRoomURL) return;
+      setGameRoomURL("");
+      if (data.exitUser.id === userData.id) {
+        navigate("/game-list");
+        return;
+      }
+      setIsOpenRankGameWatingModal(true);
+      setTimeout(() => {
+        gameSocket.emit("joinRankGame", {
+          user: userData,
+        });
+      }, 3000);
+      navigate("/game-list");
+    });
+  });
 
   return (
     <>
