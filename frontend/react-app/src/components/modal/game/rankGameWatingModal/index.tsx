@@ -1,4 +1,7 @@
 import Modal from "react-modal";
+import * as S from "./index.styled";
+import { IconButton } from "@src/components/buttons";
+import LoadingImage from "@src/assets/images/loading.gif";
 
 interface RankGameWatingModalProps {
   isOpen: boolean;
@@ -12,24 +15,16 @@ export const RankGameWatingModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={() => setIsOpen(false)}
       style={{
         overlay: {
           backgroundColor: "rgba(0, 0, 0, 0.5)",
         },
-        content: {
-          width: "50%",
-          height: "50%",
-          margin: "auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-        },
+        content: S.ModalContent,
       }}
     >
-      <div>랭킹전 참가</div>
+      <div>매칭 대기중</div>
+      <S.LoadingImageStyle src={LoadingImage} />
+      <IconButton title="취소" onClick={() => setIsOpen(false)} theme="LIGHT" />
     </Modal>
   );
 };
