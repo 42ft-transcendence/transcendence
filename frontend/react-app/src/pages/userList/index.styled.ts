@@ -32,6 +32,19 @@ export const SearchBarInput = styled.input`
   font-weight: bold;
   border: none;
   margin-left: 25px;
+
+  /* 자동 완성 배경색 및 폰트 스타일 제어 */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: ${(props) =>
+      props.theme.colors.heavyPurple}; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+    font-family: inter; /* 폰트 종류 */
+    font-weight: bold; /* 폰트 두께 */
+  }
 `;
 
 export const SearchBarImg = styled.img`

@@ -21,6 +21,7 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     display: flex;
     overflow: hidden;
+    min-width: 1200px;
   }
 
   body {

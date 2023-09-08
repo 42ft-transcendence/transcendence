@@ -82,8 +82,9 @@ export class ParticipantsService {
   }
 
   async deleteAllParticipant(channel: ChatChannel) {
-    const getCp =
-      await this.participantRepository.getParticipantsByChannel(channel);
+    const getCp = await this.participantRepository.getParticipantsByChannel(
+      channel,
+    );
     if (getCp) {
       await this.participantRepository.deleteAllParticipant(getCp);
     } else {
