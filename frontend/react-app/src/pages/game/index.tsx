@@ -16,10 +16,8 @@ const Game = () => {
   const [userData] = useRecoilState(userDataState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
-  console.log("gameRoomInfo", gameRoomInfo);
-  console.log("gameRoomURL", gameRoomURL);
 
-  function areBothUsersReady() {
+  const areBothUsersReady = () => {
     if (typeof gameRoomInfo.participants === "undefined") {
       return false;
     }
@@ -28,13 +26,13 @@ const Game = () => {
     const allUsersReady = gameRoomInfo.participants.every((user) => user.ready);
     console.log("allUsersReady", allUsersReady);
     return allUsersReady;
-  }
+  };
 
-  function startGameTest() {
+  const startGameTest = () => {
     gameSocket.emit("startGameTest", {
       gameRoomURL: gameRoomURL,
     });
-  }
+  };
 
   return (
     <>
