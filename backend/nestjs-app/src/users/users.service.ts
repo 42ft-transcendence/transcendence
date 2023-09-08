@@ -25,7 +25,6 @@ export class UsersService {
       },
     });
     if (!user) throw {};
-    console.log(`success getUserById: ${user.nickname}`);
     return user;
   }
 
