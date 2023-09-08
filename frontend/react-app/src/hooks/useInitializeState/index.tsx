@@ -4,6 +4,7 @@ import { initialUserData } from "@src/recoil/atoms/common/data";
 import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import {
   gameModalState,
+  gameRoomChatListState,
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
@@ -20,6 +21,7 @@ const useInitializeState = () => {
   const setGameRoomList = useSetRecoilState(gameRoomListState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const setMatchHistoryList = useSetRecoilState(matchHistoryListState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   // 초기화 기능을 담당하는 함수
   const initializeStates = async () => {
@@ -39,6 +41,7 @@ const useInitializeState = () => {
     setGameRoomList([]);
     setGameRoomInfo(gameRoomInfoInitState);
     setMatchHistoryList([]);
+    setGameRoomChatList([]);
   };
 
   return initializeStates; // 초기화 기능을 반환
