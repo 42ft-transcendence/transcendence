@@ -6,7 +6,7 @@ import { GameChattingContainer, GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
-import React from "react";
+import React, { useEffect } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 
@@ -17,7 +17,7 @@ const Game = () => {
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
 
-  function areBothUsersReady() {
+  const areBothUsersReady = () => {
     if (typeof gameRoomInfo.participants === "undefined") {
       return false;
     }
@@ -26,13 +26,13 @@ const Game = () => {
     const allUsersReady = gameRoomInfo.participants.every((user) => user.ready);
     console.log("allUsersReady", allUsersReady);
     return allUsersReady;
-  }
+  };
 
-  function startGameTest() {
+  const startGameTest = () => {
     gameSocket.emit("startGameTest", {
       gameRoomURL: gameRoomURL,
     });
-  }
+  };
 
   return (
     <>

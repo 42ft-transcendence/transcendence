@@ -27,7 +27,13 @@ export interface battleActionData {
   gameRoomURL: string;
 }
 
-export type GameRoomType = "PUBLIC" | "PROTECTED" | "PRIVATE" | "CREATING" | "";
+export type GameRoomType =
+  | "PUBLIC"
+  | "PROTECTED"
+  | "PRIVATE"
+  | "CREATING"
+  | "RANKING"
+  | "";
 
 export interface GameRoomParticipantType {
   user: UserType;

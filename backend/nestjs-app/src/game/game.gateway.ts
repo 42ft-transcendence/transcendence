@@ -21,6 +21,7 @@ import {
   GameRoomType,
   GameService,
 } from './game.service';
+import { SHA256 } from 'crypto-js';
 
 // const rankRoom = 0;
 // const normalRoom = 1;
@@ -58,6 +59,7 @@ import {
 // }
 
 const roomManager = new Map<string, GameData>();
+const rankGameWaitingQueue = [];
 // const roomList = new Map<number, RoomData>();
 // const getPlayerWithRoomnum = new Map<number, [string, string]>();
 // const getRoomNumWithID = new Map<string, number>();
@@ -104,6 +106,44 @@ export class GameGateway {
     },
   ) {
     this.server.emit('getGameRoomChat', content);
+  }
+
+  @SubscribeMessage('joinRankGame')
+  joinRankGame(client: Socket, content: { user: User }) {
+    if (rankGameWaitingQueue.includes(content.user)) return;
+    rankGameWaitingQueue.push(content.user);
+    if (rankGameWaitingQueue.length >= 2) {
+      const user1 = rankGameWaitingQueue.shift();
+      const user2 = rankGameWaitingQueue.shift();
+      const newRoom: GameRoom = {
+        roomURL: SHA256(new Date() + user1.id + user2.id).toString(),
+        roomName: '랭킹전',
+        roomType: 'RANKING',
+        roomPassword: '',
+        roomOwner: user1,
+        numberOfParticipants: 2,
+        gameMode: ['SLOW', 'NORMAL', 'FAST'][Math.floor(Math.random() * 3)],
+        map: 'NORMAL',
+        participants: [
+          { user: user1, ready: false },
+          { user: user2, ready: false },
+        ],
+        status: GameRoomStatus.WAITING,
+      };
+      this.gameService.createGameRoom(newRoom);
+      const response = {
+        gameRoomURL: newRoom.roomURL,
+        gameRoom: newRoom,
+        participants: [user1, user2],
+      };
+      this.server.emit('joinRankGame', response);
+    }
+  }
+
+  @SubscribeMessage('cancleRankGame')
+  cancleRankGame(client: Socket, content: { user: User }) {
+    const userIndex = rankGameWaitingQueue.indexOf(content.user);
+    rankGameWaitingQueue.splice(userIndex, 1);
   }
 
   @SubscribeMessage('offerBattle')
