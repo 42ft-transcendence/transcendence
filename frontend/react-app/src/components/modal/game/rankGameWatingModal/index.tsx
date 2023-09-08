@@ -23,6 +23,7 @@ export const RankGameWatingModal = ({
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [getMatched, setGetMatched] = useState<boolean>(false);
+  const [countdown, setCountdown] = useState(5);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,8 +40,24 @@ export const RankGameWatingModal = ({
         setIsOpen(false);
         navigate(`/game/${gameRoom.roomURL}`);
       }, 5000);
+      startCountdown(gameRoom.roomURL);
     });
   });
+
+  const startCountdown = (url: string) => {
+    let countdownValue = 5; // 시작 카운트다운 값
+    setCountdown(countdownValue);
+
+    const interval = setInterval(() => {
+      countdownValue -= 1; // 1씩 감소
+      setCountdown(countdownValue);
+      if (countdownValue === 0) {
+        clearInterval(interval);
+        setIsOpen(false);
+        navigate(`/game/${url}`);
+      }
+    }, 1000);
+  };
 
   return (
     <Modal
@@ -54,7 +71,9 @@ export const RankGameWatingModal = ({
     >
       {getMatched ? (
         <>
-          <div>매칭이 잡혔습니다</div>
+          <div>매칭이 잡혔습니다.</div>
+          <div>잠시 후 게임이 시작됩니다.</div>
+          <div>{countdown}</div>
         </>
       ) : (
         <>
