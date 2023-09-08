@@ -1,11 +1,11 @@
 import Modal from "react-modal";
 import * as S from "./index.styled";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { isFirstLoginState, userDataState } from "@src/recoil/atoms/common";
 import { settingOptionModalState } from "@src/recoil/atoms/modal";
 import { logout, resignUser } from "@src/api";
 import { Link, useNavigate } from "react-router-dom";
-import { ButtonHander } from "@src/components/buttons";
+import { ButtonHandler } from "@src/components/buttons";
 import Chat from "@assets/icons/ChatsDarkFreezePurple.svg";
 import Game from "@assets/icons/GameControllerDarkFreezePurple.svg";
 import Rank from "@assets/icons/TrophyDarkFreezePurple.svg";
@@ -210,6 +210,7 @@ Modal.setAppElement("#root");
 export const SettingOptionModal = () => {
   const [settingOptionModalOpen, setSettingOptionModalOpen] =
     useRecoilState<boolean>(settingOptionModalState);
+  const setIsFirstLogin = useSetRecoilState(isFirstLoginState);
   const navigate = useNavigate();
 
   return (
@@ -224,14 +225,26 @@ export const SettingOptionModal = () => {
       <S.SettingOptionModalContentWrapper>
         <S.SettingOptionModalButton
           title="로그아웃"
-          onClick={() => ButtonHander({ todo: logout, navigate: navigate })}
+          onClick={() =>
+            ButtonHandler({
+              todo: logout,
+              navigate: navigate,
+              setIsFirstLogin: setIsFirstLogin,
+            })
+          }
         >
           로그아웃
         </S.SettingOptionModalButton>
         <S.SettingOptionModalDivider />
         <S.SettingOptionModalButton
           title="회원탈퇴"
-          onClick={() => ButtonHander({ todo: resignUser, navigate: navigate })}
+          onClick={() =>
+            ButtonHandler({
+              todo: resignUser,
+              navigate: navigate,
+              setIsFirstLogin: setIsFirstLogin,
+            })
+          }
         >
           회원탈퇴
         </S.SettingOptionModalButton>

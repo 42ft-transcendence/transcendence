@@ -8,7 +8,8 @@ export interface CheckNicknameType {
   status: number;
 }
 
-export interface ButtonHanderProps {
+export interface ButtonHandlerProps {
   todo: () => Promise<AxiosResponse<void>>;
   navigate: NavigateFunction;
+  setIsFirstLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }

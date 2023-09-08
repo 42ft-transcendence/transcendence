@@ -1,7 +1,7 @@
 import * as S from "./index.styled";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { LowerTabList, SettingOptionModal, UpperTabList } from "./container";
-import { showProfileState } from "@src/recoil/atoms/common";
+import { isFirstLoginState, showProfileState } from "@src/recoil/atoms/common";
 import ProfileModal from "@src/components/modal/profile";
 import {
   battleActionModalState,
@@ -11,6 +11,7 @@ import {
 import BattleActionModal from "@src/components/modal/game/BattleActionModal";
 import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 import ChannelInviteAcceptModal from "@src/components/modal/channel/channelInviteAcceptModal";
+import FirstLoginModal from "@src/components/modal/login/firstLoginModal";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -21,6 +22,24 @@ const NavBar = () => {
   const [battleActionModal] = useRecoilState(battleActionModalState);
   const [gameAlertModal] = useRecoilState(gameAlertModalState);
   const channelInvite = useRecoilValue(channelInviteAcceptModalState);
+  const [isFirstLogin, setIsFirstLogin] =
+    useRecoilState<boolean>(isFirstLoginState);
+
+  // useEffect(() => {
+  //   if (isFirstLogin) {
+  //     setShowLoginSuccessModal(true);
+  //     console.log("here");
+  //     setTimeout(() => {
+  //       setShowLoginSuccessModal(false);
+  //     }, 5000);
+  //     setIsFirstLogin(false);
+  //   }
+  // }, [isFirstLogin]);
+  // const currentPath = window.location.pathname;
+  // useEffect(() => {
+  //   if (currentPath !== "/") return;
+
+  // }, [currentPath]));
 
   return (
     <S.Container>
@@ -32,6 +51,7 @@ const NavBar = () => {
       {battleActionModal.battleActionModal && <BattleActionModal />}
       {gameAlertModal.gameAlertModal && <GameAlertModal />}
       {channelInvite && <ChannelInviteAcceptModal />}
+      <FirstLoginModal isOpen={isFirstLogin} setIsOpen={setIsFirstLogin} />
     </S.Container>
   );
 };
