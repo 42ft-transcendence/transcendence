@@ -3,11 +3,13 @@ import * as DS from "../index.styled";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
-import { createGameRoomModalState } from "@src/recoil/atoms/modal";
+import {
+  createGameRoomModalState,
+  isOpenRankGameWatingModalState,
+} from "@src/recoil/atoms/modal";
 import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
-import { useState } from "react";
 import { RankGameWaitingModal } from "@src/components/modal/game/rankGameWatingModal";
 
 const GameListSideBar = () => {
@@ -15,7 +17,7 @@ const GameListSideBar = () => {
   const setCreateGameRoom = useSetRecoilState(createGameRoomModalState);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [isOpenRankGameWatingModal, setIsOpenRankGameWatingModal] =
-    useState<boolean>(false);
+    useRecoilState(isOpenRankGameWatingModalState);
 
   const iconButtons: IconButtonProps[] = [
     {
