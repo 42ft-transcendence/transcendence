@@ -67,6 +67,7 @@ export const gameRoomListState = atom<GameRoomInfoType[]>({
 
 export const gameModalState = atom<GameModalType>({
   key: "gameModalState",
+
   default: {
     gameMap: null,
   },

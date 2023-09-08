@@ -77,3 +77,8 @@ export const channelInviteAcceptModalState = atom<{
   key: "channelInviteAcceptModalState",
   default: null,
 });
+
+export const gamePlayModal = atom<boolean>({
+  key: "gamePlayModal",
+  default: false,
+});

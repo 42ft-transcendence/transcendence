@@ -16,6 +16,7 @@ const Game = () => {
   const [userData] = useRecoilState(userDataState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [isGameStart, setIsGameStart] = React.useState(false);
 
   function areBothUsersReady() {
     if (typeof gameRoomInfo.participants === "undefined") {
@@ -24,7 +25,11 @@ const Game = () => {
 
     // 모든 사용자가 레디 상태인지 확인합니다.
     const allUsersReady = gameRoomInfo.participants.every((user) => user.ready);
-    console.log("allUsersReady", allUsersReady);
+
+    if (allUsersReady && !isGameStart) {
+      setIsGameStart(true);
+      // setGameRoomURL(gameRoomInfo.gameRoomURL);
+    }
     return allUsersReady;
   }
 
@@ -62,7 +67,13 @@ const Game = () => {
         </S.GameProfileContainer>
         <GameChattingContainer />
       </S.GameContainer>
-      {areBothUsersReady() && startGameTest()}
+      {/* 모달이 true일 때 열리기  */}
+      {areBothUsersReady() && isGameStart && startGameTest()}{" "}
+      {/* areBothUsersReady()가 참이고 isGameStart가 참일 때만 startGameTest 호출 */}
+      {/* 버튼을 눌러서 isGameStart 값을 변경하도록 하는 코드를 추가해야 합니다 */}
+      {isGameStart ? null : (
+        <button onClick={() => setIsGameStart(true)}></button>
+      )}
     </>
   );
 };
