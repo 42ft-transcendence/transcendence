@@ -96,7 +96,6 @@ export const ButtonHandler = ({
 }: ButtonHandlerProps) => {
   todo()
     .then((response) => {
-      console.log(response);
       if (response.status === 200 || response.status === 201) {
         cookies.remove("jwt", { path: "/" });
         setIsFirstLogin(true);
@@ -104,6 +103,6 @@ export const ButtonHandler = ({
       }
     })
     .catch((error) => {
-      console.log("error", error);
+      void error;
     });
 };

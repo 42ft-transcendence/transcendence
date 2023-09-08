@@ -23,7 +23,12 @@ const useInitializeState = () => {
 
   // 초기화 기능을 담당하는 함수
   const initializeStates = async () => {
-    setUserData((await getUser()).data);
+    await getUser()
+      .then((res) => {
+        console.log(res);
+        setUserData(res.data);
+      })
+      .catch((err) => void err);
     setAllUserList([]);
     setBattleActionModal({
       awayUser: {} as UserType,
