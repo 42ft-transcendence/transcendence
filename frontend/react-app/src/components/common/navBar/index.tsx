@@ -12,6 +12,8 @@ import BattleActionModal from "@src/components/modal/game/BattleActionModal";
 import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 import ChannelInviteAcceptModal from "@src/components/modal/channel/channelInviteAcceptModal";
 import FirstLoginModal from "@src/components/modal/login/firstLoginModal";
+import { useEffect } from "react";
+import useInitializeState from "@src/hooks/useInitializeState";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -24,22 +26,20 @@ const NavBar = () => {
   const channelInvite = useRecoilValue(channelInviteAcceptModalState);
   const [isFirstLogin, setIsFirstLogin] =
     useRecoilState<boolean>(isFirstLoginState);
+  const initializer = useInitializeState();
 
-  // useEffect(() => {
-  //   if (isFirstLogin) {
-  //     setShowLoginSuccessModal(true);
-  //     console.log("here");
-  //     setTimeout(() => {
-  //       setShowLoginSuccessModal(false);
-  //     }, 5000);
-  //     setIsFirstLogin(false);
-  //   }
-  // }, [isFirstLogin]);
-  // const currentPath = window.location.pathname;
-  // useEffect(() => {
-  //   if (currentPath !== "/") return;
-
-  // }, [currentPath]));
+  useEffect(() => {
+    if (!isFirstLogin) return;
+    // TODO: 첫 접속일 때, 이전의 전역 상태 초기화
+    initializer();
+    // TODO: 첫 접속일 때, 모달 띄워준 뒤 첫 접속 상태 변경
+    setTimeout(() => {
+      setIsFirstLogin(false);
+    }, 5000);
+    // ! 만약 게임 URL이 남아있다면, 그 방이 남아있는지 확인
+    // ? 남아있는데 대기중이라면 게임방으로 이동시키기
+    // ? 남아있지 않다면 게임 유무 판단(가장 최근 전적이 몰수패라면 연결이 끊겼다고 판단할 수 있을듯함)으로 기록으로 이동하시겠습니까? or 그냥 기본 동작
+  }, [isFirstLogin]);
 
   return (
     <S.Container>
