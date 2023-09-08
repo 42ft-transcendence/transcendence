@@ -3,7 +3,6 @@ import PrivateRoute from "./PrivateRoute";
 import AuthPage from "@pages/auth";
 import Login from "@pages/login";
 import SignUp from "@src/pages/signUp";
-import TempHome from "@src/pages/tempHome";
 import ChannelListPage from "@src/pages/channelList";
 import Profile from "@src/pages/profile";
 import UserList from "@src/pages/userList";
@@ -20,7 +19,7 @@ const Router = createBrowserRouter([
     element: (
       <Socket>
         <PrivateRoute>
-          <TempHome />
+          <ChannelListPage />
         </PrivateRoute>
       </Socket>
     ),
