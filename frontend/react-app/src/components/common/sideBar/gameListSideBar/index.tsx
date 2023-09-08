@@ -42,9 +42,11 @@ const GameListSideBar = () => {
       iconSrc: "",
       onClick: () => {
         setIsOpenRankGameWatingModal(true);
-        gameSocket.emit("joinRankGame", {
-          user: userData,
-        });
+        setTimeout(() => {
+          gameSocket.emit("joinRankGame", {
+            user: userData,
+          });
+        }, 3000); // 바로 소켓 통신을 하면, 두번째 사람은 누르자마자 매칭이 잡히기 때문에, 3초 뒤에 소켓 통신을 하도록 함.
       },
       theme: "LIGHT",
     },
