@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 
-export type GameRoomType = 'PUBLIC' | 'PROTECTED' | 'PRIVATE' | 'CREATING' | '';
+export type GameRoomType =
+  | 'PUBLIC'
+  | 'PROTECTED'
+  | 'PRIVATE'
+  | 'CREATING'
+  | 'RANKING'
+  | '';
 
 export interface GameRoomParticipant {
   user: User;
