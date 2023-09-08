@@ -58,6 +58,7 @@ import {
 // }
 
 const roomManager = new Map<string, GameData>();
+const rankGameWaitingQueue = [];
 // const roomList = new Map<number, RoomData>();
 // const getPlayerWithRoomnum = new Map<number, [string, string]>();
 // const getRoomNumWithID = new Map<string, number>();
@@ -104,6 +105,29 @@ export class GameGateway {
     },
   ) {
     this.server.emit('getGameRoomChat', content);
+  }
+
+  @SubscribeMessage('joinRankGame')
+  joinRankGame(client: Socket, content: { user: User }) {
+    console.log('joinRankGame: ', content);
+    rankGameWaitingQueue.push(content.user);
+    console.log('rankGameWaitingQueue: ', rankGameWaitingQueue);
+    while (rankGameWaitingQueue.length >= 2) {
+      const user1 = rankGameWaitingQueue.shift();
+      const user2 = rankGameWaitingQueue.shift();
+      console.log('user1: ', user1);
+      console.log('user2: ', user2);
+      // const newRoom: GameRoom = {
+      //   roomURL: TMP.randomString(10),
+    }
+  }
+
+  @SubscribeMessage('cancleRankGame')
+  cancleRankGame(client: Socket, content: { user: User }) {
+    console.log('cancleRankGame: ', content);
+    const userIndex = rankGameWaitingQueue.indexOf(content.user);
+    rankGameWaitingQueue.splice(userIndex, 1);
+    console.log('rankGameWaitingQueue: ', rankGameWaitingQueue);
   }
 
   @SubscribeMessage('offerBattle')

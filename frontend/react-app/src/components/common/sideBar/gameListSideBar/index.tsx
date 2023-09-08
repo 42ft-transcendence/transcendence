@@ -40,7 +40,12 @@ const GameListSideBar = () => {
     {
       title: "랭킹전 참가",
       iconSrc: "",
-      onClick: () => setIsOpenRankGameWatingModal(true),
+      onClick: () => {
+        setIsOpenRankGameWatingModal(true);
+        gameSocket.emit("joinRankGame", {
+          user: userData,
+        });
+      },
       theme: "LIGHT",
     },
   ];
