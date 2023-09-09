@@ -24,6 +24,20 @@ export const MapsContainer = styled.div`
   background-color: ${(props) => props.theme.colors.freezePurple};
 `;
 
+export const GameEndingMessageContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 50px;
+  font-weight: bold;
+  font-family: inter;
+  color: ${(props) => props.theme.colors.heavyPurple};
+`;
+
 export const GameInfoContainer = styled.div`
   width: 820px;
   height: 170px;

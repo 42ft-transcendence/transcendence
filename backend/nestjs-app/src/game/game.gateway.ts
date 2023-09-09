@@ -425,8 +425,16 @@ export class GameGateway {
       userIndex: content.userIndex,
       gameData: engine,
     };
-    // console.log('engine.ballSpeed: ', engine.ballSpeed);
-    // console.log('engine.ball ', engine.ballX, engine.ballY);
+    if (engine.score[0] >= 5 || engine.score[1] >= 5) {
+      const finishedResponse = {
+        gameRoomURL: content.gameRoomURL,
+        winner: engine.score[0] > engine.score[1] ? 0 : 1,
+      };
+      this.gameService.deleteGameRoom(content.gameRoomURL);
+      roomManager.delete(content.gameRoomURL);
+      this.server.emit('finishedRankGame', finishedResponse);
+      return;
+    }
     this.server.emit('gameProcess', response);
   }
 
