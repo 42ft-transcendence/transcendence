@@ -49,7 +49,7 @@ export const createDummyHistory = (
       player2,
       player1ScoreChange,
       player2ScoreChange,
-      gameMode: Math.random() < 0.5 ? "rank" : "normal", // 수정된 게임 모드 랜덤 선택 로직
+      roomType: Math.random() < 0.5 ? "rank" : "normal", // 수정된 게임 모드 랜덤 선택 로직
       map: maps[Math.floor(Math.random() * maps.length)],
     });
   }
