@@ -12,17 +12,10 @@ export class MatchHistorysController {
     private matchHistoryService: MatchHistorysService,
     private userService: UsersService,
   ) {}
-  @Get('/:nickname')
-  async getHistoryByNickname(
-    @Param() params: NicknameParamDto,
-  ): Promise<MatchHistory[]> {
-    return await this.matchHistoryService.getHistoryJoinUserByNickname(
-      params.nickname,
-    );
-  }
 
   @Get('/:id')
   async getHistoryById(@Param() params: IdParamDto): Promise<MatchHistory[]> {
+    console.log('here', params);
     return await this.matchHistoryService.getHistoryJoinUserById(params.id);
   }
 }
