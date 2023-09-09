@@ -7,7 +7,15 @@ import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
-const PongGame: React.FC = () => {
+interface PongGameProps {
+  setUser1Score: React.Dispatch<React.SetStateAction<number>>;
+  setUser2Score: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const PongGame: React.FC<PongGameProps> = ({
+  setUser1Score,
+  setUser2Score,
+}) => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
   const [userData] = useRecoilState(userDataState);
@@ -93,15 +101,15 @@ const PongGame: React.FC = () => {
       ctx.fillRect(x, y, w, h);
     }
 
-    function drawText(text: number, x: number, y: number, color: string) {
-      if (!ctx) {
-        console.error("Canvas context is null.");
-        return;
-      }
-      ctx.fillStyle = color;
-      ctx.font = "45px fantasy";
-      ctx.fillText(text.toString(), x, y);
-    }
+    // function drawText(text: number, x: number, y: number, color: string) {
+    //   if (!ctx) {
+    //     console.error("Canvas context is null.");
+    //     return;
+    //   }
+    //   ctx.fillStyle = color;
+    //   ctx.font = "45px fantasy";
+    //   ctx.fillText(text.toString(), x, y);
+    // }
 
     function drawBall(x: number, y: number, color: string) {
       if (!ctx) {
@@ -125,8 +133,8 @@ const PongGame: React.FC = () => {
       ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
 
       //draw score
-      drawText(user.score, cvs.width / 4, cvs.height / 5, "WHITE");
-      drawText(com.score, (3 * cvs.width) / 4, cvs.height / 5, "WHITE");
+      // drawText(user.score, cvs.width / 4, cvs.height / 5, "WHITE");
+      // drawText(com.score, (3 * cvs.width) / 4, cvs.height / 5, "WHITE");
 
       drawpaddle(user.x, user.y, user.width, user.height, user.color);
       drawpaddle(com.x, com.y, com.width, com.height, com.color);
@@ -172,9 +180,13 @@ const PongGame: React.FC = () => {
       if (data.userIndex === 0) {
         user.score = data.gameData.score[0];
         com.score = data.gameData.score[1];
+        setUser1Score(data.gameData.score[0]);
+        setUser2Score(data.gameData.score[1]);
       } else {
         user.score = data.gameData.score[1];
         com.score = data.gameData.score[0];
+        setUser1Score(data.gameData.score[1]);
+        setUser2Score(data.gameData.score[0]);
       }
       // ? {user.score = data.gameData.score[0], com.score = data.gameData.sxore[1]}
       // : (com.score = data.gameData.sxore[1]);
