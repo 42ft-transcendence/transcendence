@@ -6,7 +6,6 @@ import {
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
-  matchHistoryListState,
 } from "@src/recoil/atoms/game";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { UserType } from "@src/types";
@@ -19,7 +18,6 @@ const useInitializeState = () => {
   const setGameModal = useSetRecoilState(gameModalState);
   const setGameRoomList = useSetRecoilState(gameRoomListState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
-  const setMatchHistoryList = useSetRecoilState(matchHistoryListState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   // 초기화 기능을 담당하는 함수
@@ -39,7 +37,6 @@ const useInitializeState = () => {
     setGameModal({ gameMap: null });
     setGameRoomList([]);
     setGameRoomInfo(gameRoomInfoInitState);
-    setMatchHistoryList([]);
     setGameRoomChatList([]);
   };
 

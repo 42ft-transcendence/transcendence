@@ -17,7 +17,7 @@ export interface MatchHistoryType {
   player2: UserType;
   player1ScoreChange: number;
   player2ScoreChange: number;
-  gameMode: string;
+  roomType: string;
   map: string;
 }
 

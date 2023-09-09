@@ -1,7 +1,6 @@
 import { UserType } from "@src/types";
 import {
   GameRoomInfoType,
-  MatchHistoryType,
   GameRoomType,
   GameRoomStatus,
   GameModalType,
@@ -11,12 +10,6 @@ import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
-
-export const matchHistoryListState = atom<MatchHistoryType[]>({
-  key: "matchHistoryListState",
-  default: [],
-  effects_UNSTABLE: [persistAtom],
-});
 
 export const gameRoomURLState = atom<string>({
   key: "gameRoomURLState",
