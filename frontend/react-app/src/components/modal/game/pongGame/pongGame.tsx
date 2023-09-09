@@ -7,15 +7,7 @@ import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
-interface PongGameProps {
-  setUser1Score: React.Dispatch<React.SetStateAction<number>>;
-  setUser2Score: React.Dispatch<React.SetStateAction<number>>;
-}
-
-const PongGame: React.FC<PongGameProps> = ({
-  setUser1Score,
-  setUser2Score,
-}) => {
+const PongGame: React.FC = () => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
   const [userData] = useRecoilState(userDataState);
@@ -161,21 +153,11 @@ const PongGame: React.FC<PongGameProps> = ({
       data.userIndex === 0
         ? (com.y = data.gameData.leftPaddle)
         : (com.y = data.gameData.rightPaddle);
-      if (data.userIndex === 0) {
-        setUser1Score(data.gameData.score[0]);
-        setUser2Score(data.gameData.score[1]);
-      } else {
-        setUser1Score(data.gameData.score[1]);
-        setUser2Score(data.gameData.score[0]);
-      }
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
       ball.velocityX = data.gameData.ballVecX;
       ball.velocityY = data.gameData.ballVecY;
       ball.speed = data.gameData.ballSpeed;
-
-      // console.log("gameProcess", data.gameData);
-      // console.log("ball", ball);
     });
 
     // 이펙트 클린업 함수

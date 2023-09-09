@@ -1,10 +1,15 @@
 import * as S from "./index.styled";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { gameModalState, gameRoomInfoState } from "@src/recoil/atoms/game";
+import {
+  gameModalState,
+  gameRoomInfoState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { IconButton } from "@src/components/buttons";
 import PongGame from "../pongGame/pongGame";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { gameSocket } from "@src/router/socket/gameSocket";
 
 interface MapModalProps {
   gameEndingMessage: string;
@@ -15,6 +20,7 @@ const MapModal = ({
   gameEndingMessage,
   setGameEndingMessage,
 }: MapModalProps) => {
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
   const setGameModal = useSetRecoilState(gameModalState);
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [user1Score, setUser1Score] = useState<number>(0);
@@ -33,6 +39,14 @@ const MapModal = ({
       });
     }, 3000);
   }, [gameEndingMessage]);
+
+  useEffect(() => {
+    gameSocket.on("gameScore", (data) => {
+      if (data.gameRoomURL !== gameRoomURL) return;
+      setUser1Score(data.user1Score);
+      setUser2Score(data.user2Score);
+    });
+  });
 
   return (
     <S.MapsWrapper>
@@ -70,10 +84,7 @@ const MapModal = ({
       </S.GameInfoContainer>
       <S.MapsContainer>
         {gameEndingMessage === "" ? (
-          <PongGame
-            setUser1Score={setUser1Score}
-            setUser2Score={setUser2Score}
-          />
+          <PongGame />
         ) : (
           <>
             <S.GameEndingMessageContainer>
