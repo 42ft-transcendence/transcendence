@@ -15,7 +15,6 @@ export class MatchHistorysController {
 
   @Get('/:id')
   async getHistoryById(@Param() params: IdParamDto): Promise<MatchHistory[]> {
-    console.log('here', params);
     return await this.matchHistoryService.getHistoryJoinUserById(params.id);
   }
 }

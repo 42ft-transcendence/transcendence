@@ -99,14 +99,12 @@ export class UserRepository extends Repository<User> {
     return list;
   }
 
-  async updateLadderGameRecord(user: User): Promise<User> {
-    await this.update(user.id, user);
-    return user;
+  updateLadderGameRecord(user: User) {
+    this.update(user.id, user);
   }
 
-  async updateNormalGameRecord(user: User): Promise<User> {
-    await this.update(user.id, user);
-    return user;
+  updateNormalGameRecord(user: User) {
+    this.update(user.id, user);
   }
 
   // 더미 유저 생성

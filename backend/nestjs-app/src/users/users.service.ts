@@ -149,12 +149,12 @@ export class UsersService {
     await this.userRepository.createDummyUser(userEntity);
   }
 
-  async updateLadderGameRecord(user: User): Promise<User> {
-    return await this.userRepository.updateLadderGameRecord(user);
+  updateLadderGameRecord(user: User) {
+    this.userRepository.updateLadderGameRecord(user);
   }
 
-  async updateNormalGameRecord(user: User): Promise<User> {
-    return await this.userRepository.updateNormalGameRecord(user);
+  updateNormalGameRecord(user: User) {
+    this.userRepository.updateNormalGameRecord(user);
   }
 
   updateRating(user: User, score: number) {
