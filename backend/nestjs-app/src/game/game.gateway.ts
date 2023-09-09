@@ -431,6 +431,7 @@ export class GameGateway {
     player2: User,
     player1score: number,
     player2score: number,
+    roomType: GameRoomType,
   ) {
     const K = 32;
     const player1rating = player1.rating;
@@ -447,6 +448,31 @@ export class GameGateway {
     const player2updated = Math.floor(
       player2rating + K * (normalizedPlayer2Score - player2expected),
     );
+    if (player1score === 5) {
+      if (roomType === 'RANKING') {
+        player1.ladder_win++;
+        player2.ladder_lose++;
+        this.userService.updateLadderGameRecord(player1);
+        this.userService.updateLadderGameRecord(player2);
+      } else {
+        player1.win++;
+        player2.lose++;
+        this.userService.updateNormalGameRecord(player1);
+        this.userService.updateNormalGameRecord(player2);
+      }
+    } else {
+      if (roomType === 'RANKING') {
+        player1.ladder_lose++;
+        player2.ladder_win++;
+        this.userService.updateLadderGameRecord(player1);
+        this.userService.updateLadderGameRecord(player2);
+      } else {
+        player1.lose++;
+        player2.win++;
+        this.userService.updateNormalGameRecord(player1);
+        this.userService.updateNormalGameRecord(player2);
+      }
+    }
     this.userService.updateRating(player1, player1updated - player1rating);
     this.userService.updateRating(player2, player2updated - player2rating);
     return [player1updated - player1rating, player2updated - player2rating];
@@ -464,6 +490,7 @@ export class GameGateway {
       participants[1].user,
       engine.score[0],
       engine.score[1],
+      gameRoom.roomType,
     );
     historyDto.player1Score = engine.score[0];
     historyDto.player2Score = engine.score[1];
@@ -476,6 +503,50 @@ export class GameGateway {
     historyDto.roomType = gameRoom.roomType;
     historyDto.map = gameRoom.map;
     this.matchHistorysService.putHistory(historyDto);
+  }
+
+  async createDummyHistory(): Promise<void> {
+    const userList = await this.userService.getAllUserList();
+    const numberOfUser = userList.length;
+    for (let i = 0; i < numberOfUser * 100; i++) {
+      let availableUsers = [...userList];
+      const roomType = Math.floor(Math.random() * 2) ? 'RANKING' : 'PUBLIC';
+      const oneMonthInMs = 30 * 24 * 60 * 60 * 1000; // 과거 한 달을 밀리초로
+      const randomTimeAgo = Math.random() * oneMonthInMs; // 랜덤한 밀리초 값 (0부터 과거 한 달 사이)
+      const randomPastTime = new Date().getTime() - randomTimeAgo; // 랜덤한 과거 시간
+      const randomSeed1 = Math.floor(Math.random() * availableUsers.length);
+      const player1 = availableUsers[randomSeed1];
+      availableUsers = availableUsers.filter(
+        (_, index) => index !== randomSeed1,
+      );
+      const randomSeed2 = Math.floor(Math.random() * availableUsers.length);
+      const player2 = availableUsers[randomSeed2];
+      const historyDto = new HistoryDto();
+      const player1Score = Math.floor(Math.random() * 6); // 0~5 중 랜덤 점수
+      const player2Score =
+        player1Score === 5 ? Math.floor(Math.random() * 5) : 5;
+      const [player1updated, player2updated] = this.eloRatingSystem(
+        player1,
+        player2,
+        player1Score,
+        player2Score,
+        roomType,
+      );
+      historyDto.player1Score = player1Score;
+      historyDto.player2Score = player2Score;
+      historyDto.player1ScoreChange =
+        roomType === 'RANKING' ? player1updated : 0;
+      historyDto.player2ScoreChange =
+        roomType === 'RANKING' ? player2updated : 0;
+      historyDto.player1 = player1;
+      historyDto.player2 = player2;
+      historyDto.roomType = roomType;
+      historyDto.map = 'NORMAL';
+      this.matchHistorysService.putHistory(
+        historyDto,
+        new Date(randomPastTime),
+      );
+    }
   }
 
   async handleConnection(client: Socket) {
