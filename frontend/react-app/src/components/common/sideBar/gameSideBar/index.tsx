@@ -24,7 +24,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
-  const [gameModal] = useRecoilState(gameModalState);
+  const [gameModal, setGameModal] = useRecoilState(gameModalState);
   const setIsOpenRankGameWatingModal = useSetRecoilState(
     isOpenRankGameWatingModalState,
   );
@@ -106,9 +106,9 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
 
   useEffect(() => {
     gameSocket.on("exitRankGameRoom", (data) => {
-      console.log("exitRankGameRoom data", data);
       if (data.gameRoomURL !== gameRoomURL) return;
       setGameRoomURL("");
+      setGameModal({ gameMap: null });
       if (data.exitUser.id === userData.id) {
         navigate("/game-list");
         return;

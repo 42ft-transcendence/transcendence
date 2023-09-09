@@ -11,7 +11,7 @@ const NormalMap = () => {
   return (
     <Modal
       isOpen={gameModal.gameMap === ("NORMAL" as GameMapType)}
-      onRequestClose={() => setGameModal({ ...gameModal, gameMap: null })}
+      onRequestClose={() => setGameModal({ gameMap: null })}
       style={{
         content: { ...S.ModalContent }, // Spread 연산자 사용
         overlay: { ...S.ModalOverlay }, // Spread 연산자 사용

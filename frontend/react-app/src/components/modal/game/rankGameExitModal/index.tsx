@@ -5,7 +5,12 @@ import { gameSocket } from "@src/router/socket/gameSocket";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameRoomInfoType, UserType } from "@src/types";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameModalState,
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { useEffect } from "react";
 import { IconButton } from "@src/components/buttons";
 
@@ -21,6 +26,7 @@ export const RankGameExitModal = ({
   const [userData] = useRecoilState(userDataState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const setGameModal = useSetRecoilState(gameModalState);
 
   useEffect(() => {
     gameSocket.on("joinRankGame", (data) => {
@@ -29,6 +35,7 @@ export const RankGameExitModal = ({
       );
       const gameRoom = data.gameRoom as GameRoomInfoType;
       if (!participantsIdList.includes(userData.id)) return;
+      setGameModal({ gameMap: null });
       setGameRoomInfo(gameRoom);
       setGameRoomURL(gameRoom.roomURL);
     });
@@ -39,6 +46,7 @@ export const RankGameExitModal = ({
       gameRoomURL: gameRoomURL,
       user: userData,
     });
+    setGameRoomInfo(gameRoomInfoInitState);
     setIsOpen(false);
   };
 

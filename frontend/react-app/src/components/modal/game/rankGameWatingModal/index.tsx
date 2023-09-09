@@ -6,7 +6,11 @@ import { gameSocket } from "@src/router/socket/gameSocket";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameRoomInfoType, UserType } from "@src/types";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameModalState,
+  gameRoomInfoState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -24,6 +28,7 @@ export const RankGameWaitingModal = ({
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [getMatched, setGetMatched] = useState<boolean>(false);
   const [countdown, setCountdown] = useState(5);
+  const setGameModal = useSetRecoilState(gameModalState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +41,7 @@ export const RankGameWaitingModal = ({
       setGameRoomInfo(gameRoom);
       setGameRoomURL(gameRoom.roomURL);
       setGetMatched(true);
+      setGameModal({ gameMap: null });
       setTimeout(() => {
         setIsOpen(false);
         navigate(`/game/${gameRoom.roomURL}`);

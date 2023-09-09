@@ -366,7 +366,7 @@ export class GameGateway {
     content: { gameRoomURL: string },
   ) {
     // 10초 카운트다운
-    for (let i = 10; i >= 0; i--) {
+    for (let i = 10; i >= -1; i--) {
       const response = {
         roomURL: content.gameRoomURL,
         roomName: '랭킹전',
@@ -377,8 +377,17 @@ export class GameGateway {
       };
 
       // 카운트다운 메시지 발송
-      this.server.emit('getGameRoomChat', response);
-
+      if (i !== -1) {
+        this.server.emit('getGameRoomChat', response);
+      } else {
+        console.log('here');
+        roomManager.set(content.gameRoomURL, this.gameData);
+        const startGameResponse = {
+          gameRoomURL: content.gameRoomURL,
+          gameData: roomManager.get(content.gameRoomURL),
+        };
+        this.server.emit('startGame', startGameResponse);
+      }
       // 1초 대기
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }

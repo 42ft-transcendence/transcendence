@@ -10,6 +10,7 @@ import {
 import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import {
+  gameModalState,
   gameRoomChatListState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
@@ -23,6 +24,7 @@ const GameListSideBar = () => {
   const [isOpenRankGameWatingModal, setIsOpenRankGameWatingModal] =
     useRecoilState(isOpenRankGameWatingModalState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
+  const setGameModal = useSetRecoilState(gameModalState);
 
   useEffect(() => {
     setGameRoomChatList([]);
@@ -52,6 +54,7 @@ const GameListSideBar = () => {
       title: "랭킹전 참가",
       iconSrc: "",
       onClick: () => {
+        setGameModal({ gameMap: null });
         setIsOpenRankGameWatingModal(true);
         setTimeout(() => {
           gameSocket.emit("joinRankGame", {
