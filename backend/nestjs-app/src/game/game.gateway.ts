@@ -344,7 +344,8 @@ export class GameGateway {
       const response = {
         roomURL: content.gameRoomURL,
         roomName: '랭킹전',
-        message: i > 0 ? `게임 시작까지 ${i}초` : '게임이 시작됩니다!',
+        message:
+          i > 0 ? `게임 시작까지 ${i}초 남았습니다.` : '게임이 시작됩니다!',
         userId: 'SYSTEM',
         userNickname: 'SYSTEM',
         createdAt: new Date(),
@@ -409,15 +410,72 @@ export class GameGateway {
       user2Score: engine.score[1],
     });
     if (engine.score[0] >= 5 || engine.score[1] >= 5) {
-      const finishedResponse = {
-        gameRoomURL: content.gameRoomURL,
-        winner: engine.score[0] > engine.score[1] ? 0 : 1,
-      };
-      this.gameService.deleteGameRoom(content.gameRoomURL);
-      roomManager.delete(content.gameRoomURL);
-      this.server.emit('finishedRankGame', finishedResponse);
-      return;
+      this.finishGame(client, content.gameRoomURL);
     }
+  }
+
+  finishGame(client: Socket, gameRoomURL: string) {
+    this.makeMatchHistory(gameRoomURL);
+    const engine = roomManager.get(gameRoomURL);
+    const finishedResponse = {
+      gameRoomURL: gameRoomURL,
+      winner: engine.score[0] > engine.score[1] ? 0 : 1,
+    };
+    this.gameService.deleteGameRoom(gameRoomURL);
+    roomManager.delete(gameRoomURL);
+    this.server.emit('finishedRankGame', finishedResponse);
+  }
+
+  eloRatingSystem(
+    player1: User,
+    player2: User,
+    player1score: number,
+    player2score: number,
+  ) {
+    const K = 32;
+    const player1rating = player1.rating;
+    const player2rating = player2.rating;
+    const normalizedPlayer1Score = player1score / 5;
+    const normalizedPlayer2Score = player2score / 5;
+    const player1expected =
+      1 / (1 + Math.pow(10, (player2rating - player1rating) / 400));
+    const player2expected =
+      1 / (1 + Math.pow(10, (player1rating - player2rating) / 400));
+    const player1updated = Math.floor(
+      player1rating + K * (normalizedPlayer1Score - player1expected),
+    );
+    const player2updated = Math.floor(
+      player2rating + K * (normalizedPlayer2Score - player2expected),
+    );
+    this.userService.updateRating(player1, player1updated - player1rating);
+    this.userService.updateRating(player2, player2updated - player2rating);
+    return [player1updated - player1rating, player2updated - player2rating];
+  }
+
+  makeMatchHistory(gameRoomURL: string) {
+    const engine = roomManager.get(gameRoomURL);
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === gameRoomURL);
+    const participants = gameRoom.participants;
+    const historyDto = new HistoryDto();
+    const [player1updated, player2updated] = this.eloRatingSystem(
+      participants[0].user,
+      participants[1].user,
+      engine.score[0],
+      engine.score[1],
+    );
+    historyDto.player1Score = engine.score[0];
+    historyDto.player2Score = engine.score[1];
+    historyDto.player1ScoreChange =
+      gameRoom.roomType === 'RANKING' ? player1updated : 0;
+    historyDto.player2ScoreChange =
+      gameRoom.roomType === 'RANKING' ? player2updated : 0;
+    historyDto.player1 = participants[0].user;
+    historyDto.player2 = participants[1].user;
+    historyDto.roomType = gameRoom.roomType;
+    historyDto.map = gameRoom.map;
+    this.matchHistorysService.putHistory(historyDto);
   }
 
   async handleConnection(client: Socket) {
