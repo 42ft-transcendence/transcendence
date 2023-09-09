@@ -67,6 +67,7 @@ const upperTabs: TabType[] = [
 ];
 
 export const UpperTabList = () => {
+  const [userData] = useRecoilState(userDataState);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
@@ -118,19 +119,24 @@ export const UpperTabList = () => {
     }
   }, [gameRoomURL, currentPath]);
 
-  // 준비 완료 버튼을 눌렀다면 다른탭으로 이동 제한
-  // if (gameRoomInfo.homeReady) {
-  //   return (
-  //     <S.TabList>
-  //       {upperTabs.map((tab) => (
-  //         <li key={tab.link}>
-  //           <S.ItemIcon src={getIconSrc(tab)} />
-  //         </li>
-  //       ))}
-  //       {chatNoti && <S.Noti />}
-  //     </S.TabList>
-  //   );
-  // }
+  // 랭킹전 혹은 준비완료 버튼을 눌렀다면 다른탭으로 이동 제한
+  if (
+    gameRoomInfo.roomType === "RANKING" ||
+    gameRoomInfo.participants.find(
+      (participant) => participant.user.id === userData.id,
+    )?.ready === true
+  ) {
+    return (
+      <S.TabList>
+        {upperTabs.map((tab) => (
+          <li key={tab.link}>
+            <S.ItemIcon src={getIconSrc(tab)} />
+          </li>
+        ))}
+        {chatNoti && <S.Noti />}
+      </S.TabList>
+    );
+  }
 
   return (
     <S.TabList>
@@ -171,18 +177,24 @@ export const LowerTabList = () => {
     setSettingOptionModalOpen(true);
   };
 
-  // if (gameRoomInfo.participants) {
-  //   return (
-  //     <S.TabList>
-  //       <li>
-  //         <S.ItemIcon src={User} />
-  //       </li>
-  //       <li>
-  //         <S.ItemIcon src={Gear} />
-  //       </li>
-  //     </S.TabList>
-  //   );
-  // }
+  // 랭킹전 혹은 준비완료 버튼을 눌렀다면 다른탭으로 이동 제한
+  if (
+    gameRoomInfo.roomType === "RANKING" ||
+    gameRoomInfo.participants.find(
+      (participant) => participant.user.id === userData.id,
+    )?.ready === true
+  ) {
+    return (
+      <S.TabList>
+        <li>
+          <S.ItemIcon src={User} />
+        </li>
+        <li>
+          <S.ItemIcon src={Gear} />
+        </li>
+      </S.TabList>
+    );
+  }
 
   return (
     <S.TabList>
