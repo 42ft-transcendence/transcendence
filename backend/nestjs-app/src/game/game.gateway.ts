@@ -380,7 +380,8 @@ export class GameGateway {
       if (i !== -1) {
         this.server.emit('getGameRoomChat', response);
       } else {
-        roomManager.set(content.gameRoomURL, this.gameData);
+        const newEngine = new GameData();
+        roomManager.set(content.gameRoomURL, newEngine);
         const startGameResponse = {
           gameRoomURL: content.gameRoomURL,
           gameData: roomManager.get(content.gameRoomURL),
@@ -394,7 +395,8 @@ export class GameGateway {
 
   @SubscribeMessage('startGameTest')
   startGameTest(client: Socket, content: { gameRoomURL: string }) {
-    roomManager.set(content.gameRoomURL, this.gameData);
+    const newEngine = new GameData();
+    roomManager.set(content.gameRoomURL, newEngine);
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameData: roomManager.get(content.gameRoomURL),
@@ -408,6 +410,8 @@ export class GameGateway {
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
     const engine = roomManager.get(content.gameRoomURL);
+    if (!engine) return;
+    console.log('engine: ', engine);
     let paddleDelta;
     if (content.userIndex === 0) {
       paddleDelta = content.userPaddle - engine.leftPaddle;
@@ -425,6 +429,12 @@ export class GameGateway {
       userIndex: content.userIndex,
       gameData: engine,
     };
+    this.server.emit('gameProcess', response);
+    this.server.emit('gameScore', {
+      gameRoomURL: content.gameRoomURL,
+      user1Score: engine.score[0],
+      user2Score: engine.score[1],
+    });
     if (engine.score[0] >= 5 || engine.score[1] >= 5) {
       const finishedResponse = {
         gameRoomURL: content.gameRoomURL,
@@ -435,7 +445,6 @@ export class GameGateway {
       this.server.emit('finishedRankGame', finishedResponse);
       return;
     }
-    this.server.emit('gameProcess', response);
   }
 
   // async handleConnection(@ConnectedSocket() client) {
