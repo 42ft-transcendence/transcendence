@@ -380,7 +380,6 @@ export class GameGateway {
       if (i !== -1) {
         this.server.emit('getGameRoomChat', response);
       } else {
-        console.log('here');
         roomManager.set(content.gameRoomURL, this.gameData);
         const startGameResponse = {
           gameRoomURL: content.gameRoomURL,
