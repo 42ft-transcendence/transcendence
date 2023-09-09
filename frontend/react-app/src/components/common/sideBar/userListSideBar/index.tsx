@@ -5,7 +5,7 @@ import { allUserListState } from "@src/recoil/atoms/common";
 import { UserStatusCounts } from "@src/types/user.type";
 import { createDummy } from "@src/api";
 import { createDummyHistory } from "@src/recoil/atoms/game/createDummyHistory";
-import { matchHistoryListState } from "@src/recoil/atoms/common/game";
+import { matchHistoryListState } from "@src/recoil/atoms/game";
 
 interface UserListSideBarProps {
   onAllUsersClick: () => void;

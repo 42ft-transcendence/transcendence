@@ -1,13 +1,12 @@
 import { getUser } from "@src/api";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
-import { initialUserData } from "@src/recoil/atoms/common/data";
-import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import {
   gameModalState,
   gameRoomChatListState,
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
+  matchHistoryListState,
 } from "@src/recoil/atoms/game";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { UserType } from "@src/types";

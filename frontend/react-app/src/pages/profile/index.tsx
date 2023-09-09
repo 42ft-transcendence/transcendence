@@ -1,20 +1,18 @@
 import NavBar from "@src/components/common/navBar";
 import { routeMatch } from "@src/components/common/sideBar";
-import { matchHistoryState } from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
 import { MatchCard, MatchHeader } from "./container";
-import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import { useEffect, useState } from "react";
 import { MatchHistoryType } from "@src/types/game.type";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { UserType } from "@src/types";
+import { matchHistoryListState } from "@src/recoil/atoms/game";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
-  const [matchHistory] = useRecoilState(matchHistoryState);
-  console.log("currentRoute", currentRoute);
+  const [matchHistory] = useRecoilState(matchHistoryListState);
   const SidebarComponent = routeMatch(currentRoute, "/profile/");
   const userId = currentRoute.split("/").pop() as string;
   const [userData] = useRecoilState(userDataState);
@@ -59,6 +57,7 @@ const Profile = () => {
   }, [sortState]);
 
   useEffect(() => {
+    console.log(sortMatchHistory);
     if (search === "") {
       setFilteredHistoryList(
         sortMatchHistory.filter(
