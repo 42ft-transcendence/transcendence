@@ -2,6 +2,7 @@ import * as S from "./index.styled";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   gameModalState,
+  gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
@@ -20,9 +21,9 @@ const MapModal = ({
   gameEndingMessage,
   setGameEndingMessage,
 }: MapModalProps) => {
-  const [gameRoomURL] = useRecoilState(gameRoomURLState);
+  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const setGameModal = useSetRecoilState(gameModalState);
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [user1Score, setUser1Score] = useState<number>(0);
   const [user2Score, setUser2Score] = useState<number>(0);
   const user1 = gameRoomInfo.participants[0].user;
@@ -33,7 +34,9 @@ const MapModal = ({
     if (gameEndingMessage === "") return;
     setTimeout(() => {
       setGameEndingMessage("");
+      setGameRoomURL("");
       setGameModal({ gameMap: null });
+      setGameRoomInfo(gameRoomInfoInitState);
       setTimeout(() => {
         navigate("/game-list");
       });
