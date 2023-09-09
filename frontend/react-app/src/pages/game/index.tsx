@@ -6,7 +6,7 @@ import { GameChattingContainer, GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
-import React from "react";
+import React, { useEffect } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 
@@ -33,6 +33,14 @@ const Game = () => {
       gameRoomURL: gameRoomURL,
     });
   };
+
+  useEffect(() => {
+    if (gameRoomInfo.roomType !== "RANKING") return;
+    if (gameRoomInfo.roomOwner.id !== userData.id) return;
+    gameSocket.emit("startRankGameCountDown", {
+      gameRoomURL: gameRoomURL,
+    });
+  });
 
   return (
     <>

@@ -102,7 +102,7 @@ export class GameGateway {
       message: string;
       userId: string;
       userNickname: string;
-      createAt: Date;
+      createdAt: Date;
     },
   ) {
     this.server.emit('getGameRoomChat', content);
@@ -358,6 +358,30 @@ export class GameGateway {
       this.gameService.deleteGameRoom(content.gameRoomURL);
     }
     this.refreshGameRoomList();
+  }
+
+  @SubscribeMessage('startRankGameCountDown')
+  async startRankGameCountDown(
+    client: Socket,
+    content: { gameRoomURL: string },
+  ) {
+    // 10초 카운트다운
+    for (let i = 10; i >= 0; i--) {
+      const response = {
+        roomURL: content.gameRoomURL,
+        roomName: '랭킹전',
+        message: i > 0 ? `게임 시작까지 ${i}초` : '게임이 시작됩니다!',
+        userId: 'SYSTEM',
+        userNickname: 'SYSTEM',
+        createdAt: new Date(),
+      };
+
+      // 카운트다운 메시지 발송
+      this.server.emit('getGameRoomChat', response);
+
+      // 1초 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
   }
 
   @SubscribeMessage('startGameTest')

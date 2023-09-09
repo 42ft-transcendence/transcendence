@@ -9,8 +9,12 @@ import {
 } from "@src/recoil/atoms/modal";
 import sha256 from "crypto-js/sha256";
 import { gameSocket } from "@src/router/socket/gameSocket";
-import { gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameRoomChatListState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { RankGameWaitingModal } from "@src/components/modal/game/rankGameWatingModal";
+import { useEffect } from "react";
 
 const GameListSideBar = () => {
   const [userData] = useRecoilState(userDataState);
@@ -18,6 +22,11 @@ const GameListSideBar = () => {
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const [isOpenRankGameWatingModal, setIsOpenRankGameWatingModal] =
     useRecoilState(isOpenRankGameWatingModalState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
+
+  useEffect(() => {
+    setGameRoomChatList([]);
+  });
 
   const iconButtons: IconButtonProps[] = [
     {
