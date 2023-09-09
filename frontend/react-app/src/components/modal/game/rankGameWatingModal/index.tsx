@@ -8,6 +8,7 @@ import { userDataState } from "@src/recoil/atoms/common";
 import { GameRoomInfoType, UserType } from "@src/types";
 import {
   gameModalState,
+  gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
@@ -91,6 +92,8 @@ export const RankGameWaitingModal = ({
               gameSocket.emit("cancleRankGame", {
                 user: userData,
               });
+              setGameRoomInfo(gameRoomInfoInitState);
+              setGameModal({ gameMap: null });
               setIsOpen(false);
             }}
             theme="LIGHT"

@@ -28,6 +28,7 @@ const GameListSideBar = () => {
 
   useEffect(() => {
     setGameRoomChatList([]);
+    setGameModal({ gameMap: null });
   });
 
   const iconButtons: IconButtonProps[] = [
@@ -54,7 +55,6 @@ const GameListSideBar = () => {
       title: "랭킹전 참가",
       iconSrc: "",
       onClick: () => {
-        setGameModal({ gameMap: null });
         setIsOpenRankGameWatingModal(true);
         setTimeout(() => {
           gameSocket.emit("joinRankGame", {
