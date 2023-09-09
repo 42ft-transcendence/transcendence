@@ -77,3 +77,8 @@ export const channelInviteAcceptModalState = atom<{
   key: "channelInviteAcceptModalState",
   default: null,
 });
+
+export const isOpenRankGameWatingModalState = atom<boolean>({
+  key: "isOpenRankGameWatingModalState",
+  default: false,
+});

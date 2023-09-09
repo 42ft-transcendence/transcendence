@@ -99,9 +99,9 @@ const useGameSocket = () => {
       });
 
       gameSocket.on("startGame", (data) => {
+        console.log("startGame", data, gameRoomURL);
         if (data.gameRoomURL !== gameRoomURL) return;
         setGameModal({
-          ...gameModal,
           gameMap: "NORMAL" as GameMapType,
         });
       });

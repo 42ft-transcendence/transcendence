@@ -483,7 +483,6 @@ export class ChattingGateway
       let jwt = String(client.handshake.headers.authorization);
       jwt = jwt.replace('Bearer ', '');
       const user: TMP = await this.authService.jwtVerify(jwt);
-      console.log(`success getuserid: ${user.id}`);
       return user.id;
     } catch (e) {
       throw {};

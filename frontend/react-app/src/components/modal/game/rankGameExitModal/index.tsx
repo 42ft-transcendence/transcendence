@@ -5,10 +5,14 @@ import { gameSocket } from "@src/router/socket/gameSocket";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameRoomInfoType, UserType } from "@src/types";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameModalState,
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { useEffect } from "react";
 import { IconButton } from "@src/components/buttons";
-import { useNavigate } from "react-router-dom";
 
 interface RankGameExitModalProps {
   isOpen: boolean;
@@ -21,8 +25,8 @@ export const RankGameExitModal = ({
 }: RankGameExitModalProps) => {
   const [userData] = useRecoilState(userDataState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
-  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
-  const navigate = useNavigate();
+  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const setGameModal = useSetRecoilState(gameModalState);
 
   useEffect(() => {
     gameSocket.on("joinRankGame", (data) => {
@@ -31,17 +35,19 @@ export const RankGameExitModal = ({
       );
       const gameRoom = data.gameRoom as GameRoomInfoType;
       if (!participantsIdList.includes(userData.id)) return;
+      setGameModal({ gameMap: null });
       setGameRoomInfo(gameRoom);
       setGameRoomURL(gameRoom.roomURL);
     });
   });
 
   const handleExit = () => {
-    // gameSocket.emit("leaveRankGame", {
-    //   user: userData,
-    // });
+    gameSocket.emit("exitRankGameRoom", {
+      gameRoomURL: gameRoomURL,
+      user: userData,
+    });
+    setGameRoomInfo(gameRoomInfoInitState);
     setIsOpen(false);
-    navigate("/game-list");
   };
 
   return (

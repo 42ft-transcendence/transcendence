@@ -113,4 +113,9 @@ export class UserRepository extends Repository<User> {
   async createDummyUser(userEntity: User): Promise<void> {
     await this.save(userEntity);
   }
+
+  updateRating(user: User, score: number) {
+    user.rating += score;
+    this.update(user.id, user);
+  }
 }

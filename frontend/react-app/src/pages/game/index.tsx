@@ -14,8 +14,8 @@ const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
   const [userData] = useRecoilState(userDataState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const areBothUsersReady = () => {
     if (typeof gameRoomInfo.participants === "undefined") {
@@ -33,6 +33,14 @@ const Game = () => {
       gameRoomURL: gameRoomURL,
     });
   };
+
+  useEffect(() => {
+    if (gameRoomInfo.roomType !== "RANKING") return;
+    if (gameRoomInfo.roomOwner.id !== userData.id) return;
+    gameSocket.emit("startRankGameCountDown", {
+      gameRoomURL: gameRoomURL,
+    });
+  });
 
   return (
     <>

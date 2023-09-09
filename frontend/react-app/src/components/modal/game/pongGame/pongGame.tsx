@@ -33,7 +33,6 @@ const PongGame: React.FC = () => {
       width: 10,
       height: 100,
       color: "WHITE",
-      score: 0,
       radius: 0,
       speed: 0,
       velocityX: 0,
@@ -50,7 +49,6 @@ const PongGame: React.FC = () => {
       width: 10,
       height: 100,
       color: "WHITE",
-      score: 0,
       radius: 0,
       speed: 0,
       velocityX: 0,
@@ -93,16 +91,6 @@ const PongGame: React.FC = () => {
       ctx.fillRect(x, y, w, h);
     }
 
-    function drawText(text: number, x: number, y: number, color: string) {
-      if (!ctx) {
-        console.error("Canvas context is null.");
-        return;
-      }
-      ctx.fillStyle = color;
-      ctx.font = "45px fantasy";
-      ctx.fillText(text.toString(), x, y);
-    }
-
     function drawBall(x: number, y: number, color: string) {
       if (!ctx) {
         console.error("Canvas context is null.");
@@ -123,10 +111,6 @@ const PongGame: React.FC = () => {
         return;
       }
       ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
-
-      //draw score
-      drawText(user.score, cvs.width / 4, cvs.height / 5, "WHITE");
-      drawText(com.score, (3 * cvs.width) / 4, cvs.height / 5, "WHITE");
 
       drawpaddle(user.x, user.y, user.width, user.height, user.color);
       drawpaddle(com.x, com.y, com.width, com.height, com.color);
@@ -169,23 +153,11 @@ const PongGame: React.FC = () => {
       data.userIndex === 0
         ? (com.y = data.gameData.leftPaddle)
         : (com.y = data.gameData.rightPaddle);
-      if (data.userIndex === 0) {
-        user.score = data.gameData.score[0];
-        com.score = data.gameData.score[1];
-      } else {
-        user.score = data.gameData.score[1];
-        com.score = data.gameData.score[0];
-      }
-      // ? {user.score = data.gameData.score[0], com.score = data.gameData.sxore[1]}
-      // : (com.score = data.gameData.sxore[1]);
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
       ball.velocityX = data.gameData.ballVecX;
       ball.velocityY = data.gameData.ballVecY;
       ball.speed = data.gameData.ballSpeed;
-
-      // console.log("gameProcess", data.gameData);
-      // console.log("ball", ball);
     });
 
     // 이펙트 클린업 함수
