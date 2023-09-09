@@ -1,12 +1,12 @@
 import {
   ButtonList,
   IconButtonProps,
-  ButtonHander,
+  ButtonHandler,
 } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { useRecoilState } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { isFirstLoginState, userDataState } from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import {
   addBlock,
@@ -40,6 +40,7 @@ interface ProfileSideBarProps {
 }
 
 const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
+  const setIsFirstLogin = useSetRecoilState(isFirstLoginState);
   const [userData, setUserData] = useRecoilState(userDataState);
   const [is2FaActivateModalOpened, set2FaActivateModal] = useRecoilState(
     secondAuthActivateModalState,
@@ -72,7 +73,11 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       title: "로그아웃",
       iconSrc: "",
       onClick: () => {
-        ButtonHander({ todo: logout, navigate: navigate });
+        ButtonHandler({
+          todo: logout,
+          navigate: navigate,
+          setIsFirstLogin: setIsFirstLogin,
+        });
       },
       theme: "LIGHT",
     },
@@ -80,7 +85,11 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       title: "회원탈퇴",
       iconSrc: "",
       onClick: () => {
-        ButtonHander({ todo: resignUser, navigate: navigate });
+        ButtonHandler({
+          todo: resignUser,
+          navigate: navigate,
+          setIsFirstLogin: setIsFirstLogin,
+        });
       },
       theme: "LIGHT",
     },

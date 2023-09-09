@@ -7,10 +7,6 @@ import {
   LoginLogoImage,
   PageContainer,
 } from "./index.styled";
-import { useRecoilState } from "recoil";
-import { userDataState } from "@src/recoil/atoms/common";
-import { useEffect } from "react";
-import { initialUserData } from "@src/recoil/atoms/common/data";
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
@@ -60,14 +56,6 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
-  const [userData, setUserData] = useRecoilState(userDataState);
-
-  useEffect(() => {
-    if (userData.id !== "0") {
-      // localStorage 초기화
-      setUserData(initialUserData);
-    }
-  }, [userData]);
 
   return (
     <PageContainer>

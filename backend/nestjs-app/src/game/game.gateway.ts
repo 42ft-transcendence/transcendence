@@ -58,7 +58,7 @@ export class GameGateway {
       message: string;
       userId: string;
       userNickname: string;
-      createAt: Date;
+      createdAt: Date;
     },
   ) {
     this.server.emit('getGameRoomChat', content);
@@ -66,7 +66,8 @@ export class GameGateway {
 
   @SubscribeMessage('joinRankGame')
   joinRankGame(client: Socket, content: { user: User }) {
-    if (rankGameWaitingQueue.includes(content.user)) return;
+    if (rankGameWaitingQueue.map((user) => user.id).includes(content.user.id))
+      return;
     rankGameWaitingQueue.push(content.user);
     if (rankGameWaitingQueue.length >= 2) {
       const user1 = rankGameWaitingQueue.shift();
@@ -100,6 +101,22 @@ export class GameGateway {
   cancleRankGame(client: Socket, content: { user: User }) {
     const userIndex = rankGameWaitingQueue.indexOf(content.user);
     rankGameWaitingQueue.splice(userIndex, 1);
+  }
+
+  @SubscribeMessage('exitRankGameRoom')
+  exitRankGameRoom(
+    client: Socket,
+    content: { gameRoomURL: string; user: User },
+  ) {
+    // TODO: 요청 보낸 유저는 점수 감소
+    this.userService.updateRating(content.user, -20);
+    // TODO: gameRoomURL을 가진 두 유저에게 정보 전달
+    const response = {
+      gameRoomURL: content.gameRoomURL,
+      exitUser: content.user,
+    };
+    this.server.emit('exitRankGameRoom', response);
+    this.gameService.deleteGameRoom(content.gameRoomURL);
   }
 
   @SubscribeMessage('offerBattle')
@@ -317,9 +334,43 @@ export class GameGateway {
     }
   }
 
+  @SubscribeMessage('startRankGameCountDown')
+  async startRankGameCountDown(
+    client: Socket,
+    content: { gameRoomURL: string },
+  ) {
+    // 10초 카운트다운
+    for (let i = 10; i >= -1; i--) {
+      const response = {
+        roomURL: content.gameRoomURL,
+        roomName: '랭킹전',
+        message: i > 0 ? `게임 시작까지 ${i}초` : '게임이 시작됩니다!',
+        userId: 'SYSTEM',
+        userNickname: 'SYSTEM',
+        createdAt: new Date(),
+      };
+
+      // 카운트다운 메시지 발송
+      if (i !== -1) {
+        this.server.emit('getGameRoomChat', response);
+      } else {
+        const newEngine = new GameData();
+        roomManager.set(content.gameRoomURL, newEngine);
+        const startGameResponse = {
+          gameRoomURL: content.gameRoomURL,
+          gameData: roomManager.get(content.gameRoomURL),
+        };
+        this.server.emit('startGame', startGameResponse);
+      }
+      // 1초 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+
   @SubscribeMessage('startGameTest')
   startGameTest(client: Socket, content: { gameRoomURL: string }) {
-    roomManager.set(content.gameRoomURL, this.gameData);
+    const newEngine = new GameData();
+    roomManager.set(content.gameRoomURL, newEngine);
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameData: roomManager.get(content.gameRoomURL),
@@ -333,10 +384,8 @@ export class GameGateway {
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
     const engine = roomManager.get(content.gameRoomURL);
-    if (!engine.onGame || engine.score[0] === 6 || engine.score[1] === 6) {
-      this.server.emit('finished', engine.score);
-      //히스토리 업데이트?
-    }
+    if (!engine) return;
+
     let paddleDelta;
     if (content.userIndex === 0) {
       paddleDelta = content.userPaddle - engine.leftPaddle;
@@ -354,9 +403,22 @@ export class GameGateway {
       userIndex: content.userIndex,
       gameData: engine,
     };
-    // console.log('engine.ballSpeed: ', engine.ballSpeed);
-    // console.log('engine.ball ', engine.ballX, engine.ballY);
     this.server.emit('gameProcess', response);
+    this.server.emit('gameScore', {
+      gameRoomURL: content.gameRoomURL,
+      user1Score: engine.score[0],
+      user2Score: engine.score[1],
+    });
+    if (engine.score[0] >= 5 || engine.score[1] >= 5) {
+      const finishedResponse = {
+        gameRoomURL: content.gameRoomURL,
+        winner: engine.score[0] > engine.score[1] ? 0 : 1,
+      };
+      this.gameService.deleteGameRoom(content.gameRoomURL);
+      roomManager.delete(content.gameRoomURL);
+      this.server.emit('finishedRankGame', finishedResponse);
+      return;
+    }
   }
 
   async handleConnection(client: Socket) {
