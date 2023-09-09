@@ -11,16 +11,17 @@ export class MatchHistorysService {
     @InjectRepository(MatchHistoryRepository)
     private matchHistoryRepository: MatchHistoryRepository,
   ) {}
-
-  async putHistory(historyDto: HistoryDto, player1: User, player2: User) {
+  putHistory(historyDto: HistoryDto) {
     const history = new MatchHistory();
-    if (!player1 || !player2) throw new BadRequestException('not exist user');
-    history.player1 = player1;
-    history.player1Score = historyDto.player1score;
-    history.player2 = player2;
-    history.player2Score = historyDto.player2score;
-    history.gameMode = historyDto.gameMode;
-    // TODO: gameResultProcess에서 계산된 변화하는 rating을 넣어줘야함
+    history.player1 = historyDto.player1;
+    history.player1Score = historyDto.player1Score;
+    history.player1ScoreChange = historyDto.player1ScoreChange;
+    history.player2 = historyDto.player2;
+    history.player2Score = historyDto.player2Score;
+    history.player2ScoreChange = historyDto.player2ScoreChange;
+    history.roomType = historyDto.roomType;
+    history.map = historyDto.map;
+    history.createdAt = new Date();
     this.matchHistoryRepository.putHistory(history);
   }
 

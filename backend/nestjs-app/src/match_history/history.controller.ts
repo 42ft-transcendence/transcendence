@@ -12,18 +12,6 @@ export class MatchHistorysController {
     private matchHistoryService: MatchHistorysService,
     private userService: UsersService,
   ) {}
-
-  @Post('/')
-  async putHistory(@Body() historyDto: HistoryDto) {
-    try {
-      const player1 = await this.userService.getUserById(historyDto.player1);
-      const player2 = await this.userService.getUserById(historyDto.player2);
-      await this.matchHistoryService.putHistory(historyDto, player1, player2);
-    } catch (e) {
-      throw e;
-    }
-  }
-
   @Get('/:nickname')
   async getHistoryByNickname(
     @Param() params: NicknameParamDto,

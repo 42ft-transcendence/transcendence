@@ -6,8 +6,8 @@ import { HistoryDto } from 'src/match_history/dto/history.dto';
 
 @CustomRepository(MatchHistory)
 export class MatchHistoryRepository extends Repository<MatchHistory> {
-  async putHistory(history: MatchHistory) {
-    await this.save(history);
+  putHistory(history: MatchHistory) {
+    this.save(history);
   }
 
   async getHistoryJoinUserByNickname(
