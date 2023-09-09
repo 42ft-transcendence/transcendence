@@ -1,23 +1,36 @@
-import { IsNumber, IsString, IsNotEmpty } from 'class-validator';
+import { IsNumber, IsString, IsNotEmpty, IsObject } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
 export class HistoryDto {
   @IsNumber()
   @IsNotEmpty()
-  player1score: number;
+  player1Score: number;
 
   @IsNumber()
   @IsNotEmpty()
-  player2score: number;
+  player2Score: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  player1ScoreChange: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  player2ScoreChange: number;
+
+  @IsObject()
+  @IsNotEmpty()
+  player1: User;
+
+  @IsObject()
+  @IsNotEmpty()
+  player2: User;
 
   @IsString()
   @IsNotEmpty()
-  player1: string;
+  roomType: string;
 
   @IsString()
   @IsNotEmpty()
-  player2: string;
-
-  @IsString()
-  @IsNotEmpty()
-  gameMode: string;
+  map: string;
 }
