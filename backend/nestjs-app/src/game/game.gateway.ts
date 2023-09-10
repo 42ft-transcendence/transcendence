@@ -219,7 +219,10 @@ export class GameGateway {
   }
 
   @SubscribeMessage('acceptBattle')
-  async acceptBattle(client: Socket, content: { gameRoomURL: string }) {
+  async acceptBattle(
+    client: Socket,
+    content: { gameRoomURL: string; user1Id: string; user2Id: string },
+  ) {
     const gameRoom = this.gameService.getAllGameRooms().find((room) => {
       return room.roomURL === content.gameRoomURL;
     });
@@ -227,6 +230,8 @@ export class GameGateway {
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameRoom: gameRoom,
+      user1Id: content.user1Id,
+      user2Id: content.user2Id,
     };
     this.server.emit('acceptBattle', response);
   }

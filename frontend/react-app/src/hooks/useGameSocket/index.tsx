@@ -71,10 +71,10 @@ const useGameSocket = () => {
 
       gameSocket.off("acceptBattle");
       gameSocket.on("acceptBattle", (data) => {
-        console.log("acceptBattle", data, gameRoomURL);
-        if (data.gameRoomURL === gameRoomURL) {
-          console.log("acceptBattle", data);
+        console.log("acceptBattle", data, userData);
+        if (data.user1Id === userData.id || data.user2Id === userData.id) {
           setGameRoomInfo(data.gameRoom);
+          setGameRoomURL(data.gameRoomURL);
           setGameRoomChatList([]);
           window.location.href = `/game/${data.gameRoomURL}`;
         }
@@ -82,24 +82,19 @@ const useGameSocket = () => {
 
       gameSocket.off("rejectBattle");
       gameSocket.on("rejectBattle", (data) => {
-        console.log("rejectBattle", data, userData);
-        if (data.gameRoomURL === gameRoomURL) {
-          if (data.awayUserId === userData.id) {
-            setGameAlertModal({
-              gameAlertModal: true,
-              gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
-              shouldRedirect: false,
-              shouldInitInfo: true,
-            });
-          }
+        if (data.awayUserId === userData.id) {
+          setGameAlertModal({
+            gameAlertModal: true,
+            gameAlertModalMessage: "상대방이 대전 신청을 거절했습니다.",
+            shouldRedirect: false,
+            shouldInitInfo: true,
+          });
           setGameRoomChatList([]);
           setGameRoomInfo(data.gameRoom);
-          setGameRoomURL("");
         }
       });
 
       gameSocket.on("startGame", (data) => {
-        console.log("startGame", data, gameRoomURL);
         if (data.gameRoomURL !== gameRoomURL) return;
         setGameModal({
           gameMap: "NORMAL" as GameMapType,

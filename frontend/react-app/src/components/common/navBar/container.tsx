@@ -67,11 +67,9 @@ const upperTabs: TabType[] = [
 ];
 
 export const UpperTabList = () => {
-  const [userData] = useRecoilState(userDataState);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const currentPath = window.location.pathname.split("/")[1];
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   const joinedChannelList = useRecoilValue(joinedChannelListState);
@@ -119,25 +117,6 @@ export const UpperTabList = () => {
     }
   }, [gameRoomURL, currentPath]);
 
-  // 랭킹전 혹은 준비완료 버튼을 눌렀다면 다른탭으로 이동 제한
-  if (
-    gameRoomInfo.roomType === "RANKING" ||
-    gameRoomInfo.participants.find(
-      (participant) => participant.user.id === userData.id,
-    )?.ready === true
-  ) {
-    return (
-      <S.TabList>
-        {upperTabs.map((tab) => (
-          <li key={tab.link}>
-            <S.ItemIcon src={getIconSrc(tab)} />
-          </li>
-        ))}
-        {chatNoti && <S.Noti />}
-      </S.TabList>
-    );
-  }
-
   return (
     <S.TabList>
       {upperTabs.map((tab) => (
@@ -176,25 +155,6 @@ export const LowerTabList = () => {
     console.log("setting clicked");
     setSettingOptionModalOpen(true);
   };
-
-  // 랭킹전 혹은 준비완료 버튼을 눌렀다면 다른탭으로 이동 제한
-  if (
-    gameRoomInfo.roomType === "RANKING" ||
-    gameRoomInfo.participants.find(
-      (participant) => participant.user.id === userData.id,
-    )?.ready === true
-  ) {
-    return (
-      <S.TabList>
-        <li>
-          <S.ItemIcon src={User} />
-        </li>
-        <li>
-          <S.ItemIcon src={Gear} />
-        </li>
-      </S.TabList>
-    );
-  }
 
   return (
     <S.TabList>
