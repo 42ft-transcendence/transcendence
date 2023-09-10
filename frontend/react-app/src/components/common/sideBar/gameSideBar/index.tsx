@@ -192,12 +192,13 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
           gameRoomInfo={gameRoomInfo}
         />
         {/* gameMapModal test */}
-        {gameModal.gameMap === "NORMAL" && (
-          <MapModal
-            gameEndingMessage={gameEndingMessage}
-            setGameEndingMessage={setGameEndingMessage}
-          />
-        )}
+        {gameRoomInfo.participants.length === 2 &&
+          gameModal.gameMap === "NORMAL" && (
+            <MapModal
+              gameEndingMessage={gameEndingMessage}
+              setGameEndingMessage={setGameEndingMessage}
+            />
+          )}
       </DS.Container>
       <RankGameExitModal
         isOpen={isExitModalOpen}

@@ -28,8 +28,8 @@ const Game = () => {
     return allUsersReady;
   };
 
-  const startGameTest = () => {
-    gameSocket.emit("startGameTest", {
+  const startNormalGame = () => {
+    gameSocket.emit("startNormalGame", {
       gameRoomURL: gameRoomURL,
     });
   };
@@ -70,7 +70,7 @@ const Game = () => {
         </S.GameProfileContainer>
         <GameChattingContainer />
       </S.GameContainer>
-      {areBothUsersReady() && startGameTest()}
+      {areBothUsersReady() && startNormalGame()}
     </>
   );
 };

@@ -368,8 +368,8 @@ export class GameGateway {
     }
   }
 
-  @SubscribeMessage('startGameTest')
-  startGameTest(client: Socket, content: { gameRoomURL: string }) {
+  @SubscribeMessage('startNormalGame')
+  startNormalGame(client: Socket, content: { gameRoomURL: string }) {
     const newEngine = new GameData();
     roomManager.set(content.gameRoomURL, newEngine);
     const response = {
