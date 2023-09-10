@@ -149,20 +149,6 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
             <br />
             <ButtonList buttons={filteredIconButtons} />
             <br />
-            <ButtonList
-              buttons={[
-                {
-                  title: "게임 맵 테스트",
-                  iconSrc: "",
-                  onClick: () => {
-                    gameSocket.emit("startGameTest", {
-                      gameRoomURL: gameRoomURL,
-                    });
-                  },
-                  theme: "LIGHT",
-                },
-              ]}
-            />
           </>
         ) : (
           <>
