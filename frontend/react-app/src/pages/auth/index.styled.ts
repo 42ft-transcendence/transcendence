@@ -42,7 +42,8 @@ export const TwoFactorInput = styled.input`
   padding-left: 10px;
   width: 240px;
   height: 40px;
-  font-family: monospace;
+  font-family: "Noto Sans Mono";
+  font-weight: 700;
   font-size: 24px;
   letter-spacing: 1em;
   background: none;
