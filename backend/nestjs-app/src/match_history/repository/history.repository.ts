@@ -6,8 +6,8 @@ import { HistoryDto } from 'src/match_history/dto/history.dto';
 
 @CustomRepository(MatchHistory)
 export class MatchHistoryRepository extends Repository<MatchHistory> {
-  async putHistory(history: MatchHistory) {
-    await this.save(history);
+  putHistory(history: MatchHistory) {
+    this.save(history);
   }
 
   async getHistoryJoinUserByNickname(
@@ -29,5 +29,9 @@ export class MatchHistoryRepository extends Repository<MatchHistory> {
       where: [{ player1: { id } }, { player2: { id } }],
     });
     return histories;
+  }
+
+  async deleteDummyHistory(histories: MatchHistory[]) {
+    await this.remove(histories);
   }
 }

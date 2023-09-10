@@ -10,4 +10,9 @@ export class GameController {
     private readonly gameService: GameService,
     private readonly gameGateway: GameGateway,
   ) {}
+
+  @Post('/dummyHistory')
+  createDummyHistory(): void {
+    this.gameGateway.createDummyHistory();
+  }
 }

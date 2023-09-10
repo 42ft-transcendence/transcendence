@@ -390,9 +390,9 @@ export const MatchCardScoreChangeContainer = styled.div<{
   font-weight: bold;
   font-family: inter;
   color: ${(props) =>
-    props.mode === "rank" && props.$winLose === "승리"
+    props.mode === "RANKING" && props.$winLose === "승리"
       ? "blue"
-      : props.mode === "rank" && props.$winLose === "패배"
+      : props.mode === "RANKING" && props.$winLose === "패배"
       ? "red"
       : props.theme.colors.heavyPurple};
 `;

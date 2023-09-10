@@ -97,7 +97,7 @@ export const MatchCard = ({ history }: MatchCardProps) => {
     <S.MatchCard mode={winLose}>
       <S.MatchCardMatchInfo>
         <S.MatchCardMatchInfoGameType mode={winLose}>
-          {history.gameMode === "normal" ? "일반" : "랭크"}
+          {history.roomType === "RANKING" ? "랭크" : "일반"}
         </S.MatchCardMatchInfoGameType>
         <S.MatchCardMatchInfoDate>
           {createTimeAgo(history.createdAt.toString())}
@@ -118,9 +118,9 @@ export const MatchCard = ({ history }: MatchCardProps) => {
       </S.MatchCardProfile>
       <S.MatchCardScoreContainer>
         <S.MatchCardScoreMap>
-          {history.map === "normal"
+          {history.map === "NORMAL"
             ? "일반"
-            : history.map === "desert"
+            : history.map === "DESERT"
             ? "사막"
             : "정글"}
         </S.MatchCardScoreMap>
@@ -144,11 +144,11 @@ export const MatchCard = ({ history }: MatchCardProps) => {
         />
       </S.MatchCardProfile>
       <S.MatchCardScoreChangeContainer
-        mode={history.gameMode}
+        mode={history.roomType}
         $winLose={winLose}
       >
-        {history.gameMode === "rank" ? (winLose === "승리" ? "+" : "") : ""}
-        {history.gameMode === "rank" ? playerScoreChange : "-"}
+        {history.roomType === "RANKING" ? (winLose === "승리" ? "+" : "") : ""}
+        {history.roomType === "RANKING" ? playerScoreChange : "-"}
       </S.MatchCardScoreChangeContainer>
     </S.MatchCard>
   );
@@ -161,7 +161,7 @@ type MapStatsType = {
   totalLoseScore: number;
 };
 
-type MapType = "normal" | "desert" | "jungle";
+type MapType = "NORMAL" | "DESERT" | "JUNGLE";
 
 export const MatchHeader = ({
   userId,
@@ -173,21 +173,21 @@ export const MatchHeader = ({
 }: MatchHeaderProps) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
-  const maps: MapType[] = ["normal", "desert", "jungle"];
+  const maps: MapType[] = ["NORMAL", "DESERT", "JUNGLE"];
   const mapStats: Record<MapType, MapStatsType> = {
-    normal: {
+    NORMAL: {
       wins: 0,
       losses: 0,
       totalScore: 0,
       totalLoseScore: 0,
     },
-    desert: {
+    DESERT: {
       wins: 0,
       losses: 0,
       totalScore: 0,
       totalLoseScore: 0,
     },
-    jungle: {
+    JUNGLE: {
       wins: 0,
       losses: 0,
       totalScore: 0,
@@ -349,38 +349,44 @@ export const MatchHeader = ({
             {maps.map((mapType) => (
               <S.HeaderMapStats key={mapType}>
                 <div>
-                  {mapType === "normal"
+                  {mapType === "NORMAL"
                     ? "일반"
-                    : mapType === "desert"
+                    : mapType === "DESERT"
                     ? "사막"
                     : "정글"}
                 </div>
-                <S.HeaderMapStatsWinRate
-                  $win={mapStats[mapType].wins}
-                  $lose={mapStats[mapType].losses}
-                >
-                  {(
-                    (mapStats[mapType].wins /
-                      (mapStats[mapType].wins + mapStats[mapType].losses)) *
-                    100
-                  ).toFixed(0)}
-                  {"%"}
-                </S.HeaderMapStatsWinRate>
-                <div style={{ marginLeft: "4px" }}>
-                  {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
-                </div>
-                <S.HeaderMapStatsAvgScore
-                  $score={
-                    mapStats[mapType].totalScore /
-                    mapStats[mapType].totalLoseScore
-                  }
-                >
-                  {(
-                    mapStats[mapType].totalScore /
-                    mapStats[mapType].totalLoseScore
-                  ).toFixed(2)}
-                  :1 평점
-                </S.HeaderMapStatsAvgScore>
+                {mapStats[mapType].wins + mapStats[mapType].losses === 0 ? (
+                  <div>{`\u00A0\u00A0\u00A0`}대전 기록이 없습니다.</div>
+                ) : (
+                  <>
+                    <S.HeaderMapStatsWinRate
+                      $win={mapStats[mapType].wins}
+                      $lose={mapStats[mapType].losses}
+                    >
+                      {(
+                        (mapStats[mapType].wins /
+                          (mapStats[mapType].wins + mapStats[mapType].losses)) *
+                        100
+                      ).toFixed(0)}
+                      {"%"}
+                    </S.HeaderMapStatsWinRate>
+                    <div style={{ marginLeft: "4px" }}>
+                      {mapStats[mapType].wins}승 {mapStats[mapType].losses}패
+                    </div>
+                    <S.HeaderMapStatsAvgScore
+                      $score={
+                        mapStats[mapType].totalScore /
+                        mapStats[mapType].totalLoseScore
+                      }
+                    >
+                      {(
+                        mapStats[mapType].totalScore /
+                        mapStats[mapType].totalLoseScore
+                      ).toFixed(2)}
+                      :1 평점
+                    </S.HeaderMapStatsAvgScore>
+                  </>
+                )}
               </S.HeaderMapStats>
             ))}
           </S.HeaderMapContainer>

@@ -1,38 +1,59 @@
 import NavBar from "@src/components/common/navBar";
 import { routeMatch } from "@src/components/common/sideBar";
-import { matchHistoryState } from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
 import { MatchCard, MatchHeader } from "./container";
-import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import { useEffect, useState } from "react";
 import { MatchHistoryType } from "@src/types/game.type";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { UserType } from "@src/types";
+import { getHistoryById } from "@src/api/game";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
-  const [matchHistory] = useRecoilState(matchHistoryState);
-  console.log("currentRoute", currentRoute);
   const SidebarComponent = routeMatch(currentRoute, "/profile/");
   const userId = currentRoute.split("/").pop() as string;
   const [userData] = useRecoilState(userDataState);
   const [userList] = useRecoilState(allUserListState);
   const [sortState, setSortState] = useState<string>("모드 전체");
-  const sortMatchHistory = [...matchHistory].sort((a, b) => {
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-  }); // 최신순으로 정렬
-  const [filteredHistoryList, setFilteredHistoryList] =
-    useState<MatchHistoryType[]>(sortMatchHistory);
+  const [matchHistoryList, setMatchHistoryList] = useState<MatchHistoryType[]>(
+    [],
+  );
+  const [sortedMatchHistory, setSortedMatchHistory] = useState<
+    MatchHistoryType[]
+  >([]);
+  const [filteredHistoryList, setFilteredHistoryList] = useState<
+    MatchHistoryType[]
+  >([]);
   const [search, setSearch] = useState<string>("");
   const [moreInfo, setMoreInfo] = useState<number>(20);
 
   useEffect(() => {
+    async function fetchHistory() {
+      const response = await getHistoryById(userId);
+      console.log("getHistoryById", userId, response);
+      const data = response.data;
+      setMatchHistoryList(data);
+
+      const sortedData = [...data].sort((a, b) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+      setSortedMatchHistory(sortedData);
+      setFilteredHistoryList(sortedData);
+    }
+
+    fetchHistory();
+  }, [userId]);
+
+  useEffect(() => {
     if (sortState === "랭크") {
       setFilteredHistoryList(
-        sortMatchHistory
-          .filter((history) => history.gameMode === "rank")
+        sortedMatchHistory
+          .filter((history) => history.roomType === "RANKING")
           .filter(
             (history) =>
               history.player1.id === userId || history.player2.id === userId,
@@ -40,8 +61,8 @@ const Profile = () => {
       );
     } else if (sortState === "일반") {
       setFilteredHistoryList(
-        sortMatchHistory
-          .filter((history) => history.gameMode === "normal")
+        sortedMatchHistory
+          .filter((history) => history.roomType !== "RANKING")
           .filter(
             (history) =>
               history.player1.id === userId || history.player2.id === userId,
@@ -49,7 +70,7 @@ const Profile = () => {
       );
     } else {
       setFilteredHistoryList(
-        sortMatchHistory.filter(
+        sortedMatchHistory.filter(
           (history) =>
             history.player1.id === userId || history.player2.id === userId,
         ),
@@ -59,9 +80,10 @@ const Profile = () => {
   }, [sortState]);
 
   useEffect(() => {
+    console.log(sortedMatchHistory);
     if (search === "") {
       setFilteredHistoryList(
-        sortMatchHistory.filter(
+        sortedMatchHistory.filter(
           (history) =>
             history.player1.id === userId || history.player2.id === userId,
         ),
@@ -84,7 +106,7 @@ const Profile = () => {
     return <></>;
   }
 
-  if (!matchHistory || !SidebarComponent) {
+  if (!matchHistoryList || !SidebarComponent) {
     console.log("here2");
     return <></>;
   } // TODO: 로딩 컴포넌트 추가

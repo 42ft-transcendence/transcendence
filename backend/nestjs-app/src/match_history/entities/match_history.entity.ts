@@ -17,7 +17,13 @@ export class MatchHistory extends BaseEntity {
   player1Score: number;
 
   @Column()
+  player1ScoreChange: number;
+
+  @Column()
   player2Score: number;
+
+  @Column()
+  player2ScoreChange: number;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -33,5 +39,11 @@ export class MatchHistory extends BaseEntity {
   player2: User;
 
   @Column()
-  gameMode: string;
+  roomType: string;
+
+  @Column()
+  map: string;
+
+  @Column()
+  isDummy: boolean;
 }

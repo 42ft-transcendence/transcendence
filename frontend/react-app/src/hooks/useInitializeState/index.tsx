@@ -1,7 +1,5 @@
 import { getUser } from "@src/api";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
-import { initialUserData } from "@src/recoil/atoms/common/data";
-import { matchHistoryListState } from "@src/recoil/atoms/common/game";
 import {
   gameModalState,
   gameRoomChatListState,
@@ -20,7 +18,6 @@ const useInitializeState = () => {
   const setGameModal = useSetRecoilState(gameModalState);
   const setGameRoomList = useSetRecoilState(gameRoomListState);
   const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
-  const setMatchHistoryList = useSetRecoilState(matchHistoryListState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   // 초기화 기능을 담당하는 함수
@@ -40,7 +37,6 @@ const useInitializeState = () => {
     setGameModal({ gameMap: null });
     setGameRoomList([]);
     setGameRoomInfo(gameRoomInfoInitState);
-    setMatchHistoryList([]);
     setGameRoomChatList([]);
   };
 

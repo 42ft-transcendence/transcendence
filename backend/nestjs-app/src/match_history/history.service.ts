@@ -4,6 +4,7 @@ import { MatchHistoryRepository } from './repository/history.repository';
 import { MatchHistory } from './entities/match_history.entity';
 import { HistoryDto } from './dto/history.dto';
 import { User } from '../users/entities/user.entity';
+import { async } from 'rxjs';
 
 @Injectable()
 export class MatchHistorysService {
@@ -11,28 +12,30 @@ export class MatchHistorysService {
     @InjectRepository(MatchHistoryRepository)
     private matchHistoryRepository: MatchHistoryRepository,
   ) {}
-
-  async putHistory(historyDto: HistoryDto, player1: User, player2: User) {
+  putHistory(historyDto: HistoryDto, createdAt?: Date) {
     const history = new MatchHistory();
-    if (!player1 || !player2) throw new BadRequestException('not exist user');
-    history.player1 = player1;
-    history.player1Score = historyDto.player1score;
-    history.player2 = player2;
-    history.player2Score = historyDto.player2score;
-    history.gameMode = historyDto.gameMode;
-    // TODO: gameResultProcess에서 계산된 변화하는 rating을 넣어줘야함
+    history.player1 = historyDto.player1;
+    history.player1Score = historyDto.player1Score;
+    history.player1ScoreChange = historyDto.player1ScoreChange;
+    history.player2 = historyDto.player2;
+    history.player2Score = historyDto.player2Score;
+    history.player2ScoreChange = historyDto.player2ScoreChange;
+    history.roomType = historyDto.roomType;
+    history.map = historyDto.map;
+    history.createdAt = createdAt ? createdAt : new Date();
+    history.isDummy = historyDto.isDummy;
     this.matchHistoryRepository.putHistory(history);
-  }
-
-  async getHistoryJoinUserByNickname(nickname: string) {
-    const user = await this.matchHistoryRepository.getHistoryJoinUserByNickname(
-      nickname,
-    );
-    return user;
   }
 
   async getHistoryJoinUserById(id: string) {
     const user = await this.matchHistoryRepository.getHistoryJoinUserById(id);
     return user;
+  }
+
+  async deleteDummyHistory() {
+    const histories = await this.matchHistoryRepository.find({
+      where: { isDummy: true },
+    });
+    await this.matchHistoryRepository.deleteDummyHistory(histories);
   }
 }
