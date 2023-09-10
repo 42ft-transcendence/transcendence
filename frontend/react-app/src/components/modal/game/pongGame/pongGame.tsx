@@ -35,8 +35,8 @@ const PongGame: React.FC = () => {
     ctx.textBaseline = "middle"; // 수직 정렬을 중앙으로 설정
     ctx.fillText("Game Start!!", cvs.width / 2, cvs.height / 2);
 
-    const user = {
-      x: userIndex === 0 ? 0 : cvs.width - 10,
+    const leftUser = {
+      x: 0,
       y: cvs.height / 2 - 100 / 2,
       width: 10,
       height: 100,
@@ -51,8 +51,8 @@ const PongGame: React.FC = () => {
       right: 0,
     };
 
-    const com = {
-      x: userIndex === 1 ? 0 : cvs.width - 10,
+    const rightUser = {
+      x: cvs.width - 10,
       y: cvs.height / 2 - 100 / 2,
       width: 10,
       height: 100,
@@ -120,8 +120,20 @@ const PongGame: React.FC = () => {
       }
       ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
 
-      drawpaddle(user.x, user.y, user.width, user.height, user.color);
-      drawpaddle(com.x, com.y, com.width, com.height, com.color);
+      drawpaddle(
+        leftUser.x,
+        leftUser.y,
+        leftUser.width,
+        leftUser.height,
+        leftUser.color,
+      );
+      drawpaddle(
+        rightUser.x,
+        rightUser.y,
+        rightUser.width,
+        rightUser.height,
+        rightUser.color,
+      );
 
       //draw the ball
 
@@ -133,7 +145,11 @@ const PongGame: React.FC = () => {
 
     function movePaddle(evt: MouseEvent) {
       const rect = cvs.getBoundingClientRect();
-      user.y = evt.clientY - rect.top - user.height / 2;
+      if (userIndex === 0) {
+        leftUser.y = evt.clientY - rect.top - leftUser.height / 2;
+      } else {
+        rightUser.y = evt.clientY - rect.top - rightUser.height / 2;
+      }
     }
 
     let animationFrameId: number;
@@ -163,7 +179,7 @@ const PongGame: React.FC = () => {
       gameSocket.emit("userPaddle", {
         gameRoomURL: gameRoomURL,
         userIndex: userIndex,
-        userPaddle: user.y,
+        userPaddle: userIndex === 0 ? leftUser.y : rightUser.y,
       });
       animationFrameId = requestAnimationFrame(game);
     }
@@ -171,10 +187,9 @@ const PongGame: React.FC = () => {
     gameSocket.off("gameProcess");
     gameSocket.on("gameProcess", (data) => {
       if (data.gameRoomURL !== gameRoomURL) return;
-      if (data.userIndex === userIndex) return;
-      data.userIndex === 0
-        ? (com.y = data.gameData.leftPaddle)
-        : (com.y = data.gameData.rightPaddle);
+      userIndex === 0
+        ? (rightUser.y = data.gameData.rightPaddle)
+        : (leftUser.y = data.gameData.leftPaddle);
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
       ball.velocityX = data.gameData.ballVecX;
