@@ -104,9 +104,7 @@ const PongGame: React.FC = () => {
         console.error("Canvas context is null.");
         return;
       }
-      // const radius = Math.sqrt(vecX * vecX + vecY * vecY);
       const radius = 10;
-      // console.log("radius", radius);
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2, false);
@@ -153,7 +151,7 @@ const PongGame: React.FC = () => {
         count--;
         if (count === -1) {
           clearInterval(countDown);
-          //게임 함수 실행
+
           game();
         }
       }, 1000);
@@ -182,7 +180,6 @@ const PongGame: React.FC = () => {
       ball.speed = data.gameData.ballSpeed;
     });
 
-    // 이펙트 클린업 함수
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
