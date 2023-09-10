@@ -117,7 +117,7 @@ export class ChattingGateway
           user,
           message,
         });
-        return { user, message };
+        return { message };
       }
     } catch (e) {
       console.log(e);
@@ -428,7 +428,7 @@ export class ChattingGateway
         user: user,
         message: dm,
       });
-      return dm;
+      return { message: dm };
     } catch (e) {
       console.log(e);
     }
