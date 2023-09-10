@@ -23,6 +23,7 @@ import DeleteFriendIcon from "@src/assets/icons/deleteFriend.svg";
 import BlockIcon from "@src/assets/icons/block.svg";
 import UnblockIcon from "@src/assets/icons/unblock.svg";
 import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
+import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
 import sha256 from "crypto-js/sha256";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
@@ -177,7 +178,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "DM 보내기",
       action: () => navigate(`/direct-message/${user.user.id}`),
-      src: "src/assets/icons/sendMessage.svg",
+      src: SendMessageIcon,
     },
     {
       label: "전적 보기",
@@ -246,19 +247,23 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     );
 
     if (me.owner) {
-      if (other.admin) {
+      if (me === other) {
+        void 0;
+      } else if (other.admin) {
         filteredButtons.push(channelButtonSet.UnsetAdmin);
       } else {
         filteredButtons.push(channelButtonSet.SetAdmin);
       }
     }
     if ((me.owner || me.admin) && !other.owner) {
-      if (other.muted) {
+      if (me !== other && other.muted) {
         filteredButtons.push(channelButtonSet.UnmuteUser);
-      } else {
+      } else if (me !== other && !other.muted) {
         filteredButtons.push(channelButtonSet.MuteUser);
       }
-      filteredButtons.push(channelButtonSet.KickUser);
+      if (me !== other) {
+        filteredButtons.push(channelButtonSet.KickUser);
+      }
     }
   }
 
