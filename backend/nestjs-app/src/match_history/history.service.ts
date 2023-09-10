@@ -23,11 +23,19 @@ export class MatchHistorysService {
     history.roomType = historyDto.roomType;
     history.map = historyDto.map;
     history.createdAt = createdAt ? createdAt : new Date();
+    history.isDummy = historyDto.isDummy;
     this.matchHistoryRepository.putHistory(history);
   }
 
   async getHistoryJoinUserById(id: string) {
     const user = await this.matchHistoryRepository.getHistoryJoinUserById(id);
     return user;
+  }
+
+  async deleteDummyHistory() {
+    const histories = await this.matchHistoryRepository.find({
+      where: { isDummy: true },
+    });
+    await this.matchHistoryRepository.deleteDummyHistory(histories);
   }
 }

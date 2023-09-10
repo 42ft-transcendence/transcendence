@@ -504,6 +504,7 @@ export class GameGateway {
     historyDto.player2 = participants[1].user;
     historyDto.roomType = gameRoom.roomType;
     historyDto.map = gameRoom.map;
+    historyDto.isDummy = false;
     this.matchHistorysService.putHistory(historyDto);
   }
 
@@ -544,6 +545,7 @@ export class GameGateway {
       historyDto.player2 = player2;
       historyDto.roomType = roomType;
       historyDto.map = 'NORMAL';
+      historyDto.isDummy = true;
       this.matchHistorysService.putHistory(
         historyDto,
         new Date(randomPastTime),
