@@ -22,6 +22,7 @@ import {
 import { SHA256 } from 'crypto-js';
 
 const roomManager = new Map<string, GameData>();
+const roomTimeout = new Map<string, NodeJS.Timeout>();
 const rankGameWaitingQueue = [];
 
 @WebSocketGateway({
@@ -355,13 +356,7 @@ export class GameGateway {
       if (i !== -1) {
         this.server.emit('getGameRoomChat', response);
       } else {
-        const newEngine = new GameData();
-        roomManager.set(content.gameRoomURL, newEngine);
-        const startGameResponse = {
-          gameRoomURL: content.gameRoomURL,
-          gameData: roomManager.get(content.gameRoomURL),
-        };
-        this.server.emit('startGame', startGameResponse);
+        this.startGame(client, content);
       }
       // 1초 대기
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -369,7 +364,7 @@ export class GameGateway {
   }
 
   @SubscribeMessage('startNormalGame')
-  startNormalGame(client: Socket, content: { gameRoomURL: string }) {
+  startGame(client: Socket, content: { gameRoomURL: string }) {
     const newEngine = new GameData();
     roomManager.set(content.gameRoomURL, newEngine);
     const response = {
@@ -377,6 +372,10 @@ export class GameGateway {
       gameData: roomManager.get(content.gameRoomURL),
     };
     this.server.emit('startGame', response);
+    const intervalId = setInterval(() => {
+      this.gameProcess(client, content.gameRoomURL);
+    }, 1000 / 60);
+    roomTimeout.set(content.gameRoomURL, intervalId);
   }
 
   @SubscribeMessage('userPaddle')
@@ -398,31 +397,39 @@ export class GameGateway {
       ? (engine.leftPaddle = content.userPaddle)
       : (engine.rightPaddle = content.userPaddle);
     engine.advance(paddleDelta);
+  }
+
+  gameProcess(client: Socket, gameRoomURL: string) {
+    const engine = roomManager.get(gameRoomURL);
+    if (!engine) return;
     const response = {
-      gameRoomURL: content.gameRoomURL,
-      userIndex: content.userIndex,
+      gameRoomURL: gameRoomURL,
       gameData: engine,
     };
     this.server.emit('gameProcess', response);
     this.server.emit('gameScore', {
-      gameRoomURL: content.gameRoomURL,
+      gameRoomURL: gameRoomURL,
       user1Score: engine.score[0],
       user2Score: engine.score[1],
     });
     if (engine.score[0] >= 5 || engine.score[1] >= 5) {
-      this.finishGame(client, content.gameRoomURL);
+      this.finishGame(client, gameRoomURL);
     }
   }
 
   finishGame(client: Socket, gameRoomURL: string) {
-    this.makeMatchHistory(gameRoomURL);
     const engine = roomManager.get(gameRoomURL);
+    if (!engine) return;
+    const timeout = roomTimeout.get(gameRoomURL);
+    clearInterval(timeout);
+    this.makeMatchHistory(gameRoomURL);
     const finishedResponse = {
       gameRoomURL: gameRoomURL,
       winner: engine.score[0] > engine.score[1] ? 0 : 1,
     };
     this.gameService.deleteGameRoom(gameRoomURL);
     roomManager.delete(gameRoomURL);
+    roomTimeout.delete(gameRoomURL);
     this.server.emit('finishedRankGame', finishedResponse);
   }
 
