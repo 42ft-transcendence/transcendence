@@ -191,8 +191,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "전적 보기",
       action: () => {
-        window.location.href = `/profile/${user.user.id}`;
-        ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
+        navigate(`/profile/${user.user.id}`);
+        closeProfile();
       },
       src: ShowRecordIcon,
     },
