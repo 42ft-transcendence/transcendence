@@ -129,10 +129,18 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
     if (data.gameRoomURL !== gameRoomURL) return;
     const participants = gameRoomInfo.participants;
     const winner = participants[data.winner];
-    if (winner.user.id === userData.id) {
-      setGameEndingMessage("승리하셨습니다.");
+    if (data.isSurrender) {
+      if (winner.user.id === userData.id) {
+        setGameEndingMessage("상대방이 항복하여 게임에서 승리하셨습니다.");
+      } else {
+        setGameEndingMessage("게임에서 패배하셨습니다.");
+      }
     } else {
-      setGameEndingMessage("패배하셨습니다.");
+      if (winner.user.id === userData.id) {
+        setGameEndingMessage("승리하셨습니다.");
+      } else {
+        setGameEndingMessage("패배하셨습니다.");
+      }
     }
   });
 
