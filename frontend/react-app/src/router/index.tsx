@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import AuthPage from "@pages/auth";
 import Login from "@pages/login";
@@ -122,10 +122,10 @@ const Router = createBrowserRouter([
       </Socket>
     ),
   },
-  // {
-  //   path: "/channel/:channelId",
-  //   element: <ChannelPage />,
-  // },
+  {
+    path: "*",
+    element: <Navigate to="/" />,
+  },
 ]);
 
 export default Router;

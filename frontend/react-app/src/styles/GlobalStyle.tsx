@@ -27,7 +27,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     line-height: 1.5;
-    font-family: Roboto sans-serif;
+    font-family: 'Inter', 'Noto Sans KR';
     color: ${({ theme }) => theme.colors.heavyPurple};
     font-size: 16px;
     background-color: ${({ theme }) => theme.colors.freezePurple};
@@ -90,7 +90,6 @@ const GlobalStyle = createGlobalStyle`
   input,
   button,
   select {
-    font-family: 'Noto Sans KR', sans-serif;
     vertical-align: middle;
   }
 
