@@ -247,19 +247,23 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     );
 
     if (me.owner) {
-      if (other.admin) {
+      if (me === other) {
+        void 0;
+      } else if (other.admin) {
         filteredButtons.push(channelButtonSet.UnsetAdmin);
       } else {
         filteredButtons.push(channelButtonSet.SetAdmin);
       }
     }
     if ((me.owner || me.admin) && !other.owner) {
-      if (other.muted) {
+      if (me !== other && other.muted) {
         filteredButtons.push(channelButtonSet.UnmuteUser);
-      } else {
+      } else if (me !== other && !other.muted) {
         filteredButtons.push(channelButtonSet.MuteUser);
       }
-      filteredButtons.push(channelButtonSet.KickUser);
+      if (me !== other) {
+        filteredButtons.push(channelButtonSet.KickUser);
+      }
     }
   }
 
