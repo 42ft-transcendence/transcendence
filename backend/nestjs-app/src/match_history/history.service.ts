@@ -4,6 +4,7 @@ import { MatchHistoryRepository } from './repository/history.repository';
 import { MatchHistory } from './entities/match_history.entity';
 import { HistoryDto } from './dto/history.dto';
 import { User } from '../users/entities/user.entity';
+import { async } from 'rxjs';
 
 @Injectable()
 export class MatchHistorysService {
@@ -11,7 +12,7 @@ export class MatchHistorysService {
     @InjectRepository(MatchHistoryRepository)
     private matchHistoryRepository: MatchHistoryRepository,
   ) {}
-  putHistory(historyDto: HistoryDto) {
+  putHistory(historyDto: HistoryDto, createdAt?: Date) {
     const history = new MatchHistory();
     history.player1 = historyDto.player1;
     history.player1Score = historyDto.player1Score;
@@ -21,19 +22,20 @@ export class MatchHistorysService {
     history.player2ScoreChange = historyDto.player2ScoreChange;
     history.roomType = historyDto.roomType;
     history.map = historyDto.map;
-    history.createdAt = new Date();
+    history.createdAt = createdAt ? createdAt : new Date();
+    history.isDummy = historyDto.isDummy;
     this.matchHistoryRepository.putHistory(history);
-  }
-
-  async getHistoryJoinUserByNickname(nickname: string) {
-    const user = await this.matchHistoryRepository.getHistoryJoinUserByNickname(
-      nickname,
-    );
-    return user;
   }
 
   async getHistoryJoinUserById(id: string) {
     const user = await this.matchHistoryRepository.getHistoryJoinUserById(id);
     return user;
+  }
+
+  async deleteDummyHistory() {
+    const histories = await this.matchHistoryRepository.find({
+      where: { isDummy: true },
+    });
+    await this.matchHistoryRepository.deleteDummyHistory(histories);
   }
 }

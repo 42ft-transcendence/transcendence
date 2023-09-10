@@ -62,7 +62,7 @@ const Profile = () => {
     } else if (sortState === "일반") {
       setFilteredHistoryList(
         sortedMatchHistory
-          .filter((history) => history.roomType === "NORMAL")
+          .filter((history) => history.roomType !== "RANKING")
           .filter(
             (history) =>
               history.player1.id === userId || history.player2.id === userId,

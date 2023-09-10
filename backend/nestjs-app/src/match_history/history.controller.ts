@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Delete } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from './history.service';
 import { HistoryDto } from './dto/history.dto';
@@ -15,7 +15,11 @@ export class MatchHistorysController {
 
   @Get('/:id')
   async getHistoryById(@Param() params: IdParamDto): Promise<MatchHistory[]> {
-    console.log('here', params);
     return await this.matchHistoryService.getHistoryJoinUserById(params.id);
+  }
+
+  @Delete('/dummy')
+  async deleteHistoryDummy(): Promise<void> {
+    await this.matchHistoryService.deleteDummyHistory();
   }
 }

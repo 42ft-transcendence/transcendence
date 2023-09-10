@@ -13,3 +13,19 @@ export const getHistoryById = async (
   });
   return response;
 };
+
+export const createDummyHistory = () => {
+  axios.post(`${base_url}/game/dummyHistory`, {
+    headers: {
+      Authorization: `Bearer ${cookies.load("jwt") as string}`,
+    },
+  });
+};
+
+export const deleteDummyHistory = () => {
+  axios.delete(`${base_url}/MatchHistory/dummy`, {
+    headers: {
+      Authorization: `Bearer ${cookies.load("jwt") as string}`,
+    },
+  });
+};

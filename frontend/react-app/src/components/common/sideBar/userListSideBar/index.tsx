@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
 import { UserStatusCounts } from "@src/types/user.type";
 import { createDummy } from "@src/api";
-// import { createDummyHistory } from "@src/recoil/atoms/game/createDummyHistory";
+import { createDummyHistory, deleteDummyHistory } from "@src/api/game";
 
 interface UserListSideBarProps {
   onAllUsersClick: () => void;
@@ -73,20 +73,24 @@ const UserListSideBar: React.FC<UserListSideBarProps> = ({
       },
       theme: "LIGHT",
     },
-    // {
-    //   text1: "더미 전적 생성",
-    //   text2: "5000",
-    //   onClick: () => {
-    //     console.log("더미 전적 생성");
-    //     console.log(
-    //       "createDummyHistory",
-    //       createDummyHistory(allUserList, 5000),
-    //     );
-    //     const dummyHistory = createDummyHistory(allUserList, 5000);
-    //     setMatchHistoryList(dummyHistory);
-    //   },
-    //   theme: "LIGHT",
-    // },
+    {
+      text1: "더미 전적 생성",
+      text2: "5000",
+      onClick: () => {
+        console.log("더미 전적 생성");
+        createDummyHistory();
+      },
+      theme: "LIGHT",
+    },
+    {
+      text1: "더미 전적 제거",
+      text2: "",
+      onClick: () => {
+        console.log("더미 전적 제거");
+        deleteDummyHistory();
+      },
+      theme: "LIGHT",
+    },
   ];
 
   return (

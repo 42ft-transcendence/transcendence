@@ -1,4 +1,10 @@
-import { IsNumber, IsString, IsNotEmpty, IsObject } from 'class-validator';
+import {
+  IsNumber,
+  IsString,
+  IsNotEmpty,
+  IsObject,
+  IsBoolean,
+} from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 
 export class HistoryDto {
@@ -33,4 +39,8 @@ export class HistoryDto {
   @IsString()
   @IsNotEmpty()
   map: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isDummy: boolean;
 }

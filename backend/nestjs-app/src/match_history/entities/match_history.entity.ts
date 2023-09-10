@@ -43,4 +43,7 @@ export class MatchHistory extends BaseEntity {
 
   @Column()
   map: string;
+
+  @Column()
+  isDummy: boolean;
 }

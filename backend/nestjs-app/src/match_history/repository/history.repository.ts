@@ -30,4 +30,8 @@ export class MatchHistoryRepository extends Repository<MatchHistory> {
     });
     return histories;
   }
+
+  async deleteDummyHistory(histories: MatchHistory[]) {
+    await this.remove(histories);
+  }
 }
