@@ -97,7 +97,7 @@ export const MatchCard = ({ history }: MatchCardProps) => {
     <S.MatchCard mode={winLose}>
       <S.MatchCardMatchInfo>
         <S.MatchCardMatchInfoGameType mode={winLose}>
-          {history.roomType === "NORMAL" ? "일반" : "랭크"}
+          {history.roomType === "RANKING" ? "랭크" : "일반"}
         </S.MatchCardMatchInfoGameType>
         <S.MatchCardMatchInfoDate>
           {createTimeAgo(history.createdAt.toString())}

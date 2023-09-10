@@ -473,8 +473,10 @@ export class GameGateway {
         this.userService.updateNormalGameRecord(player2);
       }
     }
-    this.userService.updateRating(player1, player1updated - player1rating);
-    this.userService.updateRating(player2, player2updated - player2rating);
+    if (roomType === 'RANKING') {
+      this.userService.updateRating(player1, player1updated - player1rating);
+      this.userService.updateRating(player2, player2updated - player2rating);
+    }
     return [player1updated - player1rating, player2updated - player2rating];
   }
 
