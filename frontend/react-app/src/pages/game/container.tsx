@@ -10,7 +10,13 @@ import {
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
 import { useRecoilState } from "recoil";
-import { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameChattingType } from "@src/types/game.type";
@@ -125,7 +131,7 @@ export const GameChattingContainer = () => {
   const [chattingList, setChattingList] = useRecoilState(gameRoomChatListState);
 
   useEffect(() => {
-    if (chattingList.length === 0) {
+    if (gameRoomInfo.roomType !== "RANKING" && chattingList.length === 0) {
       gameSocket.emit("sendGameRoomChat", {
         roomURL: gameRoomURL,
         roomName: gameRoomInfo.roomName,
@@ -137,11 +143,33 @@ export const GameChattingContainer = () => {
     }
   }, [chattingList]);
 
-  gameSocket.on("getGameRoomChat", (data) => {
-    if (gameRoomURL === data.roomURL) {
-      setChattingList([...chattingList, data]);
-    }
-  });
+  const handleGetGameRoomChat = useCallback(
+    (data: GameChattingType) => {
+      // 시스템의 채팅이 중복으로 들어오는 것을 방지
+      if (gameRoomURL === data.roomURL) {
+        if (
+          data.userId === "SYSTEM" &&
+          chattingList
+            .map((chatting) => chatting.message)
+            .includes(data.message)
+        )
+          return;
+        setChattingList((prevChattingList) => [...prevChattingList, data]);
+      }
+    },
+    [gameRoomURL, chattingList, setChattingList],
+  );
+
+  useEffect(() => {
+    // 이벤트 리스너 등록
+    gameSocket.on("getGameRoomChat", handleGetGameRoomChat);
+
+    // 클린업 함수
+    return () => {
+      // 이벤트 리스너 제거
+      gameSocket.off("getGameRoomChat", handleGetGameRoomChat);
+    };
+  }, [handleGetGameRoomChat]);
 
   useEffect(() => {
     // 매번 chattingList가 업데이트 될 때 스크롤을 아래로 이동
@@ -153,9 +181,12 @@ export const GameChattingContainer = () => {
   return (
     <>
       <S.GameChattingContainer ref={messageEndRef}>
-        {chattingList.map((chatting, index) => (
-          <GameChattingBox key={index} gameChatting={chatting} />
-        ))}
+        {chattingList.map(
+          (chatting, index) =>
+            chatting.roomURL === gameRoomURL && (
+              <GameChattingBox key={index} gameChatting={chatting} />
+            ),
+        )}
       </S.GameChattingContainer>
       <GameChattingInputBox />
     </>

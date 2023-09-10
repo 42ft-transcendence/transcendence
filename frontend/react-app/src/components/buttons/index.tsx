@@ -1,4 +1,4 @@
-import { ButtonHanderProps } from "@src/types";
+import { ButtonHandlerProps } from "@src/types";
 import * as S from "./index.styled";
 import * as cookies from "react-cookies";
 
@@ -89,17 +89,20 @@ export const TextButton = ({ title, onClick, theme }: TextButtonProps) => (
   </S.TextButton>
 );
 
-export const ButtonHander = ({ todo, navigate }: ButtonHanderProps) => {
+export const ButtonHandler = ({
+  todo,
+  navigate,
+  setIsFirstLogin,
+}: ButtonHandlerProps) => {
   todo()
     .then((response) => {
-      console.log(response);
       if (response.status === 200 || response.status === 201) {
         cookies.remove("jwt", { path: "/" });
-        // setIsFirstLogin(true);
+        setIsFirstLogin(true);
         navigate("/login");
       }
     })
     .catch((error) => {
-      console.log("error", error);
+      void error;
     });
 };

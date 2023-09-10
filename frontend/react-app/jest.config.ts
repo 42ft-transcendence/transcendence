@@ -22,6 +22,7 @@ module.exports = {
   transform: {
     "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "./tsconfig.json" }],
     "^.+\\.svg$": "<rootDir>/svgTransform.ts",
+    "^.+\\.gif$": "<rootDir>/svgTransform.ts",
   },
   watchPlugins: [
     "jest-watch-typeahead/filename",

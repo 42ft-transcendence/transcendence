@@ -98,64 +98,10 @@ const useGameSocket = () => {
         }
       });
 
-      gameSocket.off("readySignal");
-      gameSocket.on("readySignal", (data) => {
-        console.log("readySignal", data, userData);
-        // if (gameRoomInfo.roomURL === data.gameRoomURL) {
-        //   console.log(
-        //     "readySignal",
-        //     gameRoomInfo,
-        //     data.awayUser.id,
-        //     userData.id,
-        //     data.awayUser.id === userData.id,
-        //   );
-        // if (
-        //   userData.id !== data.awayUser.id &&
-        //   gameRoomInfo.awayUser.id === data.awayUser.id
-        // ) {
-        //   setGameRoomInfo({
-        //     ...gameRoomInfo,
-        //     awayReady: data.isReady,
-        //   });
-        // } else if (
-        //   userData.id !== data.awayUser.id &&
-        //   gameRoomInfo.homeUser.id === data.awayUser.id
-        // ) {
-        //   setGameRoomInfo({
-        //     ...gameRoomInfo,
-        //     homeReady: data.isReady,
-        //   });
-        // }
-      });
-
-      gameSocket.off("exitGameRoom");
-      gameSocket.on("exitGameRoom", (data) => {
-        console.log("exitGameRoom", data);
-        // if (
-        //   userData.id !== data.awayUser.id &&
-        //   gameRoomInfo.roomURL === data.gameRoomURL &&
-        //   gameRoomInfo.awayUser.id === data.awayUser.id
-        // ) {
-        //   setGameRoomInfo({
-        //     ...gameRoomInfo,
-        //     awayUser: {} as UserType,
-        //   });
-        // } else if (
-        //   userData.id !== data.awayUser.id &&
-        //   gameRoomInfo.roomURL === data.gameRoomURL &&
-        //   gameRoomInfo.homeUser.id === data.awayUser.id
-        // ) {
-        //   setGameRoomInfo({
-        //     ...gameRoomInfo,
-        //     homeUser: {} as UserType,
-        //   });
-        // }
-      });
-
       gameSocket.on("startGame", (data) => {
+        console.log("startGame", data, gameRoomURL);
         if (data.gameRoomURL !== gameRoomURL) return;
         setGameModal({
-          ...gameModal,
           gameMap: "NORMAL" as GameMapType,
         });
       });
@@ -168,8 +114,6 @@ const useGameSocket = () => {
       gameSocket.off("offerBattle");
       gameSocket.off("acceptBattle");
       gameSocket.off("rejectBattle");
-      gameSocket.off("readySignal");
-      gameSocket.off("exitGameRoom");
       // ... (다른 gameSocket 이벤트 해제 로직)
     };
   }, [jwt, gameRoomURL]); // 의존성 배열에 필요한 값들을 넣어주세요.

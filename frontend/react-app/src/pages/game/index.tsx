@@ -6,7 +6,7 @@ import { GameChattingContainer, GameMatchProfile } from "./container";
 import { useRecoilState } from "recoil";
 import { gameRoomInfoState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
-import React from "react";
+import React, { useEffect } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 
@@ -14,11 +14,11 @@ const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
   const [userData] = useRecoilState(userDataState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
-  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const [isGameStart, setIsGameStart] = React.useState(false);
+  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
-  function areBothUsersReady() {
+  const areBothUsersReady = () => {
     if (typeof gameRoomInfo.participants === "undefined") {
       return false;
     }
@@ -31,13 +31,21 @@ const Game = () => {
       // setGameRoomURL(gameRoomInfo.gameRoomURL);
     }
     return allUsersReady;
-  }
+  };
 
-  function startGameTest() {
+  const startGameTest = () => {
     gameSocket.emit("startGameTest", {
       gameRoomURL: gameRoomURL,
     });
-  }
+  };
+
+  useEffect(() => {
+    if (gameRoomInfo.roomType !== "RANKING") return;
+    if (gameRoomInfo.roomOwner.id !== userData.id) return;
+    gameSocket.emit("startRankGameCountDown", {
+      gameRoomURL: gameRoomURL,
+    });
+  });
 
   return (
     <>
