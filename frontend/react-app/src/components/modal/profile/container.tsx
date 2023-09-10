@@ -23,6 +23,7 @@ import DeleteFriendIcon from "@src/assets/icons/deleteFriend.svg";
 import BlockIcon from "@src/assets/icons/block.svg";
 import UnblockIcon from "@src/assets/icons/unblock.svg";
 import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
+import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
 import sha256 from "crypto-js/sha256";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
@@ -177,7 +178,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     {
       label: "DM 보내기",
       action: () => navigate(`/direct-message/${user.user.id}`),
-      src: "src/assets/icons/sendMessage.svg",
+      src: SendMessageIcon,
     },
     {
       label: "전적 보기",
