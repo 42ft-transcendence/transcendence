@@ -1,6 +1,6 @@
 import { UserType } from "@src/types";
 import * as S from "./index.styled";
-import { chatSocket } from "@router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 import { useRecoilValue } from "recoil";
 import { channelState } from "@src/recoil/atoms/channel";
 import { useCallback } from "react";

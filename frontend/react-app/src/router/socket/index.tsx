@@ -1,4 +1,4 @@
-import { chatSocket, chatSocketConnect } from "./chatSocket";
+import { chatSocket, chatSocketConnect } from "../../utils/sockets/chatSocket";
 import * as cookies from "react-cookies";
 import {
   ChannelType,

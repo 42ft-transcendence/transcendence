@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ChannelPageView from "./view";
-import { chatSocket } from "@router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 import { ChatType, EnterChannelReturnType } from "@src/types";
 import { useNavigate, useParams } from "react-router-dom";
 import {
