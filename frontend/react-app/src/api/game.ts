@@ -21,3 +21,11 @@ export const createDummyHistory = () => {
     },
   });
 };
+
+export const deleteDummyHistory = () => {
+  axios.delete(`${base_url}/MatchHistory/dummy`, {
+    headers: {
+      Authorization: `Bearer ${cookies.load("jwt") as string}`,
+    },
+  });
+};
