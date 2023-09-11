@@ -1,5 +1,4 @@
 import { atom } from "recoil";
-import { recoilPersist } from "recoil-persist";
 import {
   ChannelType,
   JoinedChannelType,
@@ -7,18 +6,14 @@ import {
   ParticipantType,
 } from "@type";
 
-const { persistAtom } = recoilPersist();
-
 export const allChannelListState = atom<ChannelType[]>({
   key: "allChannelListState",
   default: [],
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const joinedChannelListState = atom<JoinedChannelType[]>({
   key: "joinedChannelListState",
   default: [],
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const channelState = atom<ChannelType | null>({
