@@ -421,7 +421,7 @@ export class GameGateway {
     }
   }
 
-  finishGame(client: Socket, gameRoomURL: string) {
+  finishGame(client: Socket, gameRoomURL: string, isSurrender: boolean) {
     const gameRoom = this.gameService
       .getAllGameRooms()
       .find((room) => room.roomURL === gameRoomURL);
