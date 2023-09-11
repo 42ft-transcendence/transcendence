@@ -12,6 +12,7 @@ import PongGame from "../pongGame/pongGame";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import { userDataState } from "@src/recoil/atoms/common";
 
 interface MapModalProps {
   gameEndingMessage: string;
@@ -23,6 +24,7 @@ const MapModal = ({
   setGameEndingMessage,
 }: MapModalProps) => {
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const [user] = useRecoilState(userDataState);
   const setGameModal = useSetRecoilState(gameModalState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
@@ -59,6 +61,14 @@ const MapModal = ({
     });
   });
 
+  const surrender = () => {
+    console.log("항복");
+    gameSocket.emit("surrenderGameRoom", {
+      gameRoomURL: gameRoomURL,
+      userId: user.id,
+    });
+  };
+
   return (
     <S.MapsWrapper>
       <S.GameInfoContainer>
@@ -73,13 +83,7 @@ const MapModal = ({
         </S.GameInfoPlayer>
         <S.GameInfoMiddle>
           <S.GameInfoMiddleTop>
-            <IconButton
-              onClick={() => {
-                setGameModal({ gameMap: null });
-              }}
-              title="항복"
-              theme="DARK"
-            />
+            <IconButton onClick={surrender} title="항복" theme="DARK" />
           </S.GameInfoMiddleTop>
           <S.GameInfoMiddleCenter>VS</S.GameInfoMiddleCenter>
         </S.GameInfoMiddle>

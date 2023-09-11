@@ -417,7 +417,7 @@ export class GameGateway {
       user2Score: engine.score[1],
     });
     if (engine.score[0] >= 5 || engine.score[1] >= 5) {
-      this.finishGame(client, gameRoomURL);
+      this.finishGame(client, gameRoomURL, false);
     }
   }
 
@@ -433,6 +433,7 @@ export class GameGateway {
     const finishedResponse = {
       gameRoomURL: gameRoomURL,
       winner: engine.score[0] > engine.score[1] ? 0 : 1,
+      isSurrender: isSurrender,
     };
     roomTimeout.delete(gameRoomURL);
     roomManager.delete(gameRoomURL);
@@ -450,6 +451,26 @@ export class GameGateway {
       });
     }
     this.server.emit('finishedGame', finishedResponse);
+  }
+
+  @SubscribeMessage('surrenderGameRoom')
+  surrenderGameRoom(
+    client: Socket,
+    content: { gameRoomURL: string; userId: string },
+  ) {
+    console.log('surrenderGameRoom: ', content);
+    const engine = roomManager.get(content.gameRoomURL);
+    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
+      return room.roomURL === content.gameRoomURL;
+    });
+    if (!engine || !gameRoom) return;
+    const userIndex = gameRoom.participants.findIndex(
+      (participant) => participant.user.id === content.userId,
+    );
+    if (userIndex === -1) return;
+    engine.score[userIndex] = 0;
+    engine.score[(userIndex + 1) % 2] = 5;
+    this.finishGame(client, content.gameRoomURL, true);
   }
 
   eloRatingSystem(
