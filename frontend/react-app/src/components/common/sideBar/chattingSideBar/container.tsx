@@ -18,7 +18,7 @@ import {
 } from "@src/recoil/atoms/modal";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { chatSocket } from "@router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import ParticipantListItem from "@src/components/channel/participantListItem";
 import ChattingSideBarView from "./view";

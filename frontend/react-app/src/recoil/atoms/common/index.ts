@@ -9,13 +9,11 @@ const { persistAtom } = recoilPersist();
 export const userDataState = atom<UserType>({
   key: "userDataState",
   default: initialUserData,
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const allUserListState = atom<UserType[]>({
   key: "allUserListState",
   default: [],
-  effects_UNSTABLE: [persistAtom],
 });
 
 export const showProfileState = atom<ProfileModalType>({

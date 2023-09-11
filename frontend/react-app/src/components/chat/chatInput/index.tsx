@@ -7,7 +7,7 @@ import {
 } from "@src/recoil/atoms/channel";
 import { userDataState } from "@src/recoil/atoms/common";
 import { useMatch } from "react-router-dom";
-import { chatSocket } from "@src/router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 import { DirectMessageType, MessageType } from "@src/types";
 import { dmListState, dmOtherState } from "@src/recoil/atoms/directMessage";
 import sha256 from "crypto-js/sha256";

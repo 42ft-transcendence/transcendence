@@ -12,6 +12,7 @@ import Socket from "./socket";
 import Game from "@src/pages/game";
 import ChannelPage from "@src/pages/channel";
 import DirectMessagePage from "@src/pages/directMessage";
+import authorizationLoader from "./loaders/authorization.loader";
 
 const Router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/Login",
@@ -41,6 +43,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/signup",
@@ -51,6 +54,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/channel-list",
@@ -61,6 +65,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/profile/:userId",
@@ -71,6 +76,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/user-list",
@@ -81,6 +87,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/ranking",
@@ -91,6 +98,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/game/:gameRoomId",
@@ -101,6 +109,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/channel/:channelId",
@@ -111,6 +120,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "/direct-message/:userId",
@@ -121,6 +131,7 @@ const Router = createBrowserRouter([
         </PrivateRoute>
       </Socket>
     ),
+    loader: authorizationLoader,
   },
   {
     path: "*",

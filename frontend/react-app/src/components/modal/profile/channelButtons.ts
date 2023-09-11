@@ -1,4 +1,4 @@
-import { chatSocket } from "@src/router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 import SetAdmin from "@assets/icons/setAdmin.svg";
 import UnsetAdmin from "@assets/icons/unsetAdmin.svg";
 import Mute from "@assets/icons/banChat.svg";
