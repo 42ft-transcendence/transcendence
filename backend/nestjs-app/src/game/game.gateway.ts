@@ -422,6 +422,9 @@ export class GameGateway {
   }
 
   finishGame(client: Socket, gameRoomURL: string) {
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === gameRoomURL);
     const engine = roomManager.get(gameRoomURL);
     if (!engine) return;
     const timeout = roomTimeout.get(gameRoomURL);
@@ -431,10 +434,22 @@ export class GameGateway {
       gameRoomURL: gameRoomURL,
       winner: engine.score[0] > engine.score[1] ? 0 : 1,
     };
-    this.gameService.deleteGameRoom(gameRoomURL);
-    roomManager.delete(gameRoomURL);
     roomTimeout.delete(gameRoomURL);
-    this.server.emit('finishedRankGame', finishedResponse);
+    roomManager.delete(gameRoomURL);
+    if (gameRoom.roomType === 'RANKING') {
+      this.gameService.deleteGameRoom(gameRoomURL);
+    } else {
+      const participants = gameRoom.participants;
+      this.readyCancleGameRoom(client, {
+        gameRoomURL: gameRoomURL,
+        userId: participants[0].user.id,
+      });
+      this.readyCancleGameRoom(client, {
+        gameRoomURL: gameRoomURL,
+        userId: participants[1].user.id,
+      });
+    }
+    this.server.emit('finishedGame', finishedResponse);
   }
 
   eloRatingSystem(

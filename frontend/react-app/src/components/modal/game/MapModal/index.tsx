@@ -2,6 +2,7 @@ import * as S from "./index.styled";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import {
   gameModalState,
+  gameRoomChatListState,
   gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomURLState,
@@ -23,6 +24,7 @@ const MapModal = ({
 }: MapModalProps) => {
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
   const setGameModal = useSetRecoilState(gameModalState);
+  const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
   const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [user1Score, setUser1Score] = useState<number>(0);
   const [user2Score, setUser2Score] = useState<number>(0);
@@ -34,12 +36,18 @@ const MapModal = ({
     if (gameEndingMessage === "") return;
     setTimeout(() => {
       setGameEndingMessage("");
-      setGameRoomURL("");
       setGameModal({ gameMap: null });
-      setGameRoomInfo(gameRoomInfoInitState);
-      setTimeout(() => {
-        navigate("/game-list");
-      });
+      if (gameRoomInfo.roomType === "RANKING") {
+        setGameRoomInfo(gameRoomInfoInitState);
+        setGameRoomURL("");
+        setTimeout(() => {
+          navigate("/game-list");
+        });
+      } else {
+        setGameRoomChatList((prev) =>
+          prev.filter((chat) => chat.userId !== "SYSTEM"),
+        );
+      }
     }, 3000);
   }, [gameEndingMessage]);
 

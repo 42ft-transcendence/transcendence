@@ -23,7 +23,9 @@ const Game = () => {
     }
 
     // 모든 사용자가 레디 상태인지 확인합니다.
-    const allUsersReady = gameRoomInfo.participants.every((user) => user.ready);
+    const allUsersReady =
+      gameRoomInfo.participants.length === 2 &&
+      gameRoomInfo.participants.every((user) => user.ready);
     console.log("allUsersReady", allUsersReady);
     if (allUsersReady) {
       gameSocket.emit("startGameCountDown", {

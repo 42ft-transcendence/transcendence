@@ -8,6 +8,7 @@ import {
   gameRoomListState,
 } from "@src/recoil/atoms/game";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
+import { gameSocket } from "@src/router/socket/gameSocket";
 import { UserType } from "@src/types";
 import { useSetRecoilState } from "recoil";
 
@@ -35,8 +36,7 @@ const useInitializeState = () => {
       gameRoomURL: "",
     });
     setGameModal({ gameMap: null });
-    setGameRoomList([]);
-    setGameRoomInfo(gameRoomInfoInitState);
+    gameSocket.emit("getGameRoomList");
     setGameRoomChatList([]);
   };
 

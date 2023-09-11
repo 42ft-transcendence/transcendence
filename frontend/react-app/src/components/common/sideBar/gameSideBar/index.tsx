@@ -124,16 +124,19 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
     });
   });
 
-  gameSocket.on("finishedRankGame", (data) => {
-    console.log("finishedRankGame", data);
-    if (data.gameRoomURL !== gameRoomURL) return;
-    const participants = gameRoomInfo.participants;
-    const winner = participants[data.winner];
-    if (winner.user.id === userData.id) {
-      setGameEndingMessage("승리하셨습니다.");
-    } else {
-      setGameEndingMessage("패배하셨습니다.");
-    }
+  useEffect(() => {
+    gameSocket.off("finishedGame");
+    gameSocket.on("finishedGame", (data) => {
+      console.log("finishedGame", data);
+      if (data.gameRoomURL !== gameRoomURL) return;
+      const participants = gameRoomInfo.participants;
+      const winner = participants[data.winner];
+      if (winner.user.id === userData.id) {
+        setGameEndingMessage("승리하셨습니다.");
+      } else {
+        setGameEndingMessage("패배하셨습니다.");
+      }
+    });
   });
 
   return (
