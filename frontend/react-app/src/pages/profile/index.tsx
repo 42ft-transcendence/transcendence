@@ -9,6 +9,7 @@ import { MatchHistoryType } from "@src/types/game.type";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import { UserType } from "@src/types";
 import { getHistoryById } from "@src/api/game";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const currentRoute = window.location.pathname;
@@ -28,6 +29,7 @@ const Profile = () => {
   >([]);
   const [search, setSearch] = useState<string>("");
   const [moreInfo, setMoreInfo] = useState<number>(20);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchHistory() {
@@ -102,8 +104,7 @@ const Profile = () => {
   const user = userList.find((user) => user.id === userId) as UserType;
   if (typeof user === "undefined") {
     console.log("here");
-    window.location.href = "/profile/" + userData.id;
-    return <></>;
+    navigate(`/profile/${userData.id}`);
   }
 
   if (!matchHistoryList || !SidebarComponent) {

@@ -65,6 +65,11 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
   const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const navigate = useNavigate();
+  const closeProfile = ProfileModalOnClickHandler(
+    setShowProfile,
+    false,
+    {} as UserType,
+  );
 
   // 친구 상태인지 확인
 
@@ -175,14 +180,17 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     },
     {
       label: "DM 보내기",
-      action: () => navigate(`/direct-message/${user.user.id}`),
+      action: () => {
+        navigate(`/direct-message/${user.user.id}`);
+        closeProfile();
+      },
       src: SendMessageIcon,
     },
     {
       label: "전적 보기",
       action: () => {
-        window.location.href = `/profile/${user.user.id}`;
-        ProfileModalOnClickHandler(setShowProfile, false, {} as UserType);
+        navigate(`/profile/${user.user.id}`);
+        closeProfile();
       },
       src: ShowRecordIcon,
     },
