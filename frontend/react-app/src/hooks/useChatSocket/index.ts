@@ -223,6 +223,23 @@ const useChatSocket = () => {
     setUserData,
   ]);
 
+  /** Reset User Data on Disconnection */
+  useEffect(() => {
+    chatSocket.on("disconnect", () => {
+      setUserData({} as UserType);
+      setAllUserList([]);
+      setAllChannelList([]);
+      setJoinedChannelList([]);
+      setJoinedDmOtherList([]);
+    });
+  }, [
+    setUserData,
+    setAllUserList,
+    setAllChannelList,
+    setJoinedChannelList,
+    setJoinedDmOtherList,
+  ]);
+
   /** ChatSocket Event Listeners */
   useEffect(() => {
     chatSocket.on("refresh_users", handleRefreshUsers);
