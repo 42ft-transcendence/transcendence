@@ -9,7 +9,7 @@ import { ChatChannelType } from 'src/util';
 export class ChatChannelRepository extends Repository<ChatChannel> {
   async getChannelById(id: string): Promise<ChatChannel> {
     const channel = await this.findOne({
-      relations: ['participants'],
+      relations: ['participants', 'owner'],
       where: { id },
     });
     if (!channel) {
