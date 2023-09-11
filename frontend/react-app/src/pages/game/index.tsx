@@ -17,27 +17,25 @@ const Game = () => {
   const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
-  const areBothUsersReady = () => {
+  useEffect(() => {
     if (typeof gameRoomInfo.participants === "undefined") {
-      return false;
+      return;
     }
 
     // 모든 사용자가 레디 상태인지 확인합니다.
     const allUsersReady = gameRoomInfo.participants.every((user) => user.ready);
     console.log("allUsersReady", allUsersReady);
-    return allUsersReady;
-  };
-
-  const startNormalGame = () => {
-    gameSocket.emit("startNormalGame", {
-      gameRoomURL: gameRoomURL,
-    });
-  };
+    if (allUsersReady) {
+      gameSocket.emit("startGameCountDown", {
+        gameRoomURL: gameRoomURL,
+      });
+    }
+  }, [gameRoomInfo.participants]);
 
   useEffect(() => {
     if (gameRoomInfo.roomType !== "RANKING") return;
     if (gameRoomInfo.roomOwner.id !== userData.id) return;
-    gameSocket.emit("startRankGameCountDown", {
+    gameSocket.emit("startGameCountDown", {
       gameRoomURL: gameRoomURL,
     });
   });
@@ -70,7 +68,6 @@ const Game = () => {
         </S.GameProfileContainer>
         <GameChattingContainer />
       </S.GameContainer>
-      {areBothUsersReady() && startNormalGame()}
     </>
   );
 };

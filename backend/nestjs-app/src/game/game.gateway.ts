@@ -340,16 +340,13 @@ export class GameGateway {
     }
   }
 
-  @SubscribeMessage('startRankGameCountDown')
-  async startRankGameCountDown(
-    client: Socket,
-    content: { gameRoomURL: string },
-  ) {
+  @SubscribeMessage('startGameCountDown')
+  async startGameCountDown(client: Socket, content: { gameRoomURL: string }) {
     // 10초 카운트다운
-    for (let i = 10; i >= -1; i--) {
+    for (let i = 5; i >= -1; i--) {
       const response = {
         roomURL: content.gameRoomURL,
-        roomName: '랭킹전',
+        roomName: 'SYSTEM',
         message:
           i > 0 ? `게임 시작까지 ${i}초 남았습니다.` : '게임이 시작됩니다!',
         userId: 'SYSTEM',
@@ -368,7 +365,6 @@ export class GameGateway {
     }
   }
 
-  @SubscribeMessage('startNormalGame')
   startGame(client: Socket, content: { gameRoomURL: string }) {
     const newEngine = new GameData();
     roomManager.set(content.gameRoomURL, newEngine);
