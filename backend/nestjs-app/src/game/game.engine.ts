@@ -8,20 +8,21 @@ export class GameData {
   ballSpeed: number;
   score: [number, number];
   onGame: boolean;
-  mode: number;
+  mode: string;
   isGamePaused: boolean;
 
-  constructor() {
+  constructor(gameSpeed: string) {
     (this.leftPaddle = 300),
       (this.rightPaddle = 300),
       (this.ballX = 400),
       (this.ballY = 300),
       (this.ballVecX = 5),
       (this.ballVecY = 0),
-      (this.ballSpeed = 6),
+      (this.ballSpeed =
+        gameSpeed === 'SLOW' ? 3 : gameSpeed === 'NORMAL' ? 6 : 9),
       (this.score = [0, 0]),
       (this.onGame = false),
-      (this.mode = 0),
+      (this.mode = gameSpeed),
       (this.isGamePaused = false);
   }
 
@@ -29,7 +30,7 @@ export class GameData {
     this.ballX = 400;
     this.ballY = 300;
     this.ballVecY = 0;
-    this.ballSpeed = 6;
+    this.ballSpeed = this.mode === 'SLOW' ? 3 : this.mode === 'NORMAL' ? 6 : 9;
 
     this.isGamePaused = true;
     setTimeout(() => {

@@ -366,7 +366,10 @@ export class GameGateway {
   }
 
   startGame(client: Socket, content: { gameRoomURL: string }) {
-    const newEngine = new GameData();
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === content.gameRoomURL);
+    const newEngine = new GameData(gameRoom.gameMode);
     roomManager.set(content.gameRoomURL, newEngine);
     const response = {
       gameRoomURL: content.gameRoomURL,
