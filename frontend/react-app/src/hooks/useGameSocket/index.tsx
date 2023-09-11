@@ -40,22 +40,13 @@ const useGameSocket = () => {
       // console.log("gamesocket connected");
       gameSocket.off("roomList");
       gameSocket.on("roomList", (data: GameRoomInfoType[]) => {
-        console.log("roomList", data, gameRoomURL);
         setGameRoomList(data);
-        console.log(
-          "roomList find",
-          data.find((room) => room.roomURL === gameRoomURL)?.participants,
-        );
         if (data.find((room) => room.roomURL === gameRoomURL) !== undefined) {
           setGameRoomInfo((prevInfo) => ({
             ...prevInfo,
-            // ... 여기에 변경하고 싶은 값들을 넣습니다.
             ...data.find((room) => room.roomURL === gameRoomURL),
           }));
         }
-        // else {
-        //   setGameRoomInfo(gameRoomInfoInitState);
-        // }
       });
 
       gameSocket.off("offerBattle");
