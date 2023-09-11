@@ -115,13 +115,13 @@ const useChatSocket = () => {
 
   const handleKicked = useCallback(
     (content: string) => {
-      setJoinedChannelList((prev) =>
-        prev.filter((joinedChannel) => joinedChannel.id !== content),
-      );
       if (curChannel?.id === content) {
         navigate("/channel-list");
         alert("채널에서 추방되었습니다.");
       }
+      setJoinedChannelList((prev) =>
+        prev.filter((joinedChannel) => joinedChannel.id !== content),
+      );
     },
     [setJoinedChannelList, curChannel?.id, navigate],
   );
