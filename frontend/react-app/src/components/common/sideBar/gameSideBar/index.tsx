@@ -124,16 +124,26 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
     });
   });
 
-  gameSocket.on("finishedRankGame", (data) => {
-    console.log("finishedRankGame", data);
-    if (data.gameRoomURL !== gameRoomURL) return;
-    const participants = gameRoomInfo.participants;
-    const winner = participants[data.winner];
-    if (winner.user.id === userData.id) {
-      setGameEndingMessage("승리하셨습니다.");
-    } else {
-      setGameEndingMessage("패배하셨습니다.");
-    }
+  useEffect(() => {
+    gameSocket.off("finishedGame");
+    gameSocket.on("finishedGame", (data) => {
+      if (data.gameRoomURL !== gameRoomURL) return;
+      const participants = gameRoomInfo.participants;
+      const winner = participants[data.winner];
+      if (data.isSurrender) {
+        if (winner.user.id === userData.id) {
+          setGameEndingMessage("상대방이 항복하여 게임에서 승리하셨습니다.");
+        } else {
+          setGameEndingMessage("게임에서 패배하셨습니다.");
+        }
+      } else {
+        if (winner.user.id === userData.id) {
+          setGameEndingMessage("승리하셨습니다.");
+        } else {
+          setGameEndingMessage("패배하셨습니다.");
+        }
+      }
+    });
   });
 
   return (
@@ -149,20 +159,6 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
             <br />
             <ButtonList buttons={filteredIconButtons} />
             <br />
-            <ButtonList
-              buttons={[
-                {
-                  title: "게임 맵 테스트",
-                  iconSrc: "",
-                  onClick: () => {
-                    gameSocket.emit("startGameTest", {
-                      gameRoomURL: gameRoomURL,
-                    });
-                  },
-                  theme: "LIGHT",
-                },
-              ]}
-            />
           </>
         ) : (
           <>
@@ -192,12 +188,13 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
           gameRoomInfo={gameRoomInfo}
         />
         {/* gameMapModal test */}
-        {gameModal.gameMap === "NORMAL" && (
-          <MapModal
-            gameEndingMessage={gameEndingMessage}
-            setGameEndingMessage={setGameEndingMessage}
-          />
-        )}
+        {gameRoomInfo.participants.length === 2 &&
+          gameModal.gameMap === "NORMAL" && (
+            <MapModal
+              gameEndingMessage={gameEndingMessage}
+              setGameEndingMessage={setGameEndingMessage}
+            />
+          )}
       </DS.Container>
       <RankGameExitModal
         isOpen={isExitModalOpen}

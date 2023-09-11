@@ -1,4 +1,4 @@
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useState, useEffect } from "react";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import * as S from "./index.styled";
@@ -6,8 +6,10 @@ import { IconButton } from "@src/components/buttons";
 import { UserType } from "@src/types";
 import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
+import { userDataState } from "@src/recoil/atoms/common";
 
 const BattleActionModal = () => {
+  const userData = useRecoilValue(userDataState);
   const [battleActionModal, setBattleActionModal] = useRecoilState(
     battleActionModalState,
   );
@@ -59,6 +61,8 @@ const BattleActionModal = () => {
   const handleAcceptButton = () => {
     gameSocket.emit("acceptBattle", {
       gameRoomURL: battleActionModal.gameRoomURL,
+      user1Id: battleActionModal.awayUser.id,
+      user2Id: userData.id,
     });
     setGameRoomURL(battleActionModal.gameRoomURL);
     setBattleActionModal({

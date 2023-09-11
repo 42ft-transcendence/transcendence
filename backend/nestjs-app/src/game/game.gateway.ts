@@ -22,6 +22,7 @@ import {
 import { SHA256 } from 'crypto-js';
 
 const roomManager = new Map<string, GameData>();
+const roomTimeout = new Map<string, NodeJS.Timeout>();
 const rankGameWaitingQueue = [];
 
 @WebSocketGateway({
@@ -218,7 +219,10 @@ export class GameGateway {
   }
 
   @SubscribeMessage('acceptBattle')
-  async acceptBattle(client: Socket, content: { gameRoomURL: string }) {
+  async acceptBattle(
+    client: Socket,
+    content: { gameRoomURL: string; user1Id: string; user2Id: string },
+  ) {
     const gameRoom = this.gameService.getAllGameRooms().find((room) => {
       return room.roomURL === content.gameRoomURL;
     });
@@ -226,6 +230,8 @@ export class GameGateway {
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameRoom: gameRoom,
+      user1Id: content.user1Id,
+      user2Id: content.user2Id,
     };
     this.server.emit('acceptBattle', response);
   }
@@ -334,16 +340,13 @@ export class GameGateway {
     }
   }
 
-  @SubscribeMessage('startRankGameCountDown')
-  async startRankGameCountDown(
-    client: Socket,
-    content: { gameRoomURL: string },
-  ) {
+  @SubscribeMessage('startGameCountDown')
+  async startGameCountDown(client: Socket, content: { gameRoomURL: string }) {
     // 10초 카운트다운
-    for (let i = 10; i >= -1; i--) {
+    for (let i = 5; i >= -1; i--) {
       const response = {
         roomURL: content.gameRoomURL,
-        roomName: '랭킹전',
+        roomName: 'SYSTEM',
         message:
           i > 0 ? `게임 시작까지 ${i}초 남았습니다.` : '게임이 시작됩니다!',
         userId: 'SYSTEM',
@@ -355,28 +358,28 @@ export class GameGateway {
       if (i !== -1) {
         this.server.emit('getGameRoomChat', response);
       } else {
-        const newEngine = new GameData();
-        roomManager.set(content.gameRoomURL, newEngine);
-        const startGameResponse = {
-          gameRoomURL: content.gameRoomURL,
-          gameData: roomManager.get(content.gameRoomURL),
-        };
-        this.server.emit('startGame', startGameResponse);
+        this.startGame(client, content);
       }
       // 1초 대기
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
-  @SubscribeMessage('startGameTest')
-  startGameTest(client: Socket, content: { gameRoomURL: string }) {
-    const newEngine = new GameData();
+  startGame(client: Socket, content: { gameRoomURL: string }) {
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === content.gameRoomURL);
+    const newEngine = new GameData(gameRoom.gameMode);
     roomManager.set(content.gameRoomURL, newEngine);
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameData: roomManager.get(content.gameRoomURL),
     };
     this.server.emit('startGame', response);
+    const intervalId = setInterval(() => {
+      this.gameProcess(client, content.gameRoomURL);
+    }, 1000 / 60);
+    roomTimeout.set(content.gameRoomURL, intervalId);
   }
 
   @SubscribeMessage('userPaddle')
@@ -398,32 +401,76 @@ export class GameGateway {
       ? (engine.leftPaddle = content.userPaddle)
       : (engine.rightPaddle = content.userPaddle);
     engine.advance(paddleDelta);
+  }
+
+  gameProcess(client: Socket, gameRoomURL: string) {
+    const engine = roomManager.get(gameRoomURL);
+    if (!engine) return;
     const response = {
-      gameRoomURL: content.gameRoomURL,
-      userIndex: content.userIndex,
+      gameRoomURL: gameRoomURL,
       gameData: engine,
     };
     this.server.emit('gameProcess', response);
     this.server.emit('gameScore', {
-      gameRoomURL: content.gameRoomURL,
+      gameRoomURL: gameRoomURL,
       user1Score: engine.score[0],
       user2Score: engine.score[1],
     });
     if (engine.score[0] >= 5 || engine.score[1] >= 5) {
-      this.finishGame(client, content.gameRoomURL);
+      this.finishGame(client, gameRoomURL, false);
     }
   }
 
-  finishGame(client: Socket, gameRoomURL: string) {
-    this.makeMatchHistory(gameRoomURL);
+  finishGame(client: Socket, gameRoomURL: string, isSurrender: boolean) {
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === gameRoomURL);
     const engine = roomManager.get(gameRoomURL);
+    if (!engine) return;
+    const timeout = roomTimeout.get(gameRoomURL);
+    clearInterval(timeout);
+    this.makeMatchHistory(gameRoomURL);
     const finishedResponse = {
       gameRoomURL: gameRoomURL,
       winner: engine.score[0] > engine.score[1] ? 0 : 1,
+      isSurrender: isSurrender,
     };
-    this.gameService.deleteGameRoom(gameRoomURL);
+    roomTimeout.delete(gameRoomURL);
     roomManager.delete(gameRoomURL);
-    this.server.emit('finishedRankGame', finishedResponse);
+    if (gameRoom.roomType === 'RANKING') {
+      this.gameService.deleteGameRoom(gameRoomURL);
+    } else {
+      const participants = gameRoom.participants;
+      this.readyCancleGameRoom(client, {
+        gameRoomURL: gameRoomURL,
+        userId: participants[0].user.id,
+      });
+      this.readyCancleGameRoom(client, {
+        gameRoomURL: gameRoomURL,
+        userId: participants[1].user.id,
+      });
+    }
+    this.server.emit('finishedGame', finishedResponse);
+  }
+
+  @SubscribeMessage('surrenderGameRoom')
+  surrenderGameRoom(
+    client: Socket,
+    content: { gameRoomURL: string; userId: string },
+  ) {
+    console.log('surrenderGameRoom: ', content);
+    const engine = roomManager.get(content.gameRoomURL);
+    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
+      return room.roomURL === content.gameRoomURL;
+    });
+    if (!engine || !gameRoom) return;
+    const userIndex = gameRoom.participants.findIndex(
+      (participant) => participant.user.id === content.userId,
+    );
+    if (userIndex === -1) return;
+    engine.score[userIndex] = 0;
+    engine.score[(userIndex + 1) % 2] = 5;
+    this.finishGame(client, content.gameRoomURL, true);
   }
 
   eloRatingSystem(

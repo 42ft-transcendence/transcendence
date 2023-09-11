@@ -23,12 +23,19 @@ const PongGame: React.FC = () => {
       console.error("Canvas context is null.");
       return;
     }
+
     const backgroundImage = new Image();
 
     backgroundImage.src = NormalMapSvg;
-    // ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
-    const user = {
-      x: userIndex === 0 ? 0 : cvs.width - 10,
+    ctx.fillStyle = "BLACK";
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    ctx.fillStyle = "WHITE";
+    ctx.font = "60px fantasy";
+    ctx.textAlign = "center"; // 텍스트 정렬을 가운데로 설정
+    ctx.textBaseline = "middle"; // 수직 정렬을 중앙으로 설정
+
+    const leftUser = {
+      x: 0,
       y: cvs.height / 2 - 100 / 2,
       width: 10,
       height: 100,
@@ -43,8 +50,8 @@ const PongGame: React.FC = () => {
       right: 0,
     };
 
-    const com = {
-      x: userIndex === 1 ? 0 : cvs.width - 10,
+    const rightUser = {
+      x: cvs.width - 10,
       y: cvs.height / 2 - 100 / 2,
       width: 10,
       height: 100,
@@ -96,9 +103,7 @@ const PongGame: React.FC = () => {
         console.error("Canvas context is null.");
         return;
       }
-      // const radius = Math.sqrt(vecX * vecX + vecY * vecY);
       const radius = 10;
-      // console.log("radius", radius);
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2, false);
@@ -112,8 +117,20 @@ const PongGame: React.FC = () => {
       }
       ctx.drawImage(backgroundImage, 0, 0, cvs.width, cvs.height);
 
-      drawpaddle(user.x, user.y, user.width, user.height, user.color);
-      drawpaddle(com.x, com.y, com.width, com.height, com.color);
+      drawpaddle(
+        leftUser.x,
+        leftUser.y,
+        leftUser.width,
+        leftUser.height,
+        leftUser.color,
+      );
+      drawpaddle(
+        rightUser.x,
+        rightUser.y,
+        rightUser.width,
+        rightUser.height,
+        rightUser.color,
+      );
 
       //draw the ball
 
@@ -125,34 +142,55 @@ const PongGame: React.FC = () => {
 
     function movePaddle(evt: MouseEvent) {
       const rect = cvs.getBoundingClientRect();
-      user.y = evt.clientY - rect.top - user.height / 2;
+      if (userIndex === 0) {
+        leftUser.y = evt.clientY - rect.top - leftUser.height / 2;
+      } else {
+        rightUser.y = evt.clientY - rect.top - rightUser.height / 2;
+      }
     }
 
     let animationFrameId: number;
 
     backgroundImage.onload = () => {
-      function game() {
-        render();
-        gameSocket.emit("userPaddle", {
-          gameRoomURL: gameRoomURL,
-          userIndex: userIndex,
-          userPaddle: user.y,
-        });
+      let count = 4;
+      const countDown = setInterval(() => {
+        if (!ctx) {
+          console.error("Canvas context is null.");
+          return;
+        }
+        ctx.fillStyle = "BLACK";
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = "WHITE";
+        ctx.font = "45px Noto Sans Mono";
+        if (count !== 1) {
+          ctx.fillText((count - 1).toString(), cvs.width / 2, cvs.height / 2);
+        } else if (count === 1) {
+          ctx.fillText("Game Start!!", cvs.width / 2, cvs.height / 2);
+        }
+        count--;
+        if (count === -1) {
+          clearInterval(countDown);
 
-        animationFrameId = requestAnimationFrame(game);
-      }
-
-      // 게임 루프 시작
-      game();
+          game();
+        }
+      }, 1000);
     };
+    function game() {
+      render();
+      gameSocket.emit("userPaddle", {
+        gameRoomURL: gameRoomURL,
+        userIndex: userIndex,
+        userPaddle: userIndex === 0 ? leftUser.y : rightUser.y,
+      });
+      animationFrameId = requestAnimationFrame(game);
+    }
 
     gameSocket.off("gameProcess");
     gameSocket.on("gameProcess", (data) => {
       if (data.gameRoomURL !== gameRoomURL) return;
-      if (data.userIndex === userIndex) return;
-      data.userIndex === 0
-        ? (com.y = data.gameData.leftPaddle)
-        : (com.y = data.gameData.rightPaddle);
+      userIndex === 0
+        ? (rightUser.y = data.gameData.rightPaddle)
+        : (leftUser.y = data.gameData.leftPaddle);
       ball.x = data.gameData.ballX;
       ball.y = data.gameData.ballY;
       ball.velocityX = data.gameData.ballVecX;
@@ -160,7 +198,6 @@ const PongGame: React.FC = () => {
       ball.speed = data.gameData.ballSpeed;
     });
 
-    // 이펙트 클린업 함수
     return () => {
       cancelAnimationFrame(animationFrameId);
     };

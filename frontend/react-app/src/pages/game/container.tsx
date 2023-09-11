@@ -9,7 +9,7 @@ import {
   gameRoomInfoState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import React, {
   useCallback,
   useEffect,
@@ -27,6 +27,7 @@ interface GameMatchProfileProps {
 }
 
 export const GameMatchProfile = ({ user, isReady }: GameMatchProfileProps) => {
+  const gameRoom = useRecoilValue(gameRoomInfoState);
   return (
     <S.GameMatchBox $isReady={isReady}>
       {isReady && <S.ReadyIcon src={ReadyIcon} />}
@@ -36,15 +37,19 @@ export const GameMatchProfile = ({ user, isReady }: GameMatchProfileProps) => {
       <S.gameRoomProfileRank>
         <S.gameRoomProfileContainer>
           <S.gameRoomProfileRankImg src={RankingIcon} />
-          <div>{user.rating}</div>
+          <div>{gameRoom.roomType === "RANKING" ? user.rating : "일반전"}</div>
         </S.gameRoomProfileContainer>
         <S.gameRoomProfileContainer>
           <S.gameRoomProfileRankImg src={winIcon} />
-          <div>{user.win}</div>
+          <div>
+            {gameRoom.roomType === "RANKING" ? user.ladder_win : user.win}
+          </div>
         </S.gameRoomProfileContainer>
         <S.gameRoomProfileContainer>
           <S.gameRoomProfileRankImg src={loseIcon} />
-          <div>{user.lose}</div>
+          <div>
+            {gameRoom.roomType === "RANKING" ? user.ladder_lose : user.lose}
+          </div>
         </S.gameRoomProfileContainer>
       </S.gameRoomProfileRank>
     </S.GameMatchBox>

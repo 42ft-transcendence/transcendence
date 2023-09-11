@@ -18,8 +18,15 @@ import ChannelInviteAcceptModal from "@src/components/modal/channel/channelInvit
 import FirstLoginModal from "@src/components/modal/login/firstLoginModal";
 import { useEffect } from "react";
 import useInitializeState from "@src/hooks/useInitializeState";
-import { gameRoomURLState } from "@src/recoil/atoms/game";
+import {
+  gameRoomInfoInitState,
+  gameRoomInfoState,
+  gameRoomListState,
+  gameRoomURLState,
+} from "@src/recoil/atoms/game";
 import { getUser } from "@src/api";
+import { GameRoomInfoType, GameRoomType } from "@src/types";
+import { useNavigate } from "react-router-dom";
 
 export interface NavBarPropsType {
   currentPath: string;
@@ -34,8 +41,11 @@ const NavBar = () => {
   const [isFirstLogin, setIsFirstLogin] =
     useRecoilState<boolean>(isFirstLoginState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
+  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
+  const gameRoomList = useRecoilValue(gameRoomListState);
   const initializer = useInitializeState();
   const currentPath = window.location.pathname;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isFirstLogin) return;
@@ -46,7 +56,18 @@ const NavBar = () => {
       setIsFirstLogin(false);
     }, 5000);
     // ! 만약 게임 URL이 남아있다면, 그 방이 남아있는지 확인
-    console.log("gameRoomURL in navBar", gameRoomURL);
+    if (gameRoomList.find((gameRoom) => gameRoom.roomURL === gameRoomURL)) {
+      // ? 남아있다면 그 방으로 이동시키기
+      const gameRoomInfo: GameRoomInfoType | undefined = gameRoomList.find(
+        (gameRoom) => gameRoom.roomURL === gameRoomURL,
+      );
+      if (typeof gameRoomInfo === "undefined") return;
+      setGameRoomInfo(gameRoomInfo);
+      navigate(`/game/${gameRoomURL}`);
+      // window.location.href = `/game/${gameRoomURL}`;
+      return;
+    }
+    setGameRoomInfo(gameRoomInfoInitState);
     setGameRoomURL("");
     // ? 남아있는데 대기중이라면 게임방으로 이동시키기
     // ? 남아있지 않다면 게임 유무 판단(가장 최근 전적이 몰수패라면 연결이 끊겼다고 판단할 수 있을듯함)으로 기록으로 이동하시겠습니까? or 그냥 기본 동작
