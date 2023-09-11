@@ -5,6 +5,7 @@ import RankingIcon from "@assets/icons/ranking.svg";
 import { SortDropdownComponent } from "@src/components/dropdown";
 
 type SearchComponentProps = {
+  id: string;
   search: string;
   setSearch: (value: string) => void;
   sortState: string;
@@ -21,6 +22,7 @@ type UserCardComponentProps = {
 };
 
 export const SearchComponent: React.FC<SearchComponentProps> = ({
+  id,
   search,
   setSearch,
   sortState,
@@ -37,7 +39,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
           type="text"
           placeholder={placeholder || "닉네임을 입력하세요"}
           maxLength={10}
-          id="nickname"
+          id={id}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

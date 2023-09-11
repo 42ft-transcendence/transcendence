@@ -30,6 +30,7 @@ export const GameListContent = ({
   return (
     <DS.ContentArea>
       <SearchComponent
+        id="gameListSearch"
         search={search}
         setSearch={setSearch}
         sortState={sortState}
