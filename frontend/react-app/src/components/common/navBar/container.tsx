@@ -112,7 +112,7 @@ export const UpperTabList = () => {
 
     if (gameRoomURL !== "" && currentPath !== "game") {
       setGameNoti(true);
-    } else if (gameRoomURL !== "" && currentPath === "game") {
+    } else {
       setGameNoti(false);
     }
   }, [gameRoomURL, currentPath]);
