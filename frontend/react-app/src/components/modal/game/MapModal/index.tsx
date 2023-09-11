@@ -105,7 +105,13 @@ const MapModal = ({
             <S.GameEndingMessageContainer>
               <p>{gameEndingMessage}</p>
               <p>게임을 저장하고 있습니다.</p>
-              <p>잠시 뒤 게임 목록으로 이동합니다.</p>
+              <p>
+                잠시 후
+                {gameRoomInfo.roomType === "RANKING"
+                  ? " 게임 목록"
+                  : " 대기 방"}
+                으로 이동합니다.
+              </p>
             </S.GameEndingMessageContainer>
           </>
         )}
