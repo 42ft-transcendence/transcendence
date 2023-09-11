@@ -196,7 +196,7 @@ export class ChattingGateway
 
   @UsePipes(new ValidationPipe())
   @SubscribeMessage('leave_channel')
-  async leaveChannel(client: Socket, content: LeaveChannelDto): Promise<void> {
+  async leaveChannel(client: Socket, content: LeaveChannelDto): Promise<string> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -215,6 +215,7 @@ export class ChattingGateway
         this.server.socketsLeave(content.channelId);
       }
       await this.broadcastUpdatedChannelInfo(channel.id);
+      return channel.id;
     } catch (e) {
       console.log(e);
     }
