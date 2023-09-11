@@ -554,7 +554,13 @@ export class GameGateway {
   }
 
   async handleConnection(client: Socket) {
-    console.log('connection game socket: ', client.id);
+    try {
+      const userId = await this.getUserId(client);
+      console.log('connection game socket: ', userId, client.id);
+    } catch (e) {
+      console.log(e);
+      client.disconnect();
+    }
   }
 
   async handleDisconnection(client: Socket) {
@@ -593,7 +599,7 @@ export class GameGateway {
       console.log(`success getuserid: ${user.id}`);
       return user.id;
     } catch (e) {
-      throw {};
+      throw new Error('Invalid Token');
     }
   }
 

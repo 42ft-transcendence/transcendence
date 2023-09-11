@@ -5,7 +5,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { ChannelType, ChannelTypeType } from "@src/types";
 import { IconButton } from "@components/buttons";
 import { joinedChannelListState } from "@recoil/atoms/channel";
-import { chatSocket } from "@router/socket/chatSocket";
+import { chatSocket } from "@src/utils/sockets/chatSocket";
 
 import * as S from "./index.styled";
 import { channelJoinModalState } from "@src/recoil/atoms/modal";

@@ -71,6 +71,7 @@ export class ChattingGateway
       this.refreshUsersList();
     } catch (e) {
       console.log(e);
+      client.disconnect();
     }
   }
 
@@ -485,7 +486,7 @@ export class ChattingGateway
       const user: TMP = await this.authService.jwtVerify(jwt);
       return user.id;
     } catch (e) {
-      throw {};
+      throw new Error('Invalid Token');
     }
   }
 
