@@ -1,36 +1,54 @@
 import { styled } from "styled-components";
-import MagnifyingGlass from "@assets/icons/MagnifyingGlass.svg";
 
-export const Form = styled.form`
-  width: 600px;
-  height: 60px;
-  flex-shrink: 0;
+export const SearchBarContainer = styled.div`
+  width: 100%;
+  height: 120px;
   display: flex;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.floating};
+`;
+
+export const SearchBar = styled.div`
+  width: 490px;
+  height: 60px;
+  background-color: ${(props) => props.theme.colors.floating};
   border-radius: 30px;
-  padding-inline: 15px;
-  margin-block: 50px;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  margin-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 1000px) {
+    width: 70%; // 예: 1000px 미만일 때 80%의 너비로 변경. 실제 값을 원하는대로 조정하십시오.
+  }
 `;
 
-export const Input = styled.input`
-  height: 100%;
-  flex-grow: 1;
-  border: none;
+export const SearchBarInput = styled.input`
+  width: 80%;
+  height: 52px;
   outline: none;
+  font-size: 20px;
   background: none;
-  font-size: 16px;
-  color: ${({ theme }) => theme.colors.heavyPurple};
+  font-weight: bold;
+  border: none;
+  margin-left: 25px;
+
+  /* 자동 완성 배경색 및 폰트 스타일 제어 */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-text-fill-color: ${(props) =>
+      props.theme.colors.heavyPurple}; /* 텍스트 색상 */
+    font-size: 20px; /* 폰트 크기 */
+    font-family: inter; /* 폰트 종류 */
+    font-weight: bold; /* 폰트 두께 */
+  }
 `;
 
-export const Button = styled.button`
+export const SearchBarImg = styled.img`
   width: 32px;
   height: 32px;
-  border: none;
-  outline: none;
-  background: none;
-  background-image: url(${MagnifyingGlass});
-  background-repeat: no-repeat;
-  cursor: pointer;
+  margin-right: 20px;
 `;

@@ -12,8 +12,9 @@ import {
 } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
-import { SearchComponent, UserCardComponent } from "./container";
+import { UserCardComponent } from "./container";
 import { ProfileModalOnClickHandler } from "@src/utils";
+import SearchBar from "@src/components/common/searchBar";
 
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
@@ -127,7 +128,7 @@ const UserList = () => {
         currentClick={currentClick}
       />
       <DS.ContentArea style={{ overflowX: "scroll" }}>
-        <SearchComponent
+        <SearchBar
           id="userListSearch"
           search={search}
           setSearch={setSearch}
