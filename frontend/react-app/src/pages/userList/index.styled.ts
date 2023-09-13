@@ -55,12 +55,27 @@ export const SearchBarImg = styled.img`
 `;
 
 export const UserCardContainer = styled.div`
-  width: 100%;
-  height: calc(100% - 120px);
-  display: flex;
-  margin-top: 30px;
-  flex-wrap: wrap;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-auto-rows: 100px;
+  grid-gap: 40px;
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 50px;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: flex-start;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${(props) => props.theme.colors.floating};
+    border-radius: 4px;
+  }
 `;
 
 export const UserCard = styled.div`
