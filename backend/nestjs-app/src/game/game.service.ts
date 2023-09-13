@@ -1,36 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/users/entities/user.entity';
-
-export type GameRoomType =
-  | 'PUBLIC'
-  | 'PROTECTED'
-  | 'PRIVATE'
-  | 'CREATING'
-  | 'RANKING'
-  | '';
-
-export interface GameRoomParticipant {
-  user: User;
-  ready: boolean;
-}
-
-export enum GameRoomStatus {
-  WAITING = 0,
-  GAMING = 1,
-}
-
-export interface GameRoom {
-  roomURL: string;
-  roomName: string;
-  roomType: GameRoomType;
-  roomPassword: string;
-  roomOwner: User;
-  numberOfParticipants: number;
-  gameMode: string;
-  map: string;
-  participants: GameRoomParticipant[];
-  status: GameRoomStatus;
-}
+import { GameRoom, GameRoomType } from './game.room';
+import { GameGateway } from './game.gateway';
 
 @Injectable()
 export class GameService {
@@ -44,60 +14,48 @@ export class GameService {
     return this.rooms;
   }
 
+  getAllGameRoomsInfo(): Partial<GameRoom>[] {
+    return this.rooms.map((room) => room.getGameRoomInfo());
+  }
+
+  getGameRoom(roomURL: string): GameRoom | undefined {
+    return this.rooms.find((room) => room.roomURL === roomURL);
+  }
+
   deleteGameRoom(roomURL: string): void {
     this.rooms = this.rooms.filter((room) => room.roomURL !== roomURL);
   }
 
   editGameRoomName(roomURL: string, roomName: string): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    room.roomName = roomName;
+    const room = this.getGameRoom(roomURL);
+    if (room) room.roomName = roomName;
   }
 
   editGameRoomType(roomURL: string, roomType: GameRoomType): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    room.roomType = roomType;
+    const room = this.getGameRoom(roomURL);
+    if (room) room.roomType = roomType;
   }
 
   editGameRoomPassword(roomURL: string, roomPassword: string): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    room.roomPassword = roomPassword;
+    const room = this.getGameRoom(roomURL);
+    if (room) room.roomPassword = roomPassword;
   }
 
   editGameRoomGameMode(roomURL: string, gameMode: string): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    room.gameMode = gameMode;
+    const room = this.getGameRoom(roomURL);
+    if (room) room.gameMode = gameMode;
   }
 
   editGameRoomMap(roomURL: string, map: string): void {
-    const room = this.rooms.find((room) => room.roomURL === roomURL);
-    if (!room) return;
-    room.map = map;
+    const room = this.getGameRoom(roomURL);
+    if (room) room.map = map;
   }
 
   editGameRoomUserReady(roomURL: string, userId: string, ready: boolean): void {
-    this.rooms
-      .find((room) => room.roomURL === roomURL)
-      .participants.find(
-        (participant) => participant.user.id === userId,
-      ).ready = ready;
-    console.log(
-      'edit ready',
-      this.rooms.find((room) => room.roomURL === roomURL).participants,
-    );
-    // if (!room) return;
-    // const participant = room.participants.find(
-    //   (participant) => participant.user.id === userId,
-    // );
-    // if (!participant) return;
-    // participant.ready = ready;
-    // console.log('edit ready', room.participants);
-    // console.log(
-    //   'edit ready',
-    //   this.rooms.find((room) => room.roomURL === roomURL).participants,
-    // );
+    const room = this.getGameRoom(roomURL);
+    if (room) {
+      const participant = room.participants.find((p) => p.user.id === userId);
+      if (participant) participant.ready = ready;
+    }
   }
 }

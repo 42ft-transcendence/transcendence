@@ -48,9 +48,11 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isFirstLogin) return;
+    // if (!isFirstLogin) return;
+    if (currentPath !== "/") return;
+    console.log("첫 접속");
     // TODO: 첫 접속일 때, 이전의 전역 상태 초기화
-    initializer();
+    // initializer();
     // TODO: 첫 접속일 때, 모달 띄워준 뒤 첫 접속 상태 변경
     setTimeout(() => {
       setIsFirstLogin(false);

@@ -5,24 +5,15 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { TMP, UserStatusType, RoomData } from 'src/util';
+import { TMP, UserStatusType } from 'src/util';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { MatchHistorysService } from 'src/match_history/history.service';
-import * as bcrypt from 'bcrypt';
-import { ChattingGateway } from 'src/chatting/chatting.gateway';
 import { HistoryDto } from 'src/match_history/dto/history.dto';
-import { GameData } from './game.engine';
-import {
-  GameRoom,
-  GameRoomStatus,
-  GameRoomType,
-  GameService,
-} from './game.service';
+import { GameService } from './game.service';
 import { SHA256 } from 'crypto-js';
+import { GameRoom, GameRoomStatus, GameRoomType } from './game.room';
 
-const roomManager = new Map<string, GameData>();
-const roomTimeout = new Map<string, NodeJS.Timeout>();
 const rankGameWaitingQueue = [];
 
 @WebSocketGateway({
@@ -35,14 +26,19 @@ export class GameGateway {
     private userService: UsersService,
     private matchHistorysService: MatchHistorysService,
     private gameService: GameService,
-    private gameData: GameData,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
-  refreshGameRoomList() {
-    this.server.emit('roomList', this.gameService.getAllGameRooms());
+  private findGameRoomByURL(roomURL: string): GameRoom | undefined {
+    return this.gameService
+      .getAllGameRooms()
+      .find((room) => room.roomURL === roomURL);
+  }
+
+  private refreshGameRoomList() {
+    this.server.emit('roomList', this.gameService.getAllGameRoomsInfo());
   }
 
   @SubscribeMessage('getGameRoomList')
@@ -73,10 +69,10 @@ export class GameGateway {
     if (rankGameWaitingQueue.length >= 2) {
       const user1 = rankGameWaitingQueue.shift();
       const user2 = rankGameWaitingQueue.shift();
-      const newRoom: GameRoom = {
+      const newRoomData = {
         roomURL: SHA256(new Date() + user1.id + user2.id).toString(),
         roomName: '랭킹전',
-        roomType: 'RANKING',
+        roomType: 'RANKING' as GameRoomType,
         roomPassword: '',
         roomOwner: user1,
         numberOfParticipants: 2,
@@ -87,11 +83,16 @@ export class GameGateway {
           { user: user2, ready: false },
         ],
         status: GameRoomStatus.WAITING,
+        countsOfDisconnect: 0,
+        onGame: [false, false],
+        timeout: null,
+        gameEngine: null,
       };
+      const newRoom = new GameRoom(newRoomData, this, this.gameService);
       this.gameService.createGameRoom(newRoom);
       const response = {
         gameRoomURL: newRoom.roomURL,
-        gameRoom: newRoom,
+        gameRoom: newRoom.getGameRoomInfo(),
         participants: [user1, user2],
       };
       this.server.emit('joinRankGame', response);
@@ -130,7 +131,7 @@ export class GameGateway {
       roomType: GameRoomType;
     },
   ) {
-    const newRoom: GameRoom = {
+    const newRoomData = {
       roomURL: content.gameRoomURL,
       roomName: content.myData.nickname + ' vs ' + content.awayUser.nickname,
       roomType: content.roomType,
@@ -145,6 +146,8 @@ export class GameGateway {
       ],
       status: GameRoomStatus.WAITING,
     };
+    // GameRoom 인스턴스 생성
+    const newRoom = new GameRoom(newRoomData, this, this.gameService);
     this.gameService.createGameRoom(newRoom);
     await this.userService.updateStatus(content.myData, UserStatusType.GAME);
     this.server.emit('offerBattle', content);
@@ -155,10 +158,10 @@ export class GameGateway {
     client: Socket,
     content: { user: User; gameRoomURL: string },
   ) {
-    const newRoom: GameRoom = {
+    const newRoomData = {
       roomURL: content.gameRoomURL,
       roomName: '',
-      roomType: 'PUBLIC',
+      roomType: 'PUBLIC' as GameRoomType,
       roomPassword: '',
       roomOwner: content.user,
       numberOfParticipants: 1,
@@ -167,6 +170,11 @@ export class GameGateway {
       participants: [{ user: content.user, ready: false }],
       status: GameRoomStatus.WAITING,
     };
+
+    // GameRoom 인스턴스 생성
+    const newRoom = new GameRoom(newRoomData, this, this.gameService);
+
+    // Note: gameService의 createGameRoom 메서드가 GameRoom 인스턴스를 받아야 한다면 아래와 같이 변경됩니다.
     this.gameService.createGameRoom(newRoom);
     await this.userService.updateStatus(content.user, UserStatusType.GAME);
     this.refreshGameRoomList();
@@ -210,12 +218,6 @@ export class GameGateway {
       );
     }
     this.refreshGameRoomList();
-    console.log(
-      'editGameRoomInfo: ',
-      this.gameService
-        .getAllGameRooms()
-        .find((room) => room.roomURL === content.gameRoomURL),
-    );
   }
 
   @SubscribeMessage('acceptBattle')
@@ -223,13 +225,10 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; user1Id: string; user2Id: string },
   ) {
-    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
-      return room.roomURL === content.gameRoomURL;
-    });
-    console.log('acceptBattle: ', gameRoom);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     const response = {
       gameRoomURL: content.gameRoomURL,
-      gameRoom: gameRoom,
+      gameRoom: gameRoom.getGameRoomInfo(),
       user1Id: content.user1Id,
       user2Id: content.user2Id,
     };
@@ -256,17 +255,9 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; userId: string },
   ) {
-    console.log('readyGameRoom: ', content);
-    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
-      return room.roomURL === content.gameRoomURL;
-    });
-    console.log('participant: ', gameRoom.participants);
-    this.gameService.editGameRoomUserReady(
-      content.gameRoomURL,
-      content.userId,
-      true,
-    );
-    console.log('participant: ', gameRoom.participants);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
+    gameRoom.setParticipantReady(content.userId, true);
     this.refreshGameRoomList();
   }
 
@@ -275,11 +266,9 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; userId: string },
   ) {
-    this.gameService.editGameRoomUserReady(
-      content.gameRoomURL,
-      content.userId,
-      false,
-    );
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
+    gameRoom.setParticipantReady(content.userId, false);
     this.refreshGameRoomList();
   }
 
@@ -288,17 +277,9 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; user: User },
   ) {
-    const gameRoom = this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === content.gameRoomURL);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
-    const gameRoomParticipants = gameRoom.participants;
-    const enterUser = gameRoomParticipants.find(
-      (participant) => participant.user.id === content.user.id,
-    );
-    if (enterUser) return;
-    gameRoomParticipants.push({ user: content.user, ready: false });
-    gameRoom.numberOfParticipants++;
+    gameRoom.enterGameRoom(content.user);
     await this.userService.updateStatus(content.user, UserStatusType.GAME);
     this.refreshGameRoomList();
   }
@@ -308,26 +289,9 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; user: User },
   ) {
-    const gameRoom = this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === content.gameRoomURL);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
-    const gameRoomParticipants = gameRoom.participants;
-    const exitUser = gameRoomParticipants.find(
-      (participant) => participant.user.id === content.user.id,
-    );
-    const notExitUser = gameRoomParticipants.find(
-      (participant) => participant.user.id !== content.user.id,
-    );
-    if (
-      gameRoom.numberOfParticipants === 2 &&
-      gameRoom.roomOwner.id === exitUser.user.id
-    ) {
-      gameRoom.roomOwner = notExitUser.user;
-    }
-    const exitUserIndex = gameRoomParticipants.indexOf(exitUser);
-    gameRoomParticipants.splice(exitUserIndex, 1);
-    gameRoom.numberOfParticipants--;
+    gameRoom.exitGameRoom(content.user);
     if (gameRoom.numberOfParticipants === 0) {
       this.gameService.deleteGameRoom(content.gameRoomURL);
       if (content.user.status === UserStatusType.GAME) {
@@ -336,50 +300,44 @@ export class GameGateway {
           UserStatusType.ONLINE,
         );
       }
-      this.refreshGameRoomList();
     }
+    this.refreshGameRoomList();
   }
 
   @SubscribeMessage('startGameCountDown')
   async startGameCountDown(client: Socket, content: { gameRoomURL: string }) {
-    // 10초 카운트다운
-    for (let i = 5; i >= -1; i--) {
-      const response = {
-        roomURL: content.gameRoomURL,
-        roomName: 'SYSTEM',
-        message:
-          i > 0 ? `게임 시작까지 ${i}초 남았습니다.` : '게임이 시작됩니다!',
-        userId: 'SYSTEM',
-        userNickname: 'SYSTEM',
-        createdAt: new Date(),
-      };
-
-      // 카운트다운 메시지 발송
-      if (i !== -1) {
-        this.server.emit('getGameRoomChat', response);
-      } else {
-        this.startGame(client, content);
-      }
-      // 1초 대기
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    for (let secondsRemaining = 5; secondsRemaining >= -1; secondsRemaining--) {
+      if (secondsRemaining !== -1)
+        this.sendCountDownMessage(content.gameRoomURL, secondsRemaining);
+      else this.startGame(client, content);
+      await this.wait(1000);
     }
   }
 
-  startGame(client: Socket, content: { gameRoomURL: string }) {
-    const gameRoom = this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === content.gameRoomURL);
-    const newEngine = new GameData(gameRoom.gameMode);
-    roomManager.set(content.gameRoomURL, newEngine);
+  private sendCountDownMessage(roomURL: string, seconds: number) {
+    const message =
+      seconds > 0
+        ? `게임 시작까지 ${seconds}초 남았습니다.`
+        : '게임이 시작됩니다!';
     const response = {
-      gameRoomURL: content.gameRoomURL,
-      gameData: roomManager.get(content.gameRoomURL),
+      roomURL: roomURL,
+      roomName: 'SYSTEM',
+      message: message,
+      userId: 'SYSTEM',
+      userNickname: 'SYSTEM',
+      createdAt: new Date(),
     };
-    this.server.emit('startGame', response);
-    const intervalId = setInterval(() => {
-      this.gameProcess(client, content.gameRoomURL);
-    }, 1000 / 60);
-    roomTimeout.set(content.gameRoomURL, intervalId);
+    this.server.emit('getGameRoomChat', response);
+  }
+
+  private wait(duration: number) {
+    return new Promise((resolve) => setTimeout(resolve, duration));
+  }
+
+  startGame(client: Socket, content: { gameRoomURL: string }) {
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
+    gameRoom.startGame();
   }
 
   @SubscribeMessage('userPaddle')
@@ -387,90 +345,9 @@ export class GameGateway {
     client: Socket,
     content: { gameRoomURL: string; userIndex: number; userPaddle: number },
   ) {
-    const engine = roomManager.get(content.gameRoomURL);
-    if (!engine) return;
-    let paddleDelta;
-    if (content.userIndex === 0) {
-      paddleDelta = content.userPaddle - engine.leftPaddle;
-      engine.leftPaddle = content.userPaddle;
-    } else {
-      paddleDelta = content.userPaddle - engine.rightPaddle;
-      engine.rightPaddle = content.userPaddle;
-    }
-    content.userIndex === 0
-      ? (engine.leftPaddle = content.userPaddle)
-      : (engine.rightPaddle = content.userPaddle);
-    engine.advance(paddleDelta);
-  }
-
-  gameProcess(client: Socket, gameRoomURL: string) {
-    const engine = roomManager.get(gameRoomURL);
-    if (!engine) return;
-    const response = {
-      gameRoomURL: gameRoomURL,
-      gameData: engine,
-    };
-    this.server.emit('gameProcess', response);
-    this.server.emit('gameScore', {
-      gameRoomURL: gameRoomURL,
-      user1Score: engine.score[0],
-      user2Score: engine.score[1],
-    });
-    if (engine.score[0] >= 5 || engine.score[1] >= 5) {
-      this.finishGame(client, gameRoomURL, false);
-    }
-  }
-
-  finishGame(client: Socket, gameRoomURL: string, isSurrender: boolean) {
-    const gameRoom = this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === gameRoomURL);
-    const engine = roomManager.get(gameRoomURL);
-    if (!engine) return;
-    const timeout = roomTimeout.get(gameRoomURL);
-    clearInterval(timeout);
-    this.makeMatchHistory(gameRoomURL);
-    const finishedResponse = {
-      gameRoomURL: gameRoomURL,
-      winner: engine.score[0] > engine.score[1] ? 0 : 1,
-      isSurrender: isSurrender,
-    };
-    roomTimeout.delete(gameRoomURL);
-    roomManager.delete(gameRoomURL);
-    if (gameRoom.roomType === 'RANKING') {
-      this.gameService.deleteGameRoom(gameRoomURL);
-    } else {
-      const participants = gameRoom.participants;
-      this.readyCancleGameRoom(client, {
-        gameRoomURL: gameRoomURL,
-        userId: participants[0].user.id,
-      });
-      this.readyCancleGameRoom(client, {
-        gameRoomURL: gameRoomURL,
-        userId: participants[1].user.id,
-      });
-    }
-    this.server.emit('finishedGame', finishedResponse);
-  }
-
-  @SubscribeMessage('surrenderGameRoom')
-  surrenderGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; userId: string },
-  ) {
-    console.log('surrenderGameRoom: ', content);
-    const engine = roomManager.get(content.gameRoomURL);
-    const gameRoom = this.gameService.getAllGameRooms().find((room) => {
-      return room.roomURL === content.gameRoomURL;
-    });
-    if (!engine || !gameRoom) return;
-    const userIndex = gameRoom.participants.findIndex(
-      (participant) => participant.user.id === content.userId,
-    );
-    if (userIndex === -1) return;
-    engine.score[userIndex] = 0;
-    engine.score[(userIndex + 1) % 2] = 5;
-    this.finishGame(client, content.gameRoomURL, true);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
+    gameRoom.userPaddle(content);
   }
 
   eloRatingSystem(
@@ -527,31 +404,7 @@ export class GameGateway {
     return [player1updated - player1rating, player2updated - player2rating];
   }
 
-  makeMatchHistory(gameRoomURL: string) {
-    const engine = roomManager.get(gameRoomURL);
-    const gameRoom = this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === gameRoomURL);
-    const participants = gameRoom.participants;
-    const historyDto = new HistoryDto();
-    const [player1updated, player2updated] = this.eloRatingSystem(
-      participants[0].user,
-      participants[1].user,
-      engine.score[0],
-      engine.score[1],
-      gameRoom.roomType,
-    );
-    historyDto.player1Score = engine.score[0];
-    historyDto.player2Score = engine.score[1];
-    historyDto.player1ScoreChange =
-      gameRoom.roomType === 'RANKING' ? player1updated : 0;
-    historyDto.player2ScoreChange =
-      gameRoom.roomType === 'RANKING' ? player2updated : 0;
-    historyDto.player1 = participants[0].user;
-    historyDto.player2 = participants[1].user;
-    historyDto.roomType = gameRoom.roomType;
-    historyDto.map = gameRoom.map;
-    historyDto.isDummy = false;
+  makeMatchHistory(historyDto: HistoryDto) {
     this.matchHistorysService.putHistory(historyDto);
   }
 
@@ -603,38 +456,33 @@ export class GameGateway {
   async handleConnection(client: Socket) {
     try {
       const userId = await this.getUserId(client);
-      console.log('connection game socket: ', userId, client.id);
+      const gameRoom = this.gameService
+        .getAllGameRooms()
+        .find((room) =>
+          room.participants.find(
+            (participant) => participant.user.id === userId,
+          ),
+        );
+      if (!gameRoom) return;
+      if (gameRoom.status === GameRoomStatus.GAMING) {
+        gameRoom.connection(userId);
+      }
     } catch (e) {
       console.log(e);
       client.disconnect();
     }
   }
 
-  async handleDisconnection(client: Socket) {
+  async handleDisconnect(client: Socket) {
     const userId = await this.getUserId(client);
-    const user = await this.userService.getUserById(userId);
-    console.log('disconnection game socket: ', client.id);
-    if (roomManager.has(client.id)) {
-      const gameData = roomManager.get(client.id);
-      if (gameData.onGame) {
-        gameData.onGame = false;
-        // 내가 참여중인 gameRoom 찾아서 몰수패 처리하기
-        const gameRoom = this.gameService.getAllGameRooms().find((room) =>
-          room.participants.find((participant) => {
-            return participant.user.id === user.id;
-          }),
-        );
-        if (gameRoom) {
-          if (gameRoom.roomOwner.id === user.id) {
-            gameData.score[1] = 6;
-          } else {
-            gameData.score[0] = 6;
-          }
-        }
-        this.server.to(client.id).emit('finished', gameData.score);
-        // 매치히스토리도 업데이트 해야함
-      }
-      roomManager.delete(client.id);
+    const gameRoom = this.gameService
+      .getAllGameRooms()
+      .find((room) =>
+        room.participants.find((participant) => participant.user.id === userId),
+      );
+    if (!gameRoom) return;
+    if (gameRoom.status === GameRoomStatus.GAMING) {
+      gameRoom.disconnection(userId);
     }
   }
 
@@ -649,53 +497,4 @@ export class GameGateway {
       throw new Error('Invalid Token');
     }
   }
-
-  // @SubscribeMessage('processGameFrame')
-  // async processGameFrame(
-  //   client: Socket,
-  //   content: {
-  //     userLocation: number;
-  //     paddlePos: number;
-  //     roomNum: number;
-  //   },
-  // ) {
-  //   let paddleDelta;
-  //   if (roomManager.has(content.roomNum)) {
-  //     const gameData = roomManager.get(content.roomNum);
-  //     if (content.userLocation == 1) {
-  //       paddleDelta = gameData.leftPaddle - content.paddlePos;
-  //       gameData.leftPaddle = content.paddlePos;
-  //     } else {
-  //       paddleDelta = gameData.rightPaddle - content.paddlePos;
-  //       gameData.rightPaddle = content.paddlePos;
-  //     }
-  //     if (paddleDelta < 0) {
-  //       paddleDelta *= -1;
-  //     }
-
-  //     gameData.advance(paddleDelta);
-
-  //     if (
-  //       (gameData.score[0] === finishScore || gameData[1] === finishScore) &&
-  //       gameData.onGame
-  //     ) {
-  //       this.server
-  //         .to(String(content.roomNum))
-  //         .emit('finished', gameData.score);
-  //       gameData.onGame = false;
-  //       await this.pushHistory(content.roomNum, gameData.mode);
-  //       await this.gameResultProcess(gameData, content.roomNum);
-  //       gameData.score = [0, 0];
-  //       // 일반게임이면 레디상태 초기화
-  //       if (content.roomNum % 2 === 0) {
-  //         checkReady.get(content.roomNum)[0] = false;
-  //         checkReady.get(content.roomNum)[1] = false;
-  //       }
-  //     } else if (gameData.onGame === false) {
-  //       client.emit('finished', gameData.score);
-  //     } else {
-  //       this.server.to(String(content.roomNum)).emit('gameData', gameData);
-  //     }
-  //   }
-  // }
 }

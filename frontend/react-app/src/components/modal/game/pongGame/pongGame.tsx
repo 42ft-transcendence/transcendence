@@ -152,28 +152,29 @@ const PongGame: React.FC = () => {
     let animationFrameId: number;
 
     backgroundImage.onload = () => {
-      let count = 4;
-      const countDown = setInterval(() => {
-        if (!ctx) {
-          console.error("Canvas context is null.");
-          return;
-        }
-        ctx.fillStyle = "BLACK";
-        ctx.fillRect(0, 0, cvs.width, cvs.height);
-        ctx.fillStyle = "WHITE";
-        ctx.font = "45px Noto Sans Mono";
-        if (count !== 1) {
-          ctx.fillText((count - 1).toString(), cvs.width / 2, cvs.height / 2);
-        } else if (count === 1) {
-          ctx.fillText("Game Start!!", cvs.width / 2, cvs.height / 2);
-        }
-        count--;
-        if (count === -1) {
-          clearInterval(countDown);
+      // let count = 4;
+      // const countDown = setInterval(() => {
+      //   if (!ctx) {
+      //     console.error("Canvas context is null.");
+      //     return;
+      //   }
+      //   ctx.fillStyle = "BLACK";
+      //   ctx.fillRect(0, 0, cvs.width, cvs.height);
+      //   ctx.fillStyle = "WHITE";
+      //   ctx.font = "45px Noto Sans Mono";
+      //   if (count !== 1) {
+      //     ctx.fillText((count - 1).toString(), cvs.width / 2, cvs.height / 2);
+      //   } else if (count === 1) {
+      //     ctx.fillText("Game Start!!", cvs.width / 2, cvs.height / 2);
+      //   }
+      //   count--;
+      //   if (count === -1) {
+      //     clearInterval(countDown);
 
-          game();
-        }
-      }, 1000);
+      //     game();
+      //   }
+      // }, 1000);
+      game();
     };
     function game() {
       render();
