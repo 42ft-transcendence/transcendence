@@ -11,7 +11,7 @@ import {
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
   client_id: process.env.VITE_FT_OAUTH_CLIENT_ID as string,
-  redirect_uri: process.env.VITE_FT_AUTH_REDIRECT_URI as string,
+  redirect_uri: process.env.VITE_FT_OAUTH_REDIRECT_URI as string,
 };
 
 const google_oauth = {
@@ -54,6 +54,8 @@ export default function Login() {
   )}&response_type=code&scope=${encodeURIComponent(
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
+
+  console.log({ ft: oauth_forty_two, google: oauth_google });
 
   return (
     <PageContainer>
