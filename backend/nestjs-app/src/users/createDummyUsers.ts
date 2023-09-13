@@ -69,8 +69,8 @@ export const createDummyUsers = (num: number): DummyUser[] => {
       ladder_lose,
       admin: index < 3 ? true : false,
       avatarPath: `http://dev.ccpp.games/files/profiles/profile${
-        (index + 1) % 4
-      }.svg`,
+        (index + 1) % 5
+      }.png`,
       status,
       twoFactorAuthenticationSecret: '',
       isTwoFactorAuthenticationEnabled: false,

@@ -37,7 +37,7 @@ export const useProfileActions = (
   const handleDefaultProfile = async () => {
     const randomPath = `${
       process.env.VITE_BASE_URL
-    }/files/profiles/profile${Math.floor(Math.random() * 4)}.svg`;
+    }/files/profiles/profile${Math.floor(Math.random() * 5)}.png`;
     await deleteImage();
     await saveAvatarPath(randomPath);
   };
