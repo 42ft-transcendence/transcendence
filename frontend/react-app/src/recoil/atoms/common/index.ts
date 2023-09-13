@@ -39,3 +39,8 @@ export const isFirstLoginState = atom<boolean>({
   default: true, // 최초에는 true로 설정
   effects_UNSTABLE: [persistAtom],
 });
+
+export const friendListState = atom<UserType[]>({
+  key: "friendListState",
+  default: [],
+});
