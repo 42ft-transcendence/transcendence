@@ -55,8 +55,6 @@ export default function Login() {
     "https://www.googleapis.com/auth/userinfo.profile",
   )}`;
 
-  console.log({ ft: oauth_forty_two, google: oauth_google });
-
   return (
     <PageContainer>
       <LoginContainer>
