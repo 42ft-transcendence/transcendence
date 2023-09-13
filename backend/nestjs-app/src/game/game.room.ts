@@ -230,7 +230,7 @@ export class GameRoom {
     const engine = this.getGameEngine();
     if (!engine) return;
     clearInterval(this.timeout);
-    // this.gameGateway.makeMatchHistory(this.roomURL);
+    this.makeMatchHistory();
     const finishedResponse = {
       gameRoomURL: this.roomURL,
       winner: engine.score[0] > engine.score[1] ? 0 : 1,
