@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-import * as DS from "../index.styled";
-import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { gameRoomListState } from "@src/recoil/atoms/game";
-import { GameRoomInfoType, GameRoomStatus } from "@src/types/game.type";
-import SearchBar from "@components/common/searchBar";
+import { GameRoomInfoType } from "@src/types/game.type";
+import SearchList from "@components/common/search/searchList";
+import GameRoomCard from "@components/common/search/gameRoomCard";
 
 interface GameListContentProps {
   setSelectGameRoom: React.Dispatch<
@@ -50,48 +49,24 @@ export const GameListContent = ({
   }, [gameRoomList, search, sortState]);
 
   return (
-    <DS.ContentArea>
-      <SearchBar
-        id="gameListSearch"
-        search={search}
-        setSearch={setSearch}
-        sortState={sortState}
-        setSortState={setSortState}
-        sortOptions={["전체 방", "공개 방", "비밀 방"]}
-        placeholder="방 이름을 입력하세요"
-      />
-      <S.GameRoomCardContainer>
-        {filteredRoomList.map((gameRoom) => (
-          <S.GameRoomCard
-            key={gameRoom.roomURL}
-            $roomType={gameRoom.roomType}
-            onClick={() => {
-              if (gameRoom.status === GameRoomStatus.GAMING) return;
-              handleOnClick(gameRoom);
-            }}
-          >
-            <S.GameRoomCardLeft>
-              <S.GameRoomTitle>
-                {gameRoom.roomName !== "" ? gameRoom.roomName : "빠른 대전"}
-              </S.GameRoomTitle>
-              <S.GameRoomOption>
-                {gameRoom.map} | {gameRoom.gameMode} |{" "}
-                {gameRoom.roomOwner.nickname}
-              </S.GameRoomOption>
-            </S.GameRoomCardLeft>
-            <S.GameRoomCardRight>
-              <S.GameRoomNumOfPeople>
-                {gameRoom.numberOfParticipants} / 2
-              </S.GameRoomNumOfPeople>
-              <S.GameRoomStatus>
-                {gameRoom.status === GameRoomStatus.WAITING
-                  ? "대기중"
-                  : "게임중"}
-              </S.GameRoomStatus>
-            </S.GameRoomCardRight>
-          </S.GameRoomCard>
-        ))}
-      </S.GameRoomCardContainer>
-    </DS.ContentArea>
+    <SearchList
+      searchBar={{
+        id: "gameListSearch",
+        search,
+        setSearch,
+        sortState,
+        setSortState,
+        sortOptions: ["전체 방", "공개 방", "비밀 방"],
+        placeholder: "방 이름을 입력하세요",
+      }}
+    >
+      {filteredRoomList.map((gameRoom) => (
+        <GameRoomCard
+          key={gameRoom.roomURL}
+          gameRoom={gameRoom}
+          handleOnClick={handleOnClick}
+        />
+      ))}
+    </SearchList>
   );
 };

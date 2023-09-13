@@ -1,7 +1,5 @@
 import NavBar from "@src/components/common/navBar";
 import { sidebarConfig } from "@src/components/common/sideBar";
-import * as DS from "../index.styled";
-import * as S from "./index.styled";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { UserStatus, UserType } from "@src/types";
@@ -12,9 +10,9 @@ import {
 } from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
-import { UserCardComponent } from "./container";
+import { UserCardComponent } from "@components/common/search/userCard";
 import { ProfileModalOnClickHandler } from "@src/utils";
-import SearchBar from "@src/components/common/searchBar";
+import SearchList from "@components/common/search/searchList";
 
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
@@ -127,29 +125,28 @@ const UserList = () => {
         userStatusCounts={userStatusCounts}
         currentClick={currentClick}
       />
-      <DS.ContentArea style={{ overflowX: "scroll" }}>
-        <SearchBar
-          id="userListSearch"
-          search={search}
-          setSearch={setSearch}
-          sortState={sortState}
-          setSortState={setSortState}
-          sortOptions={["닉네임 순", "랭크 점수 순"]}
-          placeholder="닉네임을 입력하세요"
-        />
-        <S.UserCardContainer>
-          {sortedUserList.map((user) => (
-            <UserCardComponent
-              key={user.id}
-              avatarPath={user.avatarPath}
-              status={user.status}
-              nickname={user.nickname}
-              rating={user.rating}
-              onClick={ProfileModalOnClickHandler(setShowProfile, true, user)}
-            />
-          ))}
-        </S.UserCardContainer>
-      </DS.ContentArea>
+      <SearchList
+        searchBar={{
+          id: "userListSearch",
+          search,
+          setSearch,
+          sortState,
+          setSortState,
+          sortOptions: ["닉네임 순", "랭크 점수 순"],
+          placeholder: "닉네임을 입력하세요",
+        }}
+      >
+        {sortedUserList.map((user) => (
+          <UserCardComponent
+            key={user.id}
+            avatarPath={user.avatarPath}
+            status={user.status}
+            nickname={user.nickname}
+            rating={user.rating}
+            onClick={ProfileModalOnClickHandler(setShowProfile, true, user)}
+          />
+        ))}
+      </SearchList>
     </>
   );
 };

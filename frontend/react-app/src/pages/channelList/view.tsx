@@ -1,8 +1,9 @@
-import ChannelSearchItem from "@components/channel/channelSearchItem";
+import ChannelSearchItem from "@components/common/search/channelSearchItem";
 import NavBar from "@components/common/navBar";
 import ChattingSideBar from "@components/common/sideBar/chattingSideBar";
-import SearchBar, { SearchBarPropsType } from "@components/common/searchBar";
+import { SearchBarPropsType } from "@components/common/search/searchBar";
 import { ChannelType } from "@type";
+import SearchList from "@components/common/search/searchList";
 
 export interface ChannelListPageViewPropsType {
   searchBar: SearchBarPropsType;
@@ -17,18 +18,11 @@ const ChannelListPageView = ({
     <>
       <NavBar />
       <ChattingSideBar />
-      <SearchBar
-        id={searchBar.id}
-        search={searchBar.search}
-        setSearch={searchBar.setSearch}
-        sortState={searchBar.sortState}
-        setSortState={searchBar.setSortState}
-        sortOptions={searchBar.sortOptions}
-        placeholder={searchBar.placeholder}
-      />
-      {channels.map((channel) => (
-        <ChannelSearchItem key={channel.id} channel={channel} />
-      ))}
+      <SearchList searchBar={searchBar}>
+        {channels.map((channel) => (
+          <ChannelSearchItem key={channel.id} channel={channel} />
+        ))}
+      </SearchList>
     </>
   );
 };

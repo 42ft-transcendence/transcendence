@@ -6,7 +6,6 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   max-width: 1660px;
-  padding-inline: 10%;
 `;
 
 export const List = styled.ul`
@@ -15,6 +14,7 @@ export const List = styled.ul`
   grid-auto-rows: 100px;
   grid-gap: 40px;
   width: 100%;
+  padding-inline: 10%;
   flex-grow: 1;
   justify-content: center;
   align-items: flex-start;
