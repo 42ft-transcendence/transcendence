@@ -5,6 +5,7 @@ export const SearchBarContainer = styled.div`
   height: 120px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 export const SearchBar = styled.div`

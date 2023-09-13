@@ -134,6 +134,8 @@ const UserList = () => {
           setSearch={setSearch}
           sortState={sortState}
           setSortState={setSortState}
+          sortOptions={["닉네임 순", "랭크 점수 순"]}
+          placeholder="닉네임을 입력하세요"
         />
         <S.UserCardContainer>
           {sortedUserList.map((user) => (

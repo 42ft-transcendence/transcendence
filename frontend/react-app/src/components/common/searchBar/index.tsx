@@ -3,12 +3,13 @@ import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
 import { SortDropdownComponent } from "@src/components/dropdown";
 
-type SearchBarPropsType = {
+export type SearchBarPropsType = {
   id: string;
   search: string;
   setSearch: (value: string) => void;
   sortState: string;
   setSortState: (value: string) => void;
+  sortOptions: string[];
   placeholder?: string;
 };
 
@@ -18,6 +19,7 @@ const SearchBar: React.FC<SearchBarPropsType> = ({
   setSearch,
   sortState,
   setSortState,
+  sortOptions,
   placeholder,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -42,7 +44,7 @@ const SearchBar: React.FC<SearchBarPropsType> = ({
         setShowDropdown={setShowDropdown}
         setSortState={setSortState}
         setIsOpenDropdown={setIsOpenDropdown}
-        options={["닉네임 순", "랭크 점수 순"]}
+        options={sortOptions}
         isOpenDropdown={isOpenDropdown}
         mode="LIGHT"
       />

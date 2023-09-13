@@ -1,10 +1,10 @@
 import { useState } from "react";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { SearchComponent } from "../userList/container";
 import { useRecoilState } from "recoil";
 import { gameRoomListState } from "@src/recoil/atoms/game";
 import { GameRoomInfoType, GameRoomStatus } from "@src/types/game.type";
+import SearchBar from "@components/common/searchBar";
 
 interface GameListContentProps {
   setSelectGameRoom: React.Dispatch<
@@ -29,12 +29,13 @@ export const GameListContent = ({
 
   return (
     <DS.ContentArea>
-      <SearchComponent
+      <SearchBar
         id="gameListSearch"
         search={search}
         setSearch={setSearch}
         sortState={sortState}
         setSortState={setSortState}
+        sortOptions={["전체 방", "공개 방", "비공개 방"]}
         placeholder="방 이름을 입력하세요"
       />
       <S.GameRoomCardContainer>
