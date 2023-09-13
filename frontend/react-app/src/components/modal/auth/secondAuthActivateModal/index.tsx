@@ -117,7 +117,7 @@ const SecondAuthActivateModal = () => {
         <S.Title>2차인증 활성화</S.Title>
         {loading ? (
           <img
-            src="http://localhost/src/assets/images/loading.gif"
+            src={`${process.env.VITE_BASE_URL}/src/assets/images/loading.gif`}
             alt="loading"
           />
         ) : (

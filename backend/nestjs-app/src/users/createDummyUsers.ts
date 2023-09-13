@@ -68,9 +68,9 @@ export const createDummyUsers = (num: number): DummyUser[] => {
       ladder_win,
       ladder_lose,
       admin: index < 3 ? true : false,
-      avatarPath: `http://localhost/files/profiles/profile${
-        (index + 1) % 4
-      }.svg`,
+      avatarPath: `${process.env.BASE_URL}/files/profiles/profile${
+        (index + 1) % 5
+      }.png`,
       status,
       twoFactorAuthenticationSecret: '',
       isTwoFactorAuthenticationEnabled: false,

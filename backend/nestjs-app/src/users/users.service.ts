@@ -103,10 +103,12 @@ export class UsersService {
     const user = await this.getUserById(userid);
     try {
       if (
-        user.avatarPath.indexOf('http://localhost/files/profiles/profile') !== 0
+        user.avatarPath.indexOf(
+          `${process.env.BASE_URL}/files/profiles/profile`,
+        ) !== 0
       ) {
         const modifiedUrl = user.avatarPath.replace(
-          'http://localhost/files',
+          `${process.env.BASE_URL}/files`,
           '.',
         );
         await fs.unlink(modifiedUrl);

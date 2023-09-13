@@ -67,9 +67,9 @@ export const createDummyUsers = (num: number): UserType[] => {
       ladder_win,
       ladder_lose,
       admin: false,
-      avatarPath: `http://localhost/files/profiles/profile${
-        (index + 1) % 4
-      }.svg`,
+      avatarPath: `${process.env.VITE_BASE_URL}/files/profiles/profile${
+        (index + 1) % 5
+      }.png`,
       status,
       twoFactorAuthenticationSecret: "",
       isTwoFactorAuthenticationEnabled: false,

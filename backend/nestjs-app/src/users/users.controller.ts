@@ -81,8 +81,6 @@ export class UsersController {
         res.setHeader('Authorization', 'Bearer ' + jwt);
         res.cookie('jwt', jwt, {
           maxAge: 3600000,
-          sameSite: 'none',
-          secure: true,
         });
         this.rootGateway.refreshUsersList();
         return res.send(user);
