@@ -1,10 +1,11 @@
-import { allUserListState } from "@recoil/atoms/common";
+import { allUserListState, userDataState } from "@recoil/atoms/common";
 import {
+  dmListState,
   dmOtherState,
   joinedDmOtherListState,
 } from "@recoil/atoms/directMessage";
 import { selector } from "recoil";
-import { JoinedDmOtherType, UserType } from "@src/types";
+import { ChatType, JoinedDmOtherType, UserType } from "@src/types";
 
 export const dmUserState = selector<UserType | null>({
   key: "dmUserState",
@@ -33,5 +34,34 @@ export const dmUserListState = selector<JoinedDmOtherType[]>({
     });
 
     return dmUserList;
+  },
+});
+
+export const dmChatListState = selector<ChatType[]>({
+  key: "dmChatListState",
+  get: ({ get }) => {
+    const dmUser = get(dmUserState);
+    const selfUser = get(userDataState);
+    const messageList = get(dmListState);
+
+    const chatList = messageList
+      .map((item) => {
+        if (item.from.id === dmUser?.id) {
+          return {
+            message: item.message,
+            user: dmUser,
+            role: "attendee",
+          };
+        } else if (item.from.id === selfUser?.id) {
+          return {
+            message: item.message,
+            user: selfUser,
+            role: "attendee",
+          };
+        } else return null;
+      })
+      .filter((item) => item !== null) as ChatType[];
+
+    return chatList;
   },
 });

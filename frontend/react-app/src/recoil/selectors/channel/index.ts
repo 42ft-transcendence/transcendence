@@ -1,7 +1,7 @@
 import { allUserListState } from "@recoil/atoms/common";
-import { participantListState } from "@recoil/atoms/channel";
+import { messageListState, participantListState } from "@recoil/atoms/channel";
 import { selector } from "recoil";
-import { ParticipantType } from "@src/types";
+import { ChatType, ParticipantType } from "@src/types";
 
 export const channelUserListState = selector<ParticipantType[]>({
   key: "channelUserListState",
@@ -20,5 +20,33 @@ export const channelUserListState = selector<ParticipantType[]>({
       .filter((item) => item.user !== undefined);
 
     return channelUserList;
+  },
+});
+
+export const channelChatListState = selector<ChatType[]>({
+  key: "channelChatListState",
+  get: ({ get }) => {
+    const participantList = get(participantListState);
+    const messageList = get(messageListState);
+
+    const chatList = messageList
+      .map((item) => {
+        const from = participantList.find((user) => user.id === item.userId);
+        if (!from) return null;
+        return {
+          message: item.content,
+          user: from?.user ?? null,
+          role: from?.owner
+            ? "owner"
+            : from?.admin
+            ? "admin"
+            : from?.id === item.userId
+            ? "self"
+            : "attendee",
+        };
+      })
+      .filter((item) => item !== null) as ChatType[];
+
+    return chatList;
   },
 });
