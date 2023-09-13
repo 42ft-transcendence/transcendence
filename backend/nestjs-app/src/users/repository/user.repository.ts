@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { NotFoundException, HttpException } from '@nestjs/common';
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
 import { UserStatusType } from 'src/util';
@@ -7,8 +6,6 @@ import { User } from '../entities/user.entity';
 
 @CustomRepository(User)
 export class UserRepository extends Repository<User> {
-  configService: ConfigService;
-
   async checkUser(id2: string): Promise<boolean> {
     const found = await this.findOne({
       where: {

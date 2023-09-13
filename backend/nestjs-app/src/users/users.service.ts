@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './repository/user.repository';
@@ -11,7 +10,6 @@ export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
-    private configService: ConfigService,
   ) {}
 
   async updateStatus(user: User, type: UserStatusType): Promise<User> {

@@ -7,17 +7,13 @@ import {
   Request,
   Delete,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { UsersService } from 'src/users/users.service';
 
 @Controller('file')
 export class FileController {
-  constructor(
-    private usersService: UsersService,
-    private configService: ConfigService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Post('/fileUpload')
   @UseGuards(JwtTwoFactorGuard)
