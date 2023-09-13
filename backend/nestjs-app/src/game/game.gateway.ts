@@ -32,9 +32,7 @@ export class GameGateway {
   server: Server;
 
   private findGameRoomByURL(roomURL: string): GameRoom | undefined {
-    return this.gameService
-      .getAllGameRooms()
-      .find((room) => room.roomURL === roomURL);
+    return this.gameService.getGameRoom(roomURL);
   }
 
   refreshGameRoomList() {
@@ -83,10 +81,6 @@ export class GameGateway {
           { user: user2, ready: false },
         ],
         status: GameRoomStatus.WAITING,
-        countsOfDisconnect: 0,
-        onGame: [false, false],
-        timeout: null,
-        gameEngine: null,
       };
       const newRoom = new GameRoom(newRoomData, this, this.gameService);
       this.gameService.createGameRoom(newRoom);
@@ -195,27 +189,15 @@ export class GameGateway {
       info: string | number | boolean | GameRoomType;
     },
   ) {
-    console.log('editGameRoomInfo: ', content);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (content.infoType === 'roomName') {
-      this.gameService.editGameRoomName(
-        content.gameRoomURL,
-        content.info as string,
-      );
+      gameRoom.setGameRoomInfo({ roomName: content.info as string });
     } else if (content.infoType === 'roomType') {
-      this.gameService.editGameRoomType(
-        content.gameRoomURL,
-        content.info as GameRoomType,
-      );
+      gameRoom.setGameRoomInfo({ roomType: content.info as GameRoomType });
     } else if (content.infoType === 'roomPassword') {
-      this.gameService.editGameRoomPassword(
-        content.gameRoomURL,
-        content.info as string,
-      );
+      gameRoom.setGameRoomInfo({ roomPassword: content.info as string });
     } else if (content.infoType === 'gameMode') {
-      this.gameService.editGameRoomGameMode(
-        content.gameRoomURL,
-        content.info as string,
-      );
+      gameRoom.setGameRoomInfo({ gameMode: content.info as string });
     }
     this.refreshGameRoomList();
   }
@@ -226,6 +208,7 @@ export class GameGateway {
     content: { gameRoomURL: string; user1Id: string; user2Id: string },
   ) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
     const response = {
       gameRoomURL: content.gameRoomURL,
       gameRoom: gameRoom.getGameRoomInfo(),

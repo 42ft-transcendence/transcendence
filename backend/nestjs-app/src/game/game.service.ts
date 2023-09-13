@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GameRoom, GameRoomType } from './game.room';
-import { GameGateway } from './game.gateway';
+import { GameRoom } from './game.room';
 
 @Injectable()
 export class GameService {
@@ -26,36 +25,8 @@ export class GameService {
     this.rooms = this.rooms.filter((room) => room.roomURL !== roomURL);
   }
 
-  editGameRoomName(roomURL: string, roomName: string): void {
-    const room = this.getGameRoom(roomURL);
-    if (room) room.roomName = roomName;
-  }
-
-  editGameRoomType(roomURL: string, roomType: GameRoomType): void {
-    const room = this.getGameRoom(roomURL);
-    if (room) room.roomType = roomType;
-  }
-
-  editGameRoomPassword(roomURL: string, roomPassword: string): void {
-    const room = this.getGameRoom(roomURL);
-    if (room) room.roomPassword = roomPassword;
-  }
-
-  editGameRoomGameMode(roomURL: string, gameMode: string): void {
-    const room = this.getGameRoom(roomURL);
-    if (room) room.gameMode = gameMode;
-  }
-
   editGameRoomMap(roomURL: string, map: string): void {
     const room = this.getGameRoom(roomURL);
     if (room) room.map = map;
-  }
-
-  editGameRoomUserReady(roomURL: string, userId: string, ready: boolean): void {
-    const room = this.getGameRoom(roomURL);
-    if (room) {
-      const participant = room.participants.find((p) => p.user.id === userId);
-      if (participant) participant.ready = ready;
-    }
   }
 }

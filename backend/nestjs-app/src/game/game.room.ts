@@ -48,13 +48,9 @@ export class GameRoom {
     Object.assign(this, data);
   }
 
-  setParticipantReady(userId: string, ready: boolean): void {
-    const participant = this.participants.find(
-      (participant) => participant.user.id === userId,
-    );
-    if (participant) participant.ready = ready;
-  }
-
+  /**
+   * Getter for GameRoom
+   */
   getGameRoomInfo(): Partial<GameRoom> {
     return {
       roomURL: this.roomURL,
@@ -73,6 +69,20 @@ export class GameRoom {
 
   getGameEngine(): GameData {
     return this.gameEngine;
+  }
+
+  /**
+   * Setter for GameRoom
+   */
+  setGameRoomInfo(data: Partial<GameRoom>): void {
+    Object.assign(this, data);
+  }
+
+  setParticipantReady(userId: string, ready: boolean): void {
+    const participant = this.participants.find(
+      (participant) => participant.user.id === userId,
+    );
+    if (participant) participant.ready = ready;
   }
 
   private sendStartGameMessage(): void {
