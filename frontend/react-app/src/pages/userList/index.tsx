@@ -5,7 +5,11 @@ import * as S from "./index.styled";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { UserStatus, UserType } from "@src/types";
-import { allUserListState, showProfileState } from "@src/recoil/atoms/common";
+import {
+  allUserListState,
+  friendListState,
+  showProfileState,
+} from "@src/recoil/atoms/common";
 import { getFriendList } from "@src/api";
 import { UserStatusCounts } from "@src/types/user.type";
 import { SearchComponent, UserCardComponent } from "./container";
@@ -25,14 +29,25 @@ const UserList = () => {
   });
   const [currentClick, setCurrentClick] = useState<string>("allUsers");
   const [sortState, setSortState] = useState<string>("닉네임 순");
+  const [friendList, setFriendList] = useRecoilState(friendListState);
 
   const currentRoute = window.location.pathname;
   const CurrentSideBar = sidebarConfig[currentRoute];
   const CurrentSideBarComponent = CurrentSideBar.component;
 
   useEffect(() => {
-    setUserStatusCounts((prev) => ({
-      ...prev,
+    getFriendList()
+      .then(({ data }) => {
+        setFriendList(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching the friend list:", error);
+      });
+  }, [setFriendList]);
+
+  useEffect(() => {
+    setUserStatusCounts({
+      friendCount: friendList.length,
       onlineCount: userList.filter((user) => user.status === UserStatus.ONLINE)
         .length,
       gamingCount: userList.filter((user) => user.status === UserStatus.GAMING)
@@ -40,18 +55,8 @@ const UserList = () => {
       offlineCount: userList.filter(
         (user) => user.status === UserStatus.OFFLINE,
       ).length,
-    }));
-    getFriendList()
-      .then((res) => {
-        setUserStatusCounts((prev) => ({
-          ...prev,
-          friendCount: res.data.length,
-        }));
-      })
-      .catch((error) => {
-        console.error("Error fetching the friend list:", error);
-      });
-  }, [userList]);
+    });
+  }, [userList, friendList]);
 
   useEffect(() => {
     const searchedUserList = userList.filter((user) =>
@@ -72,23 +77,13 @@ const UserList = () => {
         searchedUserList.filter((user) => user.status === UserStatus.OFFLINE),
       );
     } else if (currentClick === "friends") {
-      getFriendList()
-        .then((res) => {
-          setFilteredUserList(
-            searchedUserList.filter((user) =>
-              res.data.some((friend) => friend.id === user.id),
-            ),
-          );
-          setUserStatusCounts((prev) => ({
-            ...prev,
-            friendCount: res.data.length,
-          }));
-        })
-        .catch((error) => {
-          console.error("Error fetching the friend list:", error);
-        });
+      setFilteredUserList(
+        searchedUserList.filter((user) =>
+          friendList.some((friend) => friend.id === user.id),
+        ),
+      );
     }
-  }, [userList, search, currentClick]);
+  }, [userList, friendList, search, currentClick]);
 
   useEffect(() => {
     if (sortState === "닉네임 순") {
