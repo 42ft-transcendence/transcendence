@@ -38,7 +38,7 @@ const DirectMessagePageContainer = () => {
       setDmOther(null);
       setDmList([]);
     };
-  }, [params, setDmOther, setDmList, setJoinedDmOtherList]);
+  }, []);
 
   return <DirectMessagePageView />;
 };

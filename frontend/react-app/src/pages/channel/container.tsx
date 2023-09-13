@@ -54,14 +54,7 @@ const ChannelPageContainer = () => {
       setMessageList([]);
       setParticipantList([]);
     };
-  }, [
-    params,
-    setChannel,
-    setMessageList,
-    setParticipantList,
-    setJoinedChannelList,
-    navigate,
-  ]);
+  }, []);
 
   return <ChannelPageView />;
 };
