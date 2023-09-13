@@ -58,7 +58,7 @@ export class UserRepository extends Repository<User> {
       user.admin = false;
       user.avatarPath = `${
         process.env.BASE_URL
-      }files/profiles/profile${Math.floor(Math.random() * 5)}.png`;
+      }/files/profiles/profile${Math.floor(Math.random() * 5)}.png`;
       user.rating = 1000;
       user.twoFactorAuthenticationSecret = '';
       user.isTwoFactorAuthenticationEnabled = false;
