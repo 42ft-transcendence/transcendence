@@ -49,8 +49,6 @@ export class AuthController {
       res.setHeader('Authorization', 'Bearer ' + jwt);
       res.cookie('jwt', jwt, {
         maxAge: 60 * 60 * 1000,
-        sameSite: 'none',
-        secure: true,
       });
       return res.send({
         message: 'success',
