@@ -49,7 +49,7 @@ export const GameRoomCardRight = styled.div`
 export const GameRoomTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
-  font-famliy: inter;
+  font-family: inter;
   margin-left: 20px;
   margin-top: 20px;
   color: ${(props) => props.theme.colors.freezePurple};
@@ -58,7 +58,7 @@ export const GameRoomTitle = styled.div`
 export const GameRoomOption = styled.div`
   font-size: 16px;
   font-weight: bold;
-  font-famliy: inter;
+  font-family: inter;
   margin-left: 20px;
   margin-bottom: 10px;
   color: ${(props) => props.theme.colors.freezePurple};
@@ -68,7 +68,7 @@ export const GameRoomNumOfPeople = styled.div`
   display: flex;
   font-size: 16px;
   font-weight: bold;
-  font-famliy: inter;
+  font-family: inter;
   justify-content: flex-end;
   margin-top: 30px;
   margin-right: 20px;
@@ -79,7 +79,7 @@ export const GameRoomStatus = styled.div`
   display: flex;
   font-size: 16px;
   font-weight: bold;
-  font-famliy: inter;
+  font-family: inter;
   justify-content: flex-end;
   margin-bottom: 10px;
   margin-right: 20px;

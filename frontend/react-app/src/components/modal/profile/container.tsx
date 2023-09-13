@@ -13,7 +13,11 @@ import {
 import { useEffect, useState } from "react";
 import { RoleType, UserType } from "@src/types";
 import { IconButton } from "@src/components/buttons";
-import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import {
+  friendListState,
+  showProfileState,
+  userDataState,
+} from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
 import { channelState, participantListState } from "@src/recoil/atoms/channel";
 import channelButtons from "./channelButtons";
@@ -70,6 +74,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     false,
     {} as UserType,
   );
+  const setFriendList = useSetRecoilState(friendListState);
 
   // 친구 상태인지 확인
 
@@ -102,6 +107,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const response = await addFriend(user.user.id);
       setIsFriend(true);
       console.log(response);
+      const friendResponse = await getFriendList();
+      setFriendList(friendResponse.data);
     } catch (error) {
       console.log(error);
     }
@@ -112,6 +119,8 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
       const response = await deleteFriend(user.user.id);
       setIsFriend(false);
       console.log(response);
+      const friendResponse = await getFriendList();
+      setFriendList(friendResponse.data);
     } catch (error) {
       console.log(error);
     }

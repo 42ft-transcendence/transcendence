@@ -1,26 +1,23 @@
-import { IconButtonProps } from "@src/components/buttons";
+import { IconButtonProps } from "@components/buttons";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   channelState,
   joinedChannelListState,
   participantListState,
 } from "@recoil/atoms/channel";
-import {
-  dmOtherState,
-  joinedDmOtherListState,
-} from "@recoil/atoms/directMessage";
+import { joinedDmOtherListState } from "@recoil/atoms/directMessage";
 import { SideBarFoldListPropsType } from "@components/common/sideBarList";
 import ChannelListItem from "@components/channel/channelListItem";
 import DirectMessageListItem from "@components/directMessage/directMessageListItem";
 import {
   channelCreateModalState,
   channelEditModalState,
-} from "@src/recoil/atoms/modal";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { chatSocket } from "@src/utils/sockets/chatSocket";
-import { userDataState } from "@src/recoil/atoms/common";
-import ParticipantListItem from "@src/components/channel/participantListItem";
+} from "@recoil/atoms/modal";
+import { useMatch, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { chatSocket } from "@utils/sockets/chatSocket";
+import { userDataState } from "@recoil/atoms/common";
+import ParticipantListItem from "@components/channel/participantListItem";
 import ChattingSideBarView from "./view";
 
 const ChattingSideBarContainer = () => {
@@ -32,106 +29,113 @@ const ChattingSideBarContainer = () => {
   const setChannelEditModal = useSetRecoilState(channelEditModalState);
   const [iconButtons, setIconButtons] = useState<IconButtonProps[]>([]);
   const channel = useRecoilValue(channelState);
-  const dmOther = useRecoilValue(dmOtherState);
   const userData = useRecoilValue(userDataState);
   const participantList = useRecoilValue(participantListState);
   const [sideBarList, setSideBarList] = useState<SideBarFoldListPropsType[]>(
     [],
   );
 
+  const isChannel = useMatch("/channel/:channelId");
+  const isDM = useMatch("/direct-message/:dmId");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (channel !== null) {
-      setIconButtons([
-        {
-          title: "채널 탈퇴",
-          iconSrc: "",
-          onClick: () => {
-            navigate("/channel-list");
-            chatSocket.emit("leave_channel", { channelId: channel.id }, () => {
-              setJoinedChannelList((prev) =>
-                prev.filter((joinedChannel) => joinedChannel.id !== channel.id),
-              );
-            });
-          },
-          theme: "LIGHT",
-        },
+  const handleLeaveChannel = useCallback(() => {
+    if (!channel) return;
+    chatSocket.emit("leave_channel", { channelId: channel.id }, () => {
+      setJoinedChannelList((prev) =>
+        prev.filter((joinedChannel) => joinedChannel.id !== channel.id),
+      );
+      navigate("/channel-list");
+    });
+  }, [channel, navigate, setJoinedChannelList]);
+
+  const handleEditChannel = useCallback(() => {
+    setChannelEditModal(true);
+  }, [setChannelEditModal]);
+
+  const handleSearchChannel = useCallback(() => {
+    navigate("/channel-list");
+  }, [navigate]);
+
+  const handleDeleteChannel = useCallback(() => {
+    if (!channel) return;
+    navigate("/channel-list");
+    chatSocket.emit("delete_channel", { channelId: channel.id }, () => {
+      setJoinedChannelList((prev) => prev.filter((ch) => ch.id !== channel.id));
+    });
+  }, [channel, navigate, setJoinedChannelList]);
+
+  const handleCreateChannel = useCallback(() => {
+    setChannelCreateModal(true);
+  }, [setChannelCreateModal]);
+
+  const channelButtons = useMemo(() => {
+    const buttons = [
+      {
+        title: "채널 탈퇴",
+        iconSrc: "",
+        onClick: handleLeaveChannel,
+        theme: "LIGHT",
+      },
+      {
+        title: "채널 수정",
+        iconSrc: "",
+        onClick: handleEditChannel,
+        theme: "LIGHT",
+      },
+      {
+        title: "채널 탐색",
+        iconSrc: "",
+        onClick: handleSearchChannel,
+        theme: "LIGHT",
+      },
+    ];
+    if (channel?.ownerId === userData.id) {
+      buttons.push({
+        title: "채널 삭제",
+        iconSrc: "",
+        onClick: handleDeleteChannel,
+        theme: "LIGHT",
+      });
+    }
+    return buttons as IconButtonProps[];
+  }, [
+    handleDeleteChannel,
+    handleEditChannel,
+    handleLeaveChannel,
+    handleSearchChannel,
+    channel?.ownerId,
+    userData.id,
+  ]);
+
+  const dmButtons = useMemo(
+    () =>
+      [
         {
           title: "채널 탐색",
           iconSrc: "",
-          onClick: () => {
-            navigate("/channel-list");
-          },
+          onClick: handleSearchChannel,
           theme: "LIGHT",
         },
-        {
-          title: "채널 수정",
-          iconSrc: "",
-          onClick: () => {
-            setChannelEditModal(true);
-          },
-          theme: "LIGHT",
-        },
-      ]);
-      if (channel.ownerId === userData.id) {
-        setIconButtons((prev) => [
-          ...prev,
-          {
-            title: "채널 삭제",
-            iconSrc: "",
-            onClick: () => {
-              chatSocket.emit(
-                "delete_channel",
-                { channelId: channel.id },
-                () => {
-                  setJoinedChannelList((prev) =>
-                    prev.filter((ch) => ch.id !== channel.id),
-                  );
-                  navigate("/channel-list");
-                },
-              );
-            },
-            theme: "LIGHT",
-          },
-        ]);
-      }
-    } else if (dmOther) {
-      setIconButtons([
-        {
-          title: "채널 탐색",
-          iconSrc: "",
-          onClick: () => {
-            navigate("/channel-list");
-          },
-          theme: "LIGHT",
-        },
-      ]);
-    } else {
-      setIconButtons([
+      ] as IconButtonProps[],
+    [handleSearchChannel],
+  );
+
+  const channelListButtons = useMemo(
+    () =>
+      [
         {
           title: "채널 생성",
           iconSrc: "",
-          onClick: () => {
-            setChannelCreateModal(true);
-          },
+          onClick: handleCreateChannel,
           theme: "LIGHT",
         },
-      ]);
-    }
-  }, [
-    channel,
-    dmOther,
-    setIconButtons,
-    navigate,
-    setChannelCreateModal,
-    setJoinedChannelList,
-    userData.id,
-    setChannelEditModal,
-  ]);
+      ] as IconButtonProps[],
+    [handleCreateChannel],
+  );
 
-  useEffect(() => {
-    const tempList = [
+  const commonSidebarList = useMemo(
+    () => [
       {
         title: "참여한 채널",
         children: joinedChannelList.map((channel) => (
@@ -152,26 +156,42 @@ const ChattingSideBarContainer = () => {
           />
         )),
       },
-    ];
-    setSideBarList(() => {
-      if (channel) {
-        return [
-          {
-            title: "참여자 목록",
-            children: participantList.map((participant) => (
-              <ParticipantListItem
-                key={participant.id}
-                participant={participant}
-              />
-            )),
-          },
-          ...tempList,
-        ];
-      } else {
-        return tempList;
-      }
-    });
-  }, [channel, joinedChannelList, joinedDmOtherList, participantList]);
+    ],
+    [joinedChannelList, joinedDmOtherList],
+  );
+
+  const channelSidebarList = useMemo(
+    () => [
+      {
+        title: "참여자 목록",
+        children: participantList.map((participant) => (
+          <ParticipantListItem key={participant.id} participant={participant} />
+        )),
+      },
+    ],
+    [participantList],
+  );
+
+  useEffect(() => {
+    if (isChannel) {
+      setIconButtons(channelButtons);
+      setSideBarList([...commonSidebarList, ...channelSidebarList]);
+    } else if (isDM) {
+      setIconButtons(dmButtons);
+      setSideBarList(commonSidebarList);
+    } else {
+      setIconButtons(channelListButtons);
+      setSideBarList(commonSidebarList);
+    }
+  }, [
+    isChannel,
+    isDM,
+    channelButtons,
+    dmButtons,
+    channelListButtons,
+    commonSidebarList,
+    channelSidebarList,
+  ]);
 
   return (
     <ChattingSideBarView iconButtons={iconButtons} sideBarList={sideBarList} />

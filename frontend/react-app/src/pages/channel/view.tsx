@@ -2,16 +2,11 @@ import NavBar from "@components/common/navBar";
 import ChattingSideBar from "@components/common/sideBar/chattingSideBar";
 import ChatList from "@components/chat/chatList";
 import ChatListItem from "@components/chat/chatListItem";
-import { ChatType } from "@type";
-import { userDataState } from "@src/recoil/atoms/common";
 import { useRecoilValue } from "recoil";
+import { channelChatListState } from "@recoil/selectors/channel";
 
-export interface ChannelPageViewPropsType {
-  chatList: ChatType[];
-}
-
-const ChannelPageView = ({ chatList }: ChannelPageViewPropsType) => {
-  const userData = useRecoilValue(userDataState);
+const ChannelPageView = () => {
+  const chatList = useRecoilValue(channelChatListState);
 
   return (
     <>
@@ -19,11 +14,7 @@ const ChannelPageView = ({ chatList }: ChannelPageViewPropsType) => {
       <ChattingSideBar />
       <ChatList>
         {chatList.map((chat) => (
-          <ChatListItem
-            key={chat.message.id}
-            chat={chat}
-            isMine={(chat.user.id as string) === (userData.id as string)}
-          />
+          <ChatListItem key={chat.id} chat={chat} />
         ))}
       </ChatList>
     </>

@@ -3,6 +3,7 @@ import {
   ChannelType,
   ChatType,
   DirectMessageType,
+  MessageType,
   ParticipantType,
   UserStatus,
   UserType,
@@ -59,13 +60,13 @@ const useChatSocket = () => {
   );
 
   const handleGetMessage = useCallback(
-    (content: ChatType) => {
-      if (content.message.channelId === curChannel?.id) {
-        setMessageList((prev) => [...prev, content.message]);
+    ({ message }: { message: MessageType }) => {
+      if (message.channelId === curChannel?.id) {
+        setMessageList((prev) => [...prev, message]);
       } else {
         setJoinedChannelList((prev) =>
           prev.map((joinedChannel) =>
-            content.message.channelId === joinedChannel.id
+            message.channelId === joinedChannel.id
               ? { ...joinedChannel, hasNewMessages: true }
               : joinedChannel,
           ),
