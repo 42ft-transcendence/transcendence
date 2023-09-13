@@ -48,15 +48,17 @@ export const dmChatListState = selector<ChatType[]>({
       .map((item) => {
         if (item.from.id === dmUser?.id) {
           return {
+            id: `item.id`,
             message: item.message,
             user: dmUser,
             role: "attendee",
           };
         } else if (item.from.id === selfUser?.id) {
           return {
+            id: `item.id`,
             message: item.message,
             user: selfUser,
-            role: "attendee",
+            role: "self",
           };
         } else return null;
       })
