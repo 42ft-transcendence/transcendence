@@ -1,6 +1,6 @@
 import * as ioClient from "socket.io-client";
 
-export const gameSocket = ioClient.io("http://localhost/game", {
+export const gameSocket = ioClient.io(`${process.env.VITE_BASE_URL}/game`, {
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,

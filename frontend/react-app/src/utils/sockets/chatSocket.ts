@@ -1,6 +1,6 @@
 import * as ioClient from "socket.io-client";
 
-export const chatSocket = ioClient.io("http://localhost/ChatPage", {
+export const chatSocket = ioClient.io(`${process.env.VITE_BASE_URL}/ChatPage`, {
   autoConnect: false,
   reconnection: true,
   reconnectionAttempts: 5,
