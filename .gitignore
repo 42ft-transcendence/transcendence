@@ -3,7 +3,7 @@ node_modules
 img_files/*
 
 share/profiles/*
-!share/profiles/profile[0-9].svg
+!share/profiles/profile[0-9].png
 
 .env
 .DS_Store
