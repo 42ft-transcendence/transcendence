@@ -88,10 +88,14 @@ const UserList = () => {
   useEffect(() => {
     if (sortState === "닉네임 순") {
       setSortedUserList(
-        filteredUserList.sort((a, b) => a.nickname.localeCompare(b.nickname)),
+        [...filteredUserList].sort((a, b) =>
+          a.nickname.localeCompare(b.nickname),
+        ),
       );
     } else if (sortState === "랭크 점수 순") {
-      setSortedUserList(filteredUserList.sort((a, b) => b.rating - a.rating));
+      setSortedUserList(
+        [...filteredUserList].sort((a, b) => b.rating - a.rating),
+      );
     }
   }, [filteredUserList, sortState]);
 

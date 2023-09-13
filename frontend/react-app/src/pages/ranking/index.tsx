@@ -17,7 +17,7 @@ const Ranking = () => {
   const [sortedList, setSortedList] = useState<UserType[]>([]);
 
   useEffect(() => {
-    setSortedList(userList.sort((a, b) => b.rating - a.rating));
+    setSortedList([...userList].sort((a, b) => b.rating - a.rating));
   }, [userList]);
 
   return (
