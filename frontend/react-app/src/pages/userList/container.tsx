@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
-import RankingIcon from "@assets/icons/ranking.svg";
 import { SortDropdownComponent } from "@src/components/dropdown";
 
 type SearchComponentProps = {
@@ -71,12 +70,7 @@ export const UserCardComponent: React.FC<UserCardComponentProps> = ({
       <S.UserCardImg src={avatarPath} />
       <S.UserCardStatus $status={status} />
       <S.UserCardNickname>{nickname}</S.UserCardNickname>
-      <S.UserCardRank>
-        <S.UserCardRankContainer>
-          <S.UserCardRankImg src={RankingIcon} />
-          <div>{rating}</div>
-        </S.UserCardRankContainer>
-      </S.UserCardRank>
+      <S.UserCardRank>{rating}</S.UserCardRank>
     </S.UserCard>
   );
 };

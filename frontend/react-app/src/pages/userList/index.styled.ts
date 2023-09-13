@@ -1,4 +1,5 @@
 import { styled } from "styled-components";
+import RankingIcon from "@assets/icons/ranking.svg";
 
 export const SearchBarContainer = styled.div`
   width: 100%;
@@ -63,31 +64,31 @@ export const UserCardContainer = styled.div`
 `;
 
 export const UserCard = styled.div`
+  position: relative;
   width: 360px;
   height: 100px;
   background-color: ${(props) => props.theme.colors.heavyPurple};
   border-radius: 20px;
   align-items: center;
   display: flex;
-  margin-left: 30px;
-  margin-bottom: 30px; /* 다음 줄로 넘어갈 때의 여백 */
   cursor: pointer;
+  padding-inline: 20px;
 `;
 
 export const UserCardImg = styled.img`
   width: 70px;
   height: 70px;
   border-radius: 35px;
-  margin-left: 30px;
   background-color: ${(props) => props.theme.colors.floating};
 `;
 
 export const UserCardStatus = styled.div<{ $status: number }>`
+  position: absolute;
+  left: 70px;
+  top: 70px;
   width: 16px;
   height: 16px;
-  border-radius: 8px;
-  margin-left: -15px;
-  margin-top: 50px;
+  border-radius: 50%;
   background-color: ${(props) => {
     return props.$status === 0
       ? props.theme.colors.online
@@ -103,19 +104,8 @@ export const UserCardNickname = styled.div`
   color: ${(props) => props.theme.colors.freezePurple};
   margin-left: 30px;
   cursor: pointer;
-`;
-
-export const UserCardRankContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 30px;
-  gap: 10px;
-`;
-
-export const UserCardRankImg = styled.img`
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
+  flex-grow: 1;
+  overflow: hidden;
 `;
 
 export const UserCardRank = styled.div`
@@ -125,4 +115,17 @@ export const UserCardRank = styled.div`
   color: ${(props) => props.theme.colors.gold};
   margin-left: 30px;
   cursor: pointer;
+  flex-shrink: 0;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    vertical-align: bottom;
+    background: none;
+    background-image: url(${RankingIcon});
+    background-size: 30px;
+    background-repeat: no-repeat;
+  }
 `;
