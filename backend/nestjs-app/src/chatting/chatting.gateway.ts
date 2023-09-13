@@ -196,7 +196,10 @@ export class ChattingGateway
 
   @UsePipes(new ValidationPipe())
   @SubscribeMessage('leave_channel')
-  async leaveChannel(client: Socket, content: LeaveChannelDto): Promise<string> {
+  async leaveChannel(
+    client: Socket,
+    content: LeaveChannelDto,
+  ): Promise<string> {
     try {
       const userId = await this.getUserId(client);
       const user = await this.userService.getUserById(userId);
@@ -516,9 +519,7 @@ export class ChattingGateway
         .to(channelId)
         .emit('refresh_channel', { channel, participants });
     }
-    if (channel && channel.type !== ChatChannelType.PRIVATE) {
-      const allChannels = await this.channelRepository.getAllOpenedChannels();
-      this.server.emit('refresh_all_channels', allChannels);
-    }
+    const allChannels = await this.channelRepository.getAllOpenedChannels();
+    this.server.emit('refresh_all_channels', allChannels);
   }
 }
