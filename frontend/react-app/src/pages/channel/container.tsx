@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ChannelPageView from "./view";
 import { chatSocket } from "@src/utils/sockets/chatSocket";
-import { ChatType, EnterChannelReturnType } from "@src/types";
+import { EnterChannelReturnType } from "@src/types";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   channelState,
@@ -9,33 +9,15 @@ import {
   messageListState,
   participantListState,
 } from "@src/recoil/atoms/channel";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const ChannelPageContainer = () => {
   const setChannel = useSetRecoilState(channelState);
-  const [messageList, setMessageList] = useRecoilState(messageListState);
-  const [participantList, setParticipantList] =
-    useRecoilState(participantListState);
+  const setMessageList = useSetRecoilState(messageListState);
+  const setParticipantList = useSetRecoilState(participantListState);
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
-  const [chatList, setChatList] = useState<ChatType[]>([]);
   const params = useParams();
   const navigate = useNavigate();
-
-  // Assemble chat list
-  useEffect(() => {
-    setChatList(() => {
-      const rawChatList = messageList.map((message) => {
-        const from = participantList.find(
-          (user) => user.user?.id === message.userId,
-        );
-        if (!from || !from.user) return undefined;
-        else if (from.owner) return { message, user: from.user, role: "owner" };
-        else if (from.admin) return { message, user: from.user, role: "admin" };
-        else return { message, user: from.user, role: "attendee" };
-      });
-      return rawChatList.filter((chat) => chat !== undefined) as ChatType[];
-    });
-  }, [setChatList, messageList, participantList]);
 
   // Get channel info at enter
   useEffect(() => {
@@ -81,7 +63,7 @@ const ChannelPageContainer = () => {
     navigate,
   ]);
 
-  return <ChannelPageView chatList={chatList} />;
+  return <ChannelPageView />;
 };
 
 export default ChannelPageContainer;
