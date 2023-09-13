@@ -106,11 +106,11 @@ export class UsersService {
     try {
       if (
         user.avatarPath.indexOf(
-          `${this.configService.get('BASE_URL')}/files/profiles/profile`,
+          `${process.env.BASE_URL}/files/profiles/profile`,
         ) !== 0
       ) {
         const modifiedUrl = user.avatarPath.replace(
-          `${this.configService.get('BASE_URL')}/files`,
+          `${process.env.BASE_URL}/files`,
           '.',
         );
         await fs.unlink(modifiedUrl);

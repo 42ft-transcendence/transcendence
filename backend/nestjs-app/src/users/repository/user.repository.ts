@@ -56,9 +56,9 @@ export class UserRepository extends Repository<User> {
       user.win = 0;
       user.lose = 0;
       user.admin = false;
-      user.avatarPath = `${this.configService.get(
-        'BASE_URL',
-      )}files/profiles/profile${Math.floor(Math.random() * 5)}.png`;
+      user.avatarPath = `${
+        process.env.BASE_URL
+      }files/profiles/profile${Math.floor(Math.random() * 5)}.png`;
       user.rating = 1000;
       user.twoFactorAuthenticationSecret = '';
       user.isTwoFactorAuthenticationEnabled = false;

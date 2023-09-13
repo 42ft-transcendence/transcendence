@@ -26,9 +26,7 @@ export class FileController {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
-      imageURL: `${this.configService.get('BASE_URL')}/files/profiles/${
-        file.filename
-      }`,
+      imageURL: `${process.env.BASE_URL}/files/profiles/${file.filename}`,
     };
     console.log(`파일이 업로드 됐습니다.: ${response.imageURL}`);
     return response;
