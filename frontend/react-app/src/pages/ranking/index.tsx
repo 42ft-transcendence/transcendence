@@ -4,8 +4,9 @@ import * as DS from "../index.styled";
 import * as S from "./index.styled";
 import { useRecoilState } from "recoil";
 import { allUserListState } from "@src/recoil/atoms/common";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HeaderCard, UserCard } from "./container";
+import { UserType } from "@src/types";
 
 const Ranking = () => {
   const currentRoute = window.location.pathname;
@@ -13,9 +14,11 @@ const Ranking = () => {
   const CurrentSideBarComponent = CurrentSideBar.component;
 
   const [userList] = useRecoilState(allUserListState);
-  const [sortedUserList] = useState(
-    [...userList].sort((a, b) => b.rating - a.rating),
-  );
+  const [sortedList, setSortedList] = useState<UserType[]>([]);
+
+  useEffect(() => {
+    setSortedList([...userList].sort((a, b) => b.rating - a.rating));
+  }, [userList]);
 
   return (
     <>
@@ -30,7 +33,7 @@ const Ranking = () => {
         </S.ToolBarContainer> */}
         <HeaderCard />
         <S.RankingContainer>
-          {sortedUserList.map((user, index) => (
+          {sortedList.map((user, index) => (
             <UserCard key={user.id} user={user} index={index} />
           ))}
         </S.RankingContainer>

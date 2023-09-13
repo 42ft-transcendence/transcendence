@@ -3,6 +3,7 @@ import {
   ChannelType,
   ChatType,
   DirectMessageType,
+  MessageType,
   ParticipantType,
   UserStatus,
   UserType,
@@ -59,13 +60,13 @@ const useChatSocket = () => {
   );
 
   const handleGetMessage = useCallback(
-    (content: ChatType) => {
-      if (content.message.channelId === curChannel?.id) {
-        setMessageList((prev) => [...prev, content.message]);
+    ({ message }: { message: MessageType }) => {
+      if (message.channelId === curChannel?.id) {
+        setMessageList((prev) => [...prev, message]);
       } else {
         setJoinedChannelList((prev) =>
           prev.map((joinedChannel) =>
-            content.message.channelId === joinedChannel.id
+            message.channelId === joinedChannel.id
               ? { ...joinedChannel, hasNewMessages: true }
               : joinedChannel,
           ),
@@ -115,13 +116,13 @@ const useChatSocket = () => {
 
   const handleKicked = useCallback(
     (content: string) => {
-      setJoinedChannelList((prev) =>
-        prev.filter((joinedChannel) => joinedChannel.id !== content),
-      );
       if (curChannel?.id === content) {
         navigate("/channel-list");
         alert("채널에서 추방되었습니다.");
       }
+      setJoinedChannelList((prev) =>
+        prev.filter((joinedChannel) => joinedChannel.id !== content),
+      );
     },
     [setJoinedChannelList, curChannel?.id, navigate],
   );

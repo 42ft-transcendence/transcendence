@@ -6,11 +6,10 @@ import { showProfileState } from "@src/recoil/atoms/common";
 import { ProfileModalOnClickHandler } from "@src/utils";
 
 export interface ChatListItemPropsType {
-  isMine: boolean;
   chat: ChatType;
 }
 
-const ChatListItem = ({ isMine, chat }: ChatListItemPropsType) => {
+const ChatListItem = ({ chat }: ChatListItemPropsType) => {
   const setShowProfile = ProfileModalOnClickHandler(
     useSetRecoilState(showProfileState),
     true,
@@ -21,28 +20,28 @@ const ChatListItem = ({ isMine, chat }: ChatListItemPropsType) => {
     setShowProfile();
   };
 
-  if (isMine) {
-    return (
-      <S.Container $isMine={isMine}>
-        <ChatBubble message={chat.message.content} isMine={isMine} />
-      </S.Container>
-    );
-  } else {
-    return (
-      <S.Container $isMine={isMine}>
-        <S.ProfileImage
-          src={chat.user.avatarPath}
-          $role={chat.role}
-          alt={chat.user.nickname}
-          onClick={handleProfileClick}
-        />
-        <S.ContentContainer>
-          <S.Nickname>{chat.user.nickname}</S.Nickname>
-          <ChatBubble message={chat.message.content} isMine={isMine} />
-        </S.ContentContainer>
-      </S.Container>
-    );
-  }
+  return (
+    <S.Container $isMine={chat.role === "self"}>
+      {chat.role === "self" ? (
+        <>
+          <ChatBubble message={chat.message} isMine={true} />
+        </>
+      ) : (
+        <>
+          <S.ProfileImage
+            src={chat.user.avatarPath}
+            $role={chat.role}
+            alt={chat.user.nickname}
+            onClick={handleProfileClick}
+          />
+          <S.ContentContainer>
+            <S.Nickname>{chat.user.nickname}</S.Nickname>
+            <ChatBubble message={chat.message} isMine={false} />
+          </S.ContentContainer>
+        </>
+      )}
+    </S.Container>
+  );
 };
 
 export default ChatListItem;

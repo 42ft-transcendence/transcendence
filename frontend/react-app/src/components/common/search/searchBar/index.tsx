@@ -1,32 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import * as S from "./index.styled";
 import SearchIcon from "@assets/icons/MagnifyingGlass.svg";
-import RankingIcon from "@assets/icons/ranking.svg";
 import { SortDropdownComponent } from "@src/components/dropdown";
 
-type SearchComponentProps = {
+export type SearchBarPropsType = {
   id: string;
   search: string;
   setSearch: (value: string) => void;
   sortState: string;
   setSortState: (value: string) => void;
+  sortOptions: string[];
   placeholder?: string;
 };
 
-type UserCardComponentProps = {
-  avatarPath: string;
-  status: number;
-  nickname: string;
-  rating: number;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
-};
-
-export const SearchComponent: React.FC<SearchComponentProps> = ({
+const SearchBar: React.FC<SearchBarPropsType> = ({
   id,
   search,
   setSearch,
   sortState,
   setSortState,
+  sortOptions,
   placeholder,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -51,7 +44,7 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
         setShowDropdown={setShowDropdown}
         setSortState={setSortState}
         setIsOpenDropdown={setIsOpenDropdown}
-        options={["닉네임 순", "랭크 점수 순"]}
+        options={sortOptions}
         isOpenDropdown={isOpenDropdown}
         mode="LIGHT"
       />
@@ -59,24 +52,4 @@ export const SearchComponent: React.FC<SearchComponentProps> = ({
   );
 };
 
-export const UserCardComponent: React.FC<UserCardComponentProps> = ({
-  avatarPath,
-  status,
-  nickname,
-  rating,
-  onClick,
-}) => {
-  return (
-    <S.UserCard onClick={onClick}>
-      <S.UserCardImg src={avatarPath} />
-      <S.UserCardStatus $status={status} />
-      <S.UserCardNickname>{nickname}</S.UserCardNickname>
-      <S.UserCardRank>
-        <S.UserCardRankContainer>
-          <S.UserCardRankImg src={RankingIcon} />
-          <div>{rating}</div>
-        </S.UserCardRankContainer>
-      </S.UserCardRank>
-    </S.UserCard>
-  );
-};
+export default SearchBar;
