@@ -243,8 +243,10 @@ export class GameRoom {
     } else {
       this.participants[0].ready = false;
       this.participants[1].ready = false;
+      console.log('finishGame - this.participants', this.participants);
     }
     this.gameGateway.server.emit('finishedGame', finishedResponse);
+    this.gameGateway.refreshGameRoomList();
   }
 
   surrenderGame(userId: string): void {

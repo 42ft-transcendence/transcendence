@@ -37,7 +37,7 @@ export class GameGateway {
       .find((room) => room.roomURL === roomURL);
   }
 
-  private refreshGameRoomList() {
+  refreshGameRoomList() {
     this.server.emit('roomList', this.gameService.getAllGameRoomsInfo());
   }
 
