@@ -14,12 +14,9 @@ import { ProfileModalOnClickHandler } from "@src/utils";
 const UserList = () => {
   const [search, setSearch] = useState<string>("");
   const [userList] = useRecoilState<UserType[]>(allUserListState);
-  const [filteredUserList, setFilteredUserList] =
-    useState<UserType[]>(userList);
+  const [filteredUserList, setFilteredUserList] = useState<UserType[]>([]);
+  const [sortedUserList, setSortedUserList] = useState<UserType[]>([]);
   const [, setShowProfile] = useRecoilState(showProfileState);
-  const [preSearchFilteredList, setPreSearchFilteredList] = useState<
-    UserType[]
-  >([...filteredUserList].sort((a, b) => a.nickname.localeCompare(b.nickname)));
   const [userStatusCounts, setUserStatusCounts] = useState<UserStatusCounts>({
     friendCount: 0,
     onlineCount: 0,
@@ -34,92 +31,89 @@ const UserList = () => {
   const CurrentSideBarComponent = CurrentSideBar.component;
 
   useEffect(() => {
-    const fetchData = async () => {
-      setFilteredUserList([...userList]);
-
-      try {
-        await getFriendList().then((res) => {
-          setUserStatusCounts({
-            friendCount: res.data.length,
-            onlineCount: userList.filter(
-              (user) => user.status === UserStatus.ONLINE,
-            ).length,
-            gamingCount: userList.filter(
-              (user) => user.status === UserStatus.GAMING,
-            ).length,
-            offlineCount: userList.filter(
-              (user) => user.status === UserStatus.OFFLINE,
-            ).length,
-          });
-        });
-      } catch (error) {
+    setUserStatusCounts((prev) => ({
+      ...prev,
+      onlineCount: userList.filter((user) => user.status === UserStatus.ONLINE)
+        .length,
+      gamingCount: userList.filter((user) => user.status === UserStatus.GAMING)
+        .length,
+      offlineCount: userList.filter(
+        (user) => user.status === UserStatus.OFFLINE,
+      ).length,
+    }));
+    getFriendList()
+      .then((res) => {
+        setUserStatusCounts((prev) => ({
+          ...prev,
+          friendCount: res.data.length,
+        }));
+      })
+      .catch((error) => {
         console.error("Error fetching the friend list:", error);
-      }
-    };
-
-    fetchData();
+      });
   }, [userList]);
 
   useEffect(() => {
-    if (search === "") {
-      setSortState("닉네임 순");
-      setFilteredUserList([...preSearchFilteredList]);
-      return;
-    }
-
-    const updatedList = preSearchFilteredList.filter((user) =>
+    const searchedUserList = userList.filter((user) =>
       user.nickname.includes(search),
     );
-    setFilteredUserList(updatedList);
-  }, [search, preSearchFilteredList]);
+    if (currentClick === "allUsers") {
+      setFilteredUserList(searchedUserList);
+    } else if (currentClick === "online") {
+      setFilteredUserList(
+        searchedUserList.filter((user) => user.status === UserStatus.ONLINE),
+      );
+    } else if (currentClick === "gaming") {
+      setFilteredUserList(
+        searchedUserList.filter((user) => user.status === UserStatus.GAMING),
+      );
+    } else if (currentClick === "offline") {
+      setFilteredUserList(
+        searchedUserList.filter((user) => user.status === UserStatus.OFFLINE),
+      );
+    } else if (currentClick === "friends") {
+      getFriendList()
+        .then((res) => {
+          setFilteredUserList(
+            searchedUserList.filter((user) =>
+              res.data.some((friend) => friend.id === user.id),
+            ),
+          );
+          setUserStatusCounts((prev) => ({
+            ...prev,
+            friendCount: res.data.length,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching the friend list:", error);
+        });
+    }
+  }, [userList, search, currentClick]);
 
   useEffect(() => {
     if (sortState === "닉네임 순") {
-      setFilteredUserList(
-        [...filteredUserList].sort((a, b) =>
-          a.nickname.localeCompare(b.nickname),
-        ),
+      setSortedUserList(
+        filteredUserList.sort((a, b) => a.nickname.localeCompare(b.nickname)),
       );
     } else if (sortState === "랭크 점수 순") {
-      setFilteredUserList(
-        [...filteredUserList].sort((a, b) => b.rating - a.rating),
-      );
+      setSortedUserList(filteredUserList.sort((a, b) => b.rating - a.rating));
     }
-  }, [sortState]);
+  }, [filteredUserList, sortState]);
 
   const handleOnAllUsersClick = () => {
-    setFilteredUserList(userList);
-    setPreSearchFilteredList(
-      [...userList].sort((a, b) => a.nickname.localeCompare(b.nickname)),
-    );
     setCurrentClick("allUsers");
     setSortState("닉네임 순");
   };
 
   const handleOnFriendsClick = async () => {
-    const response = await getFriendList();
-    const friendList = response.data;
-    setFilteredUserList(friendList);
-    setPreSearchFilteredList(
-      [...friendList].sort((a, b) => a.nickname.localeCompare(b.nickname)),
-    );
     setCurrentClick("friends");
     setSortState("닉네임 순");
   };
 
-  const handleOnStatusClick =
-    (userStatus: UserStatus, current: string) => () => {
-      setFilteredUserList(
-        userList.filter((user) => user.status === userStatus),
-      );
-      setPreSearchFilteredList(
-        [...userList.filter((user) => user.status === userStatus)].sort(
-          (a, b) => a.nickname.localeCompare(b.nickname),
-        ),
-      );
-      setCurrentClick(current);
-      setSortState("닉네임 순");
-    };
+  const handleOnStatusClick = (current: string) => () => {
+    setCurrentClick(current);
+    setSortState("닉네임 순");
+  };
 
   return (
     <>
@@ -127,21 +121,22 @@ const UserList = () => {
       <CurrentSideBarComponent
         onAllUsersClick={handleOnAllUsersClick}
         onFriendsClick={handleOnFriendsClick}
-        onOnlineClick={handleOnStatusClick(UserStatus.ONLINE, "online")}
-        onGamingClick={handleOnStatusClick(UserStatus.GAMING, "gaming")}
-        onOfflineClick={handleOnStatusClick(UserStatus.OFFLINE, "offline")}
+        onOnlineClick={handleOnStatusClick("online")}
+        onGamingClick={handleOnStatusClick("gaming")}
+        onOfflineClick={handleOnStatusClick("offline")}
         userStatusCounts={userStatusCounts}
         currentClick={currentClick}
       />
       <DS.ContentArea style={{ overflowX: "scroll" }}>
         <SearchComponent
+          id="userListSearch"
           search={search}
           setSearch={setSearch}
           sortState={sortState}
           setSortState={setSortState}
         />
         <S.UserCardContainer>
-          {filteredUserList.map((user) => (
+          {sortedUserList.map((user) => (
             <UserCardComponent
               key={user.id}
               avatarPath={user.avatarPath}
