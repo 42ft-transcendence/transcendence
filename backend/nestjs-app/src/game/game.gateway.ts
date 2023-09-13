@@ -340,6 +340,17 @@ export class GameGateway {
     gameRoom.startGame();
   }
 
+  @SubscribeMessage('surrenderGame')
+  surrenderGame(
+    client: Socket,
+    content: { gameRoomURL: string; userId: string },
+  ) {
+    console.log('surrenderGame: ', content);
+    const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
+    if (!gameRoom) return;
+    gameRoom.surrenderGame(content.userId);
+  }
+
   @SubscribeMessage('userPaddle')
   userPaddle(
     client: Socket,

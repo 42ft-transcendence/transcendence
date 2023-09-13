@@ -127,14 +127,21 @@ export class GameRoom {
   }
 
   startGame(): void {
-    this.status = GameRoomStatus.GAMING;
-    this.gameEngine = new GameData(this.gameMode);
-    this.countsOfDisconnect = 0;
-    this.onGame = [true, true];
-    this.sendStartGameMessage();
-    this.timeout = setInterval(() => {
-      this.gameProcess();
-    }, 1000 / 60);
+    try {
+      if (this.timeout) {
+        clearInterval(this.timeout);
+      }
+      this.status = GameRoomStatus.GAMING;
+      this.gameEngine = new GameData(this.gameMode);
+      this.countsOfDisconnect = 0;
+      this.onGame = [true, true];
+      this.sendStartGameMessage();
+      this.timeout = setInterval(() => {
+        this.gameProcess();
+      }, 1000 / 60);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   gameProcess(): void {
@@ -165,7 +172,6 @@ export class GameRoom {
       gameRoomURL: this.roomURL,
       gameData: this.gameEngine,
     };
-
     this.gameGateway.server.emit('gameProcess', response);
   }
 
@@ -220,6 +226,7 @@ export class GameRoom {
   }
 
   finishGame(isSurrender: boolean): void {
+    console.log('finishGame');
     const engine = this.getGameEngine();
     if (!engine) return;
     clearInterval(this.timeout);

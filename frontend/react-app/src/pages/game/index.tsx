@@ -18,9 +18,8 @@ const Game = () => {
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
 
   useEffect(() => {
-    if (typeof gameRoomInfo.participants === "undefined") {
-      return;
-    }
+    if (typeof gameRoomInfo.participants === "undefined") return;
+    if (gameRoomInfo.roomOwner.id !== userData.id) return;
 
     // 모든 사용자가 레디 상태인지 확인합니다.
     const allUsersReady =
