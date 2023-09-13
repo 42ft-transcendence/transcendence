@@ -12,10 +12,6 @@ const PongGame: React.FC = () => {
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
   const [userData] = useRecoilState(userDataState);
 
-  const userIndex = gameRoomInfo.participants.findIndex(
-    (participant) => participant.user.id === userData.id,
-  );
-
   useEffect(() => {
     const cvs = document.getElementById("pong") as HTMLCanvasElement;
     const ctx = cvs.getContext("2d");
@@ -23,6 +19,9 @@ const PongGame: React.FC = () => {
       console.error("Canvas context is null.");
       return;
     }
+    const userIndex = gameRoomInfo.participants.findIndex(
+      (participant) => participant.user.id === userData.id,
+    );
 
     const backgroundImage = new Image();
 
@@ -202,7 +201,7 @@ const PongGame: React.FC = () => {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [userData]);
   return (
     <div>
       <canvas id="pong" width={800} height={600}></canvas>
