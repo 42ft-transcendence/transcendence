@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { NotFoundException, HttpException } from '@nestjs/common';
 import { CustomRepository } from 'src/database/typeorm-ex.decorator';
 import { UserStatusType } from 'src/util';
@@ -6,6 +7,8 @@ import { User } from '../entities/user.entity';
 
 @CustomRepository(User)
 export class UserRepository extends Repository<User> {
+  configService: ConfigService;
+
   async checkUser(id2: string): Promise<boolean> {
     const found = await this.findOne({
       where: {
@@ -53,10 +56,9 @@ export class UserRepository extends Repository<User> {
       user.win = 0;
       user.lose = 0;
       user.admin = false;
-      user.avatarPath =
-        'http://localhost/files/profiles/profile' +
-        Math.floor(Math.random() * 4) +
-        '.svg';
+      user.avatarPath = `${this.configService.get(
+        'BASE_URL',
+      )}files/profiles/profile${Math.floor(Math.random() * 4)}.svg`;
       user.rating = 1000;
       user.twoFactorAuthenticationSecret = '';
       user.isTwoFactorAuthenticationEnabled = false;

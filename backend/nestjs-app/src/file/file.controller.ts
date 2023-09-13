@@ -7,13 +7,17 @@ import {
   Request,
   Delete,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
 import { UsersService } from 'src/users/users.service';
 
 @Controller('file')
 export class FileController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private configService: ConfigService,
+  ) {}
 
   @Post('/fileUpload')
   @UseGuards(JwtTwoFactorGuard)
@@ -22,7 +26,9 @@ export class FileController {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
-      imageURL: `http://localhost/files/profiles/${file.filename}`,
+      imageURL: `${this.configService.get('BASE_URL')}/files/profiles/${
+        file.filename
+      }`,
     };
     console.log(`파일이 업로드 됐습니다.: ${response.imageURL}`);
     return response;

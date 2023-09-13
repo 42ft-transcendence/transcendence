@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './repository/user.repository';
@@ -10,6 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
+    private configService: ConfigService,
   ) {}
 
   async updateStatus(user: User, type: UserStatusType): Promise<User> {
@@ -103,10 +105,12 @@ export class UsersService {
     const user = await this.getUserById(userid);
     try {
       if (
-        user.avatarPath.indexOf('http://localhost/files/profiles/profile') !== 0
+        user.avatarPath.indexOf(
+          `${this.configService.get('BASE_URL')}/files/profiles/profile`,
+        ) !== 0
       ) {
         const modifiedUrl = user.avatarPath.replace(
-          'http://localhost/files',
+          `${this.configService.get('BASE_URL')}/files`,
           '.',
         );
         await fs.unlink(modifiedUrl);

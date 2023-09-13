@@ -68,7 +68,7 @@ export const createDummyUsers = (num: number): DummyUser[] => {
       ladder_win,
       ladder_lose,
       admin: index < 3 ? true : false,
-      avatarPath: `http://localhost/files/profiles/profile${
+      avatarPath: `http://dev.ccpp.games/files/profiles/profile${
         (index + 1) % 4
       }.svg`,
       status,
