@@ -11,11 +11,11 @@ all: develop
 
 publish:
 	@echo "\n\033[0;33m[Build publish environment]\033[0m"
-	@docker-compose -p $(PROJECT_NAME) -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up --build
+	@export PWD=`pwd -P` && docker-compose -p $(PROJECT_NAME) -f $(COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 develop:
 	@echo "\n\033[0;33m[Build develop environment]\033[0m"
-	@docker-compose -p $(DEV_PROJECT_NAME) -f $(DEV_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
+	@export PWD=`pwd -P` && docker-compose -p $(DEV_PROJECT_NAME) -f $(DEV_COMPOSE_FILE) --env-file $(ENV_FILE) up --build
 
 clean:
 	@echo "\n\033[0;33m[clean all containers]\033[0m"
@@ -40,7 +40,7 @@ fclean:
 	else \
 		echo "No images to clean."; \
 	fi
-	
+
 	@echo "\n\033[0;33m[clean all volumes]\033[0m"
 	@if [ -n "$$(docker volume ls -q)" ]; then \
 		docker volume rm $$(docker volume ls -q); \

@@ -48,11 +48,11 @@ const ChattingSideBarContainer = () => {
           title: "채널 탈퇴",
           iconSrc: "",
           onClick: () => {
+            navigate("/channel-list");
             chatSocket.emit("leave_channel", { channelId: channel.id }, () => {
               setJoinedChannelList((prev) =>
                 prev.filter((joinedChannel) => joinedChannel.id !== channel.id),
               );
-              navigate("/channel-list");
             });
           },
           theme: "LIGHT",
