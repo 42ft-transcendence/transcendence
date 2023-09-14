@@ -5,8 +5,9 @@ import { ChannelType, ChannelTypeType } from "@src/types";
 import * as S from "./index.styled";
 import { joinedChannelListState } from "@recoil/atoms/channel";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 import { channelJoinModalState } from "@src/recoil/atoms/modal";
+import { useMemo } from "react";
 
 export interface ChannelListItemPropsType {
   channel: ChannelType;
@@ -30,6 +31,12 @@ const ChannelListItem = ({
   const joinedChannelList = useRecoilValue(joinedChannelListState);
   const setChannel = useSetRecoilState(channelJoinModalState);
   const navigate = useNavigate();
+  const isChannel = useMatch("/channel/:channelId");
+
+  const isCur = useMemo(
+    () => (isChannel && isChannel.params.channelId === channel.id) ?? false,
+    [channel.id, isChannel],
+  );
 
   const handleClick = () => {
     if (
@@ -47,7 +54,7 @@ const ChannelListItem = ({
         src={ChannelIcons[channel.type]}
         alt={ChannelIconAlt[channel.type]}
       />
-      <S.Title>{channel.name}</S.Title>
+      <S.Title $isCur={isCur}>{channel.name}</S.Title>
       <S.Participants>{channel.participants?.length}</S.Participants>
       {hasNewMessage && <S.NewMessage />}
     </S.Container>
