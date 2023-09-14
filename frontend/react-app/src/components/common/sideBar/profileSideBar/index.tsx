@@ -5,8 +5,12 @@ import {
 } from "@src/components/buttons";
 import * as DS from "../index.styled";
 import * as S from "./index.styled";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { isFirstLoginState, userDataState } from "@src/recoil/atoms/common";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  allUserListState,
+  isFirstLoginState,
+  userDataState,
+} from "@src/recoil/atoms/common";
 import { useNavigate } from "react-router-dom";
 import {
   addBlock,
@@ -34,12 +38,15 @@ import {
 } from "@src/recoil/atoms/modal";
 import SecondAuthActivateModal from "@src/components/modal/auth/secondAuthActivateModal";
 import SecondAuthDeactivateModal from "@src/components/modal/auth/secondAuthDeactivateModal";
+import { gameSocket } from "@src/router/socket/gameSocket";
+import { SHA256 } from "crypto-js";
 
 interface ProfileSideBarProps {
   user: UserType;
 }
 
 const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
+  const allUserList = useRecoilValue(allUserListState);
   const setIsFirstLogin = useSetRecoilState(isFirstLoginState);
   const [userData, setUserData] = useRecoilState(userDataState);
   const [is2FaActivateModalOpened, set2FaActivateModal] = useRecoilState(
@@ -95,20 +102,41 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
     },
   ];
 
+  const hashTitle = (title: string): string => {
+    const hash = SHA256(title);
+    return hash.toString(); // 해시 값을 문자열로 반환
+  };
+
+  const handleBattleOffer = (): void => {
+    try {
+      const currentTime: Date = new Date();
+      console.log("대전신청");
+      const roomURL = currentTime + userData.id;
+      const hashedTitle = hashTitle(roomURL);
+      const awayUser = allUserList.find((user) => user.id === userId);
+      gameSocket.emit("offerBattle", {
+        awayUser: awayUser,
+        myData: userData,
+        gameRoomURL: hashedTitle,
+        roomType: "PRIVATE",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const othersProfileButtons: IconButtonProps[] = [
     {
       title: "대전 신청",
       iconSrc: "",
-      onClick: () => {
-        console.log("대전 신청");
-      },
+      onClick: handleBattleOffer,
       theme: "LIGHT",
     },
     {
       title: "DM 보내기",
       iconSrc: "",
       onClick: () => {
-        console.log("DM 보내기");
+        navigate(`/direct-message/${userId}`);
       },
       theme: "LIGHT",
     },
