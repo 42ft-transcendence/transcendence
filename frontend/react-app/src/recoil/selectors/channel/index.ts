@@ -32,14 +32,16 @@ export const channelChatListState = selector<ChatType[]>({
 
     const chatList = messageList
       .map((item) => {
-        const from = participantList.find((user) => user.id === item.userId);
+        const from = participantList.find(
+          (user) => user.user?.id === item.userId,
+        );
         if (!from) return null;
         return {
           id: item.id,
           message: item.content,
           user: from?.user ?? null,
           role:
-            from.id === selfUser.id
+            from.user?.id === selfUser.id
               ? "self"
               : from?.owner
               ? "owner"
