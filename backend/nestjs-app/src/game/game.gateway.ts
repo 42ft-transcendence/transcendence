@@ -13,6 +13,24 @@ import { HistoryDto } from 'src/match_history/dto/history.dto';
 import { GameService } from './game.service';
 import { SHA256 } from 'crypto-js';
 import { GameRoom, GameRoomStatus, GameRoomType } from './game.room';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { sendGameRoomChatDto } from './dto/sendgameroomchat.dto';
+import { joinRankGameDto } from './dto/joinrankgame.dto';
+import { cancleRankGameDto } from './dto/canclerankgame.dto';
+import { exitRankGameRoomDto } from './dto/exitrankgameroom.dto';
+import { offerBattleDto } from './dto/offerbattle.dto';
+import { createGameRoomDto } from './dto/creategameroom.dto';
+import { deleteGameRoomDto } from './dto/deletegameroom.dto';
+import { editGameRoomInfoDto } from './dto/editgameroominfo.dto';
+import { acceptBattleDto } from './dto/acceptbattle.dto';
+import { rejectBattleDto } from './dto/rejectbattle.dto';
+import { readyGameRoomDto } from './dto/readygameroom.dto';
+import { readyCancleGameRoomDto } from './dto/readycanclegameroom.dto';
+import { enterGameRoomDto } from './dto/entergameroom.dto';
+import { exitGameRoomDto } from './dto/exitgameroom.dto';
+import { startGameCountDownDto } from './dto/startgamecountdown.dto';
+import { surrenderGameDto } from './dto/surrendergame.dto';
+import { userPaddleDto } from './dto/userpaddle.dto';
 
 const rankGameWaitingQueue = [];
 
@@ -44,23 +62,15 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('sendGameRoomChat')
-  sendGameRoomChat(
-    client: Socket,
-    content: {
-      roomURL: string;
-      roomName: string;
-      message: string;
-      userId: string;
-      userNickname: string;
-      createdAt: Date;
-    },
-  ) {
+  sendGameRoomChat(client: Socket, content: sendGameRoomChatDto) {
     this.server.emit('getGameRoomChat', content);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('joinRankGame')
-  joinRankGame(client: Socket, content: { user: User }) {
+  joinRankGame(client: Socket, content: joinRankGameDto) {
     if (rankGameWaitingQueue.map((user) => user.id).includes(content.user.id))
       return;
     rankGameWaitingQueue.push(content.user);
@@ -93,17 +103,16 @@ export class GameGateway {
     }
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('cancleRankGame')
-  cancleRankGame(client: Socket, content: { user: User }) {
+  cancleRankGame(client: Socket, content: cancleRankGameDto) {
     const userIndex = rankGameWaitingQueue.indexOf(content.user);
     rankGameWaitingQueue.splice(userIndex, 1);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('exitRankGameRoom')
-  exitRankGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; user: User },
-  ) {
+  exitRankGameRoom(client: Socket, content: exitRankGameRoomDto) {
     // TODO: 요청 보낸 유저는 점수 감소
     this.userService.updateRating(content.user, -20);
     // TODO: gameRoomURL을 가진 두 유저에게 정보 전달
@@ -115,16 +124,9 @@ export class GameGateway {
     this.gameService.deleteGameRoom(content.gameRoomURL);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('offerBattle')
-  async offerBattle(
-    client: Socket,
-    content: {
-      awayUser: User;
-      myData: User;
-      gameRoomURL: string;
-      roomType: GameRoomType;
-    },
-  ) {
+  async offerBattle(client: Socket, content: offerBattleDto) {
     const newRoomData = {
       roomURL: content.gameRoomURL,
       roomName: content.myData.nickname + ' vs ' + content.awayUser.nickname,
@@ -147,11 +149,9 @@ export class GameGateway {
     this.server.emit('offerBattle', content);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('createGameRoom')
-  async createGameRoom(
-    client: Socket,
-    content: { user: User; gameRoomURL: string },
-  ) {
+  async createGameRoom(client: Socket, content: createGameRoomDto) {
     const newRoomData = {
       roomURL: content.gameRoomURL,
       roomName: '',
@@ -174,21 +174,16 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('deleteGameRoom')
-  deleteGameRoom(client: Socket, content: { gameRoomURL: string }) {
+  deleteGameRoom(client: Socket, content: deleteGameRoomDto) {
     this.gameService.deleteGameRoom(content.gameRoomURL);
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('editGameRoomInfo')
-  editGameRoomInfo(
-    client: Socket,
-    content: {
-      gameRoomURL: string;
-      infoType: string;
-      info: string | number | boolean | GameRoomType;
-    },
-  ) {
+  editGameRoomInfo(client: Socket, content: editGameRoomInfoDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (content.infoType === 'roomName') {
       gameRoom.setGameRoomInfo({ roomName: content.info as string });
@@ -202,11 +197,9 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('acceptBattle')
-  async acceptBattle(
-    client: Socket,
-    content: { gameRoomURL: string; user1Id: string; user2Id: string },
-  ) {
+  async acceptBattle(client: Socket, content: acceptBattleDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     const response = {
@@ -218,11 +211,9 @@ export class GameGateway {
     this.server.emit('acceptBattle', response);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('rejectBattle')
-  rejectBattle(
-    client: Socket,
-    content: { gameRoomURL: string; awayUserId: string },
-  ) {
+  rejectBattle(client: Socket, content: rejectBattleDto) {
     this.gameService.deleteGameRoom(content.gameRoomURL);
     const response = {
       gameRoomURL: content.gameRoomURL,
@@ -233,33 +224,27 @@ export class GameGateway {
     return true;
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('readyGameRoom')
-  readyGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; userId: string },
-  ) {
+  readyGameRoom(client: Socket, content: readyGameRoomDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.setParticipantReady(content.userId, true);
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('readyCancleGameRoom')
-  readyCancleGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; userId: string },
-  ) {
+  readyCancleGameRoom(client: Socket, content: readyCancleGameRoomDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.setParticipantReady(content.userId, false);
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('enterGameRoom')
-  async enterGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; user: User },
-  ) {
+  async enterGameRoom(client: Socket, content: enterGameRoomDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.enterGameRoom(content.user);
@@ -267,11 +252,9 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('exitGameRoom')
-  async exitGameRoom(
-    client: Socket,
-    content: { gameRoomURL: string; user: User },
-  ) {
+  async exitGameRoom(client: Socket, content: exitGameRoomDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.exitGameRoom(content.user);
@@ -287,8 +270,9 @@ export class GameGateway {
     this.refreshGameRoomList();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('startGameCountDown')
-  async startGameCountDown(client: Socket, content: { gameRoomURL: string }) {
+  async startGameCountDown(client: Socket, content: startGameCountDownDto) {
     for (let secondsRemaining = 5; secondsRemaining >= -1; secondsRemaining--) {
       if (secondsRemaining !== -1)
         this.sendCountDownMessage(content.gameRoomURL, secondsRemaining);
@@ -323,22 +307,18 @@ export class GameGateway {
     gameRoom.startGame();
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('surrenderGame')
-  surrenderGame(
-    client: Socket,
-    content: { gameRoomURL: string; userId: string },
-  ) {
+  surrenderGame(client: Socket, content: surrenderGameDto) {
     console.log('surrenderGame: ', content);
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.surrenderGame(content.userId);
   }
 
+  @UsePipes(new ValidationPipe())
   @SubscribeMessage('userPaddle')
-  userPaddle(
-    client: Socket,
-    content: { gameRoomURL: string; userIndex: number; userPaddle: number },
-  ) {
+  userPaddle(client: Socket, content: userPaddleDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
     if (!gameRoom) return;
     gameRoom.userPaddle(content);
