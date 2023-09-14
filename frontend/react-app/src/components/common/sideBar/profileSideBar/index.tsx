@@ -136,7 +136,7 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
       title: "DM 보내기",
       iconSrc: "",
       onClick: () => {
-        console.log("DM 보내기");
+        navigate(`/direct-message/${userId}`);
       },
       theme: "LIGHT",
     },
