@@ -173,8 +173,9 @@ export const ButtonContainer = styled.div`
   height: 40px;
 `;
 
-export const mapbox = styled.div`
-  width: 250px;
-  height: 125px;
+export const mapbox = styled.img`
+  width: 220px;
+  height: 165px;
   background: white;
+  border: 2px solid ${Theme.colors.freezePurple};
 `;

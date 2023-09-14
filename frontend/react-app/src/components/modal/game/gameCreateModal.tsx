@@ -10,6 +10,7 @@ import {
   gameRoomChatListState,
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
+import NormalMap from "@src/assets/maps/mapNormal.svg";
 
 const GameRoomTypeMap: {
   PUBLIC: string;
@@ -131,7 +132,7 @@ const GameCreateModal = () => {
       </S.GameSpeedButtons>
       <S.gameCreateOption>
         <S.gameCreateModalLabel>맵 선택</S.gameCreateModalLabel>
-        <S.mapbox />
+        <S.mapbox src={NormalMap} />
       </S.gameCreateOption>
       <S.gameCreateOption>
         <S.gameCreateModalLabel>채널 유형</S.gameCreateModalLabel>
