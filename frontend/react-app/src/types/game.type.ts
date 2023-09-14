@@ -32,8 +32,7 @@ export type GameRoomType =
   | "PROTECTED"
   | "PRIVATE"
   | "CREATING"
-  | "RANKING"
-  | "";
+  | "RANKING";
 
 export interface GameRoomParticipantType {
   user: UserType;
