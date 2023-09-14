@@ -116,7 +116,7 @@ const ChatInput = () => {
     <S.Container>
       <S.InviteButton
         onClick={handleInviteClick}
-        $isChannel={isChannel == null}
+        $isChannel={isChannel !== null}
       />
       <S.Form onSubmit={sendMessage}>
         <S.Input
