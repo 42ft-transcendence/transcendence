@@ -254,6 +254,12 @@ export class GameRoom {
       this.participants[0].ready = false;
       this.participants[1].ready = false;
       console.log('finishGame - this.participants', this.participants);
+      if (isSurrender) {
+        const surrenderUserIndex = this.onGame.findIndex(
+          (value) => value === false,
+        );
+        this.exitGameRoom(this.participants[surrenderUserIndex].user);
+      }
     }
     this.gameGateway.server.emit('finishedGame', finishedResponse);
     this.gameGateway.refreshGameRoomList();

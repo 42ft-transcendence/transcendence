@@ -102,10 +102,10 @@ const Profile = () => {
   }, [search]);
 
   const user = userList.find((user) => user.id === userId) as UserType;
-  if (typeof user === "undefined") {
-    console.log("here");
-    navigate(`/profile/${userData.id}`);
-  }
+  // if (typeof user === "undefined") {
+  //   console.log("here");
+  //   navigate(`/profile/${userData.id}`);
+  // }
 
   if (!matchHistoryList || !SidebarComponent) {
     console.log("here2");
@@ -115,7 +115,7 @@ const Profile = () => {
   return (
     <>
       <NavBar />
-      <SidebarComponent user={user} />
+      <SidebarComponent user={user ? user : userData} />
       <DS.ContentArea>
         <MatchHeader
           userId={userId}
