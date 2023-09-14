@@ -34,6 +34,7 @@ export const RankGameWaitingModal = ({
 
   useEffect(() => {
     gameSocket.on("joinRankGame", (data) => {
+      console.log(data);
       const participantsIdList = (data.participants as UserType[]).map(
         (user) => user.id,
       );

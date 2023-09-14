@@ -136,6 +136,7 @@ export const GameChattingContainer = () => {
   const [chattingList, setChattingList] = useRecoilState(gameRoomChatListState);
 
   useEffect(() => {
+    if (userData.id === "0") return;
     if (gameRoomInfo.roomType !== "RANKING" && chattingList.length === 0) {
       gameSocket.emit("sendGameRoomChat", {
         roomURL: gameRoomURL,
@@ -146,7 +147,7 @@ export const GameChattingContainer = () => {
         createdAt: new Date(),
       });
     }
-  }, [chattingList]);
+  }, [chattingList, userData]);
 
   const handleGetGameRoomChat = useCallback(
     (data: GameChattingType) => {

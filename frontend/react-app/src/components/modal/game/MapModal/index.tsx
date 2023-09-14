@@ -63,7 +63,7 @@ const MapModal = ({
 
   const surrender = () => {
     console.log("항복");
-    gameSocket.emit("surrenderGameRoom", {
+    gameSocket.emit("surrenderGame", {
       gameRoomURL: gameRoomURL,
       userId: user.id,
     });

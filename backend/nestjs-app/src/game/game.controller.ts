@@ -1,8 +1,6 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
-import JwtTwoFactorGuard from 'src/auth/jwt/jwt-two-factor.gaurd';
-import { GameRoom, GameRoomType, GameService } from './game.service';
+import { Controller, Post } from '@nestjs/common';
+import { GameService } from './game.service';
 import { GameGateway } from './game.gateway';
-import { User } from 'src/users/entities/user.entity';
 
 @Controller('game')
 export class GameController {

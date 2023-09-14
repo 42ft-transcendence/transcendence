@@ -103,7 +103,7 @@ const GameSideBar = ({ isReady }: GameSideBarProps) => {
         : newButtons;
 
     setfilteredIconButtons(finalButtons);
-  }, [gameRoomInfo]);
+  }, [gameRoomInfo, userData]);
 
   useEffect(() => {
     gameSocket.on("exitRankGameRoom", (data) => {

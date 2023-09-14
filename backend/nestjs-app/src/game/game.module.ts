@@ -8,6 +8,8 @@ import { GameGateway } from './game.gateway';
 import { AuthModule } from 'src/auth/auth.module';
 import { MatchHistoryModule } from 'src/match_history/history.module';
 import { GameData } from './game.engine';
+import { GameRoom } from './game.room';
+
 @Module({
   imports: [
     TypeOrmExModule.forCustomRepository([UserRepository]),
@@ -15,7 +17,20 @@ import { GameData } from './game.engine';
     MatchHistoryModule,
   ],
   controllers: [GameController],
-  providers: [GameService, UsersService, GameGateway, GameService, GameData],
-  exports: [GameService, GameGateway],
+  providers: [
+    GameService,
+    UsersService,
+    GameGateway,
+    GameData,
+    {
+      provide: GameRoom,
+      useFactory: (gameGateway: GameGateway, gameService: GameService) => {
+        return (data: Partial<GameRoom>) =>
+          new GameRoom(data, gameGateway, gameService);
+      },
+      inject: [GameGateway, GameService],
+    },
+  ],
+  exports: [GameService, GameGateway, GameData, GameRoom],
 })
 export class GameModule {}
