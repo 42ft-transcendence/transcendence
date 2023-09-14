@@ -69,6 +69,7 @@ export class ChattingGateway
       });
       client.join(user.id);
       this.refreshUsersList();
+      return;
     } catch (e) {
       console.log(e);
       client.disconnect();
