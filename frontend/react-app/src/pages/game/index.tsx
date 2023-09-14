@@ -34,6 +34,16 @@ const Game = () => {
   }, [gameRoomInfo.participants]);
 
   useEffect(() => {
+    if (currentRoute.split("/").pop() !== gameRoomURL && gameRoomURL === "") {
+      window.location.href = "/game-list";
+      return;
+    } else if (
+      currentRoute.split("/").pop() !== gameRoomURL &&
+      gameRoomURL !== ""
+    ) {
+      window.location.href = `/game/${gameRoomURL}`;
+      return;
+    }
     if (gameRoomInfo.roomType !== "RANKING") return;
     if (gameRoomInfo.roomOwner.id !== userData.id) return;
     gameSocket.emit("startGameCountDown", {
