@@ -1,3 +1,4 @@
+import { getUser } from "@src/api";
 import { userDataState } from "@src/recoil/atoms/common";
 import {
   gameModalState,
@@ -51,6 +52,7 @@ const useGameSocket = () => {
 
       gameSocket.off("offerBattle");
       gameSocket.on("offerBattle", (data: OfferGameType) => {
+        console.log(data, userData);
         if (data.awayUser.id === userData.id) {
           setBattleActionModal({
             battleActionModal: true,
