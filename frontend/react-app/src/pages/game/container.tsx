@@ -134,9 +134,10 @@ export const GameChattingContainer = () => {
   const [userData] = useRecoilState(userDataState);
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [chattingList, setChattingList] = useRecoilState(gameRoomChatListState);
+  const [hasSentEntryMessage, setHasSentEntryMessage] = useState(false);
 
   useEffect(() => {
-    if (userData.id === "0") return;
+    if (userData.id === "0" || hasSentEntryMessage) return;
     if (gameRoomInfo.roomType !== "RANKING" && chattingList.length === 0) {
       gameSocket.emit("sendGameRoomChat", {
         roomURL: gameRoomURL,
@@ -146,6 +147,7 @@ export const GameChattingContainer = () => {
         userNickname: userData.nickname,
         createdAt: new Date(),
       });
+      setHasSentEntryMessage(true);
     }
   }, [chattingList, userData]);
 
