@@ -168,6 +168,7 @@ const useChatSocket = () => {
   /** Get User Data on Connection */
   useEffect(() => {
     chatSocket.on("connect", () => {
+      console.log("connection callback");
       getUser()
         .then((res) => {
           setUserData(res.data);
