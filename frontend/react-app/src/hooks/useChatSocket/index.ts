@@ -151,7 +151,7 @@ const useChatSocket = () => {
 
   /** ChatSocket Connection */
   useEffect(() => {
-    if (!isLogin && !isAuth && !isSignUp && token.jwt) {
+    if (!isLogin && !isAuth && token.jwt) {
       chatSocket.io.opts.extraHeaders = {
         Authorization: `Bearer ${token.jwt}`,
       };
