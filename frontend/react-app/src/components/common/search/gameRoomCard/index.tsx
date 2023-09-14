@@ -2,6 +2,7 @@ import { GameRoomInfoType } from "@src/types";
 import React from "react";
 import * as S from "./index.styled";
 import { GameRoomStatus } from "@src/types/game.type";
+import ProtectedIcon from "@src/assets/icons/LockKey.svg";
 
 export interface GameRoomCardProps {
   gameRoom: GameRoomInfoType;
@@ -14,7 +15,7 @@ const GameRoomCard: React.FC<GameRoomCardProps> = ({
 }) => (
   <S.GameRoomCard
     key={gameRoom.roomURL}
-    $roomType={gameRoom.roomType}
+    $status={gameRoom.status === GameRoomStatus.WAITING ? "대기중" : "게임중"}
     onClick={() => {
       if (gameRoom.status === GameRoomStatus.GAMING) return;
       handleOnClick(gameRoom);
@@ -29,9 +30,18 @@ const GameRoomCard: React.FC<GameRoomCardProps> = ({
       </S.GameRoomOption>
     </S.GameRoomCardLeft>
     <S.GameRoomCardRight>
-      <S.GameRoomNumOfPeople>
-        {gameRoom.numberOfParticipants} / 2
-      </S.GameRoomNumOfPeople>
+      <S.GameRoomCardRightTop>
+        {gameRoom.roomType === "PROTECTED" ? (
+          <S.GameRoomCardProtectedIcon
+            src={ProtectedIcon}
+          ></S.GameRoomCardProtectedIcon>
+        ) : (
+          <span />
+        )}
+        <S.GameRoomNumOfPeople>
+          {gameRoom.numberOfParticipants} / 2
+        </S.GameRoomNumOfPeople>
+      </S.GameRoomCardRightTop>
       <S.GameRoomStatus>
         {gameRoom.status === GameRoomStatus.WAITING ? "대기중" : "게임중"}
       </S.GameRoomStatus>

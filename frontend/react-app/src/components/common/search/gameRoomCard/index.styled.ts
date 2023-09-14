@@ -9,12 +9,12 @@ export const GameRoomCardContainer = styled.div`
   overflow-y: auto;
 `;
 
-export const GameRoomCard = styled.div<{ $roomType: string }>`
+export const GameRoomCard = styled.div<{ $status: string }>`
   width: 360px;
   height: 100px;
   background-color: ${(props) => {
     const heavyPurple = props.theme.colors.heavyPurple;
-    if (props.$roomType !== "PUBLIC") {
+    if (props.$status !== "대기중") {
       const r = parseInt(heavyPurple.slice(1, 3), 16);
       const g = parseInt(heavyPurple.slice(3, 5), 16);
       const b = parseInt(heavyPurple.slice(5, 7), 16);
@@ -46,6 +46,23 @@ export const GameRoomCardRight = styled.div`
   justify-content: space-between;
 `;
 
+export const GameRoomCardRightTop = styled.div`
+  width: 100%;
+  height: 50%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const GameRoomCardProtectedIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  margin-top: 30px;
+  margin-left: 20px;
+`;
+
 export const GameRoomTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
@@ -69,7 +86,7 @@ export const GameRoomNumOfPeople = styled.div`
   font-size: 16px;
   font-weight: bold;
   font-family: inter;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   margin-top: 30px;
   margin-right: 20px;
   color: ${(props) => props.theme.colors.freezePurple};
