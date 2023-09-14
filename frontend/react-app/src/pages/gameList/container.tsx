@@ -30,9 +30,9 @@ export const GameListContent = ({
   };
 
   useEffect(() => {
-    const searchedRoomList = gameRoomList.filter((room) =>
-      room.roomName.includes(search),
-    );
+    const searchedRoomList = gameRoomList
+      .filter((room) => room.roomName.includes(search))
+      .filter((room) => room.roomType !== "CREATING");
     if (sortState === "전체 방") {
       setFilteredRoomList(
         searchedRoomList.filter((room) => room.roomType !== "PRIVATE"),
