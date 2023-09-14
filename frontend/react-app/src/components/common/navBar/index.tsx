@@ -89,11 +89,6 @@ const NavBar = () => {
       await getUser()
         .then((res) => setUserData(res.data))
         .catch((err) => void err);
-      await getAllUserList()
-        .then((res) => {
-          setAllUserList(res.data);
-        })
-        .catch((err) => void err);
     };
     getUserData();
   }, [currentPath]);
