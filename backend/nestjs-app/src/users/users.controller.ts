@@ -111,6 +111,7 @@ export class UsersController {
       req.user.id,
       avatarPath,
     );
+    this.rootGateway.refreshUsersList();
     return user;
   }
 
