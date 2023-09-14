@@ -82,9 +82,13 @@ const MapModal = ({
           </S.GameInfoPlayerInfo>
         </S.GameInfoPlayer>
         <S.GameInfoMiddle>
-          <S.GameInfoMiddleTop>
-            <IconButton onClick={surrender} title="항복" theme="DARK" />
-          </S.GameInfoMiddleTop>
+          {gameEndingMessage === "" ? (
+            <S.GameInfoMiddleTop>
+              <IconButton onClick={surrender} title="항복" theme="DARK" />
+            </S.GameInfoMiddleTop>
+          ) : (
+            <S.GameInfoMiddleTop />
+          )}
           <S.GameInfoMiddleCenter>VS</S.GameInfoMiddleCenter>
         </S.GameInfoMiddle>
         <S.GameInfoPlayer>
