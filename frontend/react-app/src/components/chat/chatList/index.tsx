@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import ChatInput from "@components/chat/chatInput";
 import * as S from "./index.styled";
+import TopBar from "../topBar";
 
 export interface ChatListProps {
   children?: React.ReactNode;
@@ -15,6 +16,7 @@ const ChatList = ({ children }: ChatListProps) => {
 
   return (
     <S.Container>
+      <TopBar />
       <S.ChatList>
         {children}
         <li ref={messageEndRef} />

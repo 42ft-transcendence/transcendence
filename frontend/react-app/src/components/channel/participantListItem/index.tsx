@@ -1,8 +1,8 @@
 import { ParticipantType, RoleType, UserType } from "@src/types";
 import * as S from "./index.styled";
 import { ProfileModalOnClickHandler } from "@src/utils";
-import { showProfileState } from "@src/recoil/atoms/common";
-import { useSetRecoilState } from "recoil";
+import { showProfileState, userDataState } from "@src/recoil/atoms/common";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 export interface ParticipantListItemPropsType {
   participant: ParticipantType;
@@ -20,16 +20,19 @@ const ParticipantListItem = ({ participant }: ParticipantListItemPropsType) => {
     true,
     user,
   );
+  const self = useRecoilValue(userDataState);
 
   const handleClick = () => {
     setShowProfile();
   };
 
+  const isMe = user.id === self.id;
+
   return (
     <S.Container onClick={handleClick}>
       <S.Profile src={user.avatarPath} alt={user.nickname} $role={role} />
       <S.Status $status={user.status} />
-      <S.Title>{user.nickname}</S.Title>
+      <S.Title $isMe={isMe}>{user.nickname}</S.Title>
     </S.Container>
   );
 };

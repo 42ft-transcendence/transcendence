@@ -15,11 +15,12 @@ export const ChannelIcon = styled.img`
   object-fit: contain;
 `;
 
-export const Title = styled.h3`
+export const Title = styled.h3<{ $isCur: boolean }>`
   height: 40px;
   padding: 0;
   margin: 0 5px;
-  color: ${(props) => props.theme.colors.freezePurple};
+  color: ${({ theme, $isCur }) =>
+    $isCur ? theme.colors.freezePurple : theme.colors.myChat};
   line-height: 40px;
   font-size: 16px;
   font-weight: bold;
