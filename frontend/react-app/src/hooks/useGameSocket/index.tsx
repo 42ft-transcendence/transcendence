@@ -1,9 +1,7 @@
-import { getUser } from "@src/api";
 import { userDataState } from "@src/recoil/atoms/common";
 import {
   gameModalState,
   gameRoomChatListState,
-  gameRoomInfoInitState,
   gameRoomInfoState,
   gameRoomListState,
   gameRoomURLState,
@@ -13,24 +11,20 @@ import {
   gameAlertModalState,
 } from "@src/recoil/atoms/modal";
 import { gameSocket, gameSocketConnect } from "@src/router/socket/gameSocket";
-import { OfferGameType, UserType } from "@src/types";
-import {
-  GameMapType,
-  GameRoomInfoType,
-  GameRoomType,
-} from "@src/types/game.type";
+import { OfferGameType } from "@src/types";
+import { GameMapType, GameRoomInfoType } from "@src/types/game.type";
 import { useEffect } from "react";
 import * as cookies from "react-cookies";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
 const useGameSocket = () => {
   const setBattleActionModal = useSetRecoilState(battleActionModalState);
-  const [userData, setUserData] = useRecoilState(userDataState);
+  const [userData] = useRecoilState(userDataState);
   const setGameAlertModal = useSetRecoilState(gameAlertModalState);
-  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
-  const [gameRoomList, setGameRoomList] = useRecoilState(gameRoomListState);
-  const [gameModal, setGameModal] = useRecoilState(gameModalState);
+  const [, setGameRoomList] = useRecoilState(gameRoomListState);
+  const [, setGameModal] = useRecoilState(gameModalState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
   const jwt = cookies.load("jwt");
 
@@ -104,6 +98,7 @@ const useGameSocket = () => {
       gameSocket.off("rejectBattle");
       // ... (다른 gameSocket 이벤트 해제 로직)
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jwt, gameRoomURL]); // 의존성 배열에 필요한 값들을 넣어주세요.
 };
 

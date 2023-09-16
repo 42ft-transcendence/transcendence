@@ -23,7 +23,7 @@ import UsersHovered from "@assets/icons/Users.svg";
 import UserHovered from "@assets/icons/UserCircle.svg";
 import GearHovered from "@assets/icons/Gear.svg";
 import { useEffect, useState } from "react";
-import { gameRoomInfoState, gameRoomURLState } from "@src/recoil/atoms/game";
+import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { joinedDmOtherListState } from "@src/recoil/atoms/directMessage";
 import { joinedChannelListState } from "@src/recoil/atoms/channel";
 
@@ -140,7 +140,6 @@ export const UpperTabList = () => {
 export const LowerTabList = () => {
   const [, setSettingOptionModalOpen] = useRecoilState(settingOptionModalState);
   const [userData] = useRecoilState(userDataState);
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [isUserHovered, setUserHovered] = useState(false);
   const [isGearHovered, setGearHovered] = useState(false);
   const getUserIcon = () => (isUserHovered ? UserHovered : User);

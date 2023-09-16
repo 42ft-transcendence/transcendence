@@ -9,7 +9,7 @@ import {
 import { ProfileButtonActions } from "./container";
 import RateDoughnutChart from "@src/components/charts/rateDoughnutChart";
 import { showProfileState, userDataState } from "@src/recoil/atoms/common";
-import { RoleType, UserType } from "@src/types";
+import { RoleType } from "@src/types";
 import { ProfileModalOnClickHandler } from "@src/utils";
 
 const ProfileModal = () => {

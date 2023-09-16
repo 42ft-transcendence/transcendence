@@ -1,7 +1,6 @@
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
 import {
   ChannelType,
-  ChatType,
   DirectMessageType,
   MessageType,
   ParticipantType,
@@ -33,7 +32,6 @@ import { getDM } from "@src/api/dm";
 const useChatSocket = () => {
   const isLogin = useMatch("/login");
   const isAuth = useMatch("/auth/:type");
-  const isSignUp = useMatch("/signup");
   const [token, ,] = useCookies(["jwt"]);
   const [user, setUserData] = useRecoilState(userDataState);
   const setAllUserList = useSetRecoilState(allUserListState);

@@ -1,8 +1,7 @@
 import * as S from "./index.styled";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { LowerTabList, SettingOptionModal, UpperTabList } from "./container";
 import {
-  allUserListState,
   isFirstLoginState,
   showProfileState,
   userDataState,
@@ -18,36 +17,21 @@ import GameAlertModal from "@src/components/modal/game/gameAlertModal";
 import ChannelInviteAcceptModal from "@src/components/modal/channel/channelInviteAcceptModal";
 import FirstLoginModal from "@src/components/modal/login/firstLoginModal";
 import { useEffect } from "react";
-import useInitializeState from "@src/hooks/useInitializeState";
-import {
-  gameRoomInfoInitState,
-  gameRoomInfoState,
-  gameRoomListState,
-  gameRoomURLState,
-} from "@src/recoil/atoms/game";
-import { getAllUserList, getUser } from "@src/api";
-import { GameRoomInfoType, GameRoomType } from "@src/types";
-import { useNavigate } from "react-router-dom";
+import { getUser } from "@src/api";
 
 export interface NavBarPropsType {
   currentPath: string;
 }
 
 const NavBar = () => {
-  const [userData, setUserData] = useRecoilState(userDataState);
+  const [, setUserData] = useRecoilState(userDataState);
   const [showProfile] = useRecoilState(showProfileState);
   const [battleActionModal] = useRecoilState(battleActionModalState);
   const [gameAlertModal] = useRecoilState(gameAlertModalState);
   const channelInvite = useRecoilValue(channelInviteAcceptModalState);
   const [isFirstLogin, setIsFirstLogin] =
     useRecoilState<boolean>(isFirstLoginState);
-  const setAllUserList = useSetRecoilState(allUserListState);
-  const [gameRoomURL, setGameRoomURL] = useRecoilState(gameRoomURLState);
-  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
-  const gameRoomList = useRecoilValue(gameRoomListState);
-  const initializer = useInitializeState();
   const currentPath = window.location.pathname;
-  const navigate = useNavigate();
 
   // useEffect(() => {
   //   // if (!isFirstLogin) return;
@@ -91,6 +75,7 @@ const NavBar = () => {
         .catch((err) => void err);
     };
     getUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPath]);
 
   return (

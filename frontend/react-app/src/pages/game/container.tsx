@@ -10,13 +10,7 @@ import {
   gameRoomURLState,
 } from "@src/recoil/atoms/game";
 import { useRecoilState, useRecoilValue } from "recoil";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { userDataState } from "@src/recoil/atoms/common";
 import { GameChattingType } from "@src/types/game.type";
@@ -149,6 +143,7 @@ export const GameChattingContainer = () => {
       });
       setHasSentEntryMessage(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chattingList, userData]);
 
   const handleGetGameRoomChat = useCallback(
