@@ -7,6 +7,9 @@ import {
   LoginLogoImage,
   PageContainer,
 } from "./index.styled";
+import CCPPLogo from "@assets/logos/ccpp_logo.png";
+import GoogleLogo from "@assets/logos/google_logo.svg";
+import FTLogo from "@assets/logos/42_logo.svg";
 
 const ft_oauth = {
   base_url: "https://api.intra.42.fr/oauth/authorize",
@@ -58,18 +61,10 @@ export default function Login() {
   return (
     <PageContainer>
       <LoginContainer>
-        <LoginLogoImage src="src/assets/logos/ccpp_logo.png" />
-        <LoginButton
-          href={oauth_forty_two}
-          src="src/assets/logos/42_logo.svg"
-          type="42"
-        />
+        <LoginLogoImage src={CCPPLogo} />
+        <LoginButton href={oauth_forty_two} src={FTLogo} type="42" />
         <br />
-        <LoginButton
-          href={oauth_google}
-          src="src/assets/logos/google_logo.svg"
-          type="Google"
-        />
+        <LoginButton href={oauth_google} src={GoogleLogo} type="Google" />
       </LoginContainer>
     </PageContainer>
   );
