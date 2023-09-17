@@ -10,6 +10,9 @@ import {
 import { Doughnut } from "react-chartjs-2";
 import { Theme } from "@src/styles/Theme";
 import * as S from "./index.styled";
+import RankingIcon from "@assets/icons/ranking.svg";
+import WinIcon from "@assets/icons/win.svg";
+import LoseIcon from "@assets/icons/lose.svg";
 
 Chart.register(ArcElement, DoughnutController, Title, Tooltip, Legend, Filler);
 
@@ -82,17 +85,17 @@ export const ProfileWinRateDoughnut: React.FC<ProfileWinRateDoughnutProps> = ({
 
   const winRateTextBoxData = [
     {
-      src: "../src/assets/icons/ranking.svg",
+      src: RankingIcon,
       text: `${isRanking === 1 ? rating : "일반전"}`,
       color: Theme.colors.gold,
     },
     {
-      src: "../src/assets/icons/win.svg",
+      src: WinIcon,
       text: `${wins} 승`,
       color: Theme.colors.win,
     },
     {
-      src: "../src/assets/icons/lose.svg",
+      src: LoseIcon,
       text: `${losses} 패`,
       color: Theme.colors.lose,
     },
