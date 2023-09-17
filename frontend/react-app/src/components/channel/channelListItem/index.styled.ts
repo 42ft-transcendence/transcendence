@@ -20,7 +20,7 @@ export const Title = styled.h3<{ $isCur: boolean }>`
   padding: 0;
   margin: 0 5px;
   color: ${({ theme, $isCur }) =>
-    $isCur ? theme.colors.freezePurple : theme.colors.myChat};
+    $isCur ? theme.colors.myChat : theme.colors.freezePurple};
   line-height: 40px;
   font-size: 16px;
   font-weight: bold;

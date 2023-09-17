@@ -1,5 +1,6 @@
 import { styled } from "styled-components";
 import { Theme } from "@styles/Theme";
+import Pencil from "@assets/icons/pencil.svg";
 
 export const SignUpTitle = styled.h1`
   font-size: 30px;
@@ -34,7 +35,7 @@ export const PencilIcon = styled.div`
   right: 0;
   width: 35px;
   height: 35px;
-  background: url("src/assets/icons/pencil.svg") no-repeat;
+  background: url(${Pencil}) no-repeat;
   background-size: cover;
   cursor: pointer;
 `;
