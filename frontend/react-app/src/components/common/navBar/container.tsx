@@ -144,15 +144,12 @@ export const LowerTabList = () => {
   const [isGearHovered, setGearHovered] = useState(false);
   const getUserIcon = () => (isUserHovered ? UserHovered : User);
   const getGearIcon = () => (isGearHovered ? GearHovered : Gear);
-  const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    navigate(`/profile/${userData.id}`);
-    console.log("profile clicked");
+    window.location.href = `/profile/${userData.id}`;
   };
 
   const handleSettingClick = () => {
-    console.log("setting clicked");
     setSettingOptionModalOpen(true);
   };
 

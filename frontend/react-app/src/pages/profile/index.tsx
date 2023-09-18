@@ -28,6 +28,7 @@ const Profile = () => {
   >([]);
   const [search, setSearch] = useState<string>("");
   const [moreInfo, setMoreInfo] = useState<number>(20);
+  const [user, setUser] = useState<UserType>(userData);
 
   useEffect(() => {
     async function fetchHistory() {
@@ -101,11 +102,14 @@ const Profile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
-  const user = userList.find((user) => user.id === userId) as UserType;
-  // if (typeof user === "undefined") {
-  //   console.log("here");
-  //   navigate(`/profile/${userData.id}`);
-  // }
+  useEffect(() => {
+    const user = userList.find((user) => user.id === userId) as UserType;
+    if (typeof user === "undefined") {
+      setUser(userData);
+    } else {
+      setUser(user);
+    }
+  }, [currentRoute, userId, userList, userData]);
 
   if (!matchHistoryList || !SidebarComponent) {
     console.log("here2");
@@ -115,7 +119,7 @@ const Profile = () => {
   return (
     <>
       <NavBar />
-      <SidebarComponent user={user ? user : userData} />
+      <SidebarComponent user={user} />
       <DS.ContentArea>
         <MatchHeader
           userId={userId}
