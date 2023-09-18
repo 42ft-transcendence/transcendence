@@ -7,7 +7,7 @@ DEV_COMPOSE_FILE := docker-compose.dev.yml
 
 .PHONY: all publish develop clean fclean re
 
-all: develop
+all: publish
 
 publish:
 	@echo "\n\033[0;33m[Build publish environment]\033[0m"

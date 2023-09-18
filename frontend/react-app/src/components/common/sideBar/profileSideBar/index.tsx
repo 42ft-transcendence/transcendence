@@ -40,6 +40,7 @@ import SecondAuthActivateModal from "@src/components/modal/auth/secondAuthActiva
 import SecondAuthDeactivateModal from "@src/components/modal/auth/secondAuthDeactivateModal";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { SHA256 } from "crypto-js";
+import Pencil from "@assets/icons/pencil_freezePurple.svg";
 
 interface ProfileSideBarProps {
   user: UserType;
@@ -260,7 +261,7 @@ const ProfileSideBar = ({ user }: ProfileSideBarProps) => {
           <S.NicknameText>{user.nickname}</S.NicknameText>
           <S.PencilIcon
             title="닉네임 변경"
-            src={`../src/assets/icons/pencil_freezePurple.svg`}
+            src={Pencil}
             alt="level"
             onClick={() => {
               setChangeNicknameModal(true);
