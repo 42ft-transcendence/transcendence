@@ -29,7 +29,6 @@ import UnblockIcon from "@src/assets/icons/unblock.svg";
 import ShowRecordIcon from "@src/assets/icons/showRecord.svg";
 import SendMessageIcon from "@src/assets/icons/sendMessage.svg";
 import sha256 from "crypto-js/sha256";
-import { gameRoomURLState } from "@src/recoil/atoms/game";
 import { gameSocket } from "@src/router/socket/gameSocket";
 
 interface ProfileButtonActionsProps {
@@ -67,7 +66,6 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
   const [user, setShowProfile] = useRecoilState(showProfileState);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
-  const setGameRoomURL = useSetRecoilState(gameRoomURLState);
   const navigate = useNavigate();
   const closeProfile = ProfileModalOnClickHandler(
     setShowProfile,
@@ -216,6 +214,7 @@ export const ProfileButtonActions = ({ role }: ProfileButtonActionsProps) => {
     };
 
     fetchData().catch((error) => console.log(error));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFriend, isBlocked]);
 
   // 초기 상태 설정

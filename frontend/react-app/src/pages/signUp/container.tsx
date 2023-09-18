@@ -1,19 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import SignUpPageView from "./view";
-import React, { useState, useRef, useEffect } from "react";
-import {
-  uploadAvatar,
-  setAvatarPath,
-  setNickname,
-  checkNickname,
-  deleteAvatar,
-  UploadAvatarResponse,
-} from "@api";
+import { useState, useRef, useEffect } from "react";
+import { setNickname, checkNickname } from "@api";
 import * as cookies from "react-cookies";
 import { userDataState } from "@recoil/atoms/common";
 import { UserType } from "@src/types";
-import { AxiosResponse } from "axios";
 import { useProfileActions } from "@src/hooks/useProfileActions";
 
 const SignUpPageContainer = () => {
@@ -34,8 +26,10 @@ const SignUpPageContainer = () => {
   };
 
   const uploadNickName = async () => {
-    const nicknameElement = document.getElementById("nickname");
-    const nickname = nicknameElement?.value as string;
+    const nicknameElement = document.getElementById(
+      "nickname",
+    ) as HTMLInputElement;
+    const nickname = (nicknameElement?.value as string) ?? "";
     setUserData((data: UserType) => ({
       ...data,
       nickname: nickname,
@@ -115,6 +109,7 @@ const SignUpPageContainer = () => {
     return () => {
       window.removeEventListener("beforeunload", handleUnload);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleUnload = (e: BeforeUnloadEvent) => {

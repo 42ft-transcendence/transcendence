@@ -25,7 +25,7 @@ const AuthPage = () => {
     "Loading" | "TwoFactor" | "TwoFactorLoading"
   >("Loading");
   const navigate = useNavigate();
-  const [userData, setUserData] = useRecoilState(userDataState);
+  const [, setUserData] = useRecoilState(userDataState);
   const inputRef = useRef<HTMLInputElement>(null);
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const setJoinedChannelList = useSetRecoilState(joinedChannelListState);
@@ -138,6 +138,7 @@ const AuthPage = () => {
           }
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, setStatus, type, code, navigate, twoFactorCode, setUserData]);
 
   if (!code || (type !== "42" && type !== "google"))

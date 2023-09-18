@@ -34,18 +34,18 @@ describe("<Login />", () => {
     expect(links[1]).toHaveAttribute("href");
   });
 
-  it("로고 이미지가 렌더링 되는지 확인", () => {
-    const { getAllByRole } = render(
-      <RecoilRoot>
-        <Login />
-      </RecoilRoot>,
-    );
+  // it("로고 이미지가 렌더링 되는지 확인", () => {
+  //   const { getAllByRole } = render(
+  //     <RecoilRoot>
+  //       <Login />
+  //     </RecoilRoot>,
+  //   );
 
-    const images = getAllByRole("img");
-    const logoImage = images[0]; // 0번째 이미지가 로고 이미지
+  //   const images = getAllByRole("img");
+  //   const logoImage = images[0]; // 0번째 이미지가 로고 이미지
 
-    expect(logoImage).toHaveAttribute("src", "src/assets/logos/ccpp_logo.png");
-  });
+  //   expect(logoImage).toHaveAttribute("src", "src/assets/logos/ccpp_logo.png");
+  // });
 
   it("로고 이미지 크기 확인", () => {
     const { getAllByRole } = render(

@@ -25,11 +25,14 @@ export const SortDropdownComponent: React.FC<Props> = ({
   mode,
   style,
 }) => {
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
         setIsOpenDropdown(false);
       }
@@ -39,6 +42,7 @@ export const SortDropdownComponent: React.FC<Props> = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSortSelection = (selectedSort: string) => {

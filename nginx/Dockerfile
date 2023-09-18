@@ -4,7 +4,7 @@ FROM nginx:latest
 RUN rm /etc/nginx/conf.d/default.conf
 # Copy the configuration into the container at /etc/nginx
 WORKDIR /etc/nginx/conf.d/
-COPY ccpp.template ./
+COPY ccpp.conf ./
 
 ENTRYPOINT sed -i "s/#{HOST}/${HOST}/g" ccpp.conf \
     && sed -i "s/#{PORT}/${PORT}/g" ccpp.conf \

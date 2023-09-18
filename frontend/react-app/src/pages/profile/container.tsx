@@ -6,6 +6,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  ChartOptions,
 } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import { MatchHistoryType } from "@src/types/game.type";
@@ -285,7 +286,7 @@ export const MatchHeader = ({
         enabled: false,
       },
     },
-  };
+  } as ChartOptions;
 
   return (
     <S.Header>

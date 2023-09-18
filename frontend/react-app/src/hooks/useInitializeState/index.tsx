@@ -1,12 +1,6 @@
 import { getUser } from "@src/api";
 import { allUserListState, userDataState } from "@src/recoil/atoms/common";
-import {
-  gameModalState,
-  gameRoomChatListState,
-  gameRoomInfoInitState,
-  gameRoomInfoState,
-  gameRoomListState,
-} from "@src/recoil/atoms/game";
+import { gameModalState, gameRoomChatListState } from "@src/recoil/atoms/game";
 import { battleActionModalState } from "@src/recoil/atoms/modal";
 import { gameSocket } from "@src/router/socket/gameSocket";
 import { UserType } from "@src/types";
@@ -17,8 +11,6 @@ const useInitializeState = () => {
   const setAllUserList = useSetRecoilState(allUserListState);
   const setBattleActionModal = useSetRecoilState(battleActionModalState);
   const setGameModal = useSetRecoilState(gameModalState);
-  const setGameRoomList = useSetRecoilState(gameRoomListState);
-  const setGameRoomInfo = useSetRecoilState(gameRoomInfoState);
   const setGameRoomChatList = useSetRecoilState(gameRoomChatListState);
 
   // 초기화 기능을 담당하는 함수
