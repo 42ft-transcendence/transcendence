@@ -8,6 +8,7 @@ import * as S from "./index.styled";
 import { IconButton } from "@src/components/buttons";
 // import Loading from "@assets/images/loading.gif";
 import { secondAuthActivateModalState } from "@src/recoil/atoms/modal";
+import SpinnerLoading from "@assets/images/loading.gif";
 
 const SecondAuthActivateModal = () => {
   const [code, setCode] = useState("");
@@ -116,10 +117,7 @@ const SecondAuthActivateModal = () => {
       <S.ModalContainer onSubmit={handleSubmit}>
         <S.Title>2차인증 활성화</S.Title>
         {loading ? (
-          <img
-            src={`${process.env.VITE_BASE_URL}/src/assets/images/loading.gif`}
-            alt="loading"
-          />
+          <img src={SpinnerLoading} alt="loading" />
         ) : (
           <QRCodeCanvas value={link} size={150} bgColor={"#494D5F"} />
         )}
