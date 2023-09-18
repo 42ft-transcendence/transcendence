@@ -17,15 +17,14 @@ services:
 
   srv-backend:
     container_name: backend
-    image: backend:dev
+    image: backend:1.0
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     networks:
       - net-transcendence
     volumes:
       - vol-profiles:/app/profiles
-      - ./backend/nestjs-app/src:/app/src
     depends_on:
       - srv-postgres
     environment:
@@ -41,14 +40,12 @@ services:
 
   srv-frontend:
     container_name: frontend
-    image: frontend:dev
+    image: frontend:1.0
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
-    networks:
-      - net-transcendence
+      dockerfile: Dockerfile
     volumes:
-      - ./frontend/react-app/src:/app/src
+      - vol-react_app:/app/dist
     environment:
       VITE_FT_OAUTH_CLIENT_ID: ${FT_OAUTH_CLIENT_ID}
       VITE_FT_OAUTH_REDIRECT_URI: ${BASE_URL}${FT_OAUTH_REDIRECT_ROUTE}
@@ -58,15 +55,16 @@ services:
 
   srv-nginx:
     container_name: nginx
-    image: nginx:dev
+    image: nginx:1.0
     build:
       context: ./nginx
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     networks:
       - net-transcendence
     volumes:
+      - vol-react_app:/usr/share/nginx/html
       - vol-images:/usr/share/nginx/images
       - vol-profiles:/usr/share/nginx/profiles
     depends_on:
@@ -78,14 +76,17 @@ services:
 
 networks:
   net-transcendence:
-    name: dev-transcendence
+    name: transcendence
 
 volumes:
   vol-postgres:
-    name: dev-postgres
+    name: postgres
+
+  vol-react_app:
+    name: react_app
 
   vol-images:
-    name: dev-images
+    name: images
     driver: local
     driver_opts:
       type: none
@@ -93,7 +94,7 @@ volumes:
       device: ${PWD}/share/images
 
   vol-profiles:
-    name: dev-profiles
+    name: profiles
     driver: local
     driver_opts:
       type: none
