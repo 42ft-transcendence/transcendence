@@ -33,41 +33,6 @@ const NavBar = () => {
     useRecoilState<boolean>(isFirstLoginState);
   const currentPath = window.location.pathname;
 
-  // useEffect(() => {
-  //   // if (!isFirstLogin) return;
-  //   if (currentPath !== "/") return;
-  //   console.log("첫 접속");
-  //   // TODO: 첫 접속일 때, 이전의 전역 상태 초기화
-  //   // initializer();
-  //   // TODO: 첫 접속일 때, 모달 띄워준 뒤 첫 접속 상태 변경
-  //   setTimeout(() => {
-  //     setIsFirstLogin(false);
-  //   }, 5000);
-  //   // ! 만약 게임 URL이 남아있다면, 그 방이 남아있는지 확인
-  //   if (gameRoomList.find((gameRoom) => gameRoom.roomURL === gameRoomURL)) {
-  //     // ? 남아있다면 그 방으로 이동시키기
-  //     const gameRoomInfo: GameRoomInfoType | undefined = gameRoomList.find(
-  //       (gameRoom) => gameRoom.roomURL === gameRoomURL,
-  //     );
-  //     if (typeof gameRoomInfo === "undefined") return;
-  //     if (
-  //       !gameRoomInfo.participants.find((user) => user.user.id === userData.id)
-  //     ) {
-  //       setGameRoomInfo(gameRoomInfoInitState);
-  //       setGameRoomURL("");
-  //       return;
-  //     }
-  //     setGameRoomInfo(gameRoomInfo);
-  //     navigate(`/game/${gameRoomURL}`);
-  //     // window.location.href = `/game/${gameRoomURL}`;
-  //     return;
-  //   }
-  //   setGameRoomInfo(gameRoomInfoInitState);
-  //   setGameRoomURL("");
-  //   // ? 남아있는데 대기중이라면 게임방으로 이동시키기
-  //   // ? 남아있지 않다면 게임 유무 판단(가장 최근 전적이 몰수패라면 연결이 끊겼다고 판단할 수 있을듯함)으로 기록으로 이동하시겠습니까? or 그냥 기본 동작
-  // }, [isFirstLogin]);
-
   useEffect(() => {
     const getUserData = async () => {
       await getUser()
