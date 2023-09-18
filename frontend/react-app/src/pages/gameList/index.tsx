@@ -16,6 +16,10 @@ const GameList = () => {
 
   useEffect(() => {
     gameSocket.emit("getGameRoomList");
+    // gameSocket.on("rejectEnterRoom", () => {
+    //   alert("인원이 가득 찼습니다.");
+    //   return;
+    // });
   }, []);
 
   return (

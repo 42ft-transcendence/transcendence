@@ -6,6 +6,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const authorized = useLoaderData() as boolean;
 
   if (!jwt) {
+    console.log("jwt not found");
     return <Navigate to="/login" />;
   } else if (!authorized) {
     alert("잘못된 로그인 정보입니다.");

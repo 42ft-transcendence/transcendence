@@ -246,10 +246,17 @@ export class GameGateway {
   @SubscribeMessage('enterGameRoom')
   async enterGameRoom(client: Socket, content: enterGameRoomDto) {
     const gameRoom = this.findGameRoomByURL(content.gameRoomURL);
-    if (!gameRoom) return;
-    gameRoom.enterGameRoom(content.user);
-    await this.userService.updateStatus(content.user, UserStatusType.GAME);
-    this.refreshGameRoomList();
+    if (!gameRoom) return 'rejectGameRoom';
+    if (gameRoom.numberOfParticipants >= 2) {
+      // this.server.to(client.id).emit('rejectEnterRoom');
+
+      return 'rejectGameRoom';
+    } else {
+      gameRoom.enterGameRoom(content.user);
+      await this.userService.updateStatus(content.user, UserStatusType.GAME);
+      this.refreshGameRoomList();
+      return 'success';
+    }
   }
 
   @UsePipes(new ValidationPipe())

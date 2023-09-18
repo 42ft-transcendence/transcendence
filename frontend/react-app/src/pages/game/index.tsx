@@ -3,8 +3,8 @@ import * as S from "./index.styled";
 import { routeMatch } from "@src/components/common/sideBar";
 import GameCreateModal from "@src/components/modal/game/gameCreateModal";
 import { GameChattingContainer, GameMatchProfile } from "./container";
-import { useRecoilState } from "recoil";
-import { gameRoomInfoState } from "@src/recoil/atoms/game";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { gameRoomInfoState, gameRoomListState } from "@src/recoil/atoms/game";
 import { userDataState } from "@src/recoil/atoms/common";
 import React, { useEffect } from "react";
 import { gameSocket } from "@src/router/socket/gameSocket";
@@ -14,8 +14,15 @@ const Game = () => {
   const currentRoute = window.location.pathname;
   const SideBarComponent = routeMatch(currentRoute, "/game/");
   const [userData] = useRecoilState(userDataState);
-  const [gameRoomInfo] = useRecoilState(gameRoomInfoState);
+  const [gameRoomInfo, setGameRoomInfo] = useRecoilState(gameRoomInfoState);
   const [gameRoomURL] = useRecoilState(gameRoomURLState);
+  const gameRoomList = useRecoilValue(gameRoomListState);
+
+  useEffect(() => {
+    const info = gameRoomList.find((room) => room.roomURL === gameRoomURL);
+    if (!info) return;
+    setGameRoomInfo(info);
+  });
 
   useEffect(() => {
     if (typeof gameRoomInfo.participants === "undefined") return;

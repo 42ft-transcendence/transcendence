@@ -6,7 +6,7 @@ export class sendGameRoomChatDto {
   readonly roomURL: string;
 
   @IsString()
-  @IsNotEmpty()
+  // @IsNotEmpty()
   readonly roomName: string;
 
   @IsString()

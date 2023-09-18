@@ -19,7 +19,7 @@ export class GameData {
       (this.ballVecX = 5),
       (this.ballVecY = 0),
       (this.ballSpeed =
-        gameSpeed === 'SLOW' ? 3 : gameSpeed === 'NORMAL' ? 6 : 9),
+        gameSpeed === 'SLOW' ? 3 : gameSpeed === 'FAST' ? 9 : 6),
       (this.score = [0, 0]),
       (this.onGame = false),
       (this.mode = gameSpeed),
@@ -30,7 +30,7 @@ export class GameData {
     this.ballX = 400;
     this.ballY = 300;
     this.ballVecY = 0;
-    this.ballSpeed = this.mode === 'SLOW' ? 3 : this.mode === 'NORMAL' ? 6 : 9;
+    this.ballSpeed = this.mode === 'SLOW' ? 3 : this.mode === 'FAST' ? 9 : 6;
 
     this.isGamePaused = true;
     setTimeout(() => {

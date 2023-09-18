@@ -52,14 +52,24 @@ const GameRoomEnterModal = ({
       setPassword("");
       return;
     }
-    gameSocket.emit("enterGameRoom", {
-      gameRoomURL: gameRoomInfo.roomURL,
-      user: userData,
-    });
-    setGameRoomURL(gameRoomInfo.roomURL);
-    setIsOpen(false);
-    setGameRoomChatList([]);
-    navigate(`/game/${gameRoomInfo.roomURL}`);
+    gameSocket.emit(
+      "enterGameRoom",
+      {
+        gameRoomURL: gameRoomInfo.roomURL,
+        user: userData,
+      },
+      (error: string) => {
+        console.log(error);
+        if (error === "success") {
+          setGameRoomURL(gameRoomInfo.roomURL);
+          setIsOpen(false);
+          setGameRoomChatList([]);
+          navigate(`/game/${gameRoomInfo.roomURL}`);
+        } else if (error === "rejectGameRoom") {
+          alert("인원이 가득 찼습니다.");
+        }
+      },
+    );
   };
 
   return (

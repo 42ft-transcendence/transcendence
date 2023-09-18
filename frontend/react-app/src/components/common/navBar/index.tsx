@@ -34,6 +34,7 @@ const NavBar = () => {
   const currentPath = window.location.pathname;
 
   useEffect(() => {
+    console.log("exit game after");
     const getUserData = async () => {
       await getUser()
         .then((res) => setUserData(res.data))
