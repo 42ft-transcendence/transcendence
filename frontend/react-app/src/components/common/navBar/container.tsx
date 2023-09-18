@@ -144,9 +144,10 @@ export const LowerTabList = () => {
   const [isGearHovered, setGearHovered] = useState(false);
   const getUserIcon = () => (isUserHovered ? UserHovered : User);
   const getGearIcon = () => (isGearHovered ? GearHovered : Gear);
+  const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    window.location.href = `/profile/${userData.id}`;
+    navigate(`/profile/${userData.id}`);
   };
 
   const handleSettingClick = () => {
