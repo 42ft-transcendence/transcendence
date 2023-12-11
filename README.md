@@ -41,8 +41,57 @@ make
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/chanwoong1"><img src="https://avatars.githubusercontent.com/u/84218652?v=4" width="100px;" alt=""/><br /><b>chanwjeo</b></a><br /><a href="https://profile.intra.42.fr/users/chanwjeo" title="Intra 42"><img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/></a></td>
-    <td align="center"><a href="https://github.com/42sangkkim"><img src="https://avatars.githubusercontent.com/u/48117646?v=4" width="100px;" alt=""/><br /><b>sangkkim</b></a><br /><a href="https://profile.intra.42.fr/users/sangkkim" title="Intra 42"><img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/></a></td>
-    <td align="center"><a href="https://github.com/Y2IN"><img src="https://avatars.githubusercontent.com/u/108932147?v=4" width="100px;" alt=""/><br /><b>yje</b></a><br /><a href="https://profile.intra.42.fr/users/yje" title="Intra 42"><img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/></a></td>
-    <td align="center"><a href="https://github.com/Jsen27"><img src="https://avatars.githubusercontent.com/u/87853922?v=4" width="100px;" alt=""/><br /><b>sehjung</b></a><br /><a href="https://profile.intra.42.fr/users/sehjung" title="Intra 42"><img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/></a></td>  </tr>
+    <td align="center">
+      <a href="https://github.com/chanwoong1">
+        <img src="https://avatars.githubusercontent.com/u/84218652?v=4" width="100px;" alt=""/>
+        <br />
+        <b>chanwjeo</b>
+      </a>
+      <br />
+      <a href="https://profile.intra.42.fr/users/chanwjeo" title="Intra 42">
+        <img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Frontend-COLOR?style=plastic&logo=frontend&logoColor=white" alt="Frontend"/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/42sangkkim">
+        <img src="https://avatars.githubusercontent.com/u/48117646?v=4" width="100px;" alt=""/>
+        <br />
+        <b>sangkkim</b>
+      </a>
+      <br />
+      <a href="https://profile.intra.42.fr/users/sangkkim" title="Intra 42">
+        <img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Frontend-COLOR?style=plastic&logo=frontend&logoColor=white" alt="Backend"/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Y2IN">
+        <img src="https://avatars.githubusercontent.com/u/108932147?v=4" width="100px;" alt=""/>
+        <br />
+        <b>yje</b>
+      </a>
+      <br />
+      <a href="https://profile.intra.42.fr/users/yje" title="Intra 42">
+        <img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Frontend-COLOR?style=plastic&logo=frontend&logoColor=white" alt="Frontend"/>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Jsen27">
+        <img src="https://avatars.githubusercontent.com/u/87853922?v=4" width="100px;" alt=""/>
+        <br />
+        <b>sehjung</b>
+      </a>
+      <br />
+      <a href="https://profile.intra.42.fr/users/sehjung" title="Intra 42">
+        <img src="https://img.shields.io/badge/Seoul-FFFFFF?style=plastic&logo=42&logoColor=000000" alt="Intra 42"/>
+      </a>
+      <br />
+      <img src="https://img.shields.io/badge/Backend-COLOR?style=plastic&logo=backend&logoColor=white" alt="Backend"/>
+    </td>
+  </tr>
 </table>
